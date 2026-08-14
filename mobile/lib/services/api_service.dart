@@ -107,21 +107,6 @@ class ApiService {
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    // Create Notification tied to the site visit ID for idempotency
-    final notificationRef = _db
-        .collection('adminNotifications')
-        .doc(siteVisitRef.id);
-    batch.set(notificationRef, {
-      'id': notificationRef.id,
-      'type': 'SITE_VISIT',
-      'relatedId': siteVisitRef.id,
-      'title': 'New Site Visit Booking',
-      'message':
-          'New site visit booking received from ${data['customerName'] ?? 'a customer'}',
-      'read': false,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-
     await batch.commit();
   }
 

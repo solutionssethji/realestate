@@ -48,8 +48,12 @@ class MapComponent extends StatelessWidget {
           children: [
             Icon(Icons.map_outlined, size: 48, color: Colors.grey.shade400),
             const SizedBox(height: 16),
-            Text(context.l10n.mapConfigUnavailableAlt,
-              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+            Text(
+              context.l10n.mapConfigUnavailableAlt,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
