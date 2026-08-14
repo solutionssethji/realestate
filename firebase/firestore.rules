@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Admins can read/write everything
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    // CUSTOMER PUBLIC READS
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /plots/{plotId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /offers/{offerId} {
+      allow read: if resource.data.active == true || isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    // CUSTOMER WRITES (Enquiries & Site Visits)
+    match /enquiries/{enquiryId} {
+      allow create: if true; // Public can create
+      allow read, update, delete: if isAdmin(); // Only admins can read/manage
+    }
+    
+    match /siteVisits/{siteVisitId} {
+      allow create: if true; // Public can create
+      allow read, update, delete: if isAdmin(); // Only admins can read/manage
+    }
+    
+    // CUSTOMERS (Internal records only, accessible to admin or temporary OTP sessions)
+    match /customers/{customerId} {
+      allow read: if request.auth != null && (request.auth.uid == customerId || request.auth.token.phone_number == resource.data.mobileNumber);
+      allow write: if isAdmin();
+    }
+    
+    // CUSTOMER PLOTS (Private ownership data)
+    match /customerPlots/{customerPlotId} {
+      allow read: if request.auth != null && (request.auth.uid == resource.data.customerId || request.auth.token.phone_number == resource.data.mobileNumber);
+      allow write: if isAdmin();
+    }
+    
+    // PAYMENTS (Private transaction history)
+    match /payments/{paymentId} {
+      allow read: if request.auth != null && (request.auth.uid == resource.data.customerId || request.auth.token.phone_number == resource.data.mobileNumber);
+      allow write: if isAdmin();
+    }
+    
+    // ADMINS
+    match /admins/{adminId} {
+      allow read: if isAdmin() || request.auth.uid == adminId;
+      allow write: if isAdmin();
+    }
+  }
+}
