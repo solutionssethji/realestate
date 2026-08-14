@@ -1,0 +1,843 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Hindi (`hi`).
+class AppLocalizationsHi extends AppLocalizations {
+  AppLocalizationsHi([String locale = 'hi']) : super(locale);
+
+  @override
+  String get appName => 'एलिज़ियम रियल एस्टेट';
+
+  @override
+  String get aboutCompany => 'कंपनी के बारे में';
+
+  @override
+  String get ourVision => 'हमारा नज़रिया';
+
+  @override
+  String get ourMission => 'हमारा लक्ष्य';
+
+  @override
+  String get whyChooseUs => 'हमें क्यों चुनें';
+
+  @override
+  String get aboutUnavailable => 'कंपनी की जानकारी अभी उपलब्ध नहीं है।';
+
+  @override
+  String get home => 'होम';
+
+  @override
+  String get projects => 'प्रोजेक्ट्स';
+
+  @override
+  String get offers => 'ऑफ़र';
+
+  @override
+  String get profile => 'प्रोफ़ाइल';
+
+  @override
+  String get aboutUs => 'हमारे बारे में';
+
+  @override
+  String get featuredProjects => 'विशेष प्रोजेक्ट्स';
+
+  @override
+  String get wantToSeeInPerson => 'क्या आप इसे खुद देखना चाहते हैं?';
+
+  @override
+  String get bookSiteVisit => 'साइट विज़िट बुक करें';
+
+  @override
+  String get viewPlots => 'उपलब्ध प्लॉट देखें';
+
+  @override
+  String get enquireNow => 'अभी पूछताछ करें';
+
+  @override
+  String get emiCalculator => 'ईएमआई कैलकुलेटर';
+
+  @override
+  String get estimatedMonthlyEmi => 'अनुमानित मासिक ईएमआई';
+
+  @override
+  String get principalAmount => 'मूल राशि';
+
+  @override
+  String get totalInterest => 'कुल ब्याज';
+
+  @override
+  String get propertyDetails => 'संपत्ति का विवरण';
+
+  @override
+  String get propertyPrice => 'संपत्ति की कीमत';
+
+  @override
+  String get downPayment => 'डाउन पेमेंट';
+
+  @override
+  String get loanDetails => 'ऋण विवरण';
+
+  @override
+  String get interestRate => 'ब्याज दर (%)';
+
+  @override
+  String get loanTenure => 'ऋण अवधि (वर्ष)';
+
+  @override
+  String years(int count) {
+    return '$count वर्ष';
+  }
+
+  @override
+  String get language => 'भाषा';
+
+  @override
+  String get settings => 'सेटिंग्स';
+
+  @override
+  String get contactUs => 'संपर्क करें';
+
+  @override
+  String get faq => 'अक्सर पूछे जाने वाले प्रश्न';
+
+  @override
+  String get secureCheckout => 'सुरक्षित चेकआउट';
+
+  @override
+  String get bookingSummary => 'बुकिंग सारांश';
+
+  @override
+  String get reference => 'संदर्भ';
+
+  @override
+  String get description => 'विवरण';
+
+  @override
+  String get paymentType => 'भुगतान प्रकार';
+
+  @override
+  String get advanceBooking => 'अग्रिम बुकिंग';
+
+  @override
+  String get totalPayable => 'कुल देय';
+
+  @override
+  String get paymentSuccessful => 'भुगतान सफल!';
+
+  @override
+  String get verifyToViewHistory => 'इतिहास देखने के लिए सत्यापित करें';
+
+  @override
+  String get phoneNumber => 'फ़ोन नंबर';
+
+  @override
+  String get sixDigitOtp => '6-अंकीय ओटीपी';
+
+  @override
+  String get changePhoneNumber => 'फ़ोन नंबर बदलें';
+
+  @override
+  String get paymentHistory => 'भुगतान इतिहास';
+
+  @override
+  String noPaymentsFound(String phone) {
+    return '$phone के लिए कोई भुगतान नहीं मिला';
+  }
+
+  @override
+  String errorLoadingHistory(String error) {
+    return 'इतिहास लोड करने में त्रुटि।\n$error';
+  }
+
+  @override
+  String get allProjects => 'सभी प्रोजेक्ट्स';
+
+  @override
+  String get unableToLoadProjects => 'प्रोजेक्ट लोड करने में असमर्थ।';
+
+  @override
+  String get tryAgain => 'पुनः प्रयास करें';
+
+  @override
+  String get noProjectsFound => 'कोई प्रोजेक्ट नहीं मिला';
+
+  @override
+  String get tenYearsOfTrust => 'वर्षों का विश्वास';
+
+  @override
+  String get deliveringExcellence =>
+      'उत्कृष्टता और पारदर्शी भूमि निवेश प्रदान करना।';
+
+  @override
+  String get unableToLoadProject => 'प्रोजेक्ट लोड करने में असमर्थ।';
+
+  @override
+  String get aboutTheProject => 'प्रोजेक्ट के बारे में';
+
+  @override
+  String get gallery => 'गैलरी';
+
+  @override
+  String get amenities => 'सुविधाएं';
+
+  @override
+  String get startingFrom => 'शुरुआती कीमत';
+
+  @override
+  String get virtualTour => 'वर्चुअल 360° टूर';
+
+  @override
+  String get walkThroughProperty => 'कहीं से भी संपत्ति को देखें।';
+
+  @override
+  String get scheduleTour => 'एक टूर निर्धारित करें';
+
+  @override
+  String get yourDetails => 'आपका विवरण';
+
+  @override
+  String get fullName => 'पूरा नाम';
+
+  @override
+  String get mobileNumber => 'मोबाइल नंबर';
+
+  @override
+  String get pleaseSelectDateAndTime => 'कृपया दिनांक और समय चुनें';
+
+  @override
+  String get getInTouch => 'संपर्क करें';
+
+  @override
+  String get messageBudgetReqs => 'संदेश / बजट / आवश्यकताएं';
+
+  @override
+  String unableToLoadPlot(String error) {
+    return 'प्लॉट लोड करने में असमर्थ: $error';
+  }
+
+  @override
+  String plotPrefix(String number) {
+    return 'प्लॉट $number';
+  }
+
+  @override
+  String get residentialPlot => 'आवासीय भूखंड';
+
+  @override
+  String get specifications => 'विशिष्टताएँ';
+
+  @override
+  String get area => 'क्षेत्र';
+
+  @override
+  String get dimensions => 'आयाम';
+
+  @override
+  String get facing => 'दिशा';
+
+  @override
+  String get roadWidth => 'सड़क की चौड़ाई';
+
+  @override
+  String get totalPrice => 'कुल कीमत';
+
+  @override
+  String get plotAvailability => 'प्लॉट उपलब्धता';
+
+  @override
+  String get all => 'सभी';
+
+  @override
+  String get available => 'उपलब्ध';
+
+  @override
+  String get hold => 'होल्ड';
+
+  @override
+  String get booked => 'बुक किया गया';
+
+  @override
+  String get unableToLoadPlots => 'प्लॉट लोड करने में असमर्थ।';
+
+  @override
+  String get noPlotsFound => 'कोई प्लॉट नहीं मिला';
+
+  @override
+  String plotsCount(int count) {
+    return '$count प्लॉट्स';
+  }
+
+  @override
+  String sqft(String size) {
+    return '$size वर्ग फुट';
+  }
+
+  @override
+  String facingLabel(String facing) {
+    return '$facing दिशा';
+  }
+
+  @override
+  String get backToHome => 'होम पर वापस जाएं';
+
+  @override
+  String get cancel => 'रद्द करें';
+
+  @override
+  String get starting360 => '360° अनुभव शुरू हो रहा है...';
+
+  @override
+  String get immersive360 => '360° इमर्सिव';
+
+  @override
+  String get openExternalMaps => 'बाहरी मैप्स खोलें';
+
+  @override
+  String amountPrefix(String amount) {
+    return '₹$amount';
+  }
+
+  @override
+  String get corporateOffice => 'कॉर्पोरेट कार्यालय';
+
+  @override
+  String get callUs => 'हमें कॉल करें';
+
+  @override
+  String get whatsapp => 'व्हाट्सएप';
+
+  @override
+  String get email => 'ईमेल';
+
+  @override
+  String get nameIsRequired => 'नाम आवश्यक है';
+
+  @override
+  String get enterValidMobileNumber => 'एक मान्य मोबाइल नंबर दर्ज करें';
+
+  @override
+  String get submissionFailed => 'सबमिशन विफल रहा। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get enquirySubmitted =>
+      'पूछताछ सबमिट की गई! हम जल्द ही आपसे संपर्क करेंगे।';
+
+  @override
+  String get submitEnquiry => 'पूछताछ सबमिट करें';
+
+  @override
+  String get submitted => 'सबमिट किया गया ✓';
+
+  @override
+  String get selectPreferredTime => 'पसंदीदा समय चुनें';
+
+  @override
+  String get bookingConfirmed =>
+      'बुकिंग पक्की हो गई! हम सत्यापित करने के लिए आपको कॉल करेंगे।';
+
+  @override
+  String get confirmSiteVisit => 'साइट विज़िट की पुष्टि करें';
+
+  @override
+  String get bookingFailed => 'बुकिंग विफल रही। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get applicableProject => 'लागू प्रोजेक्ट';
+
+  @override
+  String get unableToLoadOffers => 'ऑफ़र लोड करने में असमर्थ।';
+
+  @override
+  String get signOut => 'साइन आउट';
+
+  @override
+  String get searchByPlot => 'प्लॉट नंबर से खोजें...';
+
+  @override
+  String get virtual360Tour => 'वर्चुअल 360° टूर';
+
+  @override
+  String get viewProjectDetails => 'प्रोजेक्ट विवरण देखें';
+
+  @override
+  String get whyInvestWithUs => 'हमारे साथ निवेश क्यों करें?';
+
+  @override
+  String get secureAccess => 'सुरक्षित पहुंच';
+
+  @override
+  String get yearsOfTrust => 'वर्षों का भरोसा';
+
+  @override
+  String get reinventingRealEstate => 'रियल एस्टेट को फिर से खोजना';
+
+  @override
+  String get ourTeamIsAvailable =>
+      'हमारी टीम किसी भी प्रश्न या संपत्ति देखने में सहायता के लिए उपलब्ध है।';
+
+  @override
+  String get viewPastTransactions => 'अपने पिछले लेनदेन देखें';
+
+  @override
+  String get account => 'खाता';
+
+  @override
+  String get exclusivePlots => 'प्रमुख स्थानों में विशेष भूखंड और लक्जरी विला।';
+
+  @override
+  String get aboutTheOffer => 'प्रस्ताव के बारे में';
+
+  @override
+  String get termsAndCancellation =>
+      'आगे बढ़कर आप हमारी सेवा की शर्तों और रद्दीकरण नीति से सहमत होते हैं।';
+
+  @override
+  String get pickDateAndTime =>
+      'एक तारीख और समय चुनें। हमारे कार्यकारी आपकी यात्रा की पुष्टि करेंगे।';
+
+  @override
+  String get commonRetry => 'पुनः प्रयास करें';
+
+  @override
+  String get findPremiumProperty => 'अपना प्रीमियम\\nसपनों का घर खोजें';
+
+  @override
+  String get specialOffer => 'विशेष ऑफर';
+
+  @override
+  String get sslEncrypted => '256-बिट एसएसएल एन्क्रिप्टेड';
+
+  @override
+  String get expertsContactYou =>
+      'हमारे संपत्ति विशेषज्ञ 24 घंटे के भीतर आपसे संपर्क करेंगे।';
+
+  @override
+  String get mapConfigUnavailable => 'मानचित्र कॉन्फ़िगरेशन उपलब्ध नहीं है।';
+
+  @override
+  String get view360ComingSoon => '360° दृश्य जल्द आ रहा है';
+
+  @override
+  String get luxuryRealEstate => 'लक्ज़री रियल एस्टेट';
+
+  @override
+  String get exclusivePlotsDesc =>
+      'प्रमुख स्थानों में विशेष भूखंड और लक्जरी विला।';
+
+  @override
+  String get secureInvestment => 'सुरक्षित निवेश';
+
+  @override
+  String get strategicLocations =>
+      'उत्कृष्ट प्रशंसा सुनिश्चित करने वाले रणनीतिक स्थान।';
+
+  @override
+  String get plotFinder => 'भूखंड खोजें';
+
+  @override
+  String get quickActions => 'त्वरित कार्य';
+
+  @override
+  String get viewAll => 'सभी देखें';
+
+  @override
+  String get noActiveOffers => 'कोई सक्रिय ऑफ़र नहीं';
+
+  @override
+  String get checkBackSoon =>
+      'जल्द ही वापस जांचें — नए ऑफ़र नियमित रूप से जोड़े जाते हैं।';
+
+  @override
+  String get noProjectsAvailable => 'इस समय कोई प्रोजेक्ट उपलब्ध नहीं है।';
+
+  @override
+  String get clearSearch => 'खोज साफ़ करें';
+
+  @override
+  String get viewPlotAvailability => 'भूखंड उपलब्धता देखें';
+
+  @override
+  String get launch360Tour => '360° टूर शुरू करें';
+
+  @override
+  String get siteVisit => 'साइट विज़िट';
+
+  @override
+  String get sold => 'बिक गया';
+
+  @override
+  String get noPlotsAvailableFilter =>
+      'चयनित फ़िल्टर के साथ कोई भूखंड उपलब्ध नहीं है।';
+
+  @override
+  String get enquireAboutPlot => 'इस भूखंड के बारे में पूछताछ करें';
+
+  @override
+  String get proceedToPayment => 'भुगतान के लिए आगे बढ़ें';
+
+  @override
+  String get plotNotAvailable => 'भूखंड उपलब्ध नहीं है';
+
+  @override
+  String get plotOnHold => 'होल्ड पर';
+
+  @override
+  String get plotBookedSold => 'बुक/बिक चुका है';
+
+  @override
+  String get exclusiveOffers => 'विशेष ऑफ़र';
+
+  @override
+  String get bookingConfirmedMsg =>
+      'आपकी बुकिंग की पुष्टि हो गई है। जल्द ही आपको एक पुष्टि भेजी जाएगी।';
+
+  @override
+  String get paymentFailedCancelled => 'भुगतान विफल या रद्द हो गया।';
+
+  @override
+  String get paymentFailedRetry => 'भुगतान विफल। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get paymentSignatureError => 'भुगतान हस्ताक्षर सत्यापन विफल।';
+
+  @override
+  String get verificationFailedContact =>
+      'सत्यापन विफल। कृपया सहायता से संपर्क करें।';
+
+  @override
+  String get serviceUnavailable =>
+      'सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get somethingWentWrong => 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get notAuthorizedPayment =>
+      'आप इस भुगतान को पूरा करने के लिए अधिकृत नहीं हैं।';
+
+  @override
+  String get paymentFailed => 'भुगतान विफल।';
+
+  @override
+  String get unknownDate => 'अज्ञात तिथि';
+
+  @override
+  String get sendOtp => 'OTP भेजें';
+
+  @override
+  String get verify => 'सत्यापित करें';
+
+  @override
+  String get verificationFailed => 'सत्यापन विफल';
+
+  @override
+  String get yourNumber => 'आपका नंबर';
+
+  @override
+  String get nameRequired => 'नाम आवश्यक है';
+
+  @override
+  String get enterValidMobile => 'एक वैध मोबाइल नंबर दर्ज करें';
+
+  @override
+  String get enterValidNumber => 'एक वैध नंबर दर्ज करें';
+
+  @override
+  String get selectPreferredDate => 'पसंदीदा तारीख चुनें';
+
+  @override
+  String get bookingConfirmedCall =>
+      'बुकिंग पुष्टि! हम सत्यापित करने के लिए आपको कॉल करेंगे।';
+
+  @override
+  String get noFaqsAvailable => 'इस समय कोई FAQ उपलब्ध नहीं है।';
+
+  @override
+  String get questionUnavailable => 'प्रश्न अनुपलब्ध';
+
+  @override
+  String get answerUnavailable => 'उत्तर अनुपलब्ध';
+
+  @override
+  String get termsAndConditions => 'नियम और शर्तें';
+
+  @override
+  String get privacyPolicy => 'गोपनीयता नीति';
+
+  @override
+  String get statusAvailable => 'उपलब्ध';
+
+  @override
+  String get statusHold => 'होल्ड';
+
+  @override
+  String get statusBookedSold => 'बुक/बिक चुका';
+
+  @override
+  String get statusPending => 'लंबित';
+
+  @override
+  String get statusSuccess => 'सफल';
+
+  @override
+  String get statusFailed => 'विफल';
+
+  @override
+  String get statusCancelled => 'रद्द';
+
+  @override
+  String get statusConfirmed => 'पुष्टि';
+
+  @override
+  String get statusCompleted => 'पूर्ण';
+
+  @override
+  String get clearTitlesApproved => '100% स्पष्ट शीर्षक और रेरा स्वीकृत';
+
+  @override
+  String get clearTitlesProcess =>
+      '100% स्पष्ट शीर्षक और पारदर्शी कानूनी प्रक्रियाएं।';
+
+  @override
+  String get premierCompany => 'एक प्रमुख संपत्ति विकास कंपनी।';
+
+  @override
+  String get dedicatedManagers =>
+      'निर्बाध एंड-टू-एंड सहायता के लिए समर्पित प्रबंधक।';
+
+  @override
+  String get endToEndSupport => 'एंड-टू-एंड दस्तावेज़ीकरण समर्थन';
+
+  @override
+  String get expertSupport => 'विशेषज्ञ सहायता';
+
+  @override
+  String get highRoi => 'उच्च निवेश वापसी (ROI)';
+
+  @override
+  String get premiumInfra => 'प्रीमियम बुनियादी ढांचा और सुविधाएं';
+
+  @override
+  String get strategicHighRoi => 'उच्च ROI के साथ रणनीतिक स्थान';
+
+  @override
+  String get transparentPricing => 'बिना छिपी लागत के पारदर्शी मूल्य निर्धारण';
+
+  @override
+  String get exploreProjects => 'परियोजनाओं का अन्वेषण करें';
+
+  @override
+  String get availableCaps => 'उपलब्ध';
+
+  @override
+  String get bookedSold => 'बुक किया गया / बेचा गया';
+
+  @override
+  String get onHoldCaps => 'होल्ड पर';
+
+  @override
+  String get clearSearchFilters => 'खोज साफ़ करें';
+
+  @override
+  String get legalAndSupport => 'कानूनी और सहायता';
+
+  @override
+  String get payment => 'भुगतान';
+
+  @override
+  String get expertsWillContact =>
+      'हमारे संपत्ति विशेषज्ञ 24 घंटे के भीतर आपसे संपर्क करेंगे।';
+
+  @override
+  String get enterOtpSent => 'अपने फोन नंबर पर भेजा गया OTP दर्ज करें।';
+
+  @override
+  String get enterPhoneForHistory =>
+      'अपने भुगतान इतिहास तक पहुंचने के लिए अपना फोन नंबर दर्ज करें।';
+
+  @override
+  String get invalidOtp => 'अमान्य OTP';
+
+  @override
+  String get langEnglish => 'अंग्रेज़ी';
+
+  @override
+  String get langHindi => 'हिन्दी (Hindi)';
+
+  @override
+  String get anErrorOccurred => 'एक त्रुटि हुई। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get invalidResponse => 'सर्वर से अमान्य प्रतिक्रिया।';
+
+  @override
+  String get plotNotFound => 'भूखंड नहीं मिला';
+
+  @override
+  String get projectNotFound => 'परियोजना नहीं मिली';
+
+  @override
+  String get somethingWentWrongTitle => 'कुछ गलत हो गया';
+
+  @override
+  String validTill(String date) {
+    return '$date तक वैध';
+  }
+
+  @override
+  String validUntil(String date) {
+    return '$date तक मान्य';
+  }
+
+  @override
+  String payAmountSecurely(String amount) {
+    return '$amount का सुरक्षित भुगतान करें';
+  }
+
+  @override
+  String noPaymentsFoundFor(String phone) {
+    return '$phone के लिए कोई भुगतान नहीं मिला';
+  }
+
+  @override
+  String errorLoadingHistoryVerbose(String error) {
+    return 'इतिहास लोड करने में त्रुटि।\\n$error';
+  }
+
+  @override
+  String get statusUnknown => 'अज्ञात';
+
+  @override
+  String get yourNumberAlt => 'आपका नंबर';
+
+  @override
+  String plotTitle(String number) {
+    return 'प्लॉट $number';
+  }
+
+  @override
+  String sqFtLabel(String size) {
+    return '$size वर्ग फुट';
+  }
+
+  @override
+  String plotCurrentlyStatus(String status) {
+    return 'यह प्लॉट वर्तमान में $status है।';
+  }
+
+  @override
+  String facingLabelCard(String facing) {
+    return '$facing दिशा';
+  }
+
+  @override
+  String noResultsFor(String query) {
+    return '\"$query\" के लिए कोई परिणाम नहीं';
+  }
+
+  @override
+  String get noProjectsAtMoment => 'इस समय कोई प्रोजेक्ट उपलब्ध नहीं है।';
+
+  @override
+  String noPlotsMatch(String query) {
+    return '\"$query\" से कोई प्लॉट मेल नहीं खाता';
+  }
+
+  @override
+  String get noPlotsFilter => 'चयनित फ़िल्टर के साथ कोई प्लॉट उपलब्ध नहीं है।';
+
+  @override
+  String projectPlotsCount(String count) {
+    return '$count प्लॉट्स';
+  }
+
+  @override
+  String get yourDetailsAlt => 'आपका विवरण';
+
+  @override
+  String fallbackTitleUnavailable(String title) {
+    return '$title वर्तमान में अनुपलब्ध है।';
+  }
+
+  @override
+  String get somethingWentWrongAlt => 'कुछ गलत हो गया';
+
+  @override
+  String get mapConfigUnavailableAlt => 'मानचित्र कॉन्फ़िगरेशन उपलब्ध नहीं है।';
+
+  @override
+  String locationLatLng(String lat, String lng) {
+    return 'स्थान: $lat, $lng';
+  }
+
+  @override
+  String get errSignatureFailed => 'भुगतान हस्ताक्षर सत्यापन विफल रहा।';
+
+  @override
+  String get errVerificationFailed =>
+      'सत्यापन विफल रहा। कृपया सहायता से संपर्क करें।';
+
+  @override
+  String get errPaymentFailedCancelled => 'भुगतान विफल या रद्द हो गया।';
+
+  @override
+  String get errWalletsNotSupported =>
+      'बाहरी वॉलेट वर्तमान में समर्थित नहीं हैं।';
+
+  @override
+  String get errInvalidResponse => 'सर्वर से अमान्य प्रतिक्रिया।';
+
+  @override
+  String get errSomethingWentWrong => 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get errNotAuthorized =>
+      'आप इस भुगतान को पूरा करने के लिए अधिकृत नहीं हैं।';
+
+  @override
+  String get errServiceUnavailable =>
+      'सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get errPaymentFailed => 'भुगतान विफल रहा। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get errPlotNotFound => 'प्लॉट नहीं मिला';
+
+  @override
+  String get errProjectNotFound => 'प्रोजेक्ट नहीं मिला';
+
+  @override
+  String get statusAvailableCaps => 'उपलब्ध';
+
+  @override
+  String get statusHoldCaps => 'होल्ड';
+
+  @override
+  String get statusBookedCaps => 'बुक';
+
+  @override
+  String get cmsUnicRealEstate => 'यूनिक रियल एस्टेट';
+
+  @override
+  String get cmsPremierCompany => 'एक प्रमुख संपत्ति विकास कंपनी।';
+
+  @override
+  String get cmsMostTrusted => 'रियल एस्टेट में सबसे भरोसेमंद नाम बनना।';
+
+  @override
+  String get cmsDeliverClearTitle =>
+      'स्पष्ट शीर्षक, कानूनी रूप से जांची गई संपत्ति प्रदान करना।';
+
+  @override
+  String get cms100ClearTitle => '100% स्पष्ट शीर्षक और RERA स्वीकृत';
+
+  @override
+  String get cmsStrategicLocations => 'उच्च ROI के साथ रणनीतिक स्थान';
+
+  @override
+  String get cmsIndianRupee => 'भारतीय रुपया';
+}

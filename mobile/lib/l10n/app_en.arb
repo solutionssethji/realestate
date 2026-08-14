@@ -1,0 +1,421 @@
+{
+  "@@locale": "en",
+  "appName": "Elysium Real Estate",
+  "aboutCompany": "About Company",
+  "ourVision": "Our Vision",
+  "ourMission": "Our Mission",
+  "whyChooseUs": "Why Choose Us",
+  "aboutUnavailable": "About information is currently unavailable.",
+  "home": "Home",
+  "projects": "Projects",
+  "offers": "Offers",
+  "profile": "Profile",
+  "aboutUs": "About Us",
+  "featuredProjects": "Featured Projects",
+  "wantToSeeInPerson": "Want to see it in person?",
+  "bookSiteVisit": "Book a Site Visit",
+  "viewPlots": "View Available Plots",
+  "enquireNow": "Enquire Now",
+  "emiCalculator": "EMI Calculator",
+  "estimatedMonthlyEmi": "Estimated Monthly EMI",
+  "principalAmount": "Principal Amount",
+  "totalInterest": "Total Interest",
+  "propertyDetails": "Property Details",
+  "propertyPrice": "Property Price",
+  "downPayment": "Down Payment",
+  "loanDetails": "Loan Details",
+  "interestRate": "Interest Rate (%)",
+  "loanTenure": "Loan Tenure (Years)",
+  "years": "{count} Years",
+  "language": "Language",
+  "settings": "Settings",
+  "contactUs": "Contact Us",
+  "faq": "Frequently Asked Questions",
+  "secureCheckout": "Secure Checkout",
+  "bookingSummary": "Booking Summary",
+  "reference": "Reference",
+  "description": "Description",
+  "paymentType": "Payment Type",
+  "advanceBooking": "Advance Booking",
+  "totalPayable": "Total Payable",
+  "paymentSuccessful": "Payment Successful!",
+  "verifyToViewHistory": "Verify to View History",
+  "phoneNumber": "Phone Number",
+  "sixDigitOtp": "6-digit OTP",
+  "changePhoneNumber": "Change Phone Number",
+  "paymentHistory": "Payment History",
+  "noPaymentsFound": "No payments found for {phone}",
+  "@noPaymentsFound": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingHistory": "Error loading history.\n{error}",
+  "@errorLoadingHistory": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "allProjects": "All Projects",
+  "unableToLoadProjects": "Unable to load projects.",
+  "tryAgain": "Try Again",
+  "noProjectsFound": "No Projects Found",
+  "tenYearsOfTrust": "Years of Trust",
+  "deliveringExcellence": "Delivering excellence and transparent land investments.",
+  "unableToLoadProject": "Unable to load project.",
+  "aboutTheProject": "About the Project",
+  "gallery": "Gallery",
+  "amenities": "Amenities",
+  "startingFrom": "Starting from",
+  "virtualTour": "Virtual 360° Tour",
+  "walkThroughProperty": "Walk through the property from anywhere.",
+  "scheduleTour": "Schedule a Tour",
+  "yourDetails": "Your Details",
+  "fullName": "Full Name",
+  "mobileNumber": "Mobile Number",
+  "pleaseSelectDateAndTime": "Please select date and time",
+  "getInTouch": "Get in Touch",
+  "messageBudgetReqs": "Message / Budget / Requirements",
+  "unableToLoadPlot": "Unable to load plot: {error}",
+  "@unableToLoadPlot": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "plotPrefix": "Plot {number}",
+  "@plotPrefix": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "residentialPlot": "Residential Plot",
+  "specifications": "Specifications",
+  "area": "Area",
+  "dimensions": "Dimensions",
+  "facing": "Facing",
+  "roadWidth": "Road Width",
+  "totalPrice": "Total Price",
+  "plotAvailability": "Plot Availability",
+  "all": "All",
+  "available": "Available",
+  "hold": "Hold",
+  "booked": "Booked",
+  "unableToLoadPlots": "Unable to load plots.",
+  "noPlotsFound": "No Plots Found",
+  "plotsCount": "{count} Plots",
+  "@plotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sqft": "{size} sq.ft",
+  "@sqft": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "facingLabel": "{facing} Facing",
+  "@facingLabel": {
+    "placeholders": {
+      "facing": {
+        "type": "String"
+      }
+    }
+  },
+  "backToHome": "Back to Home",
+  "cancel": "Cancel",
+  "starting360": "Starting 360° immersive experience...",
+  "immersive360": "360° Immersive",
+  "openExternalMaps": "Open External Maps",
+  "@years": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "amountPrefix": "₹{amount}",
+  "@amountPrefix": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "corporateOffice": "Corporate Office",
+  "callUs": "Call Us",
+  "whatsapp": "WhatsApp",
+  "email": "Email",
+  "nameIsRequired": "Name is required",
+  "enterValidMobileNumber": "Enter a valid mobile number",
+  "submissionFailed": "Submission failed. Please retry.",
+  "enquirySubmitted": "Enquiry submitted! We'll contact you shortly.",
+  "submitEnquiry": "Submit Enquiry",
+  "submitted": "Submitted ✓",
+  "selectPreferredTime": "Select Preferred Time",
+  "bookingConfirmed": "Booking confirmed! We'll call you to verify.",
+  "confirmSiteVisit": "Confirm Site Visit",
+  "bookingFailed": "Booking failed. Please retry.",
+  "applicableProject": "Applicable Project",
+  "unableToLoadOffers": "Unable to load offers.",
+  "signOut": "Sign Out",
+  "searchByPlot": "Search by plot number...",
+  "virtual360Tour": "Virtual 360° Tour",
+  "viewProjectDetails": "View Project Details",
+  "whyInvestWithUs": "Why Invest With Us?",
+  "secureAccess": "Secure Access",
+  "yearsOfTrust": "Years of Trust",
+  "reinventingRealEstate": "Re-inventing Real Estate",
+  "ourTeamIsAvailable": "Our team is available to assist with any queries or property viewings.",
+  "viewPastTransactions": "View your past transactions",
+  "account": "Account",
+  "exclusivePlots": "Exclusive plots and luxury villas in prime locations.",
+  "aboutTheOffer": "About the Offer",
+  "termsAndCancellation": "By proceeding you agree to our Terms of Service and Cancellation Policy.",
+  "pickDateAndTime": "Pick a date and time. Our executive will confirm your visit.",
+  "commonRetry": "Retry",
+  "findPremiumProperty": "Find Your Premium\\nDream Property",
+  "specialOffer": "Special Offer",
+  "sslEncrypted": "256-bit SSL Encrypted",
+  "expertsContactYou": "Our property experts will contact you within 24 hours.",
+  "mapConfigUnavailable": "Map Configuration is not available.",
+  "view360ComingSoon": "360° View Coming Soon",
+  "luxuryRealEstate": "LUXURY REAL ESTATE",
+  "exclusivePlotsDesc": "Exclusive plots and luxury villas in prime locations.",
+  "secureInvestment": "Secure Investment",
+  "strategicLocations": "Strategic locations ensuring excellent appreciation.",
+  "plotFinder": "Plot Finder",
+  "quickActions": "Quick Actions",
+  "viewAll": "View All",
+  "noActiveOffers": "No Active Offers",
+  "checkBackSoon": "Check back soon — new offers are added regularly.",
+  "noProjectsAvailable": "No projects are available at the moment.",
+  "clearSearch": "Clear Search",
+  "viewPlotAvailability": "View Plot Availability",
+  "launch360Tour": "Launch 360° Tour",
+  "siteVisit": "Site Visit",
+  "sold": "Sold",
+  "noPlotsAvailableFilter": "No plots available with the selected filter.",
+  "enquireAboutPlot": "Enquire About This Plot",
+  "proceedToPayment": "Proceed to Payment",
+  "plotNotAvailable": "Plot Not Available",
+  "plotOnHold": "on hold",
+  "plotBookedSold": "booked/sold",
+  "exclusiveOffers": "Exclusive Offers",
+  "bookingConfirmedMsg": "Your booking is confirmed. A confirmation will be sent to you shortly.",
+  "paymentFailedCancelled": "Payment failed or cancelled.",
+  "paymentFailedRetry": "Payment failed. Please try again.",
+  "paymentSignatureError": "Payment signature verification failed.",
+  "verificationFailedContact": "Verification failed. Please contact support.",
+  "serviceUnavailable": "Service is temporarily unavailable. Please try again.",
+  "somethingWentWrong": "Something went wrong. Please try again.",
+  "notAuthorizedPayment": "You are not authorized to complete this payment.",
+  "paymentFailed": "Payment failed.",
+  "unknownDate": "Unknown date",
+  "sendOtp": "Send OTP",
+  "verify": "Verify",
+  "verificationFailed": "Verification failed",
+  "yourNumber": "your number",
+  "nameRequired": "Name is required",
+  "enterValidMobile": "Enter a valid mobile number",
+  "enterValidNumber": "Enter a valid number",
+  "selectPreferredDate": "Select Preferred Date",
+  "bookingConfirmedCall": "Booking confirmed! We'll call you to verify.",
+  "noFaqsAvailable": "No FAQs available at the moment.",
+  "questionUnavailable": "Question unavailable",
+  "answerUnavailable": "Answer unavailable",
+  "termsAndConditions": "Terms & Conditions",
+  "privacyPolicy": "Privacy Policy",
+  "statusAvailable": "Available",
+  "statusHold": "Hold",
+  "statusBookedSold": "Booked/Sold",
+  "statusPending": "Pending",
+  "statusSuccess": "Success",
+  "statusFailed": "Failed",
+  "statusCancelled": "Cancelled",
+  "statusConfirmed": "Confirmed",
+  "statusCompleted": "Completed",
+  "clearTitlesApproved": "100% Clear Titles & RERA Approved",
+  "clearTitlesProcess": "100% clear titles and transparent legal processes.",
+  "premierCompany": "A premier property development company.",
+  "dedicatedManagers": "Dedicated managers for seamless end-to-end assistance.",
+  "endToEndSupport": "End-to-End Documentation Support",
+  "expertSupport": "Expert Support",
+  "highRoi": "High ROI",
+  "premiumInfra": "Premium Infrastructure & Amenities",
+  "strategicHighRoi": "Strategic Locations with High ROI",
+  "transparentPricing": "Transparent Pricing with No Hidden Costs",
+  "exploreProjects": "Explore Projects",
+  "availableCaps": "Available",
+  "bookedSold": "Booked / Sold",
+  "onHoldCaps": "On Hold",
+  "clearSearchFilters": "Clear Search",
+  "legalAndSupport": "Legal & Support",
+  "payment": "Payment",
+  "expertsWillContact": "Our property experts will contact you within 24 hours.",
+  "enterOtpSent": "Enter the OTP sent to your phone number.",
+  "enterPhoneForHistory": "Enter your phone number to access your payment history.",
+  "invalidOtp": "Invalid OTP",
+  "langEnglish": "English",
+  "langHindi": "हिन्दी (Hindi)",
+  "anErrorOccurred": "An error occurred. Please try again.",
+  "invalidResponse": "Invalid response from server.",
+  "plotNotFound": "Plot not found",
+  "projectNotFound": "Project not found",
+  "somethingWentWrongTitle": "Something went wrong",
+  "validTill": "Valid till {date}",
+  "@validTill": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "validUntil": "Valid until {date}",
+  "@validUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "payAmountSecurely": "Pay {amount} Securely",
+  "@payAmountSecurely": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "noPaymentsFoundFor": "No payments found for {phone}",
+  "@noPaymentsFoundFor": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingHistoryVerbose": "Error loading history.\\n{error}",
+  "@errorLoadingHistoryVerbose": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "statusUnknown": "UNKNOWN",
+  "yourNumberAlt": "your number",
+  "plotTitle": "Plot {number}",
+  "@plotTitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "sqFtLabel": "{size} sq.ft",
+  "@sqFtLabel": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "plotCurrentlyStatus": "This plot is currently {status}.",
+  "@plotCurrentlyStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "facingLabelCard": "{facing} Facing",
+  "@facingLabelCard": {
+    "placeholders": {
+      "facing": {
+        "type": "String"
+      }
+    }
+  },
+  "noResultsFor": "No results for \"{query}\"",
+  "@noResultsFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "noProjectsAtMoment": "No projects are available at the moment.",
+  "noPlotsMatch": "No plots match \"{query}\"",
+  "@noPlotsMatch": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "noPlotsFilter": "No plots available with the selected filter.",
+  "projectPlotsCount": "{count} Plots",
+  "@projectPlotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "yourDetailsAlt": "Your Details",
+  "fallbackTitleUnavailable": "{title} is currently unavailable.",
+  "@fallbackTitleUnavailable": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "somethingWentWrongAlt": "Something went wrong",
+  "mapConfigUnavailableAlt": "Map Configuration is not available.",
+  "locationLatLng": "Location: {lat}, {lng}",
+  "@locationLatLng": {
+    "placeholders": {
+      "lat": {
+        "type": "String"
+      },
+      "lng": {
+        "type": "String"
+      }
+    }
+  },
+  "errSignatureFailed": "Payment signature verification failed.",
+  "errVerificationFailed": "Verification failed. Please contact support.",
+  "errPaymentFailedCancelled": "Payment failed or cancelled.",
+  "errWalletsNotSupported": "External wallets are not supported at this time.",
+  "errInvalidResponse": "Invalid response from server.",
+  "errSomethingWentWrong": "Something went wrong. Please try again.",
+  "errNotAuthorized": "You are not authorized to complete this payment.",
+  "errServiceUnavailable": "Service is temporarily unavailable. Please try again.",
+  "errPaymentFailed": "Payment failed. Please try again.",
+  "errPlotNotFound": "Plot not found",
+  "errProjectNotFound": "Project not found",
+  "statusAvailableCaps": "AVAILABLE",
+  "statusHoldCaps": "HOLD",
+  "statusBookedCaps": "BOOKED",
+  "cmsUnicRealEstate": "Unic Real Estate",
+  "cmsPremierCompany": "A premier property development company.",
+  "cmsMostTrusted": "To be the most trusted name in real estate.",
+  "cmsDeliverClearTitle": "To deliver clear-title, legally vetted plots.",
+  "cms100ClearTitle": "100% Clear Titles & RERA Approved",
+  "cmsStrategicLocations": "Strategic Locations with High ROI",
+  "cmsIndianRupee": "Indian Rupee"
+}

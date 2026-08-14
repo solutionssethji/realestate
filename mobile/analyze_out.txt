@@ -1,0 +1,76 @@
+Analyzing mobile...                                             
+
+   info • Use 'const' with the constructor to improve performance • lib/pages/enquiry/enquiry.page.dart:98:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:177:27 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/pages/home/home.page.dart:179:39 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:180:31 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:187:31 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:194:31 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:202:27 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/pages/home/home.page.dart:203:39 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:204:31 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:211:31 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:218:31 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/pages/home/home.page.dart:238:21 • prefer_const_constructors
+warning • The value of the local variable 'loc' isn't used • lib/pages/home/home.page.dart:294:11 • unused_local_variable
+warning • The value of the local variable 'loc' isn't used • lib/pages/home/home.page.dart:342:11 • unused_local_variable
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/offers/offer_details.page.dart:37:68 • deprecated_member_use
+warning • Unused import: 'package:go_router/go_router.dart' • lib/pages/offers/offers.page.dart:4:8 • unused_import
+warning • The value of the local variable 'loc' isn't used • lib/pages/offers/offers.page.dart:115:11 • unused_local_variable
+warning • The value of the local variable 'loc' isn't used • lib/pages/offers/offers.page.dart:141:11 • unused_local_variable
+warning • This 'onError' handler must return a value assignable to 'HttpsCallableResult<dynamic>', but ends without returning a value • lib/pages/payment/payment.logic.dart:85:25 • body_might_complete_normally_catch_error
+warning • Unused import: 'package:responsive_framework/responsive_framework.dart' • lib/pages/payment/payment.page.dart:5:8 • unused_import
+warning • Unused import: 'payment.state.dart' • lib/pages/payment/payment.page.dart:7:8 • unused_import
+warning • The value of the local variable 'loc' isn't used • lib/pages/payment/payment.page.dart:230:11 • unused_local_variable
+   info • Use 'const' with the constructor to improve performance • lib/pages/payment_history/payment_history.page.dart:59:19 • prefer_const_constructors
+warning • The value of the local variable 'loc' isn't used • lib/pages/payment_history/payment_history.page.dart:98:11 • unused_local_variable
+   info • Use 'const' with the constructor to improve performance • lib/pages/payment_history/payment_history_auth.page.dart:123:15 • prefer_const_constructors
+warning • The value of the local variable 'loc' isn't used • lib/pages/plot_availability/plot_availability.page.dart:156:11 • unused_local_variable
+warning • The value of the local variable 'loc' isn't used • lib/pages/plot_details/plot_details.page.dart:206:11 • unused_local_variable
+warning • The value of the local variable 'loc' isn't used • lib/pages/project_details/project_details.page.dart:381:11 • unused_local_variable
+   info • Use 'const' with the constructor to improve performance • lib/pages/settings/settings.page.dart:28:11 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/settings/settings.page.dart:35:62 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/settings/settings.page.dart:66:56 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/pages/site_visit/site_visit.page.dart:128:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/pages/splash/splash.page.dart:51:15 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/app_text_field.dart:58:23 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/app_text_field.dart:65:23 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/app_text_field.dart:79:23 • prefer_const_constructors
+warning • Unused import: '../theme/spacing.dart' • lib/widgets/premium_app_bar.dart:3:8 • unused_import
+warning • Unused import: '../theme/spacing.dart' • lib/widgets/section_header.dart:3:8 • unused_import
+warning • Unused import: '../theme/theme.dart' • lib/widgets/shimmer_loader.dart:3:8 • unused_import
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:17:16 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/widgets/shimmer_loader.dart:19:21 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:25:13 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:27:22 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/widgets/shimmer_loader.dart:29:27 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:30:19 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:32:19 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:36:19 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/widgets/shimmer_loader.dart:37:31 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:38:23 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:40:23 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:63:16 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:65:18 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/widgets/shimmer_loader.dart:67:23 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:68:15 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/widgets/shimmer_loader.dart:70:27 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:71:19 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:72:19 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:78:15 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:80:15 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:82:15 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:102:16 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/widgets/shimmer_loader.dart:103:21 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:105:13 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:106:22 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:108:24 • prefer_const_constructors
+   info • Use 'const' literals as arguments to constructors of '@immutable' classes • lib/widgets/shimmer_loader.dart:111:29 • prefer_const_literals_to_create_immutables
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:112:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:114:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:116:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/widgets/shimmer_loader.dart:118:21 • prefer_const_constructors
+warning • Unused import: 'package:flutter/material.dart' • test/l10n_test.dart:2:8 • unused_import
+warning • Dead code • test/plot_logic_test.dart:29:36 • dead_code
+warning • The left operand can't be null, so the right operand is never executed • test/plot_logic_test.dart:29:39 • dead_null_aware_expression
+
