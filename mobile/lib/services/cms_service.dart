@@ -5,36 +5,43 @@ import '../models/company_info.dart';
 class CmsService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  /// Fetches global Contact settings.
-  static Future<CompanyInfo?> getContactInfo() async {
+  static String _getBilingual(dynamic field, String langCode) {
+    if (field == null) return '';
+    if (field is String) return field;
+    if (field is Map) {
+      return (field[langCode] ?? field['en'] ?? '').toString();
+    }
+    return '';
+  }
+
+  /// Fetches global Contact and About settings.
+  static Future<CompanyInfo?> getContactInfo(String langCode) async {
     try {
-      final doc = await _db.collection('appSettings').doc('contact').get();
+      final doc = await _db.collection('setting').doc('global').get();
       if (doc.exists && doc.data() != null) {
         final data = doc.data()!;
+        final about = data['aboutCompany'] ?? {};
+        final contact = data['contactUs'] ?? {};
+
+        final whyChooseUsRaw = _getBilingual(about['whyChooseUs'], langCode);
+        final whyChooseUsList = whyChooseUsRaw.isEmpty 
+            ? <String>[] 
+            : whyChooseUsRaw.split('\n').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+
         return CompanyInfo(
-          name: data['companyName']?.toString() ?? 'Unic Real Estate',
-          about:
-              data['about']?.toString() ??
-              'A premier property development company.',
-          vision:
-              data['vision']?.toString() ??
-              'To be the most trusted name in real estate.',
-          mission:
-              data['mission']?.toString() ??
-              'To deliver clear-title, legally vetted plots.',
-          whyChooseUs: List<String>.from(
-            data['whyChooseUs'] ??
-                [
-                  '100% Clear Titles & RERA Approved',
-                  'Strategic Locations with High ROI',
-                ],
-          ),
-          officeAddress: data['officeAddress']?.toString() ?? '',
-          latitude: (data['latitude'] as num?)?.toDouble() ?? 0.0,
-          longitude: (data['longitude'] as num?)?.toDouble() ?? 0.0,
-          phone: data['phone']?.toString() ?? '',
-          whatsapp: data['whatsapp']?.toString() ?? '',
-          email: data['email']?.toString() ?? '',
+          name: 'Shubhaytanam', // Or add this to DB later
+          about: _getBilingual(about['companyProfile'], langCode),
+          vision: _getBilingual(about['vision'], langCode),
+          mission: _getBilingual(about['mission'], langCode),
+          whyChooseUs: whyChooseUsList,
+          officeAddress: _getBilingual(contact['officeLocation'], langCode),
+          latitude: (contact['latitude'] as num?)?.toDouble() ?? 0.0,
+          longitude: (contact['longitude'] as num?)?.toDouble() ?? 0.0,
+          phone: contact['directCall']?.toString() ?? '',
+          whatsapp: contact['whatsapp']?.toString() ?? '',
+          email: contact['email']?.toString() ?? '',
+          googleMapsUrl: contact['googleMaps']?.toString() ?? '',
+          contactNumberDisplay: _getBilingual(contact['contactNumber'], langCode),
         );
       }
       return null;
@@ -44,17 +51,19 @@ class CmsService {
   }
 
   /// Fetches the configured Currency from Firebase.
-  /// Falls back to INR if not set.
   static Future<Map<String, String>> getCurrencyConfig() async {
     try {
-      final doc = await _db.collection('appSettings').doc('currency').get();
+      final doc = await _db.collection('setting').doc('global').get();
       if (doc.exists && doc.data() != null) {
         final data = doc.data()!;
-        return {
-          'code': data['code']?.toString() ?? 'INR',
-          'symbol': data['symbol']?.toString() ?? '₹',
-          'name': data['name']?.toString() ?? 'Indian Rupee',
-        };
+        final currency = data['currencyConfig'] ?? {};
+        if (currency.isNotEmpty) {
+          return {
+            'code': currency['code']?.toString() ?? 'INR',
+            'symbol': currency['symbol']?.toString() ?? '₹',
+            'name': currency['name']?.toString() ?? 'Indian Rupee',
+          };
+        }
       }
     } catch (e) {
       // Ignore and fallback
@@ -63,11 +72,16 @@ class CmsService {
   }
 
   /// Fetches legal/public content like terms or privacy.
-  static Future<Map<String, dynamic>?> getPublicContent(String docId) async {
+  static Future<Map<String, String>?> getPublicContent(String langCode) async {
     try {
-      final doc = await _db.collection('publicContent').doc(docId).get();
+      final doc = await _db.collection('setting').doc('global').get();
       if (doc.exists && doc.data() != null) {
-        return doc.data();
+        final data = doc.data()!;
+        final legal = data['legalPolicies'] ?? {};
+        return {
+          'termsAndConditions': _getBilingual(legal['termsAndConditions'], langCode),
+          'privacyPolicy': _getBilingual(legal['privacyPolicy'], langCode),
+        };
       }
     } catch (e) {
       // Ignore

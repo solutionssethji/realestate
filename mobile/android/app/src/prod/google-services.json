@@ -1,1 +1,29 @@
-{}
+{
+  "project_info": {
+    "project_number": "806384462409",
+    "project_id": "shubhaytanam-buildtech-pvt-ltd",
+    "storage_bucket": "shubhaytanam-buildtech-pvt-ltd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806384462409:android:2729ab50f6419602362d98",
+        "android_client_info": {
+          "package_name": "com.realestate.customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr5Imwhk5IyXtn7spJnjALv8-mi6WIIS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

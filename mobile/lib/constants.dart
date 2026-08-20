@@ -5,7 +5,7 @@
 /// must NEVER appear here.
 class AppConstants {
   // ── App Identity ───────────────────────────────────────────────────────────
-  static const String appName = 'Elysium Real Estate';
+  static const String appName = 'Shubhaytanam Connect';
   static const String appVersion = '1.0.0';
 
   // ── Localization ───────────────────────────────────────────────────────────

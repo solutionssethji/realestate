@@ -1,8 +1,8 @@
 name: customer_app
-description: "Elysium Real Estate — Premium property discovery app powered by Firebase."
+description: "Shubhaytanam Connect — Premium property discovery app powered by Firebase."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^2.5.1
   go_router: ^17.5.0
-  intl: '>=0.20.2 <0.21.0'
+  intl: ">=0.20.2 <0.21.0"
   shared_preferences: ^2.5.5
   url_launcher: ^6.3.2
   hooks_riverpod: ^2.5.1

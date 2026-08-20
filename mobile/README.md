@@ -1,17 +1,48 @@
-# customer_app
+# Real Estate Platform - Customer Mobile App 📱
 
-A new Flutter project.
+Built with **Flutter** for iOS and Android.
+Uses **Riverpod** for state management and Firebase SDKs for backend communication.
+Features a premium UI with theming, Google Maps integration, and bilingual support (English/Hindi).
 
-## Getting Started
+## Local Development 🚀
+```bash
+cd mobile
+flutter clean
+flutter pub get
+flutter run
+```
 
-This project is a starting point for a Flutter application.
+## Deployment Guide
 
-A few resources to get you started if this is your first Flutter project:
+### Environment Setup
+Update the `.env` file in the `/mobile` directory:
+```env
+API_BASE_URL="https://api.yourdomain.com/api"
+API_TIMEOUT_MS=15000
+PAYMENT_ENV="production"
+PAYMENT_MERCHANT_ID="your_real_merchant_id"
+PAYMENT_PUBLIC_KEY="your_real_public_key"
+GOOGLE_MAPS_API_KEY="your_real_google_maps_key"
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### Android Build
+```bash
+cd mobile
+flutter clean
+flutter pub get
+flutter build appbundle --release
+```
+Upload the resulting `app-release.aab` to the Google Play Console.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### iOS Build
+```bash
+cd mobile
+flutter clean
+flutter pub get
+cd ios && pod install && cd ..
+flutter build ipa --release
+```
+Upload the resulting `.ipa` to App Store Connect via Transporter or Xcode.
+
+## Testing 🧪
+- **Flutter**: `fvm flutter test` & `fvm flutter analyze`

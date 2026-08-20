@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Elysium Real Estate'**
+  /// **'Shubhaytanam Connect'**
   String get appName;
 
   /// No description provided for @aboutCompany.
@@ -197,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @emiCalculator.
   ///
   /// In en, this message translates to:
-  /// **'EMI Calculator'**
+  /// **'EMI / Investment Calculator'**
   String get emiCalculator;
 
   /// No description provided for @estimatedMonthlyEmi.
@@ -1337,7 +1337,7 @@ abstract class AppLocalizations {
   /// No description provided for @langHindi.
   ///
   /// In en, this message translates to:
-  /// **'हिन्दी (Hindi)'**
+  /// **'हिन्दी '**
   String get langHindi;
 
   /// No description provided for @anErrorOccurred.
@@ -1621,6 +1621,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Indian Rupee'**
   String get cmsIndianRupee;
+
+  /// No description provided for @legalAndPolicies.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & Policies'**
+  String get legalAndPolicies;
+
+  /// No description provided for @companyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Profile'**
+  String get companyProfile;
+
+  /// No description provided for @vision.
+  ///
+  /// In en, this message translates to:
+  /// **'Vision'**
+  String get vision;
+
+  /// No description provided for @mission.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission'**
+  String get mission;
+
+  /// No description provided for @contactInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Information'**
+  String get contactInformation;
+
+  /// No description provided for @directCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Call'**
+  String get directCall;
+
+  /// No description provided for @googleMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Maps'**
+  String get googleMaps;
+
+  /// No description provided for @officeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Office Location'**
+  String get officeLocation;
+
+  /// No description provided for @contactNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Number'**
+  String get contactNumber;
+
+  /// No description provided for @plotPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot Price'**
+  String get plotPrice;
+
+  /// No description provided for @calculateEmi.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate EMI'**
+  String get calculateEmi;
+
+  /// No description provided for @approximateEmi.
+  ///
+  /// In en, this message translates to:
+  /// **'Approximate EMI'**
+  String get approximateEmi;
+
+  /// No description provided for @totalPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Payment'**
+  String get totalPayment;
 }
 
 class _AppLocalizationsDelegate

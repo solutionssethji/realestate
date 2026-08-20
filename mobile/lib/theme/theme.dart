@@ -3,14 +3,14 @@ import 'typography.dart';
 import 'spacing.dart';
 
 class AppTheme {
-  // Brand Colors - Midnight Navy & Soft Gold
-  static const Color midnightNavy = Color(0xFF0F172A);
-  static const Color slateBlue = Color(0xFF1E293B);
+  // Brand Colors - Primary (#355E70) & Soft Gold
+  static const Color midnightNavy = Color(0xFF355E70); // Primary color
+  static const Color slateBlue = Color(0xFF2A4B59); // Slightly darker for contrast
   static const Color softGold = Color(0xFFD4AF37);
   static const Color darkGold = Color(0xFFB8972E);
   static const Color background = Color(0xFFF8FAFC);
   static const Color surface = Colors.white;
-  static const Color textPrimary = Color(0xFF0F172A);
+  static const Color textPrimary = Color(0xFF1B323C); // Dark variant for text
   static const Color textSecondary = Color(0xFF64748B);
   static const Color border = Color(0xFFE2E8F0);
 

@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../services/cms_service.dart';
 import '../../models/company_info.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
+import '../../config/locale_provider.dart';
 
-class AboutCompanyPage extends StatelessWidget {
+class AboutCompanyPage extends ConsumerWidget {
   const AboutCompanyPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final loc = AppLocalizations.of(context);
+    final currentLocale = ref.watch(localeControllerProvider);
+    
     return Scaffold(
       appBar: PremiumAppBar(title: loc.aboutUs),
       body: FutureBuilder<CompanyInfo?>(
-        future: CmsService.getContactInfo(),
+        future: CmsService.getContactInfo(currentLocale.languageCode),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const ShimmerLoader();

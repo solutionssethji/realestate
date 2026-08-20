@@ -1,5 +1,6 @@
 import 'plot.dart';
 import 'plot_status.dart';
+import '../utils/bilingual_helper.dart';
 
 class Project {
   final String id;
@@ -13,6 +14,8 @@ class Project {
   final List<String> amenities;
   final int plotCount;
   final List<Plot> plots;
+  final String googleMap;
+  final String projectVideo;
 
   Project({
     required this.id,
@@ -26,28 +29,35 @@ class Project {
     required this.amenities,
     required this.plotCount,
     required this.plots,
+    this.googleMap = '',
+    this.projectVideo = '',
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
+    List<String> parsedAmenities = [];
+    if (json['facilities'] != null) {
+      parsedAmenities = (json['facilities'] as List).map((f) => BilingualHelper.get(f)).toList();
+    } else if (json['amenities'] != null) {
+      parsedAmenities = (json['amenities'] as List).map((a) => BilingualHelper.get(a)).toList();
+    }
+
     return Project(
       id: json['id'] as String,
-      name: json['name'] as String? ?? '',
-      location: json['location'] as String? ?? '',
-      description: json['description'] as String? ?? '',
+      name: BilingualHelper.get(json['name']),
+      location: BilingualHelper.get(json['location']),
+      description: BilingualHelper.get(json['description']),
       coverImage: json['coverImage'] as String? ?? '',
       gallery:
           (json['gallery'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           [],
-      priceRange: json['priceRange'] as String? ?? '',
-      developmentStatus: json['developmentStatus'] as String? ?? 'UPCOMING',
-      amenities:
-          (json['amenities'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+      priceRange: BilingualHelper.get(json['plotPrice'] ?? json['priceRange']),
+      developmentStatus: BilingualHelper.get(json['developmentStatus']),
+      amenities: parsedAmenities,
       plotCount: json['plots'] != null ? (json['plots'] as List).length : 0,
+      googleMap: json['googleMap'] as String? ?? '',
+      projectVideo: json['projectVideo'] as String? ?? '',
       plots: json['plots'] != null
           ? (json['plots'] as List)
                 .map(
@@ -65,8 +75,8 @@ class Project {
                               0.0)
                         : (p['size'] as num?)?.toDouble() ?? 0.0,
                     dimensions: p['dimensions']?.toString() ?? 'N/A',
-                    facing: p['facing']?.toString() ?? 'N/A',
-                    roadWidth: p['road']?.toString() ?? 'N/A',
+                    facing: BilingualHelper.get(p['facing']),
+                    roadWidth: BilingualHelper.get(p['road'] ?? p['roadWidth']),
                     status: _parsePlotStatus(p['status']),
                     price: (p['price'] as num?)?.toDouble() ?? 0.0,
                   ),

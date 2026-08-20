@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../services/cms_service.dart';
-import '../../utils/localized_string.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import '../../utils/l10n_extension.dart';
+import '../../config/locale_provider.dart';
 
-class LegalContentPage extends StatelessWidget {
+class LegalContentPage extends ConsumerWidget {
   final String documentId; // 'terms' or 'privacy'
   final String fallbackTitle;
 
@@ -16,19 +17,24 @@ class LegalContentPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentLocale = ref.watch(localeControllerProvider);
+
     return Scaffold(
       appBar: PremiumAppBar(title: fallbackTitle),
-      body: FutureBuilder<Map<String, dynamic>?>(
-        future: CmsService.getPublicContent(documentId),
+      body: FutureBuilder<Map<String, String>?>(
+        future: CmsService.getPublicContent(currentLocale.languageCode),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const ShimmerLoader();
           }
 
           final data = snapshot.data;
+          
+          final contentKey = documentId == 'terms' ? 'termsAndConditions' : 'privacyPolicy';
+          final content = data?[contentKey];
 
-          if (data == null || data['published'] != true) {
+          if (content == null || content.isEmpty) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(32.0),
@@ -55,24 +61,13 @@ class LegalContentPage extends StatelessWidget {
             );
           }
 
-          final title = getLocalizedText(
-            context,
-            data['title'],
-            defaultVal: fallbackTitle,
-          );
-          final content = getLocalizedText(
-            context,
-            data['content'],
-            defaultVal: '',
-          );
-
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  fallbackTitle,
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

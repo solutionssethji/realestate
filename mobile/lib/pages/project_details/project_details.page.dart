@@ -11,6 +11,7 @@ import '../../theme/spacing.dart';
 import '../../widgets/premium_button.dart';
 import '../../widgets/status_badge.dart';
 import '../../models/plot_status.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProjectDetailsPage extends ConsumerWidget {
   final String projectId;
@@ -351,6 +352,23 @@ class _RightActions extends StatelessWidget {
                     context.push('/home/site-visit?projectId=$projectId'),
               ),
               AppSpacing.hMd,
+              if (project.googleMap.isNotEmpty) ...[
+                PremiumButton(
+                  text: 'View on Google Maps',
+                  style: PremiumButtonStyle.outline,
+                  icon: Icons.map_outlined,
+                  onPressed: () async {
+                    final uri = Uri.parse(project.googleMap);
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                  },
+                ),
+                AppSpacing.hMd,
+              ],
               PremiumButton(
                 text: loc.enquireNow,
                 style: PremiumButtonStyle.ghost,
@@ -362,46 +380,59 @@ class _RightActions extends StatelessWidget {
         ),
         AppSpacing.hLg,
 
-        // 360° Card
-        Container(
-          padding: AppSpacing.allLg,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppTheme.midnightNavy, AppTheme.slateBlue],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        // 360° Card / Video
+        if (project.projectVideo.isNotEmpty)
+          Container(
+            padding: AppSpacing.allLg,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [AppTheme.midnightNavy, AppTheme.slateBlue],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: AppRadius.circularLg,
             ),
-            borderRadius: AppRadius.circularLg,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.threesixty,
+                  color: AppTheme.softGold,
+                  size: 36,
+                ),
+                AppSpacing.hSm,
+                Text(
+                  context.l10n.virtual360Tour,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(color: Colors.white),
+                ),
+                AppSpacing.hXs,
+                Text(
+                  context.l10n.walkThroughProperty,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                ),
+                AppSpacing.hLg,
+                PremiumButton(
+                  text: context.l10n.launch360Tour,
+                  style: PremiumButtonStyle.secondary,
+                  icon: Icons.play_circle_outline,
+                  isFullWidth: false,
+                  onPressed: () async {
+                    final uri = Uri.parse(project.projectVideo);
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(
+                        uri,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.threesixty, color: AppTheme.softGold, size: 36),
-              AppSpacing.hSm,
-              Text(
-                context.l10n.virtual360Tour,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(color: Colors.white),
-              ),
-              AppSpacing.hXs,
-              Text(
-                context.l10n.walkThroughProperty,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
-              ),
-              AppSpacing.hLg,
-              PremiumButton(
-                text: context.l10n.launch360Tour,
-                style: PremiumButtonStyle.secondary,
-                icon: Icons.play_circle_outline,
-                isFullWidth: false,
-                onPressed: () {}, // Launches panorama viewer
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }

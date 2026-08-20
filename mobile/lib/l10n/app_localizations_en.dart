@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Elysium Real Estate';
+  String get appName => 'Shubhaytanam Connect';
 
   @override
   String get aboutCompany => 'About Company';
@@ -57,7 +57,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enquireNow => 'Enquire Now';
 
   @override
-  String get emiCalculator => 'EMI Calculator';
+  String get emiCalculator => 'EMI / Investment Calculator';
 
   @override
   String get estimatedMonthlyEmi => 'Estimated Monthly EMI';
@@ -666,7 +666,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get langEnglish => 'English';
 
   @override
-  String get langHindi => 'हिन्दी (Hindi)';
+  String get langHindi => 'हिन्दी ';
 
   @override
   String get anErrorOccurred => 'An error occurred. Please try again.';
@@ -841,4 +841,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cmsIndianRupee => 'Indian Rupee';
+
+  @override
+  String get legalAndPolicies => 'Legal & Policies';
+
+  @override
+  String get companyProfile => 'Company Profile';
+
+  @override
+  String get vision => 'Vision';
+
+  @override
+  String get mission => 'Mission';
+
+  @override
+  String get contactInformation => 'Contact Information';
+
+  @override
+  String get directCall => 'Direct Call';
+
+  @override
+  String get googleMaps => 'Google Maps';
+
+  @override
+  String get officeLocation => 'Office Location';
+
+  @override
+  String get contactNumber => 'Contact Number';
+
+  @override
+  String get plotPrice => 'Plot Price';
+
+  @override
+  String get calculateEmi => 'Calculate EMI';
+
+  @override
+  String get approximateEmi => 'Approximate EMI';
+
+  @override
+  String get totalPayment => 'Total Payment';
 }

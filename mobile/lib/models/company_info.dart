@@ -16,5 +16,7 @@ class CompanyInfo with _$CompanyInfo {
     required String phone,
     required String whatsapp,
     required String email,
+    @Default('') String googleMapsUrl,
+    @Default('') String contactNumberDisplay,
   }) = _CompanyInfo;
 }

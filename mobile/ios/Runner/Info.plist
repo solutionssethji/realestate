@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Elysium Real Estate</string>
+	<string>Shubhaytanam Connect</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -67,7 +67,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSUserNotificationUsageDescription</key>
-	<string>Elysium Real Estate would like to send you notifications about property updates, offers, and booking confirmations.</string>
+	<string>Shubhaytanam Connect would like to send you notifications about property updates, offers, and booking confirmations.</string>
 	
 	<!-- Required for saving and viewing Payment Receipts (PDFs) in iOS Files App -->
 	<key>UIFileSharingEnabled</key>

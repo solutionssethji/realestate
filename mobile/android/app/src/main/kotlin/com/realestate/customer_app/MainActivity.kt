@@ -1,4 +1,4 @@
-package com.realestate.customer_app
+package com.realestate.customer
 
 import io.flutter.embedding.android.FlutterActivity
 

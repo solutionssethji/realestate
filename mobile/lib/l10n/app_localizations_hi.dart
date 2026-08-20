@@ -21,7 +21,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get ourMission => 'हमारा लक्ष्य';
 
   @override
-  String get whyChooseUs => 'हमें क्यों चुनें';
+  String get whyChooseUs => 'हमें क्यों चुनें?';
 
   @override
   String get aboutUnavailable => 'कंपनी की जानकारी अभी उपलब्ध नहीं है।';
@@ -57,7 +57,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get enquireNow => 'अभी पूछताछ करें';
 
   @override
-  String get emiCalculator => 'ईएमआई कैलकुलेटर';
+  String get emiCalculator => 'ईएमआई / निवेश कैलकुलेटर';
 
   @override
   String get estimatedMonthlyEmi => 'अनुमानित मासिक ईएमआई';
@@ -665,7 +665,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get langEnglish => 'अंग्रेज़ी';
 
   @override
-  String get langHindi => 'हिन्दी (Hindi)';
+  String get langHindi => 'हिन्दी ';
 
   @override
   String get anErrorOccurred => 'एक त्रुटि हुई। कृपया पुनः प्रयास करें।';
@@ -840,4 +840,43 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get cmsIndianRupee => 'भारतीय रुपया';
+
+  @override
+  String get legalAndPolicies => 'कानूनी और नीतियां';
+
+  @override
+  String get companyProfile => 'कंपनी प्रोफ़ाइल';
+
+  @override
+  String get vision => 'विजन (दृष्टिकोण)';
+
+  @override
+  String get mission => 'मिशन (लक्ष्य)';
+
+  @override
+  String get contactInformation => 'संपर्क जानकारी';
+
+  @override
+  String get directCall => 'सीधे कॉल करें';
+
+  @override
+  String get googleMaps => 'गूगल मैप्स';
+
+  @override
+  String get officeLocation => 'कार्यालय का स्थान';
+
+  @override
+  String get contactNumber => 'संपर्क नंबर';
+
+  @override
+  String get plotPrice => 'प्लॉट की कीमत';
+
+  @override
+  String get calculateEmi => 'ईएमआई की गणना करें';
+
+  @override
+  String get approximateEmi => 'अनुमानित ईएमआई';
+
+  @override
+  String get totalPayment => 'कुल भुगतान';
 }
