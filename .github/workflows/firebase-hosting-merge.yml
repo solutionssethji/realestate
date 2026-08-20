@@ -19,3 +19,5 @@ jobs:
           channelId: live
           projectId: shubhaytanam-buildtech-pvt-ltd
           entryPoint: backend
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
