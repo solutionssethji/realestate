@@ -52,6 +52,6 @@ class AppConstants {
 
   static const String googleMapsApiKey = String.fromEnvironment(
     'GOOGLE_MAPS_API_KEY',
-    defaultValue: '',
+    defaultValue: 'AIzaSyA5AapPl3wZ3r6Hz5Uz4cVrWu_s8iHASRc',
   );
 }
