@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  /* Map Tailwind's default blue and indigo to #355E70 shades */
+  --color-blue-50: #f4f7f8;
+  --color-blue-100: #e2ebef;
+  --color-blue-200: #c5d6df;
+  --color-blue-300: #9cbccc;
+  --color-blue-400: #6d9eb4;
+  --color-blue-500: #498299;
+  --color-blue-600: #355e70; /* Primary */
+  --color-blue-700: #2d4f5e;
+  --color-blue-800: #25404d;
+  --color-blue-900: #213642;
+  --color-blue-950: #14232b;
+
+  --color-indigo-50: #f4f7f8;
+  --color-indigo-100: #e2ebef;
+  --color-indigo-200: #c5d6df;
+  --color-indigo-300: #9cbccc;
+  --color-indigo-400: #6d9eb4;
+  --color-indigo-500: #498299;
+  --color-indigo-600: #355e70; /* Primary */
+  --color-indigo-700: #2d4f5e;
+  --color-indigo-800: #25404d;
+  --color-indigo-900: #213642;
+  --color-indigo-950: #14232b;
+}
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
