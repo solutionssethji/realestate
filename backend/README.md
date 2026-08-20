@@ -1,36 +1,51 @@
-# Real Estate Platform - Backend (Firebase) 🏗️
+# Shubhaytanam Connect - Backend Cloud Functions ☁️
 
-This folder contains the complete Firebase backend for the Real Estate Platform, including Firestore security rules, Storage rules, and Cloud Functions.
+This directory contains the Firebase backend for the Shubhaytanam Connect platform, including Cloud Functions (Node.js/TypeScript), Firestore Security Rules, and Storage Rules.
 
-## Local Development 🚀
+## 🚀 Local Development
+
+### Prerequisites
+- Node.js & npm
+- Firebase CLI (`npm install -g firebase-tools`)
+
+### Setup
+
 ```bash
+# Navigate to the functions directory
 cd backend/functions
+
+# Install dependencies
 npm install
-npm run dev
+
+# Build the TypeScript code
+npm run build
 ```
 
-## Deployment Guide
-### Environment Setup
-The backend relies on the Firebase CLI. Ensure you are logged into the correct Firebase project using `firebase login` and `firebase use <project-id>`.
+### Emulators
+You can run the Firebase Emulator Suite to test functions and database rules locally without affecting production data.
 
-### Installation
 ```bash
-cd backend/functions
-npm install
+# Start the emulators
+firebase emulators:start
 ```
 
-### Deploying Rules
-To deploy the Firestore security rules:
+## 📦 Deployment
+
+Deploy the Cloud Functions, Firestore Rules, and indexes to your Firebase project:
+
 ```bash
-npx firebase-tools deploy --only firestore:rules
+# Deploy only functions
+firebase deploy --only functions
+
+# Deploy only Firestore rules
+firebase deploy --only firestore:rules
+
+# Deploy everything
+firebase deploy
 ```
 
-### Deploying Functions
-To deploy the Firebase Cloud Functions:
-```bash
-cd functions
-npm run deploy
-```
+## 📂 Project Structure
 
-## Testing 🧪
-- `npm run lint` within the `functions` directory.
+- `functions/src/`: Contains all Cloud Functions logic (triggers, APIs).
+- `firestore.rules`: Security rules for the Firestore database.
+- `storage.rules`: Security rules for Firebase Cloud Storage.

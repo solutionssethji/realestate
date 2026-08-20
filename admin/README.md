@@ -1,31 +1,49 @@
-# Real Estate Platform - Admin CRM Panel 🏡
+# Shubhaytanam Connect - Admin Dashboard 💻
 
-Built with **Next.js (App Router)** and React. Uses **TailwindCSS** for styling and standard fetch APIs for data retrieval.
-Fully responsive CRUD dashboard for managing Projects, Plots, Offers, Enquiries, Site Visits, and Payments.
+The administration dashboard for the Shubhaytanam Connect real estate platform, built with **Next.js (App Router)**, **React**, and **Tailwind CSS**. It connects directly to **Firebase (Firestore)** for data management.
 
-## Local Development 🚀
+This dashboard allows administrators to manage:
+- Projects & Properties
+- Plot Inventory & Pricing
+- Customer Enquiries
+- Site Visits & Bookings
+- Application Settings
+
+## 🚀 Local Development
+
 ```bash
+# Navigate to the admin directory
 cd admin
+
+# Install dependencies
 npm install
+
+# Start the development server
 npm run dev
 ```
-*Panel will run on `http://localhost:3000`*
 
-## Deployment Guide
-### Environment Setup
-Create a `.env.local` file in the `/admin` directory:
-```env
-NEXT_PUBLIC_API_URL="https://api.yourdomain.com/api"
-```
+*The dashboard will run on `http://localhost:3000`*
 
-### Build & Deploy
+## ⚙️ Configuration
+
+Firebase configuration is managed via `src/lib/firebase.ts`. Ensure your Firebase project settings (API keys, project ID, etc.) are properly configured.
+
+To use Firebase Emulators during development, set `USE_FIREBASE_EMULATORS = true` in the Firebase config file.
+
+## 📦 Build & Deploy
+
+This project can be seamlessly deployed to platforms like **Vercel**, **AWS Amplify**, or **Firebase Hosting**.
+
 ```bash
-cd admin
-npm install
+# Build the production application
 npm run build
+
+# Start the production server locally
 npm start
 ```
-*Note: This can easily be deployed to Vercel or AWS Amplify.*
 
-## Testing 🧪
-- `npm run lint` & `npm run build`
+## 🧪 Testing
+
+```bash
+npm run lint
+```

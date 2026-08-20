@@ -1,42 +1,42 @@
-# Real Estate Platform - Customer Mobile App 📱
+# Shubhaytanam Connect - Customer Mobile App 📱
 
-Built with **Flutter** for iOS and Android.
-Uses **Riverpod** for state management and Firebase SDKs for backend communication.
-Features a premium UI with theming, Google Maps integration, and bilingual support (English/Hindi).
+The customer-facing mobile application for Shubhaytanam Connect, built with **Flutter**.
+It uses **Riverpod** for state management and connects directly to **Firebase** (Auth, Firestore, Storage) for backend services.
 
-## Local Development 🚀
+Features a premium UI, bilingual support (English/Hindi), property discovery, and site visit bookings.
+
+## 🚀 Local Development
+
 ```bash
+# Navigate to the mobile directory
 cd mobile
+
+# Clean and fetch dependencies
 flutter clean
 flutter pub get
+
+# Run the app
 flutter run
 ```
 
-## Deployment Guide
+## ⚙️ Configuration
 
-### Environment Setup
-Update the `.env` file in the `/mobile` directory:
-```env
-API_BASE_URL="https://api.yourdomain.com/api"
-API_TIMEOUT_MS=15000
-PAYMENT_ENV="production"
-PAYMENT_MERCHANT_ID="your_real_merchant_id"
-PAYMENT_PUBLIC_KEY="your_real_public_key"
-GOOGLE_MAPS_API_KEY="your_real_google_maps_key"
-```
+Firebase configuration is managed via `google-services.json` (Android) and `GoogleService-Info.plist` (iOS).
+- Ensure these files are placed in their respective `android/app` and `ios/Runner` directories.
+- The `lib/firebase_options.dart` file handles Dart-side Firebase initialization.
+
+## 📦 Deployment Guide
 
 ### Android Build
 ```bash
-cd mobile
 flutter clean
 flutter pub get
 flutter build appbundle --release
 ```
-Upload the resulting `app-release.aab` to the Google Play Console.
+Upload the resulting `build/app/outputs/bundle/release/app-release.aab` to the Google Play Console.
 
 ### iOS Build
 ```bash
-cd mobile
 flutter clean
 flutter pub get
 cd ios && pod install && cd ..
@@ -44,5 +44,6 @@ flutter build ipa --release
 ```
 Upload the resulting `.ipa` to App Store Connect via Transporter or Xcode.
 
-## Testing 🧪
-- **Flutter**: `fvm flutter test` & `fvm flutter analyze`
+## 🧪 Testing
+- **Format Code**: `flutter format lib/`
+- **Analyze Code**: `flutter analyze`
