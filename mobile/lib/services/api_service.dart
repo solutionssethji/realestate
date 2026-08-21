@@ -99,13 +99,19 @@ class ApiService {
   static Future<(List<Project>, DocumentSnapshot?)> getProjects({
     DocumentSnapshot? lastDocument,
     int limit = 10,
+    bool? isFeatured,
   }) async {
     _logApi(function: 'getProjects()');
     try {
       var query = _db
           .collection('projects')
-          .where('isActive', isEqualTo: true)
-          .limit(limit);
+          .where('isActive', isEqualTo: true);
+
+      if (isFeatured != null) {
+        query = query.where('isFeatured', isEqualTo: isFeatured);
+      }
+      
+      query = query.limit(limit);
 
       if (lastDocument != null) {
         query = query.startAfterDocument(lastDocument);

@@ -16,6 +16,7 @@ class Project {
   final List<Plot> plots;
   final String googleMap;
   final String projectVideo;
+  final bool isFeatured;
 
   Project({
     required this.id,
@@ -31,6 +32,7 @@ class Project {
     required this.plots,
     this.googleMap = '',
     this.projectVideo = '',
+    this.isFeatured = false,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class Project {
       plotCount: int.tryParse(json['availablePlots']?.toString() ?? '') ?? (json['plots'] != null ? (json['plots'] as List).length : 0),
       googleMap: json['googleMap'] as String? ?? '',
       projectVideo: json['projectVideo'] as String? ?? '',
+      isFeatured: json['isFeatured'] as bool? ?? false,
       plots: json['plots'] != null
           ? (json['plots'] as List)
                 .map(

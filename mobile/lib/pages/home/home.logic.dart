@@ -17,7 +17,7 @@ class HomeLogic extends _$HomeLogic {
     state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
     try {
       final results = await Future.wait([
-        ApiService.getProjects(limit: 11),
+        ApiService.getProjects(limit: 10, isFeatured: true),
         ApiService.getOffers(limit: 7),
         ApiService.getContactSettings(),
         Future.delayed(const Duration(milliseconds: 800)), // Minimum delay to show shimmer

@@ -41,6 +41,7 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
     roadWidth: typeof initialData?.roadWidth === 'string' ? { en: initialData.roadWidth, hi: "" } : { en: initialData?.roadWidth?.en || "", hi: initialData?.roadWidth?.hi || "" },
     developmentStatus: initialData?.developmentStatus || { en: "Upcoming", hi: "आगामी" },
     isActive: initialData?.isActive !== undefined ? initialData?.isActive : true,
+    isFeatured: initialData?.isFeatured !== undefined ? initialData?.isFeatured : false,
 
     // Existing URLs from DB
     projectPhotos: initialData?.projectPhotos || [],
@@ -191,6 +192,7 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
         roadWidth: formData.roadWidth,
         developmentStatus: formData.developmentStatus,
         isActive: formData.isActive,
+        isFeatured: formData.isFeatured,
         projectPhotos: finalPhotos,
         siteLayout: finalSiteLayoutUrl,
         facilities: formData.facilities,
@@ -275,22 +277,42 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
               <p className="text-[10px] text-slate-500 mt-1 italic">Note: Use the Google Maps "Embed Map" URL for best results.</p>
             </div>
           </div>
-          <div className="md:col-span-2 flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-800">Project Visibility</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Enable or disable this project on the public app</p>
+          <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-800">Project Visibility</h3>
+                <p className="text-xs text-slate-500 mt-0.5">Enable or disable this project on the public app</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="isActive"
+                  checked={formData.isActive}
+                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <span className="ml-3 text-sm font-medium text-slate-700">{formData.isActive ? 'Active' : 'Disabled'}</span>
+              </label>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                name="isActive"
-                checked={formData.isActive}
-                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              <span className="ml-3 text-sm font-medium text-slate-700">{formData.isActive ? 'Active' : 'Disabled'}</span>
-            </label>
+
+            <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-800">Featured Project</h3>
+                <p className="text-xs text-slate-500 mt-0.5">Show this project on the home screen</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="isFeatured"
+                  checked={formData.isFeatured}
+                  onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                <span className="ml-3 text-sm font-medium text-slate-700">{formData.isFeatured ? 'Featured' : 'Standard'}</span>
+              </label>
+            </div>
           </div>
         </div>
       </Card>
