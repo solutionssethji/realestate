@@ -4,53 +4,81 @@ import '../../utils/l10n_extension.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../widgets/generic_shimmer_loader.dart';
+import 'about.logic.dart';
 
-class AboutCompanyPage extends StatelessWidget {
+class AboutCompanyPage extends ConsumerWidget {
   const AboutCompanyPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(aboutLogicProvider);
+
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.aboutCompany),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          _buildSection(
-            context,
-            title: context.l10n.companyProfile,
-            icon: LucideIcons.building,
-            content: 'We are a leading real estate platform dedicated to helping you find your dream property. With years of experience in the industry, we bring transparency and trust to every transaction.',
-          ),
-          AppSpacing.hXl,
-          _buildSection(
-            context,
-            title: context.l10n.vision,
-            icon: LucideIcons.eye,
-            content: 'To revolutionize the real estate industry by creating a seamless, transparent, and technology-driven experience for all buyers and sellers.',
-          ),
-          AppSpacing.hXl,
-          _buildSection(
-            context,
-            title: context.l10n.mission,
-            icon: LucideIcons.target,
-            content: 'Our mission is to empower individuals with the right tools, knowledge, and support to make informed property investment decisions.',
-          ),
+      body: SafeArea(
+        child: _buildBody(context, state),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, state) {
+    if (state.isLoading) {
+      return const ShimmerLoader();
+    }
+
+    if (state.isError) {
+      return Center(
+        child: Text(state.errorMessage ?? 'Error loading about info', style: const TextStyle(color: Colors.red)),
+      );
+    }
+
+    final info = state.companyInfo;
+    if (info == null) {
+      return Center(child: Text(context.l10n.aboutUnavailable));
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(24),
+      children: [
+        _buildSection(
+          context,
+          title: context.l10n.companyProfile,
+          icon: LucideIcons.building,
+          content: info.about.isNotEmpty ? info.about : 'We are a leading real estate platform...',
+        ),
+        AppSpacing.hXl,
+        _buildSection(
+          context,
+          title: context.l10n.vision,
+          icon: LucideIcons.eye,
+          content: info.vision.isNotEmpty ? info.vision : 'To revolutionize the real estate industry...',
+        ),
+        AppSpacing.hXl,
+        _buildSection(
+          context,
+          title: context.l10n.mission,
+          icon: LucideIcons.target,
+          content: info.mission.isNotEmpty ? info.mission : 'Our mission is to empower individuals...',
+        ),
+        if (info.whyChooseUs.isNotEmpty) ...[
           AppSpacing.hXl,
           _buildSection(
             context,
             title: context.l10n.whyChooseUs,
             icon: LucideIcons.award,
-            content: '• Verified Properties\n• Transparent Pricing\n• End-to-End Support\n• Dedicated RM for every customer\n• Easy EMI options',
-          ),
-          AppSpacing.hXl,
-          _buildSection(
-            context,
-            title: context.l10n.contactInformation,
-            icon: LucideIcons.mail,
-            content: 'Email: support@realestate.com\nPhone: +91 9876543210\nAddress: 123, Real Estate Tower, Business District.',
+            content: info.whyChooseUs.map((e) => '• $e').join('\n'),
           ),
         ],
-      ),
+        AppSpacing.hXl,
+        _buildSection(
+          context,
+          title: context.l10n.contactInformation,
+          icon: LucideIcons.mail,
+          content: 'Email: ${info.email}\nPhone: ${info.phone}\nAddress: ${info.officeAddress}',
+        ),
+      ],
     );
   }
 

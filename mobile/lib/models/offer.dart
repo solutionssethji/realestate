@@ -13,5 +13,6 @@ class Offer with _$Offer {
     required DateTime endDate,
     required String status,
     String? projectId,
+    String? projectName,
   }) = _Offer;
 }

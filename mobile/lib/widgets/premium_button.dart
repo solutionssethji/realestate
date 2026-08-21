@@ -13,6 +13,8 @@ class PremiumButton extends StatelessWidget {
   final IconData? icon;
   final bool isLoading;
   final bool isFullWidth;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
 
   const PremiumButton({
     super.key,
@@ -22,6 +24,8 @@ class PremiumButton extends StatelessWidget {
     this.icon,
     this.isLoading = false,
     this.isFullWidth = true,
+    this.backgroundColor,
+    this.foregroundColor,
   });
 
   @override
@@ -50,8 +54,8 @@ class PremiumButton extends StatelessWidget {
         button = ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.midnightNavy,
-            foregroundColor: Colors.white,
+            backgroundColor: backgroundColor ?? AppTheme.midnightNavy,
+            foregroundColor: foregroundColor ?? Colors.white,
           ),
           child: child,
         );
@@ -59,19 +63,27 @@ class PremiumButton extends StatelessWidget {
         button = ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.softGold,
-            foregroundColor: AppTheme.midnightNavy,
+            backgroundColor: backgroundColor ?? AppTheme.softGold,
+            foregroundColor: foregroundColor ?? AppTheme.midnightNavy,
           ),
           child: child,
         );
       case PremiumButtonStyle.outline:
         button = OutlinedButton(
           onPressed: isLoading ? null : onPressed,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: foregroundColor,
+            side: backgroundColor != null ? BorderSide(color: backgroundColor!) : null,
+          ),
           child: child,
         );
       case PremiumButtonStyle.ghost:
         button = TextButton(
           onPressed: isLoading ? null : onPressed,
+          style: TextButton.styleFrom(
+            foregroundColor: foregroundColor,
+            backgroundColor: backgroundColor,
+          ),
           child: child,
         );
     }

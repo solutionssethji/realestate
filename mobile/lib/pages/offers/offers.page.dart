@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
+import 'package:go_router/go_router.dart';
 import '../../widgets/premium_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -87,36 +88,47 @@ class OffersPage extends ConsumerWidget {
                         );
                       }
                       final offer = state.offers[index];
-                      return Card(
-                        clipBehavior: Clip.antiAlias,
-                        child: isDesktop
-                            ? Row(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  _OfferImage(
-                                    imageUrl: offer.image,
-                                    width: 200,
-                                    height: null,
-                                  ),
-                                  Expanded(
-                                    child: _OfferInfo(
-                                      offer: offer,
-                                      context: context,
+                      return GestureDetector(
+                        onTap: () {
+                          if (offer.projectId != null &&
+                              offer.projectId!.isNotEmpty) {
+                            context.push('/home/project/${offer.projectId}');
+                          } else {
+                            context.push('/home/offers/${offer.id}');
+                          }
+                        },
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          child: isDesktop
+                              ? Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    _OfferImage(
+                                      imageUrl: offer.image,
+                                      width: 200,
+                                      height: null,
                                     ),
-                                  ),
-                                ],
-                              )
-                            : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _OfferImage(
-                                    imageUrl: offer.image,
-                                    width: double.infinity,
-                                    height: 180,
-                                  ),
-                                  _OfferInfo(offer: offer, context: context),
-                                ],
-                              ),
+                                    Expanded(
+                                      child: _OfferInfo(
+                                        offer: offer,
+                                        context: context,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _OfferImage(
+                                      imageUrl: offer.image,
+                                      width: double.infinity,
+                                      height: 180,
+                                    ),
+                                    _OfferInfo(offer: offer, context: context),
+                                  ],
+                                ),
+                        ),
                       );
                     },
                   ),
@@ -192,6 +204,19 @@ class _OfferInfo extends StatelessWidget {
             ),
           ),
           AppSpacing.hSm,
+          Text(
+            offer.projectName?.isNotEmpty == true
+                ? offer.projectName!.toUpperCase()
+                : context.l10n.allProjects.toUpperCase(),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          AppSpacing.hXs,
           Text(
             offer.title,
             style: Theme.of(context).textTheme.headlineSmall,

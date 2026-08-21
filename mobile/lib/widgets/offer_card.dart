@@ -4,6 +4,7 @@ import '../theme/theme.dart';
 import '../theme/spacing.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
+import '../utils/l10n_extension.dart';
 
 /// Premium image-first offer card for grids and horizontal lists.
 class OfferCard extends StatelessWidget {
@@ -89,6 +90,19 @@ class OfferCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
+                    offer.projectName?.isNotEmpty == true
+                        ? offer.projectName!.toUpperCase()
+                        : context.l10n.allProjects.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  AppSpacing.hXs,
+                  Text(
                     offer.title,
                     style: Theme.of(context).textTheme.titleLarge,
                     maxLines: 1,
@@ -98,8 +112,8 @@ class OfferCard extends StatelessWidget {
                   Text(
                     offer.description,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                          color: AppTheme.textSecondary,
+                        ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

@@ -3,12 +3,15 @@ import 'home.state.dart';
 import '../../../services/api_service.dart';
 import '../../../models/project.dart';
 import '../../../models/offer.dart';
+import '../../../config/locale_provider.dart';
 part 'home.logic.g.dart';
 
 @riverpod
 class HomeLogic extends _$HomeLogic {
   @override
   HomeState build() {
+    // Watch locale so data reloads if language changes
+    ref.watch(localeControllerProvider);
     Future.microtask(loadData);
     return const HomeState();
   }

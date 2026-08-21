@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'calculator.state.dart';
-import '../../../services/calculator_service.dart';
+import '../../services/calculator_service.dart';
 
 part 'calculator.logic.g.dart';
 

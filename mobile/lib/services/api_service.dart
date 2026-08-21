@@ -23,54 +23,10 @@ class ApiService {
   mockSubmitPayment;
   static Future<List<Plot>> Function(String projectId)? mockGetPlots;
 
-  static void _logApi({
-    required String function,
-    Map<String, dynamic>? request,
-    dynamic response,
-    dynamic error,
-  }) {
-    developer.log('\n=========================================');
-    developer.log('🔥 FIREBASE API LOG');
-    developer.log('Function: $function');
-    developer.log('Header: { "source": "firebase_sdk" }'); // Simulated header
-
-    Object? sanitize(Object? data) {
-      if (data is Map) {
-        final sanitized = <String, dynamic>{};
-        data.forEach((key, value) {
-          if (key == 'profile_image_bytes' || key == 'resume_bytes') {
-            sanitized[key.toString()] = '[BASE64_DATA_TRUNCATED]';
-          } else {
-            sanitized[key.toString()] = sanitize(value);
-          }
-        });
-        return sanitized;
-      } else if (data is List) {
-        return data.map((e) => sanitize(e)).toList();
-      }
-      return data;
-    }
-
-    if (request != null) {
-      developer.log(
-        'Request Body: ${jsonEncode(sanitize(request), toEncodable: (e) => e.toString())}',
-      );
-    }
-    if (response != null) {
-      developer.log(
-        'Response: ${response is Map ? jsonEncode(sanitize(response), toEncodable: (e) => e.toString()) : response.toString()}',
-      );
-    }
-    if (error != null) {
-      developer.log('Error: $error');
-    }
-    developer.log('=========================================\n');
-  }
-
   // ─── Settings ───────────────────────────────────────────────────────────────
 
   static Future<Map<String, String>> getContactSettings() async {
-    _logApi(function: 'getContactSettings()');
+    logApi(function: 'getContactSettings()', request: {});
     try {
       final doc = await _db.collection('setting').doc('contactUs').get();
       if (doc.exists) {
@@ -78,7 +34,7 @@ class ApiService {
         final phone = data['directCall']?.toString() ?? '';
         final whatsapp = data['whatsapp']?.toString() ?? '';
 
-        _logApi(
+        logApi(
           function: 'getContactSettings()',
           response: {'directCall': phone, 'whatsapp': whatsapp},
         );
@@ -86,10 +42,10 @@ class ApiService {
       }
       return {'phone': '', 'whatsapp': ''};
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'getContactSettings()', error: e);
+      logApi(function: 'getContactSettings()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'getContactSettings()', error: e);
+      logApi(function: 'getContactSettings()', error: e);
       return {'phone': '', 'whatsapp': ''};
     }
   }
@@ -101,16 +57,17 @@ class ApiService {
     int limit = 10,
     bool? isFeatured,
   }) async {
-    _logApi(function: 'getProjects()');
+    logApi(
+      function: 'getProjects()',
+      request: {'limit': limit, 'isFeatured': isFeatured},
+    );
     try {
-      var query = _db
-          .collection('projects')
-          .where('isActive', isEqualTo: true);
+      var query = _db.collection('projects').where('isActive', isEqualTo: true);
 
       if (isFeatured != null) {
         query = query.where('isFeatured', isEqualTo: isFeatured);
       }
-      
+
       query = query.limit(limit);
 
       if (lastDocument != null) {
@@ -121,7 +78,7 @@ class ApiService {
       final docs = snapshot.docs;
       final newLastDoc = docs.isNotEmpty ? docs.last : null;
 
-      _logApi(
+      logApi(
         function: 'getProjects()',
         response: '${docs.length} projects retrieved',
       );
@@ -132,36 +89,36 @@ class ApiService {
         newLastDoc,
       );
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'getProjects()', error: e);
+      logApi(function: 'getProjects()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'getProjects()', error: e);
+      logApi(function: 'getProjects()', error: e);
       rethrow;
     }
   }
 
   static Future<Project?> getProject(String projectId) async {
-    _logApi(function: 'getProject()', request: {'projectId': projectId});
+    logApi(function: 'getProject()', request: {'projectId': projectId});
     try {
       final doc = await _db.collection('projects').doc(projectId).get();
       if (!doc.exists) {
-        _logApi(function: 'getProject()', response: 'Not found');
+        logApi(function: 'getProject()', response: 'Not found');
         return null;
       }
 
       final data = doc.data()!;
       if (data['isActive'] != true) {
-        _logApi(function: 'getProject()', response: 'Project is inactive');
+        logApi(function: 'getProject()', response: 'Project is inactive');
         return null;
       }
 
-      _logApi(function: 'getProject()', response: 'Found');
+      logApi(function: 'getProject()', response: 'Found');
       return Project.fromJson({'id': doc.id, ...data});
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'getProject()', error: e);
+      logApi(function: 'getProject()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'getProject()', error: e);
+      logApi(function: 'getProject()', error: e);
       rethrow;
     }
   }
@@ -169,7 +126,7 @@ class ApiService {
   // ─── Plots ──────────────────────────────────────────────────────────────────
 
   static Future<List<Plot>> getPlots(String projectId) async {
-    _logApi(function: 'getPlots()', request: {'projectId': projectId});
+    logApi(function: 'getPlots()', request: {'projectId': projectId});
     try {
       if (mockGetPlots != null) return mockGetPlots!(projectId);
       final snapshot = await _db
@@ -178,23 +135,23 @@ class ApiService {
           .where('isActive', isEqualTo: true)
           .orderBy('plotNumber')
           .get();
-      _logApi(
+      logApi(
         function: 'getPlots()',
         response: '${snapshot.docs.length} plots retrieved',
       );
       return snapshot.docs.map((doc) => _plotFromDoc(doc)).toList();
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'getPlots()', error: e);
+      logApi(function: 'getPlots()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'getPlots()', error: e);
+      logApi(function: 'getPlots()', error: e);
       rethrow;
     }
   }
 
   /// Stream of plots for a given project — used for real-time status updates.
   static Stream<List<Plot>> watchPlots(String projectId) {
-    _logApi(function: 'watchPlots()', request: {'projectId': projectId});
+    logApi(function: 'watchPlots()', request: {'projectId': projectId});
     return _db
         .collection('plots')
         .where('projectId', isEqualTo: projectId)
@@ -202,32 +159,32 @@ class ApiService {
         .orderBy('plotNumber')
         .snapshots()
         .map((snap) {
-          _logApi(
+          logApi(
             function: 'watchPlots()',
             response: '${snap.docs.length} plots updated',
           );
           return snap.docs.map((doc) => _plotFromDoc(doc)).toList();
         })
         .handleError((error) {
-          _logApi(function: 'watchPlots()', error: error);
+          logApi(function: 'watchPlots()', error: error);
         });
   }
 
   static Future<Plot?> getPlot(String plotId) async {
-    _logApi(function: 'getPlot()', request: {'plotId': plotId});
+    logApi(function: 'getPlot()', request: {'plotId': plotId});
     try {
       final doc = await _db.collection('plots').doc(plotId).get();
       if (!doc.exists) {
-        _logApi(function: 'getPlot()', response: 'Not found');
+        logApi(function: 'getPlot()', response: 'Not found');
         return null;
       }
-      _logApi(function: 'getPlot()', response: 'Found');
+      logApi(function: 'getPlot()', response: 'Found');
       return _plotFromDoc(doc);
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'getPlot()', error: e);
+      logApi(function: 'getPlot()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'getPlot()', error: e);
+      logApi(function: 'getPlot()', error: e);
       rethrow;
     }
   }
@@ -238,7 +195,7 @@ class ApiService {
     DocumentSnapshot? lastDocument,
     int limit = 20,
   }) async {
-    _logApi(function: 'getOffers()');
+    logApi(function: 'getOffers()', request: {'limit': limit});
     try {
       var query = _db
           .collection('offers')
@@ -253,16 +210,52 @@ class ApiService {
       final docs = snapshot.docs;
       final newLastDoc = docs.isNotEmpty ? docs.last : null;
 
-      _logApi(
+      logApi(
         function: 'getOffers()',
         response: '${docs.length} offers retrieved',
       );
-      return (docs.map((doc) => _offerFromDoc(doc)).toList(), newLastDoc);
+
+      var offers = docs.map((doc) => _offerFromDoc(doc)).toList();
+
+      // Enrich with project names
+      final projectIds = offers
+          .map((o) => o.projectId)
+          .where((id) => id != null && id.isNotEmpty)
+          .toSet();
+
+      if (projectIds.isNotEmpty) {
+        try {
+          final projectDocs = await Future.wait(
+            projectIds.map((id) => _db.collection('projects').doc(id).get()),
+          );
+
+          final projectNames = <String, String>{};
+          for (final doc in projectDocs) {
+            if (doc.exists) {
+              final data = doc.data()!;
+              projectNames[doc.id] = BilingualHelper.get(data['name']);
+            }
+          }
+
+          for (var i = 0; i < offers.length; i++) {
+            if (offers[i].projectId != null &&
+                projectNames.containsKey(offers[i].projectId)) {
+              offers[i] = offers[i].copyWith(
+                projectName: projectNames[offers[i].projectId],
+              );
+            }
+          }
+        } catch (e) {
+          developer.log('Error fetching project names for offers: $e');
+        }
+      }
+
+      return (offers, newLastDoc);
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'getOffers()', error: e);
+      logApi(function: 'getOffers()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'getOffers()', error: e);
+      logApi(function: 'getOffers()', error: e);
       rethrow;
     }
   }
@@ -270,7 +263,7 @@ class ApiService {
   // ─── Enquiries ──────────────────────────────────────────────────────────────
 
   static Future<void> submitEnquiry(Map<String, dynamic> data) async {
-    _logApi(function: 'submitEnquiry()', request: data);
+    logApi(function: 'submitEnquiry()', request: data);
     try {
       await _db.collection('customerEnquiries').add({
         ...data,
@@ -278,12 +271,12 @@ class ApiService {
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      _logApi(function: 'submitEnquiry()', response: 'Success');
+      logApi(function: 'submitEnquiry()', response: 'Success');
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'submitEnquiry()', error: e);
+      logApi(function: 'submitEnquiry()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'submitEnquiry()', error: e);
+      logApi(function: 'submitEnquiry()', error: e);
       rethrow;
     }
   }
@@ -291,7 +284,7 @@ class ApiService {
   // ─── Site Visits ────────────────────────────────────────────────────────────
 
   static Future<void> submitSiteVisit(Map<String, dynamic> data) async {
-    _logApi(function: 'submitSiteVisit()', request: data);
+    logApi(function: 'submitSiteVisit()', request: data);
     try {
       final batch = _db.batch();
 
@@ -307,12 +300,12 @@ class ApiService {
       });
 
       await batch.commit();
-      _logApi(function: 'submitSiteVisit()', response: {'id': siteVisitRef.id});
+      logApi(function: 'submitSiteVisit()', response: {'id': siteVisitRef.id});
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'submitSiteVisit()', error: e);
+      logApi(function: 'submitSiteVisit()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'submitSiteVisit()', error: e);
+      logApi(function: 'submitSiteVisit()', error: e);
       rethrow;
     }
   }
@@ -325,19 +318,19 @@ class ApiService {
   static Future<Map<String, dynamic>> submitPayment(
     Map<String, dynamic> data,
   ) async {
-    _logApi(function: 'submitPayment()', request: data);
+    logApi(function: 'submitPayment()', request: data);
     try {
       if (mockSubmitPayment != null) return mockSubmitPayment!(data);
       final result = await _functions
           .httpsCallable('initiatePayment')
           .call(data);
-      _logApi(function: 'submitPayment()', response: result.data);
+      logApi(function: 'submitPayment()', response: result.data);
       return Map<String, dynamic>.from(result.data as Map);
     } on FirebaseAuthException catch (e) {
-      _logApi(function: 'submitPayment()', error: e);
+      logApi(function: 'submitPayment()', error: e);
       rethrow;
     } catch (e) {
-      _logApi(function: 'submitPayment()', error: e);
+      logApi(function: 'submitPayment()', error: e);
       rethrow;
     }
   }
@@ -378,6 +371,7 @@ class ApiService {
           : DateTime.now().add(const Duration(days: 30)),
       status: data['status']?.toString() ?? 'ACTIVE',
       projectId: data['projectId']?.toString(),
+      projectName: BilingualHelper.get(data['projectName']),
     );
   }
 
@@ -393,4 +387,48 @@ class ApiService {
         return PlotStatus.available;
     }
   }
+}
+
+void logApi({
+  required String function,
+  Map<String, dynamic>? request,
+  dynamic response,
+  dynamic error,
+}) {
+  developer.log('\n=========================================');
+  developer.log('🔥 FIREBASE API LOG');
+  developer.log('Function: $function');
+  developer.log('Header: { "source": "firebase_sdk" }'); // Simulated header
+
+  Object? sanitize(Object? data) {
+    if (data is Map) {
+      final sanitized = <String, dynamic>{};
+      data.forEach((key, value) {
+        if (key == 'profile_image_bytes' || key == 'resume_bytes') {
+          sanitized[key.toString()] = '[BASE64_DATA_TRUNCATED]';
+        } else {
+          sanitized[key.toString()] = sanitize(value);
+        }
+      });
+      return sanitized;
+    } else if (data is List) {
+      return data.map((e) => sanitize(e)).toList();
+    }
+    return data;
+  }
+
+  if (request != null) {
+    developer.log(
+      'Request Body: ${jsonEncode(sanitize(request), toEncodable: (e) => e.toString())}',
+    );
+  }
+  if (response != null) {
+    developer.log(
+      'Response: ${response is Map ? jsonEncode(sanitize(response), toEncodable: (e) => e.toString()) : response.toString()}',
+    );
+  }
+  if (error != null) {
+    developer.log('Error: $error');
+  }
+  developer.log('=========================================\n');
 }

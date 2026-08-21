@@ -17,113 +17,84 @@ class SettingsPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: loc.settings),
-      body: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          Text(
-            loc.language,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildLanguageTile(
-            context,
-            ref,
-            context.l10n.langEnglish,
-            'en',
-            locale.languageCode == 'en',
-          ),
-          const SizedBox(height: 12),
-          _buildLanguageTile(
-            context,
-            ref,
-            context.l10n.langHindi,
-            'hi',
-            locale.languageCode == 'hi',
-          ),
-          const SizedBox(height: 32),
-          Text(
-            context.l10n.account,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                LucideIcons.history,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(24),
+          children: [
+            Text(
+              loc.language,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            title: Text(
-              context.l10n.paymentHistory,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            const SizedBox(height: 16),
+            _buildLanguageTile(
+              context,
+              ref,
+              context.l10n.langEnglish,
+              'en',
+              locale.languageCode == 'en',
             ),
-            subtitle: Text(context.l10n.viewPastTransactions),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              context.push('/payment-history-auth');
-            },
-          ),
-          const SizedBox(height: 32),
-          Text(
-            context.l10n.aboutCompany,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildActionTile(
-            context,
-            LucideIcons.building,
-            context.l10n.aboutCompany,
-            () => context.push('/about'),
-          ),
-          const SizedBox(height: 12),
-          _buildActionTile(
-            context,
-            LucideIcons.phoneCall,
-            context.l10n.contactUs,
-            () => context.push('/contact'),
-          ),
-          const SizedBox(height: 12),
-          _buildActionTile(
-            context,
-            LucideIcons.calculator,
-            context.l10n.emiCalculator,
-            () => context.push('/emi-calculator'),
-          ),
-          const SizedBox(height: 32),
-          Text(
-            context.l10n.legalAndPolicies,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildActionTile(
-            context,
-            LucideIcons.fileText,
-            context.l10n.termsAndConditions,
-            () => context.push('/terms'),
-          ),
-          const SizedBox(height: 12),
-          _buildActionTile(
-            context,
-            LucideIcons.shield,
-            context.l10n.privacyPolicy,
-            () => context.push('/privacy'),
-          ),
-          const SizedBox(height: 12),
-          _buildActionTile(
-            context,
-            LucideIcons.helpCircle,
-            'FAQ',
-            () => context.push('/faq'),
-          ),
-        ],
+            const SizedBox(height: 12),
+            _buildLanguageTile(
+              context,
+              ref,
+              context.l10n.langHindi,
+              'hi',
+              locale.languageCode == 'hi',
+            ),
+            const SizedBox(height: 32),
+            Text(
+              context.l10n.aboutCompany,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            _buildActionTile(
+              context,
+              LucideIcons.building,
+              context.l10n.aboutCompany,
+              () => context.push('/home/about'),
+            ),
+            const SizedBox(height: 12),
+            _buildActionTile(
+              context,
+              LucideIcons.phoneCall,
+              context.l10n.contactUs,
+              () => context.push('/home/contact'),
+            ),
+            const SizedBox(height: 12),
+            _buildActionTile(
+              context,
+              LucideIcons.calculator,
+              context.l10n.emiCalculator,
+              () => context.push('/home/emi-calculator'),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              context.l10n.legalAndPolicies,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            _buildActionTile(
+              context,
+              LucideIcons.fileText,
+              context.l10n.termsAndConditions,
+              () => context.push('/home/terms'),
+            ),
+            const SizedBox(height: 12),
+            _buildActionTile(
+              context,
+              LucideIcons.shield,
+              context.l10n.privacyPolicy,
+              () => context.push('/home/privacy'),
+            ),
+            const SizedBox(height: 12),
+            _buildActionTile(
+              context,
+              LucideIcons.helpCircle,
+              context.l10n.faq,
+              () => context.push('/home/faq'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -137,15 +108,22 @@ class SettingsPage extends HookConsumerWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+        child: Icon(
+          icon,
+          size: 20,
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      trailing: const Icon(Icons.chevron_right),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+      trailing: const Icon(Icons.chevron_right, size: 20),
       onTap: onTap,
     );
   }
@@ -163,7 +141,7 @@ class SettingsPage extends HookConsumerWidget {
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           border: Border.all(
             color: isSelected
@@ -171,7 +149,7 @@ class SettingsPage extends HookConsumerWidget {
                 : Colors.grey.shade300,
             width: isSelected ? 2 : 1,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           color: isSelected
               ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05)
               : Colors.transparent,
@@ -182,8 +160,8 @@ class SettingsPage extends HookConsumerWidget {
             Text(
               title,
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 15,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
             if (isSelected)

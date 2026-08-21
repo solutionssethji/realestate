@@ -7,10 +7,8 @@ import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../services/cms_service.dart';
-import '../../models/company_info.dart';
 import '../../widgets/generic_shimmer_loader.dart';
-import '../../config/locale_provider.dart';
+import 'contact.logic.dart';
 
 class ContactUsPage extends ConsumerWidget {
   const ContactUsPage({super.key});
@@ -24,105 +22,124 @@ class ContactUsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentLocale = ref.watch(localeControllerProvider);
+    final state = ref.watch(contactLogicProvider);
 
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.contactUs),
-      body: FutureBuilder<CompanyInfo?>(
-        future: CmsService.getContactInfo(currentLocale.languageCode),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const ShimmerLoader();
-          }
+      body: SafeArea(
+        child: _buildBody(context, state),
+      ),
+    );
+  }
 
-          final info = snapshot.data;
+  Widget _buildBody(BuildContext context, state) {
+    if (state.isLoading) {
+      return const ShimmerLoader();
+    }
 
-          if (info == null) {
-            return Center(child: Text(context.l10n.aboutUnavailable)); // Or contactUnavailable
-          }
+    if (state.isError) {
+      return Center(
+        child: Text(state.errorMessage ?? 'Error loading contact info', style: const TextStyle(color: Colors.red)),
+      );
+    }
 
-          return ListView(
-            padding: const EdgeInsets.all(24),
+    final info = state.companyInfo;
+    if (info == null) {
+      return Center(
+        child: Text(context.l10n.aboutUnavailable),
+      ); // Or contactUnavailable
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(24),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppTheme.midnightNavy, AppTheme.slateBlue],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
             children: [
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppTheme.midnightNavy, AppTheme.slateBlue],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  children: [
-                    const Icon(LucideIcons.headphones, color: Colors.white, size: 48),
-                    AppSpacing.hMd,
-                    Text(
-                      'We are here to help!',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    AppSpacing.hSm,
-                    Text(
-                      'Reach out to us for any queries related to your property search or investments.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ),
-                    ),
-                  ],
-                ),
+              const Icon(
+                LucideIcons.headphones,
+                color: Colors.white,
+                size: 48,
               ),
-              AppSpacing.hXl,
-
+              AppSpacing.hMd,
               Text(
-                context.l10n.contactInformation,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                'We are here to help!',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              AppSpacing.hLg,
-
-              PremiumButton(
-                text: context.l10n.directCall,
-                icon: LucideIcons.phone,
-                onPressed: () => _launchUrl('tel:${info.phone}'),
-              ),
-              AppSpacing.hMd,
-              PremiumButton(
-                text: context.l10n.whatsapp,
-                icon: LucideIcons.messageCircle,
-                style: PremiumButtonStyle.secondary,
-                onPressed: () => _launchUrl('https://wa.me/${info.whatsapp}'),
-              ),
-              AppSpacing.hMd,
-              PremiumButton(
-                text: context.l10n.googleMaps,
-                icon: LucideIcons.mapPin,
-                style: PremiumButtonStyle.outline,
-                onPressed: () => _launchUrl(info.googleMapsUrl),
-              ),
-
-              AppSpacing.hXl,
-
-              _buildInfoCard(
-                context,
-                icon: LucideIcons.phoneCall,
-                title: context.l10n.contactNumber,
-                content: info.contactNumberDisplay.isNotEmpty ? info.contactNumberDisplay : info.phone,
-              ),
-              AppSpacing.hLg,
-              _buildInfoCard(
-                context,
-                icon: LucideIcons.map,
-                title: context.l10n.officeLocation,
-                content: info.officeAddress,
+              AppSpacing.hSm,
+              Text(
+                'Reach out to us for any queries related to your property search or investments.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
               ),
             ],
-          );
-        }
-      ),
+          ),
+        ),
+        AppSpacing.hXl,
+
+        Text(
+          context.l10n.contactInformation,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        AppSpacing.hLg,
+
+        PremiumButton(
+          text: context.l10n.directCall,
+          icon: LucideIcons.phone,
+          onPressed: () => _launchUrl('tel:${info.phone}'),
+        ),
+        AppSpacing.hMd,
+        PremiumButton(
+          text: context.l10n.whatsapp,
+          icon: LucideIcons.messageCircle,
+          style: PremiumButtonStyle.primary,
+          backgroundColor: const Color(0xFF25D366),
+          foregroundColor: Colors.white,
+          onPressed: () => _launchUrl('https://wa.me/${info.whatsapp}'),
+        ),
+        AppSpacing.hMd,
+        PremiumButton(
+          text: context.l10n.googleMaps,
+          icon: LucideIcons.mapPin,
+          style: PremiumButtonStyle.outline,
+          onPressed: () => _launchUrl(info.googleMapsUrl),
+        ),
+
+        AppSpacing.hXl,
+
+        _buildInfoCard(
+          context,
+          icon: LucideIcons.phoneCall,
+          title: context.l10n.contactNumber,
+          content: info.contactNumberDisplay.isNotEmpty
+              ? info.contactNumberDisplay
+              : info.phone,
+        ),
+        AppSpacing.hLg,
+        _buildInfoCard(
+          context,
+          icon: LucideIcons.map,
+          title: context.l10n.officeLocation,
+          content: info.officeAddress,
+        ),
+      ],
     );
   }
 

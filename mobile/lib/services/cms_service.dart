@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customer_app/services/api_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/company_info.dart';
 
 /// Centralized service to fetch CMS and settings from Firebase.
@@ -16,6 +18,7 @@ class CmsService {
 
   /// Fetches global Contact and About settings.
   static Future<CompanyInfo?> getContactInfo(String langCode) async {
+    logApi(function: 'getContactInfo()', request: {'langCode': langCode});
     try {
       final aboutDoc = await _db
           .collection('setting')
@@ -35,7 +38,7 @@ class CmsService {
                 .where((e) => e.isNotEmpty)
                 .toList();
 
-      return CompanyInfo(
+      final response = CompanyInfo(
         name: 'Shubhaytanam', // Or add this to DB later
         about: _getBilingual(about['companyProfile'], langCode),
         vision: _getBilingual(about['vision'], langCode),
@@ -50,61 +53,94 @@ class CmsService {
         googleMapsUrl: contact['googleMaps']?.toString() ?? '',
         contactNumberDisplay: _getBilingual(contact['contactNumber'], langCode),
       );
+
+      logApi(function: 'getContactInfo()', response: response.toString());
+      return response;
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getContactInfo()', error: e.toString());
+      return null;
     } catch (e) {
+      logApi(function: 'getContactInfo()', error: e.toString());
       return null;
     }
   }
 
   /// Fetches the configured Currency from Firebase.
   static Future<Map<String, String>> getCurrencyConfig() async {
+    logApi(function: 'getCurrencyConfig()', request: {});
     try {
       final doc = await _db.collection('setting').doc('currencyConfig').get();
       if (doc.exists && doc.data() != null) {
         final currency = doc.data()!;
         if (currency.isNotEmpty) {
-          return {
+          final response = {
             'code': currency['code']?.toString() ?? 'INR',
             'symbol': currency['symbol']?.toString() ?? '₹',
             'name': currency['name']?.toString() ?? 'Indian Rupee',
           };
+          logApi(function: 'getCurrencyConfig()', response: response);
+          return response;
         }
       }
+
+      final defaultResponse = {
+        'code': 'INR',
+        'symbol': '₹',
+        'name': 'Indian Rupee',
+      };
+      logApi(function: 'getCurrencyConfig()', response: defaultResponse);
+      return defaultResponse;
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getCurrencyConfig()', error: e.toString());
     } catch (e) {
-      // Ignore and fallback
+      logApi(function: 'getCurrencyConfig()', error: e.toString());
     }
     return {'code': 'INR', 'symbol': '₹', 'name': 'Indian Rupee'};
   }
 
   /// Fetches legal/public content like terms or privacy.
   static Future<Map<String, String>?> getPublicContent(String langCode) async {
+    logApi(function: 'getPublicContent()', request: {'langCode': langCode});
     try {
       final doc = await _db.collection('setting').doc('legalPolicies').get();
       if (doc.exists && doc.data() != null) {
         final legal = doc.data()!;
-        return {
+        final response = {
           'termsAndConditions': _getBilingual(
             legal['termsAndConditions'],
             langCode,
           ),
           'privacyPolicy': _getBilingual(legal['privacyPolicy'], langCode),
         };
+        logApi(function: 'getPublicContent()', response: response);
+        return response;
       }
+      logApi(function: 'getPublicContent()', response: null);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getPublicContent()', error: e.toString());
     } catch (e) {
-      // Ignore
+      logApi(function: 'getPublicContent()', error: e.toString());
     }
     return null;
   }
 
   /// Fetches active FAQs ordered by sortOrder.
   static Future<List<Map<String, dynamic>>> getFaqs() async {
+    logApi(function: 'getFaqs()', request: {});
     try {
       final qs = await _db
           .collection('faqs')
           .where('active', isEqualTo: true)
-          .orderBy('sortOrder')
           .get();
-      return qs.docs.map((e) => e.data()).toList();
+      final response = qs.docs.map((e) => e.data()).toList();
+      logApi(function: 'getFaqs()', response: response);
+      return response;
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getFaqs()', error: e.toString());
+      return [];
     } catch (e) {
+      logApi(function: 'getFaqs()', error: e.toString());
       return [];
     }
   }

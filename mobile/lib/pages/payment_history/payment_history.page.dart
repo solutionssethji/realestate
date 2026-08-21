@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/premium_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import '../../theme/theme.dart';
@@ -10,23 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
-
-// Provider for fetching payment history via Cloud Functions
-final paymentHistoryProvider =
-    FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw Exception('Unauthenticated');
-
-      final result = await FirebaseFunctions.instance
-          .httpsCallable('getCustomerPayments')
-          .call();
-      final data = result.data as Map;
-
-      if (data['success'] == true && data['payments'] != null) {
-        return List<Map<String, dynamic>>.from(data['payments']);
-      }
-      return [];
-    });
+import 'payment_history.logic.dart';
 
 class PaymentHistoryPage extends ConsumerWidget {
   const PaymentHistoryPage({super.key});
@@ -34,7 +17,7 @@ class PaymentHistoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = AppLocalizations.of(context);
-    final historyAsync = ref.watch(paymentHistoryProvider);
+    final state = ref.watch(paymentHistoryLogicProvider);
     final userPhone =
         FirebaseAuth.instance.currentUser?.phoneNumber ??
         context.l10n.yourNumberAlt;
@@ -55,49 +38,57 @@ class PaymentHistoryPage extends ConsumerWidget {
           ),
         ],
       ),
-      body: historyAsync.when(
-        data: (payments) {
-          if (payments.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    LucideIcons.receipt,
-                    size: 64,
-                    color: AppTheme.border,
-                  ),
-                  AppSpacing.hLg,
-                  Text(
-                    context.l10n.noPaymentsFoundFor(userPhone),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
+      body: _buildBody(context, state, userPhone),
+    );
+  }
 
-          return ListView.separated(
-            padding: AppSpacing.allMd,
-            itemCount: payments.length,
-            separatorBuilder: (_, __) => AppSpacing.hSm,
-            itemBuilder: (context, index) {
-              final payment = payments[index];
-              return _PaymentCard(payment: payment);
-            },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Text(
-            context.l10n.errorLoadingHistoryVerbose(error.toString()),
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: AppTheme.error),
-          ),
+  Widget _buildBody(BuildContext context, state, String userPhone) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.isError) {
+      return Center(
+        child: Text(
+          context.l10n.errorLoadingHistoryVerbose(state.errorMessage ?? 'Error'),
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: AppTheme.error),
         ),
-      ),
+      );
+    }
+
+    final payments = state.payments;
+
+    if (payments.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              LucideIcons.receipt,
+              size: 64,
+              color: AppTheme.border,
+            ),
+            AppSpacing.hLg,
+            Text(
+              context.l10n.noPaymentsFoundFor(userPhone),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: AppTheme.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: AppSpacing.allMd,
+      itemCount: payments.length,
+      separatorBuilder: (_, __) => AppSpacing.hSm,
+      itemBuilder: (context, index) {
+        final payment = payments[index];
+        return _PaymentCard(payment: payment);
+      },
     );
   }
 }

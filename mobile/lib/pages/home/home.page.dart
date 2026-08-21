@@ -23,18 +23,25 @@ class HomePage extends ConsumerWidget {
     final logic = ref.read(homeLogicProvider.notifier);
 
     return Scaffold(
-      drawer: _buildDrawer(context, loc),
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         scrolledUnderElevation: 0,
-        centerTitle: true,
-        toolbarHeight: 80,
+        centerTitle: false,
         title: Image.asset(
           'assets/logo_with_text.png',
-          height: 50,
+          height: 60,
           fit: BoxFit.contain,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: AppTheme.midnightNavy),
+            onPressed: () {
+              context.push('/home/settings');
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: logic.loadData,
@@ -183,9 +190,17 @@ class HomePage extends ConsumerWidget {
                                 width: 280,
                                 child: OfferCard(
                                   offer: state.offers[i],
-                                  onTap: () => context.push(
-                                    '/home/offers/${state.offers[i].id}',
-                                  ),
+                                  onTap: () {
+                                    final offer = state.offers[i];
+                                    if (offer.projectId != null &&
+                                        offer.projectId!.isNotEmpty) {
+                                      context.push(
+                                        '/home/project/${offer.projectId}',
+                                      );
+                                    } else {
+                                      context.push('/home/offers/${offer.id}');
+                                    }
+                                  },
                                 ),
                               ),
                               if (i !=
@@ -256,88 +271,6 @@ class HomePage extends ConsumerWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDrawer(BuildContext context, AppLocalizations loc) {
-    return Drawer(
-      child: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              child: Image.asset(
-                'assets/logo_with_text.png',
-                height: 60,
-                fit: BoxFit.contain,
-              ),
-            ),
-            const Divider(),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  ListTile(
-                    leading: const Icon(
-                      Icons.info_outline,
-                      color: AppTheme.midnightNavy,
-                    ),
-                    title: Text(loc.aboutCompany),
-                    onTap: () {
-                      Navigator.pop(context); // Close drawer
-                      context.push('/home/about');
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.contact_support_outlined,
-                      color: AppTheme.midnightNavy,
-                    ),
-                    title: Text(loc.contactUs),
-                    onTap: () {
-                      Navigator.pop(context); // Close drawer
-                      context.push('/home/contact');
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.privacy_tip_outlined,
-                      color: AppTheme.midnightNavy,
-                    ),
-                    title: Text(loc.privacyPolicy),
-                    onTap: () {
-                      Navigator.pop(context); // Close drawer
-                      context.push('/home/privacy');
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.description_outlined,
-                      color: AppTheme.midnightNavy,
-                    ),
-                    title: Text(loc.termsAndConditions),
-                    onTap: () {
-                      Navigator.pop(context); // Close drawer
-                      context.push('/home/terms');
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.help_outline,
-                      color: AppTheme.midnightNavy,
-                    ),
-                    title: Text(loc.faq),
-                    onTap: () {
-                      Navigator.pop(context); // Close drawer
-                      context.push('/home/faq');
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );

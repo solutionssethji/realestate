@@ -11,7 +11,7 @@ import '../pages/offers/offers.page.dart';
 import '../pages/offers/offer_details.page.dart';
 import '../pages/enquiry/enquiry.page.dart';
 import '../pages/site_visit/site_visit.page.dart';
-import '../pages/emi_calculator/emi_calculator.page.dart';
+import '../pages/calculator/calculator.page.dart';
 import '../pages/about/about.page.dart';
 import '../pages/contact/contact.page.dart';
 import '../pages/settings/settings.page.dart';
@@ -82,7 +82,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: 'emi-calculator',
-            builder: (context, state) => const EmiCalculatorPage(),
+            builder: (context, state) => const CalculatorPage(),
           ),
           GoRoute(
             path: 'about',

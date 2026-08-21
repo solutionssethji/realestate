@@ -3,5 +3,5 @@ flutter_icons:
   ios: true
   image_path: "assets/logo.png"
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/app_icon.png"
+  adaptive_icon_foreground: "assets/transparent_logo.png"
   remove_alpha_ios: true
