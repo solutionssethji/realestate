@@ -75,8 +75,7 @@ function AboutTab() {
 
   useEffect(() => {
     async function loadData() {
-      const global = await getSetting("global");
-      const about = global?.aboutCompany;
+      const about = await getSetting("aboutCompany");
       if (about) {
         setAboutData({
           companyProfile: { ...emptyBilingual(), ...(about.companyProfile || {}) },
@@ -117,7 +116,7 @@ function AboutTab() {
     setErrors({});
     setSaving(true);
     try {
-      await saveSetting("global", { aboutCompany: aboutData });
+      await saveSetting("aboutCompany", aboutData);
       toast.success("About Company saved successfully!");
     } catch (error) {
       toast.error("Failed to save data");
@@ -216,8 +215,7 @@ function ContactTab() {
 
   useEffect(() => {
     async function loadData() {
-      const global = await getSetting("global");
-      const contact = global?.contactUs;
+      const contact = await getSetting("contactUs");
       if (contact) {
         setContactData({
           directCall: contact.directCall || "",
@@ -257,8 +255,8 @@ function ContactTab() {
     setErrors({});
     setSaving(true);
     try {
-      await saveSetting("global", { contactUs: contactData });
-      toast.success("Contact Information saved successfully!");
+      await saveSetting("contactUs", contactData);
+      toast.success("Contact settings saved successfully!");
     } catch (error) {
       toast.error("Failed to save data");
     } finally {
@@ -330,8 +328,7 @@ function LegalTab() {
 
   useEffect(() => {
     async function loadData() {
-      const global = await getSetting("global");
-      const legal = global?.legalPolicies;
+      const legal = await getSetting("legalPolicies");
       if (legal) {
         setLegalData({
           privacyPolicy: { ...emptyBilingual(), ...(legal.privacyPolicy || {}) },
@@ -370,8 +367,8 @@ function LegalTab() {
     setErrors({});
     setSaving(true);
     try {
-      await saveSetting("global", { legalPolicies: legalData });
-      toast.success("Legal & Policies saved successfully!");
+      await saveSetting("legalPolicies", legalData);
+      toast.success("Legal policies saved successfully!");
     } catch (error) {
       toast.error("Failed to save data");
     } finally {

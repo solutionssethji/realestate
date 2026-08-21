@@ -17,34 +17,39 @@ class CmsService {
   /// Fetches global Contact and About settings.
   static Future<CompanyInfo?> getContactInfo(String langCode) async {
     try {
-      final doc = await _db.collection('setting').doc('global').get();
-      if (doc.exists && doc.data() != null) {
-        final data = doc.data()!;
-        final about = data['aboutCompany'] ?? {};
-        final contact = data['contactUs'] ?? {};
+      final aboutDoc = await _db
+          .collection('setting')
+          .doc('aboutCompany')
+          .get();
+      final contactDoc = await _db.collection('setting').doc('contactUs').get();
 
-        final whyChooseUsRaw = _getBilingual(about['whyChooseUs'], langCode);
-        final whyChooseUsList = whyChooseUsRaw.isEmpty 
-            ? <String>[] 
-            : whyChooseUsRaw.split('\n').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      final about = aboutDoc.exists ? aboutDoc.data() ?? {} : {};
+      final contact = contactDoc.exists ? contactDoc.data() ?? {} : {};
 
-        return CompanyInfo(
-          name: 'Shubhaytanam', // Or add this to DB later
-          about: _getBilingual(about['companyProfile'], langCode),
-          vision: _getBilingual(about['vision'], langCode),
-          mission: _getBilingual(about['mission'], langCode),
-          whyChooseUs: whyChooseUsList,
-          officeAddress: _getBilingual(contact['officeLocation'], langCode),
-          latitude: (contact['latitude'] as num?)?.toDouble() ?? 0.0,
-          longitude: (contact['longitude'] as num?)?.toDouble() ?? 0.0,
-          phone: contact['directCall']?.toString() ?? '',
-          whatsapp: contact['whatsapp']?.toString() ?? '',
-          email: contact['email']?.toString() ?? '',
-          googleMapsUrl: contact['googleMaps']?.toString() ?? '',
-          contactNumberDisplay: _getBilingual(contact['contactNumber'], langCode),
-        );
-      }
-      return null;
+      final whyChooseUsRaw = _getBilingual(about['whyChooseUs'], langCode);
+      final whyChooseUsList = whyChooseUsRaw.isEmpty
+          ? <String>[]
+          : whyChooseUsRaw
+                .split('\n')
+                .map((e) => e.trim())
+                .where((e) => e.isNotEmpty)
+                .toList();
+
+      return CompanyInfo(
+        name: 'Shubhaytanam', // Or add this to DB later
+        about: _getBilingual(about['companyProfile'], langCode),
+        vision: _getBilingual(about['vision'], langCode),
+        mission: _getBilingual(about['mission'], langCode),
+        whyChooseUs: whyChooseUsList,
+        officeAddress: _getBilingual(contact['officeLocation'], langCode),
+        latitude: (contact['latitude'] as num?)?.toDouble() ?? 0.0,
+        longitude: (contact['longitude'] as num?)?.toDouble() ?? 0.0,
+        phone: contact['directCall']?.toString() ?? '',
+        whatsapp: contact['whatsapp']?.toString() ?? '',
+        email: contact['email']?.toString() ?? '',
+        googleMapsUrl: contact['googleMaps']?.toString() ?? '',
+        contactNumberDisplay: _getBilingual(contact['contactNumber'], langCode),
+      );
     } catch (e) {
       return null;
     }
@@ -53,10 +58,9 @@ class CmsService {
   /// Fetches the configured Currency from Firebase.
   static Future<Map<String, String>> getCurrencyConfig() async {
     try {
-      final doc = await _db.collection('setting').doc('global').get();
+      final doc = await _db.collection('setting').doc('currencyConfig').get();
       if (doc.exists && doc.data() != null) {
-        final data = doc.data()!;
-        final currency = data['currencyConfig'] ?? {};
+        final currency = doc.data()!;
         if (currency.isNotEmpty) {
           return {
             'code': currency['code']?.toString() ?? 'INR',
@@ -74,12 +78,14 @@ class CmsService {
   /// Fetches legal/public content like terms or privacy.
   static Future<Map<String, String>?> getPublicContent(String langCode) async {
     try {
-      final doc = await _db.collection('setting').doc('global').get();
+      final doc = await _db.collection('setting').doc('legalPolicies').get();
       if (doc.exists && doc.data() != null) {
-        final data = doc.data()!;
-        final legal = data['legalPolicies'] ?? {};
+        final legal = doc.data()!;
         return {
-          'termsAndConditions': _getBilingual(legal['termsAndConditions'], langCode),
+          'termsAndConditions': _getBilingual(
+            legal['termsAndConditions'],
+            langCode,
+          ),
           'privacyPolicy': _getBilingual(legal['privacyPolicy'], langCode),
         };
       }
