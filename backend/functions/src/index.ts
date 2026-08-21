@@ -9,3 +9,4 @@ export * from './payments';
 export * from './plots';
 export * from './notifications';
 export * from './transactions';
+export * from './offers';

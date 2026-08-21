@@ -32,18 +32,24 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const admin = __importStar(require("firebase-admin"));
-// Initialize the Firebase Admin SDK
 admin.initializeApp();
-// Export Cloud Functions
-__exportStar(require("./admin"), exports);
-__exportStar(require("./payments"), exports);
-__exportStar(require("./plots"), exports);
-__exportStar(require("./notifications"), exports);
-__exportStar(require("./transactions"), exports);
-__exportStar(require("./offers"), exports);
-//# sourceMappingURL=index.js.map
+const db = admin.firestore();
+async function run() {
+    const searchQuery = "1";
+    let baseQuery = db.collection("plots");
+    baseQuery = baseQuery.where("plotNumber", ">=", searchQuery);
+    baseQuery = baseQuery.where("plotNumber", "<=", searchQuery + "\uf8ff");
+    baseQuery = baseQuery.orderBy("plotNumber", "asc");
+    try {
+        const snap = await baseQuery.get();
+        console.log(`Found ${snap.docs.length} plots`);
+        snap.docs.forEach((d) => console.log(d.data().plotNumber));
+    }
+    catch (e) {
+        console.error("Error:", e);
+    }
+}
+run().catch(console.error);
+//# sourceMappingURL=test_search.js.map

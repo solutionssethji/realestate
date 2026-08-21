@@ -32,18 +32,36 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.expireOldOffers = void 0;
+const scheduler_1 = require("firebase-functions/v2/scheduler");
 const admin = __importStar(require("firebase-admin"));
-// Initialize the Firebase Admin SDK
-admin.initializeApp();
-// Export Cloud Functions
-__exportStar(require("./admin"), exports);
-__exportStar(require("./payments"), exports);
-__exportStar(require("./plots"), exports);
-__exportStar(require("./notifications"), exports);
-__exportStar(require("./transactions"), exports);
-__exportStar(require("./offers"), exports);
-//# sourceMappingURL=index.js.map
+/**
+ * Scheduled function that runs every 12 hours.
+ * It finds all offers that are currently 'active' but have an 'endDate'
+ * in the past, and updates their status to inactive.
+ * This prevents the admin from having to manually uncheck the active status.
+ */
+exports.expireOldOffers = (0, scheduler_1.onSchedule)('every 12 hours', async (event) => {
+    const db = admin.firestore();
+    const nowIso = new Date().toISOString();
+    // Find offers that are active but their endDate has passed
+    const expiredOffersQuery = await db
+        .collection('offers')
+        .where('status', '==', 'ACTIVE')
+        .where('endDate', '<', nowIso)
+        .get();
+    if (expiredOffersQuery.empty) {
+        console.log('No expired offers found to deactivate.');
+        return;
+    }
+    const batch = db.batch();
+    let count = 0;
+    expiredOffersQuery.forEach((doc) => {
+        batch.update(doc.ref, { status: 'EXPIRED' });
+        count++;
+    });
+    await batch.commit();
+    console.log(`Successfully deactivated ${count} expired offers.`);
+});
+//# sourceMappingURL=offers.js.map

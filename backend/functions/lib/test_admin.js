@@ -32,18 +32,22 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const admin = __importStar(require("firebase-admin"));
-// Initialize the Firebase Admin SDK
-admin.initializeApp();
-// Export Cloud Functions
-__exportStar(require("./admin"), exports);
-__exportStar(require("./payments"), exports);
-__exportStar(require("./plots"), exports);
-__exportStar(require("./notifications"), exports);
-__exportStar(require("./transactions"), exports);
-__exportStar(require("./offers"), exports);
-//# sourceMappingURL=index.js.map
+// Initialize Firebase Admin (make sure we use the default app or supply a service account if needed)
+try {
+    admin.initializeApp();
+}
+catch (e) { }
+async function run() {
+    const db = admin.firestore();
+    const snapshot = await db.collection("plots").limit(3).get();
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        console.log(`ID: ${doc.id}`);
+        console.log(`Plot Number: ${typeof data.plotNumber} ${data.plotNumber}`);
+        console.log('---');
+    });
+}
+run().catch(console.error);
+//# sourceMappingURL=test_admin.js.map
