@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -17,6 +18,7 @@ const navItems = [
   { name: "Offers", href: "/offers", icon: Tag },
   { name: "Enquiries", href: "/enquiries", icon: PhoneIncoming },
   { name: "Site Visits", href: "/site-visits", icon: CalendarCheck },
+  { name: "Transactions", href: "/transactions", icon: CreditCard },
 
   { name: "FAQs", href: "/faq", icon: HelpCircle },
   { name: "Settings", href: "/settings", icon: Settings },
@@ -124,8 +126,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Main Body */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-5">
-          {children}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-5 relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
     </div>

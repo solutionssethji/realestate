@@ -54,8 +54,9 @@ export default function PlotsListPage() {
   } = useServerPagination({
     endpoint: "/plots",
     searchField: "plotNumber",
-    searchQuery,
-    filters
+    searchQuery: searchQuery.toUpperCase(),
+    filters,
+    capitalizeSearch: false
   });
 
   useEffect(() => {
@@ -119,12 +120,10 @@ export default function PlotsListPage() {
       const isCurrentlyActive = plot.isActive !== false;
       const newStatus = !isCurrentlyActive;
 
-      // Optimistic update
       setPlots(plots.map(p => p.id === plot.id ? { ...p, isActive: newStatus } : p) as any);
       await api.put(`/plots/${plot.id}`, { ...plot, isActive: newStatus });
       toast.success(newStatus ? "Plot enabled successfully" : "Plot disabled successfully");
     } catch (error: any) {
-      // Revert on error
       setPlots(plots.map(p => p.id === plot.id ? { ...p, isActive: plot.isActive } : p) as any);
       toast.error("Failed to update plot visibility");
     }

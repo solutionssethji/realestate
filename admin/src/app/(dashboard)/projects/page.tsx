@@ -29,17 +29,21 @@ export default function ProjectsListPage() {
     onConfirm: () => void;
     isDanger?: boolean;
     confirmText?: string;
-  }>({ isOpen: false, title: "", message: "", onConfirm: () => {} });
-  
+  }>({ isOpen: false, title: "", message: "", onConfirm: () => { } });
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
-  
+
   const filters: any[] = [];
   if (statusFilter === "ACTIVE") filters.push({ field: "isActive", operator: "==", value: true });
   if (statusFilter === "INACTIVE") filters.push({ field: "isActive", operator: "==", value: false });
   if (["UPCOMING", "ONGOING", "COMPLETED"].includes(statusFilter)) {
     filters.push({ field: "developmentStatus", operator: "==", value: statusFilter });
   }
+
+  // Detect if the search query contains Hindi characters
+  const isHindi = (text: string) => /[\u0900-\u097F]/.test(text);
+  const currentSearchField = isHindi(searchQuery) ? "name.hi" : "name.en";
 
   const {
     data: projects,
@@ -51,9 +55,10 @@ export default function ProjectsListPage() {
     handlePrevPage
   } = useServerPagination({
     endpoint: "/projects",
-    searchField: "name",
+    searchField: currentSearchField,
     searchQuery,
-    filters
+    filters,
+    capitalizeSearch: true
   });
 
   async function handleDelete(id: string, name: string) {
@@ -83,12 +88,10 @@ export default function ProjectsListPage() {
       const isCurrentlyActive = project.isActive !== false;
       const newStatus = !isCurrentlyActive;
 
-      // Optimistic update
       setProjects(projects.map(p => p.id === project.id ? { ...p, isActive: newStatus } : p));
       await api.put(`/projects/${project.id}`, { ...project, isActive: newStatus });
       toast.success(newStatus ? "Project enabled successfully" : "Project disabled successfully");
     } catch (error: any) {
-      // Revert on error
       setProjects(projects.map(p => p.id === project.id ? { ...p, isActive: project.isActive } : p));
       toast.error("Failed to update project visibility");
     }
@@ -101,7 +104,7 @@ export default function ProjectsListPage() {
       setStatusLoading(projectId);
       const project = projects.find(p => p.id === projectId);
       if (!project) return;
-      
+
       const statusMap: Record<string, { en: string; hi: string }> = {
         Upcoming: { en: 'Upcoming', hi: 'आगामी' },
         Ongoing: { en: 'Ongoing', hi: 'जारी है' },
@@ -109,10 +112,10 @@ export default function ProjectsListPage() {
       };
 
       const newStatusObj = statusMap[newStatusKey] || { en: newStatusKey, hi: newStatusKey };
-      
+
       const updatedProject = { ...project, developmentStatus: newStatusObj };
       await api.put(`/projects/${projectId}`, updatedProject);
-      
+
       setProjects(projects.map(p => p.id === projectId ? updatedProject : p));
       toast.success("Project status updated successfully");
     } catch (error) {
@@ -237,7 +240,7 @@ export default function ProjectsListPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search projects by name or location..."
+            placeholder="Search projects by name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"

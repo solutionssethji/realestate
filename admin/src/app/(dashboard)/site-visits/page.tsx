@@ -61,7 +61,8 @@ function SiteVisitsContent() {
     endpoint: "/site-visits",
     searchField: "customerName",
     searchQuery,
-    filters
+    filters,
+    capitalizeSearch: true
   });
 
   useEffect(() => {
@@ -123,12 +124,13 @@ function SiteVisitsContent() {
 
   const columns = [
     {
-      header: t('created'),
-      key: "createdAt",
+      header: t('date time'),
+      key: "preferredDate",
       render: (visit: SiteVisit) => (
-        <span className="text-sm font-medium text-slate-700">
-          {formatDateTime(visit.createdAt)}
-        </span>
+        <div>
+          <div className="font-bold text-slate-900">{formatDateTime(visit.preferredDate).split(',')[0]}</div>
+          <div className="text-xs text-slate-500 mt-0.5">{visit.preferredTime || "Time not specified"}</div>
+        </div>
       )
     },
     {
@@ -137,18 +139,15 @@ function SiteVisitsContent() {
       render: (visit: SiteVisit) => (
         <div>
           <div className="font-bold text-slate-900">{visit.customerName}</div>
-          <div className="text-xs text-slate-500 mt-0.5">{visit.mobileNumber}</div>
+          {visit.email && <div className="text-xs text-slate-500 mt-0.5">{visit.email}</div>}
         </div>
       )
     },
     {
-      header: t('scheduled_for'),
-      key: "scheduled",
+      header: t('mobile'),
+      key: "mobileNumber",
       render: (visit: SiteVisit) => (
-        <div>
-          <div className="font-bold text-slate-900">{visit.preferredDate || 'Not specified'}</div>
-          <div className="text-xs text-slate-500 mt-0.5">{visit.preferredTime || ''}</div>
-        </div>
+        <span className="font-medium text-slate-700">{visit.mobileNumber}</span>
       )
     },
     {
@@ -164,10 +163,10 @@ function SiteVisitsContent() {
               onChange={(e) => handleQuickStatusUpdate(visit.id, e.target.value)}
               className="text-xs font-bold rounded-full px-3 py-1 border outline-none appearance-none cursor-pointer transition-colors bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 pr-6 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:0.5rem_0.5rem] bg-[position:right_0.5rem_center] bg-no-repeat"
             >
-              <option value="NEW">{t('new_status')}</option>
-              <option value="CONFIRMED">{t('confirmed')}</option>
+              <option value="SCHEDULED">{t('scheduled')}</option>
               <option value="COMPLETED">{t('completed')}</option>
               <option value="CANCELLED">{t('cancelled')}</option>
+              <option value="RESCHEDULED">{t('rescheduled')}</option>
             </select>
           )}
         </div>
@@ -199,7 +198,7 @@ function SiteVisitsContent() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder={t('search_by_name_mobile')}
+            placeholder="Search by customer name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"

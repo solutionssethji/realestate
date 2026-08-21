@@ -59,7 +59,8 @@ export default function EnquiriesPage() {
     endpoint: "/enquiries",
     searchField: "customerName",
     searchQuery,
-    filters
+    filters,
+    capitalizeSearch: true
   });
 
 
@@ -99,8 +100,6 @@ export default function EnquiriesPage() {
       setUpdating(false);
     }
   };
-
-  // Filtered dynamically by useServerPagination
 
   const columns = [
     {
@@ -179,7 +178,7 @@ export default function EnquiriesPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder={t('search_by_name_mobile')}
+            placeholder="Search by customer name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"

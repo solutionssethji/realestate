@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface DataTableProps {
   columns: { header: string; key: string; render?: (item: any) => React.ReactNode }[];
@@ -15,11 +16,11 @@ interface DataTableProps {
   hasPrevPage?: boolean;
 }
 
-export const DataTable = ({ 
-  columns, 
-  data, 
-  isLoading, 
-  emptyState, 
+export const DataTable = ({
+  columns,
+  data,
+  isLoading,
+  emptyState,
   itemsPerPage = 10,
   isServerSide = false,
   onNextPage,
@@ -51,7 +52,7 @@ export const DataTable = ({
 
   let paginatedData = data;
   let showPagination = false;
-  
+
   if (isServerSide) {
     showPagination = hasNextPage || hasPrevPage;
   } else {
@@ -75,17 +76,35 @@ export const DataTable = ({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <motion.tbody
+            className="divide-y divide-slate-100"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.05
+                }
+              }
+            }}
+          >
             {paginatedData.map((item, rowIndex) => (
-              <tr key={item.id || rowIndex} className="hover:bg-slate-50/80 transition-colors duration-150">
+              <motion.tr
+                key={item.id || rowIndex}
+                className="hover:bg-slate-50/80 transition-colors duration-150"
+                variants={{
+                  hidden: { opacity: 0, y: 10 },
+                  visible: { opacity: 1, y: 0 }
+                }}
+              >
                 {columns.map((col, colIndex) => (
                   <td key={colIndex} className="px-6 py-4 whitespace-nowrap">
                     {col.render ? col.render(item) : item[col.key]}
                   </td>
                 ))}
-              </tr>
+              </motion.tr>
             ))}
-          </tbody>
+          </motion.tbody>
         </table>
       </div>
 
@@ -114,13 +133,13 @@ export const DataTable = ({
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            
+
             {!isServerSide && (
               <div className="text-sm font-medium text-slate-700 px-2">
                 Page {clientPage} of {Math.ceil(data.length / itemsPerPage)}
               </div>
             )}
-            
+
             <button
               onClick={() => {
                 if (isServerSide && onNextPage) {

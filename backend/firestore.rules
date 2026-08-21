@@ -58,6 +58,11 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
+    // TRANSACTIONS
+    match /transactions/{transactionId} {
+      allow read, write: if isAdmin();
+    }
+    
     // ADMINS
     match /admins/{adminId} {
       allow read: if true; // Allow public read so forgot-password can query email
@@ -65,12 +70,13 @@ service cloud.firestore {
     }
     
     // APP SETTINGS & CONTENT
-    match /appSettings/{settingId} {
+    
+    match /setting/{settingId} {
       allow read: if true;
       allow write: if isAdmin();
     }
     
-    match /content/{contentId} {
+    match /faqs/{faqId} {
       allow read: if true;
       allow write: if isAdmin();
     }

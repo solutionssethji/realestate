@@ -33,6 +33,10 @@ export default function OffersListPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Detect if the search query contains Hindi characters
+  const isHindi = (text: string) => /[\u0900-\u097F]/.test(text);
+  const currentSearchField = isHindi(searchQuery) ? "title.hi" : "title.en";
+
   const {
     data: offers,
     setData: setOffers,
@@ -43,9 +47,10 @@ export default function OffersListPage() {
     handlePrevPage
   } = useServerPagination({
     endpoint: "/offers",
-    searchField: "title",
+    searchField: currentSearchField,
     searchQuery,
-    filters: []
+    filters: [],
+    capitalizeSearch: true
   });
 
   useEffect(() => {
@@ -87,49 +92,43 @@ export default function OffersListPage() {
       const isCurrentlyActive = offer.active !== false;
       const newStatus = !isCurrentlyActive;
 
-      // Optimistic update
       setOffers(offers.map(o => o.id === offer.id ? { ...o, active: newStatus } : o));
       await api.put(`/offers/${offer.id}`, { ...offer, active: newStatus });
       toast.success(newStatus ? "Offer enabled successfully" : "Offer disabled successfully");
     } catch (error: any) {
-      // Revert on error
       setOffers(offers.map(o => o.id === offer.id ? { ...o, active: offer.active } : o));
       toast.error("Failed to update offer visibility");
     }
   }
 
-  // Filtered dynamically by useServerPagination
-
   const columns = [
     {
-      header: t('offer_title'),
+      header: t('offer'),
       key: "title",
-      render: (offer: any) => (
-        <div className="flex items-center">
-          {offer.image ? (
-            <img className="h-12 w-12 rounded-xl object-cover shadow-sm" src={offer.image} alt="" />
-          ) : (
-            <div className="h-12 w-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center shadow-sm">
-              <Tag className="h-6 w-6 text-slate-400" />
-            </div>
-          )}
-          <div className="ml-4">
-            <div className="text-sm font-bold text-slate-900">{offer.title?.en || (typeof offer.title === 'string' ? offer.title : 'Offer')}</div>
-            <div className="text-sm text-slate-500 line-clamp-1 mt-0.5">{offer.description?.en || (typeof offer.description === 'string' ? offer.description : '')}</div>
+      render: (offer: any) => {
+        const project = projects.find(p => p.id === offer.projectId);
+        return (
+          <div>
+            <div className="font-bold text-slate-900">{offer.title?.en || (typeof offer.title === 'string' ? offer.title : 'Offer')}</div>
+            <div className="text-sm text-slate-500 mt-1 line-clamp-1">{offer.description?.en || (typeof offer.description === 'string' ? offer.description : '')}</div>
+            {project && (
+              <div className="inline-flex items-center mt-2 px-2 py-1 rounded-md bg-slate-100 text-xs font-medium text-slate-600">
+                <Tag className="h-3 w-3 mr-1" />
+                {project.name?.en || project.name}
+              </div>
+            )}
           </div>
-        </div>
-      )
+        );
+      }
     },
     {
-      header: t('project'),
-      key: "project",
+      header: "Discount",
+      key: "discount",
       render: (offer: any) => {
-        const project = projects.find((p: any) => p.id === offer.projectId);
-        return (
-          <span className="font-medium text-slate-700">
-            {project?.name || "Global Offer"}
-          </span>
-        );
+        if (offer.discountType === 'PERCENTAGE') {
+          return <span className="font-bold text-green-600">{offer.discountValue}% OFF</span>;
+        }
+        return <span className="font-bold text-green-600">₹{offer.discountValue} OFF</span>;
       }
     },
     {
@@ -137,8 +136,8 @@ export default function OffersListPage() {
       key: "validity",
       render: (offer: any) => (
         <div className="text-sm">
-          <div className="text-slate-900">{new Date(offer.startDate).toLocaleDateString()}</div>
-          <div className="text-slate-500 text-xs mt-0.5">to {new Date(offer.endDate).toLocaleDateString()}</div>
+          <div className="text-slate-900">From: {new Date(offer.startDate).toLocaleDateString()}</div>
+          <div className="text-slate-500">To: {new Date(offer.endDate).toLocaleDateString()}</div>
         </div>
       )
     },
@@ -146,7 +145,9 @@ export default function OffersListPage() {
       header: t('status'),
       key: "status",
       render: (offer: any) => (
-        <StatusBadge status={offer.active ? 'ACTIVE' : 'INACTIVE'} />
+        <StatusBadge
+          status={offer.active !== false ? 'ACTIVE' : 'INACTIVE'}
+        />
       )
     },
     {
@@ -171,6 +172,7 @@ export default function OffersListPage() {
           </Link>
           <button
             onClick={() => handleDelete(offer.id, offer.title?.en || (typeof offer.title === 'string' ? offer.title : 'Offer'))}
+            title="Delete Offer"
             disabled={deleteLoading === offer.id}
             className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
           >
@@ -195,8 +197,9 @@ export default function OffersListPage() {
         }
       />
 
-      <div className="flex mb-6">
-        <div className="relative flex-1 max-w-md">
+      {/* Toolbar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"

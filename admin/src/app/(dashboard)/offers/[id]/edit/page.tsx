@@ -32,6 +32,8 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
     image: "",
     startDate: "",
     endDate: "",
+    discountType: "PERCENTAGE",
+    discountValue: "",
     active: true,
   });
 
@@ -53,6 +55,8 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
             image: offer.image || "",
             startDate: offer.startDate ? new Date(offer.startDate).toISOString().split('T')[0] : "",
             endDate: offer.endDate ? new Date(offer.endDate).toISOString().split('T')[0] : "",
+            discountType: offer.discountType || "PERCENTAGE",
+            discountValue: offer.discountValue?.toString() || "",
             active: offer.active !== false,
           });
         }
@@ -95,6 +99,7 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
     if (!formData.description.hi?.trim()) newErrors.description_hi = "Hindi description is required";
     if (!formData.startDate) newErrors.startDate = "Start date is required";
     if (!formData.endDate) newErrors.endDate = "End date is required";
+    if (!formData.discountValue) newErrors.discountValue = "Discount value is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -122,6 +127,8 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
         projectId: formData.projectId || null, // Ensure null instead of "" for global
         startDate: new Date(formData.startDate).toISOString(),
         endDate: new Date(formData.endDate).toISOString(),
+        discountType: formData.discountType,
+        discountValue: Number(formData.discountValue) || 0,
       };
 
       await api.put(`/offers/${id}`, payload);
@@ -163,6 +170,31 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
                   ...projects.map((p: any) => ({ value: p.id, label: typeof p.name === 'string' ? p.name : (p.name?.en || 'Unnamed Project') }))
                 ]}
                 helperText="Leave empty to make this a global offer across all projects."
+              />
+            </div>
+
+            <div className="md:col-span-1">
+              <Select
+                label="Discount Type"
+                name="discountType"
+                value={formData.discountType}
+                onChange={handleChange}
+                options={[
+                  { value: "PERCENTAGE", label: "Percentage (%)" },
+                  { value: "FLAT", label: "Flat Amount (₹)" }
+                ]}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <Input
+                label="Discount Value"
+                name="discountValue"
+                type="number"
+                required
+                value={formData.discountValue}
+                onChange={handleChange}
+                error={errors.discountValue}
+                placeholder="e.g. 10"
               />
             </div>
 
