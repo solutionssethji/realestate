@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Building2, Loader2, CheckCircle2 } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'react-hot-toast';
+import { validateStrongPassword } from "@/lib/validators";
 
 function ResetPasswordForm() {
   const { t } = useLanguage();
@@ -15,6 +16,8 @@ function ResetPasswordForm() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -26,6 +29,12 @@ function ResetPasswordForm() {
     }
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
+      return;
+    }
+
+    const passwordError = validateStrongPassword(password);
+    if (passwordError) {
+      toast.error(passwordError);
       return;
     }
 
@@ -80,9 +89,31 @@ function ResetPasswordForm() {
             required
             minLength={6}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            onChange={(e) => {
+              const val = e.target.value;
+              setPassword(val);
+              if (!val) {
+                setPasswordError("New password is required");
+              } else {
+                setPasswordError(validateStrongPassword(val));
+              }
+
+              if (confirmPassword && val !== confirmPassword) {
+                setConfirmPasswordError("Passwords do not match");
+              } else if (confirmPassword && val === confirmPassword) {
+                setConfirmPasswordError(null);
+              }
+            }}
+            onBlur={() => {
+              if (!password) {
+                setPasswordError("New password is required");
+              } else {
+                setPasswordError(validateStrongPassword(password));
+              }
+            }}
+            className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${passwordError ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
           />
+          {passwordError && <p className="mt-1.5 text-sm text-red-600">{passwordError}</p>}
         </div>
       </div>
 
@@ -94,10 +125,37 @@ function ResetPasswordForm() {
             required
             minLength={6}
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            onChange={(e) => {
+              const val = e.target.value;
+              setConfirmPassword(val);
+              if (!val) {
+                setConfirmPasswordError("Please confirm your new password");
+              } else if (val !== password) {
+                setConfirmPasswordError("Passwords do not match");
+              } else {
+                setConfirmPasswordError(null);
+              }
+            }}
+            onBlur={() => {
+              if (!confirmPassword) {
+                setConfirmPasswordError("Please confirm your new password");
+              } else if (confirmPassword !== password) {
+                setConfirmPasswordError("Passwords do not match");
+              }
+            }}
+            className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${confirmPasswordError ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
           />
+          {confirmPasswordError && <p className="mt-1.5 text-sm text-red-600">{confirmPasswordError}</p>}
         </div>
+      </div>
+
+      <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+        <p className="text-sm text-blue-800 font-medium mb-1">Password Requirements:</p>
+        <ul className="text-xs text-blue-600/80 list-disc list-inside space-y-0.5">
+          <li>Must be at least 8 characters</li>
+          <li>1 uppercase and 1 lowercase letter</li>
+          <li>1 number and 1 special character</li>
+        </ul>
       </div>
 
       <div>

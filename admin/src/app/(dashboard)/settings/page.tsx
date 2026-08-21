@@ -11,6 +11,7 @@ import { Loader2, Info, Phone, FileText, Lock } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { validateStrongPassword } from "@/lib/validators";
 
 export default function SettingsDashboard() {
   const [activeTab, setActiveTab] = useState("about");
@@ -446,13 +447,21 @@ function SecurityTab() {
     if (!currentPassword) newErrors.currentPassword = "Current password is required";
     if (!newPassword) newErrors.newPassword = "New password is required";
     if (!confirmPassword) newErrors.confirmPassword = "Please confirm your new password";
-    if (newPassword && newPassword.length < 6) newErrors.newPassword = "Password must be at least 6 characters long";
+    
+    if (newPassword) {
+      const passwordError = validateStrongPassword(newPassword);
+      if (passwordError) {
+        newErrors.newPassword = passwordError;
+      }
+    }
+    
     if (newPassword && confirmPassword && newPassword !== confirmPassword) {
       newErrors.confirmPassword = "New passwords do not match";
     }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      toast.error("Please fix the validation errors.");
       return;
     }
 
@@ -501,8 +510,18 @@ function SecurityTab() {
           value={currentPassword}
           error={errors.currentPassword}
           onChange={(e) => {
-            setCurrentPassword(e.target.value);
-            if (errors.currentPassword) setErrors({ ...errors, currentPassword: "" });
+            const val = e.target.value;
+            setCurrentPassword(val);
+            if (!val) {
+              setErrors(prev => ({ ...prev, currentPassword: "Current password is required" }));
+            } else {
+              setErrors(prev => { const next = { ...prev }; delete next.currentPassword; return next; });
+            }
+          }}
+          onBlur={() => {
+            if (!currentPassword) {
+              setErrors(prev => ({ ...prev, currentPassword: "Current password is required" }));
+            }
           }}
         />
         <Input
@@ -512,8 +531,34 @@ function SecurityTab() {
           value={newPassword}
           error={errors.newPassword}
           onChange={(e) => {
-            setNewPassword(e.target.value);
-            if (errors.newPassword) setErrors({ ...errors, newPassword: "" });
+            const val = e.target.value;
+            setNewPassword(val);
+            if (!val) {
+              setErrors(prev => ({ ...prev, newPassword: "New password is required" }));
+            } else {
+              const err = validateStrongPassword(val);
+              if (err) {
+                setErrors(prev => ({ ...prev, newPassword: err }));
+              } else {
+                setErrors(prev => { const next = { ...prev }; delete next.newPassword; return next; });
+              }
+            }
+            
+            if (confirmPassword && val !== confirmPassword) {
+              setErrors(prev => ({ ...prev, confirmPassword: "New passwords do not match" }));
+            } else if (confirmPassword && val === confirmPassword) {
+              setErrors(prev => { const next = { ...prev }; delete next.confirmPassword; return next; });
+            }
+          }}
+          onBlur={() => {
+            if (!newPassword) {
+              setErrors(prev => ({ ...prev, newPassword: "New password is required" }));
+            } else {
+              const err = validateStrongPassword(newPassword);
+              if (err) {
+                setErrors(prev => ({ ...prev, newPassword: err }));
+              }
+            }
           }}
         />
         <Input
@@ -523,10 +568,34 @@ function SecurityTab() {
           value={confirmPassword}
           error={errors.confirmPassword}
           onChange={(e) => {
-            setConfirmPassword(e.target.value);
-            if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: "" });
+            const val = e.target.value;
+            setConfirmPassword(val);
+            if (!val) {
+              setErrors(prev => ({ ...prev, confirmPassword: "Please confirm your new password" }));
+            } else if (val !== newPassword) {
+              setErrors(prev => ({ ...prev, confirmPassword: "New passwords do not match" }));
+            } else {
+              setErrors(prev => { const next = { ...prev }; delete next.confirmPassword; return next; });
+            }
+          }}
+          onBlur={() => {
+            if (!confirmPassword) {
+              setErrors(prev => ({ ...prev, confirmPassword: "Please confirm your new password" }));
+            } else if (confirmPassword !== newPassword) {
+              setErrors(prev => ({ ...prev, confirmPassword: "New passwords do not match" }));
+            }
           }}
         />
+        
+        <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+          <p className="text-sm text-blue-800 font-medium mb-1">Password Requirements:</p>
+          <ul className="text-xs text-blue-600/80 list-disc list-inside space-y-0.5">
+            <li>Must be at least 8 characters</li>
+            <li>1 uppercase and 1 lowercase letter</li>
+            <li>1 number and 1 special character</li>
+          </ul>
+        </div>
+
         <div className="pt-2">
           <Button type="submit" isLoading={loading} className="w-full">
             Update Password
