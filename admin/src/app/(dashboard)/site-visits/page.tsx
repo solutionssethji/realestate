@@ -126,12 +126,24 @@ function SiteVisitsContent() {
     {
       header: t('date time'),
       key: "preferredDate",
-      render: (visit: SiteVisit) => (
-        <div>
-          <div className="font-bold text-slate-900">{formatDateTime(visit.preferredDate).split(',')[0]}</div>
-          <div className="text-xs text-slate-500 mt-0.5">{visit.preferredTime || "Time not specified"}</div>
-        </div>
-      )
+      render: (visit: SiteVisit) => {
+        let dateStr = "N/A";
+        try {
+          if (visit.preferredDate) {
+            const d = new Date(visit.preferredDate);
+            if (!isNaN(d.getTime())) {
+              dateStr = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+            }
+          }
+        } catch (e) {}
+        
+        return (
+          <div>
+            <div className="font-bold text-slate-900">{dateStr}</div>
+            <div className="text-xs text-slate-500 mt-0.5">{visit.preferredTime || "Time not specified"}</div>
+          </div>
+        );
+      }
     },
     {
       header: t('customer'),

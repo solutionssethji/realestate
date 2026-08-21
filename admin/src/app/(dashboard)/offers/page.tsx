@@ -119,15 +119,24 @@ export default function OffersListPage() {
       render: (offer: any) => {
         const project = projects.find(p => p.id === offer.projectId);
         return (
-          <div>
-            <div className="font-bold text-slate-900">{offer.title?.en || (typeof offer.title === 'string' ? offer.title : 'Offer')}</div>
-            <div className="text-sm text-slate-500 mt-1 line-clamp-1">{offer.description?.en || (typeof offer.description === 'string' ? offer.description : '')}</div>
-            {project && (
-              <div className="inline-flex items-center mt-2 px-2 py-1 rounded-md bg-slate-100 text-xs font-medium text-slate-600">
-                <Tag className="h-3 w-3 mr-1" />
-                {project.name?.en || project.name}
+          <div className="flex items-center">
+            {offer.image ? (
+              <img className="h-12 w-12 rounded-xl object-cover shadow-sm" src={offer.image} alt={offer.title?.en || 'Offer'} />
+            ) : (
+              <div className="h-12 w-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center shadow-sm">
+                <Tag className="h-6 w-6 text-slate-400" />
               </div>
             )}
+            <div className="ml-4 flex-1">
+              <div className="font-bold text-slate-900 text-base">{offer.title?.en || (typeof offer.title === 'string' ? offer.title : 'Offer')}</div>
+              <div className="text-sm text-slate-500 mt-1 line-clamp-1">{offer.description?.en || (typeof offer.description === 'string' ? offer.description : '')}</div>
+              {project && (
+                <div className="inline-flex items-center mt-2 px-2 py-1 rounded-md bg-indigo-50 border border-indigo-100 text-xs font-medium text-indigo-700">
+                  <Tag className="h-3 w-3 mr-1" />
+                  {project.name?.en || (typeof project.name === 'string' ? project.name : 'Project')}
+                </div>
+              )}
+            </div>
           </div>
         );
       }
@@ -162,11 +171,10 @@ export default function OffersListPage() {
             value={currentVal}
             onChange={(e) => handleStatusChange(offer.id, e.target.value)}
             disabled={statusLoading === offer.id || currentVal === 'EXPIRED'}
-            className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium border focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${
-              currentVal === 'ACTIVE' ? 'bg-green-50 text-green-800 border-green-200' :
-              currentVal === 'INACTIVE' ? 'bg-slate-50 text-slate-800 border-slate-200' :
-              'bg-red-50 text-red-800 border-red-200'
-            }`}
+            className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium border focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${currentVal === 'ACTIVE' ? 'bg-green-50 text-green-800 border-green-200' :
+                currentVal === 'INACTIVE' ? 'bg-slate-50 text-slate-800 border-slate-200' :
+                  'bg-red-50 text-red-800 border-red-200'
+              }`}
           >
             <option value="ACTIVE">Active</option>
             <option value="INACTIVE">Inactive</option>

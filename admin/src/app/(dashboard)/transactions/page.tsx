@@ -48,11 +48,19 @@ export default function TransactionsPage() {
     {
       header: "Date",
       key: "createdAt",
-      render: (txn: any) => (
-        <span className="text-sm font-medium text-slate-700">
-          {txn.createdAt ? formatDateTime(txn.createdAt) : '-'}
-        </span>
-      )
+      render: (txn: any) => {
+        if (!txn.createdAt) return <span className="text-sm font-medium text-slate-700">-</span>;
+        const fullStr = formatDateTime(txn.createdAt);
+        const lastCommaIdx = fullStr.lastIndexOf(',');
+        const dateStr = lastCommaIdx !== -1 ? fullStr.substring(0, lastCommaIdx).trim() : fullStr;
+        const timeStr = lastCommaIdx !== -1 ? fullStr.substring(lastCommaIdx + 1).trim() : '';
+        return (
+          <div>
+            <div className="font-bold text-slate-900">{dateStr}</div>
+            {timeStr && <div className="text-xs text-slate-500 mt-0.5">{timeStr}</div>}
+          </div>
+        );
+      }
     },
     {
       header: "Transaction ID",
