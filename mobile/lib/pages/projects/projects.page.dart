@@ -23,59 +23,111 @@ class ProjectsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: loc.allProjects),
-      body: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : state.isError
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    context.l10n.unableToLoadProjects,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  AppSpacing.hLg,
-                  OutlinedButton.icon(
-                    onPressed: logic.loadProjects,
-                    icon: const Icon(Icons.refresh),
-                    label: Text(loc.tryAgain),
-                  ),
-                ],
-              ),
-            )
-          : state.filteredProjects.isEmpty
-          ? EmptyState(
-              title: loc.noProjectsFound,
-              message: state.searchQuery.isNotEmpty
-                  ? context.l10n.noResultsFor(state.searchQuery)
-                  : context.l10n.noProjectsAtMoment,
-              buttonText: state.searchQuery.isNotEmpty
-                  ? context.l10n.clearSearchFilters
-                  : null,
-              onAction: state.searchQuery.isNotEmpty
-                  ? () => logic.updateSearch('')
-                  : null,
-            )
-          : RefreshIndicator(
-              onRefresh: logic.loadProjects,
-              child: GridView.builder(
-                padding: AppSpacing.allLg,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: isDesktop ? 3 : (isTablet ? 2 : 1),
-                  mainAxisSpacing: AppSpacing.lg,
-                  crossAxisSpacing: AppSpacing.lg,
-                  childAspectRatio: isDesktop ? 1.0 : 0.85,
+      body: SafeArea(
+        child: state.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : state.isError
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      context.l10n.unableToLoadProjects,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    AppSpacing.hLg,
+                    OutlinedButton.icon(
+                      onPressed: logic.loadProjects,
+                      icon: const Icon(Icons.refresh),
+                      label: Text(loc.tryAgain),
+                    ),
+                  ],
                 ),
-                itemCount: state.filteredProjects.length,
-                itemBuilder: (context, index) {
-                  final project = state.filteredProjects[index];
-                  return PropertyCard(
-                    project: project,
-                    onTap: () => context.push('/home/project/${project.id}'),
-                  );
+              )
+            : state.filteredProjects.isEmpty
+            ? EmptyState(
+                title: loc.noProjectsFound,
+                message: state.searchQuery.isNotEmpty
+                    ? context.l10n.noResultsFor(state.searchQuery)
+                    : context.l10n.noProjectsAtMoment,
+                buttonText: state.searchQuery.isNotEmpty
+                    ? context.l10n.clearSearchFilters
+                    : null,
+                onAction: state.searchQuery.isNotEmpty
+                    ? () => logic.updateSearch('')
+                    : null,
+              )
+            : NotificationListener<ScrollNotification>(
+                onNotification: (ScrollNotification scrollInfo) {
+                  if (!state.isLoading &&
+                      !state.isFetchingMore &&
+                      scrollInfo.metrics.pixels ==
+                          scrollInfo.metrics.maxScrollExtent) {
+                    logic.loadMore();
+                  }
+                  return false;
                 },
+                child: RefreshIndicator(
+                  onRefresh: () => logic.loadProjects(isRefresh: true),
+                  child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      SliverPadding(
+                        padding: AppSpacing.allLg,
+                        sliver: isDesktop || isTablet
+                            ? SliverGrid(
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: isDesktop ? 3 : 2,
+                                      mainAxisSpacing: AppSpacing.lg,
+                                      crossAxisSpacing: AppSpacing.lg,
+                                      childAspectRatio: isDesktop ? 1.0 : 0.85,
+                                    ),
+                                delegate: SliverChildBuilderDelegate((
+                                  context,
+                                  index,
+                                ) {
+                                  final project = state.filteredProjects[index];
+                                  return PropertyCard(
+                                    project: project,
+                                    onTap: () => context.push(
+                                      '/home/project/${project.id}',
+                                    ),
+                                  );
+                                }, childCount: state.filteredProjects.length),
+                              )
+                            : SliverList(
+                                delegate: SliverChildBuilderDelegate((
+                                  context,
+                                  index,
+                                ) {
+                                  final project = state.filteredProjects[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: AppSpacing.lg,
+                                    ),
+                                    child: PropertyCard(
+                                      project: project,
+                                      onTap: () => context.push(
+                                        '/home/project/${project.id}',
+                                      ),
+                                    ),
+                                  );
+                                }, childCount: state.filteredProjects.length),
+                              ),
+                      ),
+                      if (state.isFetchingMore)
+                        const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 24.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+      ),
     );
   }
 }

@@ -11,7 +11,7 @@ class Offer with _$Offer {
     required String image,
     required DateTime startDate,
     required DateTime endDate,
-    required bool isActive,
+    required String status,
     String? projectId,
   }) = _Offer;
 }

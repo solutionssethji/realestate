@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../pages/splash/splash.page.dart';
+// Splash page removed
 import '../pages/home/home.page.dart';
 import '../pages/projects/projects.page.dart';
 import '../pages/project_details/project_details.page.dart';
@@ -24,10 +24,9 @@ import '../utils/l10n_extension.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/home',
     debugLogDiagnostics: false,
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const SplashPage()),
       GoRoute(
         path: '/home',
         builder: (context, state) => const HomePage(),

@@ -24,85 +24,105 @@ class OffersPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.exclusiveOffers),
-      body: state.isLoading
-          ? ListView.separated(
-              padding: AppSpacing.allLg,
-              itemCount: 4,
-              separatorBuilder: (_, __) => AppSpacing.hLg,
-              itemBuilder: (_, __) => const OfferCardSkeleton(),
-            )
-          : state.isError
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.wifi_off_rounded,
-                    size: 40,
-                    color: AppTheme.textSecondary,
-                  ),
-                  AppSpacing.hSm,
-                  Text(
-                    context.l10n.unableToLoadOffers,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  AppSpacing.hLg,
-                  OutlinedButton.icon(
-                    onPressed: logic.loadOffers,
-                    icon: const Icon(Icons.refresh),
-                    label: Text(loc.tryAgain),
-                  ),
-                ],
-              ),
-            )
-          : state.offers.isEmpty
-          ? EmptyState(
-              icon: Icons.local_offer_outlined,
-              title: context.l10n.noActiveOffers,
-              message: context.l10n.checkBackSoon,
-            )
-          : RefreshIndicator(
-              onRefresh: logic.loadOffers,
-              child: ListView.separated(
+      body: SafeArea(
+        child: state.isLoading
+            ? ListView.separated(
                 padding: AppSpacing.allLg,
-                itemCount: state.offers.length,
+                itemCount: 4,
                 separatorBuilder: (_, __) => AppSpacing.hLg,
-                itemBuilder: (context, index) {
-                  final offer = state.offers[index];
-                  return Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: isDesktop
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              _OfferImage(
-                                imageUrl: offer.image,
-                                width: 200,
-                                height: null,
-                              ),
-                              Expanded(
-                                child: _OfferInfo(
-                                  offer: offer,
-                                  context: context,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _OfferImage(
-                                imageUrl: offer.image,
-                                width: double.infinity,
-                                height: 180,
-                              ),
-                              _OfferInfo(offer: offer, context: context),
-                            ],
+                itemBuilder: (_, __) => const OfferCardSkeleton(),
+              )
+            : state.isError
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.wifi_off_rounded,
+                      size: 40,
+                      color: AppTheme.textSecondary,
+                    ),
+                    AppSpacing.hSm,
+                    Text(
+                      context.l10n.unableToLoadOffers,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    AppSpacing.hLg,
+                    OutlinedButton.icon(
+                      onPressed: logic.loadOffers,
+                      icon: const Icon(Icons.refresh),
+                      label: Text(loc.tryAgain),
+                    ),
+                  ],
+                ),
+              )
+            : state.offers.isEmpty
+            ? EmptyState(
+                icon: Icons.local_offer_outlined,
+                title: context.l10n.noActiveOffers,
+                message: context.l10n.checkBackSoon,
+              )
+            : RefreshIndicator(
+                onRefresh: () => logic.loadOffers(isRefresh: true),
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 200) {
+                      logic.loadMore();
+                    }
+                    return false;
+                  },
+                  child: ListView.separated(
+                    padding: AppSpacing.allLg,
+                    itemCount:
+                        state.offers.length + (state.isFetchingMore ? 1 : 0),
+                    separatorBuilder: (_, __) => AppSpacing.hLg,
+                    itemBuilder: (context, index) {
+                      if (index == state.offers.length) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(AppSpacing.md),
+                            child: CircularProgressIndicator(),
                           ),
-                  );
-                },
+                        );
+                      }
+                      final offer = state.offers[index];
+                      return Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: isDesktop
+                            ? Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  _OfferImage(
+                                    imageUrl: offer.image,
+                                    width: 200,
+                                    height: null,
+                                  ),
+                                  Expanded(
+                                    child: _OfferInfo(
+                                      offer: offer,
+                                      context: context,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _OfferImage(
+                                    imageUrl: offer.image,
+                                    width: double.infinity,
+                                    height: 180,
+                                  ),
+                                  _OfferInfo(offer: offer, context: context),
+                                ],
+                              ),
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
+      ),
     );
   }
 }

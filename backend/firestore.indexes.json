@@ -1,116 +1,446 @@
 {
   "indexes": [
     {
-      "collectionGroup": "transactions",
+      "collectionGroup": "customerEnquiries",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "customerName", "order": "ASCENDING" }
-      ]
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
-      "collectionGroup": "transactions",
+      "collectionGroup": "customerEnquiries",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "transactionId", "order": "ASCENDING" }
-      ]
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "customerName",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
-      "collectionGroup": "transactions",
+      "collectionGroup": "customerEnquiries",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "faqs",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "active", "order": "ASCENDING" },
-        { "fieldPath": "sortOrder", "order": "ASCENDING" }
-      ]
+        {
+          "fieldPath": "active",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "sortOrder",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+
+    {
+      "collectionGroup": "offers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "endDate",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "offers",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "active", "order": "ASCENDING" },
-        { "fieldPath": "endDate", "order": "ASCENDING" }
-      ]
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "title.en",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "offers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "title.hi",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "plots",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "projectId", "order": "ASCENDING" },
-        { "fieldPath": "plotNumber", "order": "ASCENDING" }
-      ]
+        {
+          "fieldPath": "projectId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "plots",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "projectId", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
+        {
+          "fieldPath": "projectId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "plotNumber",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "plots",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
+        {
+          "fieldPath": "projectId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "plotNumber",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
-      "collectionGroup": "customerEnquiries",
+      "collectionGroup": "plots",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
-      "collectionGroup": "customerEnquiries",
+      "collectionGroup": "plots",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "name", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "siteVisits",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "siteVisits",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "customerName", "order": "ASCENDING" }
-      ]
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "plotNumber",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "projects",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "isActive", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
+        {
+          "fieldPath": "developmentStatus",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     },
     {
       "collectionGroup": "projects",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "developmentStatus", "order": "ASCENDING" },
-        { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
+        {
+          "fieldPath": "developmentStatus",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name.en",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "developmentStatus",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name.hi",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "isActive",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "isActive",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name.en",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "projects",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "isActive",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "name.hi",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "siteVisits",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "siteVisits",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "customerName",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "customerName",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "transactionId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
     }
   ],
   "fieldOverrides": []

@@ -32,8 +32,6 @@ class AppConstants {
   static const String localeKey = 'app_locale';
 
   // ── Contact (placeholder — update when client provides real values) ─────────
-  static const String contactPhone = '+91 98765 43210';
-  static const String contactWhatsapp = '919876543210';
   static const String contactEmail = 'contact@elysium.com';
   static const String officeAddress =
       '101, Elysium Tower, Viman Nagar, Pune, Maharashtra 411014';

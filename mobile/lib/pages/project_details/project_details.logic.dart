@@ -15,11 +15,10 @@ class ProjectDetailsLogic extends _$ProjectDetailsLogic {
   Future<void> loadProject(String projectId) async {
     state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
     try {
-      final projects = await ApiService.getProjects();
-      final project = projects.firstWhere(
-        (p) => p.id == projectId,
-        orElse: () => throw Exception('Project not found'),
-      );
+      final project = await ApiService.getProject(projectId);
+      if (project == null) {
+        throw Exception('Project not found');
+      }
       state = state.copyWith(isLoading: false, project: project);
     } catch (e) {
       state = state.copyWith(

@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { deleteField } from "firebase/firestore";
 
 export default function EditOfferPage({ params }: { params: Promise<{ id: string }> }) {
   const unwrappedParams = use(params);
@@ -34,7 +35,7 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
     endDate: "",
     discountType: "PERCENTAGE",
     discountValue: "",
-    active: true,
+    status: "ACTIVE",
   });
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
             endDate: offer.endDate ? new Date(offer.endDate).toISOString().split('T')[0] : "",
             discountType: offer.discountType || "PERCENTAGE",
             discountValue: offer.discountValue?.toString() || "",
-            active: offer.active !== false,
+            status: offer.status || "ACTIVE",
           });
         }
       } catch (err) {
@@ -129,6 +130,8 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
         endDate: new Date(formData.endDate).toISOString(),
         discountType: formData.discountType,
         discountValue: Number(formData.discountValue) || 0,
+        status: formData.status,
+        active: deleteField(),
       };
 
       await api.put(`/offers/${id}`, payload);
@@ -324,19 +327,19 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
               error={errors.endDate}
             />
             <div className="md:col-span-2">
-              <label className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
-                <input
-                  type="checkbox"
-                  name="active"
-                  checked={formData.active}
-                  onChange={handleChange}
-                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-slate-300 rounded cursor-pointer"
-                />
-                <div>
-                  <span className="block text-sm font-semibold text-slate-900">Active Status</span>
-                  <span className="block text-xs text-slate-500 mt-0.5">If checked, the offer will be visible to users during the validity period.</span>
-                </div>
-              </label>
+              <Select
+                label="Offer Status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                disabled={formData.status === 'EXPIRED'}
+                options={[
+                  { value: "ACTIVE", label: "Active" },
+                  { value: "INACTIVE", label: "Inactive" },
+                  { value: "EXPIRED", label: "Expired" }
+                ]}
+                helperText="Set the current status of the offer."
+              />
             </div>
           </div>
         </Card>

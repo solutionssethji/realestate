@@ -20,7 +20,7 @@ service cloud.firestore {
     }
     
     match /offers/{offerId} {
-      allow read: if resource.data.active == true || isAdmin();
+      allow read: if resource.data.status == 'ACTIVE' || isAdmin();
       allow write: if isAdmin();
     }
     

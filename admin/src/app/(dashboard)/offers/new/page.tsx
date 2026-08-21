@@ -33,7 +33,7 @@ export default function NewOfferPage() {
     endDate: "",
     discountType: "PERCENTAGE",
     discountValue: "",
-    active: true,
+    status: "ACTIVE",
   });
 
   useEffect(() => {
@@ -102,6 +102,7 @@ export default function NewOfferPage() {
         endDate: new Date(formData.endDate).toISOString(),
         discountType: formData.discountType,
         discountValue: Number(formData.discountValue) || 0,
+        status: formData.status,
       };
 
       await api.post("/offers", payload);
@@ -303,19 +304,18 @@ export default function NewOfferPage() {
               error={errors.endDate}
             />
             <div className="md:col-span-2">
-              <label className="flex items-center space-x-3 p-4 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors">
-                <input
-                  type="checkbox"
-                  name="active"
-                  checked={formData.active}
-                  onChange={handleChange}
-                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-slate-300 rounded cursor-pointer"
-                />
-                <div>
-                  <span className="block text-sm font-semibold text-slate-900">Active Status</span>
-                  <span className="block text-xs text-slate-500 mt-0.5">If checked, the offer will be visible to users during the validity period.</span>
-                </div>
-              </label>
+              <Select
+                label="Offer Status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                options={[
+                  { value: "ACTIVE", label: "Active" },
+                  { value: "INACTIVE", label: "Inactive" },
+                  { value: "EXPIRED", label: "Expired" }
+                ]}
+                helperText="Set the current status of the offer."
+              />
             </div>
           </div>
         </Card>

@@ -41,21 +41,19 @@ class Project {
       parsedAmenities = (json['amenities'] as List).map((a) => BilingualHelper.get(a)).toList();
     }
 
+    final projectPhotos = (json['projectPhotos'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [];
+
     return Project(
       id: json['id'] as String,
       name: BilingualHelper.get(json['name']),
       location: BilingualHelper.get(json['location']),
-      description: BilingualHelper.get(json['description']),
-      coverImage: json['coverImage'] as String? ?? '',
-      gallery:
-          (json['gallery'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          [],
+      description: BilingualHelper.get(json['description']), // Fallback to empty if not in DB
+      coverImage: projectPhotos.isNotEmpty ? projectPhotos.first : (json['coverImage'] as String? ?? ''),
+      gallery: projectPhotos.isNotEmpty ? projectPhotos : ((json['gallery'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? []),
       priceRange: BilingualHelper.get(json['plotPrice'] ?? json['priceRange']),
       developmentStatus: BilingualHelper.get(json['developmentStatus']),
       amenities: parsedAmenities,
-      plotCount: json['plots'] != null ? (json['plots'] as List).length : 0,
+      plotCount: int.tryParse(json['availablePlots']?.toString() ?? '') ?? (json['plots'] != null ? (json['plots'] as List).length : 0),
       googleMap: json['googleMap'] as String? ?? '',
       projectVideo: json['projectVideo'] as String? ?? '',
       plots: json['plots'] != null

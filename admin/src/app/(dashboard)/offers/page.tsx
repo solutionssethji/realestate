@@ -6,12 +6,12 @@ import { useState, useEffect } from "react";
 import api from "@/lib/api";
 import { useServerPagination } from "@/hooks/useServerPagination";
 import Link from "next/link";
-import { Plus, Trash2, Tag, Search, Eye, EyeOff, Edit2 } from "lucide-react";
+import { Plus, Trash2, Tag, Search, Edit2 } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'react-hot-toast';
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
-import { StatusBadge } from "@/components/ui/StatusBadge";
+
 import { ShimmerTable } from "@/components/ui/Shimmer";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
@@ -32,6 +32,12 @@ export default function OffersListPage() {
   }>({ isOpen: false, title: "", message: "", onConfirm: () => { } });
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+
+  const filters: any[] = [];
+  if (statusFilter !== "ALL") {
+    filters.push({ field: "status", operator: "==", value: statusFilter });
+  }
 
   // Detect if the search query contains Hindi characters
   const isHindi = (text: string) => /[\u0900-\u097F]/.test(text);
@@ -49,8 +55,7 @@ export default function OffersListPage() {
     endpoint: "/offers",
     searchField: currentSearchField,
     searchQuery,
-    filters: [],
-    capitalizeSearch: true
+    filters
   });
 
   useEffect(() => {
@@ -87,17 +92,23 @@ export default function OffersListPage() {
     });
   }
 
-  async function handleToggleVisibility(offer: any) {
-    try {
-      const isCurrentlyActive = offer.active !== false;
-      const newStatus = !isCurrentlyActive;
+  const [statusLoading, setStatusLoading] = useState<string | null>(null);
 
-      setOffers(offers.map(o => o.id === offer.id ? { ...o, active: newStatus } : o));
-      await api.put(`/offers/${offer.id}`, { ...offer, active: newStatus });
-      toast.success(newStatus ? "Offer enabled successfully" : "Offer disabled successfully");
-    } catch (error: any) {
-      setOffers(offers.map(o => o.id === offer.id ? { ...o, active: offer.active } : o));
-      toast.error("Failed to update offer visibility");
+  async function handleStatusChange(offerId: string, newStatus: string) {
+    try {
+      setStatusLoading(offerId);
+      const offer = offers.find((o: any) => o.id === offerId);
+      if (!offer) return;
+
+      const updatedOffer = { ...offer, status: newStatus };
+      await api.put(`/offers/${offerId}`, updatedOffer);
+
+      setOffers(offers.map((o: any) => o.id === offerId ? updatedOffer : o));
+      toast.success("Offer status updated successfully");
+    } catch (error) {
+      toast.error("Failed to update offer status");
+    } finally {
+      setStatusLoading(null);
     }
   }
 
@@ -144,27 +155,31 @@ export default function OffersListPage() {
     {
       header: t('status'),
       key: "status",
-      render: (offer: any) => (
-        <StatusBadge
-          status={offer.active !== false ? 'ACTIVE' : 'INACTIVE'}
-        />
-      )
+      render: (offer: any) => {
+        const currentVal = offer.status || 'ACTIVE';
+        return (
+          <select
+            value={currentVal}
+            onChange={(e) => handleStatusChange(offer.id, e.target.value)}
+            disabled={statusLoading === offer.id || currentVal === 'EXPIRED'}
+            className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium border focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${
+              currentVal === 'ACTIVE' ? 'bg-green-50 text-green-800 border-green-200' :
+              currentVal === 'INACTIVE' ? 'bg-slate-50 text-slate-800 border-slate-200' :
+              'bg-red-50 text-red-800 border-red-200'
+            }`}
+          >
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+            <option value="EXPIRED">Expired</option>
+          </select>
+        );
+      }
     },
     {
       header: t('actions'),
       key: "actions",
       render: (offer: any) => (
         <div className="flex items-center space-x-2">
-          <button
-            onClick={() => handleToggleVisibility(offer)}
-            title={offer.active === false ? "Enable Offer" : "Disable Offer"}
-            className={`p-2 rounded-lg transition-colors ${offer.active === false
-              ? "text-slate-400 hover:text-green-600 hover:bg-green-50"
-              : "text-blue-600 hover:text-orange-600 hover:bg-orange-50 bg-blue-50"
-              }`}
-          >
-            {offer.active === false ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
           <Link href={`/offers/${offer.id}/edit`}>
             <button title="Edit Offer" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
               <Edit2 className="h-4 w-4" />
@@ -208,6 +223,18 @@ export default function OffersListPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
           />
+        </div>
+        <div className="w-full sm:w-48">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="block w-full pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394A3B8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:0.75rem_0.75rem] bg-[position:right_1rem_center] bg-no-repeat"
+          >
+            <option value="ALL">All Offers</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+            <option value="EXPIRED">Expired</option>
+          </select>
         </div>
       </div>
 
