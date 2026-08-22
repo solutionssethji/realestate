@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onSiteVisitCreated = void 0;
+exports.onEnquiryCreated = exports.onSiteVisitCreated = void 0;
 const firestore_1 = require("firebase-functions/v2/firestore");
 const admin = __importStar(require("firebase-admin"));
 exports.onSiteVisitCreated = (0, firestore_1.onDocumentCreated)('siteVisits/{docId}', async (event) => {
@@ -57,6 +57,31 @@ exports.onSiteVisitCreated = (0, firestore_1.onDocumentCreated)('siteVisits/{doc
         // Provide fallbacks for backwards compatibility in case UI hasn't updated
         title: 'New Site Visit Booking',
         message: `New site visit booking received from ${customerName}`,
+        read: false,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+});
+exports.onEnquiryCreated = (0, firestore_1.onDocumentCreated)('customerEnquiries/{docId}', async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) {
+        return;
+    }
+    const data = snapshot.data();
+    const customerName = data.customerName || data.name || 'a customer';
+    const enquiryId = snapshot.id;
+    const db = admin.firestore();
+    const notificationRef = db.collection('adminNotifications').doc(enquiryId);
+    await notificationRef.set({
+        id: notificationRef.id,
+        type: 'ENQUIRY',
+        relatedId: enquiryId,
+        // Add keys for localization
+        titleKey: 'notif_enquiry_title',
+        messageKey: 'notif_enquiry_message',
+        messageParams: { name: customerName },
+        // Provide fallbacks for backwards compatibility in case UI hasn't updated
+        title: 'New Enquiry',
+        message: `New enquiry received from ${customerName}`,
         read: false,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });

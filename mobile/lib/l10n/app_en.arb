@@ -80,6 +80,9 @@
   "pleaseSelectDateAndTime": "Please select date and time",
   "getInTouch": "Get in Touch",
   "messageBudgetReqs": "Message / Budget / Requirements",
+  "plotRequirement": "Plot Requirement",
+  "budget": "Budget",
+  "message": "Message",
   "unableToLoadPlot": "Unable to load plot: {error}",
   "@unableToLoadPlot": {
     "placeholders": {
@@ -430,5 +433,11 @@
   "plotPrice": "Plot Price",
   "calculateEmi": "Calculate EMI",
   "approximateEmi": "Approximate EMI",
-  "totalPayment": "Total Payment"
+  "totalPayment": "Total Payment",
+  "offerDetails": "Offer Details",
+  "offerNotFound": "Offer not found",
+  "promoCode": "PROMO CODE",
+  "validText": "Valid",
+  "flat": "Flat",
+  "off": "Off"
 }

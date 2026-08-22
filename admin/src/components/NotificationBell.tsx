@@ -1,15 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Bell } from "lucide-react";
 import Link from "next/link";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/context/AuthContext";
 
 export default function NotificationBell() {
   const { user } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
   const [unreadCount, setUnreadCount] = useState(0);
+  const isFirstLoad = useRef(true);
+  const pathnameRef = useRef(pathname);
+
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
 
   useEffect(() => {
     if (!user) return;
@@ -18,6 +28,22 @@ export default function NotificationBell() {
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setUnreadCount(snapshot.docs.length);
+
+      if (isFirstLoad.current) {
+        isFirstLoad.current = false;
+        return;
+      }
+
+      if (pathnameRef.current !== '/notifications') {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            toast.success("New notification received!", {
+              position: 'top-right',
+              duration: 4000,
+            });
+          }
+        });
+      }
     }, (error) => {
       console.error("Error listening to notifications:", error);
     });

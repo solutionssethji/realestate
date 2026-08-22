@@ -35,6 +35,7 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
     endDate: "",
     discountType: "PERCENTAGE",
     discountValue: "",
+    offerCode: "",
     status: "ACTIVE",
   });
 
@@ -58,6 +59,7 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
             endDate: offer.endDate ? new Date(offer.endDate).toISOString().split('T')[0] : "",
             discountType: offer.discountType || "PERCENTAGE",
             discountValue: offer.discountValue?.toString() || "",
+            offerCode: offer.offerCode || offer.code || "",
             status: offer.status || "ACTIVE",
           });
         }
@@ -94,6 +96,7 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
     e.preventDefault();
 
     const newErrors: Record<string, string> = {};
+    if (!formData.offerCode?.trim()) newErrors.offerCode = "Offer code is required";
     if (!formData.title.en?.trim()) newErrors.title_en = "English title is required";
     if (!formData.title.hi?.trim()) newErrors.title_hi = "Hindi title is required";
     if (!formData.description.en?.trim()) newErrors.description_en = "English description is required";
@@ -107,10 +110,20 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
       return;
     }
     setErrors({});
-
     setLoading(true);
 
     try {
+      // Check for duplicate offerCode
+      const existingOffers = await api.get("/offers", {
+        filters: [{ field: "offerCode", operator: "==", value: formData.offerCode.trim() }]
+      });
+
+      if (existingOffers.data.data && existingOffers.data.data.some((o: any) => o.id !== id)) {
+        setErrors({ offerCode: "An offer with this Promo Code already exists" });
+        setLoading(false);
+        return;
+      }
+
       let finalImageUrl = formData.image;
 
       if (imageFile) {
@@ -122,10 +135,9 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
         finalImageUrl = await getDownloadURL(snapshot.ref);
       }
 
-      const payload = {
+      const payload: any = {
         ...formData,
         image: finalImageUrl,
-        projectId: formData.projectId || null, // Ensure null instead of "" for global
         startDate: new Date(formData.startDate).toISOString(),
         endDate: new Date(formData.endDate).toISOString(),
         discountType: formData.discountType,
@@ -133,6 +145,12 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
         status: formData.status,
         active: deleteField(),
       };
+
+      if (!formData.projectId) {
+        payload.projectId = deleteField();
+      } else {
+        payload.projectId = formData.projectId;
+      }
 
       await api.put(`/offers/${id}`, payload);
       toast.success("Offer updated successfully!");
@@ -198,6 +216,19 @@ export default function EditOfferPage({ params }: { params: Promise<{ id: string
                 onChange={handleChange}
                 error={errors.discountValue}
                 placeholder="e.g. 10"
+              />
+            </div>
+
+            <div className="md:col-span-1">
+              <Input
+                label="Offer/Promo Code"
+                name="offerCode"
+                type="text"
+                required
+                value={formData.offerCode}
+                onChange={handleChange}
+                error={errors.offerCode}
+                placeholder="e.g. SUMMER50"
               />
             </div>
 

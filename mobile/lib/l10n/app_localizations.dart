@@ -494,6 +494,24 @@ abstract class AppLocalizations {
   /// **'Message / Budget / Requirements'**
   String get messageBudgetReqs;
 
+  /// No description provided for @plotRequirement.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot Requirement'**
+  String get plotRequirement;
+
+  /// No description provided for @budget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budget;
+
+  /// No description provided for @message.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get message;
+
   /// No description provided for @unableToLoadPlot.
   ///
   /// In en, this message translates to:
@@ -1699,6 +1717,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Payment'**
   String get totalPayment;
+
+  /// No description provided for @offerDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer Details'**
+  String get offerDetails;
+
+  /// No description provided for @offerNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer not found'**
+  String get offerNotFound;
+
+  /// No description provided for @promoCode.
+  ///
+  /// In en, this message translates to:
+  /// **'PROMO CODE'**
+  String get promoCode;
+
+  /// No description provided for @validText.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid'**
+  String get validText;
+
+  /// No description provided for @flat.
+  ///
+  /// In en, this message translates to:
+  /// **'Flat'**
+  String get flat;
+
+  /// No description provided for @off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get off;
 }
 
 class _AppLocalizationsDelegate

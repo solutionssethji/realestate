@@ -214,6 +214,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messageBudgetReqs => 'Message / Budget / Requirements';
 
   @override
+  String get plotRequirement => 'Plot Requirement';
+
+  @override
+  String get budget => 'Budget';
+
+  @override
+  String get message => 'Message';
+
+  @override
   String unableToLoadPlot(String error) {
     return 'Unable to load plot: $error';
   }
@@ -880,4 +889,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalPayment => 'Total Payment';
+
+  @override
+  String get offerDetails => 'Offer Details';
+
+  @override
+  String get offerNotFound => 'Offer not found';
+
+  @override
+  String get promoCode => 'PROMO CODE';
+
+  @override
+  String get validText => 'Valid';
+
+  @override
+  String get flat => 'Flat';
+
+  @override
+  String get off => 'Off';
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { doc, updateDoc } from "firebase/firestore";
+import { useState, useEffect, Suspense } from "react";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import api from "@/lib/api";
 import { useServerPagination } from "@/hooks/useServerPagination";
 import { PhoneIncoming, Loader2, Search, Filter, Eye } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
 import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
@@ -34,8 +35,11 @@ type Enquiry = {
 
 const PAGE_SIZE = 15;
 
-export default function EnquiriesPage() {
+function EnquiriesContent() {
   const { t } = useLanguage();
+  const searchParams = useSearchParams();
+  const notificationId = searchParams.get('id');
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
 
@@ -63,9 +67,22 @@ export default function EnquiriesPage() {
     capitalizeSearch: true
   });
 
+  useEffect(() => {
+    if (notificationId) {
+      loadSpecificEnquiry(notificationId);
+    }
+  }, [notificationId]);
 
-
-  const [statusLoading, setStatusLoading] = useState<string | null>(null);
+  const loadSpecificEnquiry = async (id: string) => {
+    try {
+      const docSnap = await getDoc(doc(db, "customerEnquiries", id));
+      if (docSnap.exists()) {
+        setSelectedEnquiry({ id: docSnap.id, ...docSnap.data() } as Enquiry);
+      }
+    } catch (error) {
+      console.error("Failed to load specific enquiry", error);
+    }
+  }; const [statusLoading, setStatusLoading] = useState<string | null>(null);
 
   const handleQuickStatusUpdate = async (id: string, newStatus: string) => {
     setStatusLoading(id);
@@ -319,5 +336,13 @@ export default function EnquiriesPage() {
         </Modal>
       )}
     </div>
+  );
+}
+
+export default function EnquiriesPage() {
+  return (
+    <Suspense fallback={<ShimmerTable rows={8} />}>
+      <EnquiriesContent />
+    </Suspense>
   );
 }

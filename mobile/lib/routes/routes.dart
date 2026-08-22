@@ -1,3 +1,4 @@
+import 'package:customer_app/pages/offer_details/offer_details.page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -8,7 +9,6 @@ import '../pages/project_details/project_details.page.dart';
 import '../pages/plot_availability/plot_availability.page.dart';
 import '../pages/plot_details/plot_details.page.dart';
 import '../pages/offers/offers.page.dart';
-import '../pages/offers/offer_details.page.dart';
 import '../pages/enquiry/enquiry.page.dart';
 import '../pages/site_visit/site_visit.page.dart';
 import '../pages/calculator/calculator.page.dart';

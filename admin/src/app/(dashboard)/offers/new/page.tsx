@@ -33,6 +33,7 @@ export default function NewOfferPage() {
     endDate: "",
     discountType: "PERCENTAGE",
     discountValue: "",
+    offerCode: "",
     status: "ACTIVE",
   });
 
@@ -62,6 +63,7 @@ export default function NewOfferPage() {
     e.preventDefault();
 
     const newErrors: Record<string, string> = {};
+    if (!formData.offerCode?.trim()) newErrors.offerCode = "Offer code is required";
     if (!formData.title.en?.trim()) newErrors.title_en = "English title is required";
     if (!formData.title.hi?.trim()) newErrors.title_hi = "Hindi title is required";
     if (!formData.description.en?.trim()) newErrors.description_en = "English description is required";
@@ -76,10 +78,20 @@ export default function NewOfferPage() {
       return;
     }
     setErrors({});
-
     setLoading(true);
 
     try {
+      // Check for duplicate offerCode
+      const existingOffers = await api.get("/offers", {
+        filters: [{ field: "offerCode", operator: "==", value: formData.offerCode.trim() }]
+      });
+      
+      if (existingOffers.data.data && existingOffers.data.data.length > 0) {
+        setErrors({ offerCode: "An offer with this Promo Code already exists" });
+        setLoading(false);
+        return;
+      }
+
       let finalImageUrl = formData.image;
 
       // Upload image to Firebase Storage if a new file was selected
@@ -94,10 +106,9 @@ export default function NewOfferPage() {
         finalImageUrl = await getDownloadURL(snapshot.ref);
       }
 
-      const payload = {
+      const payload: any = {
         ...formData,
         image: finalImageUrl,
-        projectId: formData.projectId || undefined,
         startDate: new Date(formData.startDate).toISOString(),
         endDate: new Date(formData.endDate).toISOString(),
         discountType: formData.discountType,
@@ -105,16 +116,18 @@ export default function NewOfferPage() {
         status: formData.status,
       };
 
+      if (!formData.projectId) {
+        delete payload.projectId;
+      }
+
       await api.post("/offers", payload);
-      toast.success("Offer created successfully!");
+      toast.success("Offer created successfully");
       router.push("/offers");
       router.refresh();
-    } catch (err: any) {
-      console.error("Save offer error:", err);
-      const errorMessage = err?.response?.data?.message ||
-        err?.message ||
-        "Failed to save offer.";
-      toast.error(errorMessage);
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Failed to create offer");
+      setErrors({ submit: error.response?.data?.message || "Failed to create offer" });
     } finally {
       setLoading(false);
     }
@@ -134,12 +147,18 @@ export default function NewOfferPage() {
             <CardDescription>Provide the promotional message and target project.</CardDescription>
           </CardHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* GENERAL SECTION */}
+            <div className="md:col-span-2 space-y-4">
+              <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('general_details')}</h4>
+            </div>
+
             <div className="md:col-span-2">
               <Select
-                label="Target Project"
+                label="Applicable Project"
                 name="projectId"
                 value={formData.projectId}
                 onChange={handleChange}
+                error={errors.projectId}
                 options={[
                   { value: "", label: t('global_offer') },
                   ...projects.map((p: any) => ({ value: p.id, label: typeof p.name === 'string' ? p.name : (p.name?.en || 'Unnamed Project') }))
@@ -170,6 +189,19 @@ export default function NewOfferPage() {
                 onChange={handleChange}
                 error={errors.discountValue}
                 placeholder="e.g. 10"
+              />
+            </div>
+
+            <div className="md:col-span-1">
+              <Input
+                label="Offer/Promo Code"
+                name="offerCode"
+                type="text"
+                required
+                value={formData.offerCode}
+                onChange={handleChange}
+                error={errors.offerCode}
+                placeholder="e.g. SUMMER50"
               />
             </div>
 

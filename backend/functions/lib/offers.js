@@ -42,23 +42,23 @@ const admin = __importStar(require("firebase-admin"));
  * in the past, and updates their status to inactive.
  * This prevents the admin from having to manually uncheck the active status.
  */
-exports.expireOldOffers = (0, scheduler_1.onSchedule)('every 12 hours', async (event) => {
+exports.expireOldOffers = (0, scheduler_1.onSchedule)("every 12 hours", async (event) => {
     const db = admin.firestore();
     const nowIso = new Date().toISOString();
     // Find offers that are active but their endDate has passed
     const expiredOffersQuery = await db
-        .collection('offers')
-        .where('status', '==', 'ACTIVE')
-        .where('endDate', '<', nowIso)
+        .collection("offers")
+        .where("status", "==", "ACTIVE")
+        .where("endDate", "<", nowIso)
         .get();
     if (expiredOffersQuery.empty) {
-        console.log('No expired offers found to deactivate.');
+        console.log("No expired offers found to deactivate.");
         return;
     }
     const batch = db.batch();
     let count = 0;
     expiredOffersQuery.forEach((doc) => {
-        batch.update(doc.ref, { status: 'EXPIRED' });
+        batch.update(doc.ref, { status: "EXPIRED" });
         count++;
     });
     await batch.commit();

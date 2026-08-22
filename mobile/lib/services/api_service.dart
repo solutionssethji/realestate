@@ -260,6 +260,45 @@ class ApiService {
     }
   }
 
+  static Future<Offer?> getOffer(String offerId) async {
+    logApi(function: 'getOffer()', request: {'offerId': offerId});
+    try {
+      final doc = await _db.collection('offers').doc(offerId).get();
+      if (!doc.exists) {
+        logApi(function: 'getOffer()', response: 'Not found');
+        return null;
+      }
+
+      final data = doc.data()!;
+      if (data['status'] != 'ACTIVE') {
+        logApi(function: 'getOffer()', response: 'Offer is not active');
+        return null;
+      }
+
+      var offer = _offerFromDoc(doc);
+      if (offer.projectId != null && offer.projectId!.isNotEmpty) {
+        final projectDoc = await _db
+            .collection('projects')
+            .doc(offer.projectId)
+            .get();
+        if (projectDoc.exists) {
+          offer = offer.copyWith(
+            projectName: BilingualHelper.get(projectDoc.data()!['name']),
+          );
+        }
+      }
+
+      logApi(function: 'getOffer()', response: 'Found');
+      return offer;
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getOffer()', error: e);
+      rethrow;
+    } catch (e) {
+      logApi(function: 'getOffer()', error: e);
+      rethrow;
+    }
+  }
+
   // ─── Enquiries ──────────────────────────────────────────────────────────────
 
   static Future<void> submitEnquiry(Map<String, dynamic> data) async {
@@ -370,6 +409,9 @@ class ApiService {
                 DateTime.now().add(const Duration(days: 30))
           : DateTime.now().add(const Duration(days: 30)),
       status: data['status']?.toString() ?? 'ACTIVE',
+      discountType: data['discountType']?.toString(),
+      discountValue: (data['discountValue'] as num?)?.toDouble(),
+      offerCode: data['offerCode']?.toString() ?? data['code']?.toString(),
       projectId: data['projectId']?.toString(),
       projectName: BilingualHelper.get(data['projectName']),
     );

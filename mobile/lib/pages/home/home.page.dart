@@ -192,14 +192,7 @@ class HomePage extends ConsumerWidget {
                                   offer: state.offers[i],
                                   onTap: () {
                                     final offer = state.offers[i];
-                                    if (offer.projectId != null &&
-                                        offer.projectId!.isNotEmpty) {
-                                      context.push(
-                                        '/home/project/${offer.projectId}',
-                                      );
-                                    } else {
-                                      context.push('/home/offers/${offer.id}');
-                                    }
+                                    context.push('/home/offers/${offer.id}');
                                   },
                                 ),
                               ),

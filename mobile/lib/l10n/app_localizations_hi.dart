@@ -211,7 +211,16 @@ class AppLocalizationsHi extends AppLocalizations {
   String get getInTouch => 'संपर्क करें';
 
   @override
-  String get messageBudgetReqs => 'संदेश / बजट / आवश्यकताएं';
+  String get messageBudgetReqs => 'संदेश / बजट / आवश्यकताएँ';
+
+  @override
+  String get plotRequirement => 'प्लॉट की आवश्यकता';
+
+  @override
+  String get budget => 'बजट';
+
+  @override
+  String get message => 'संदेश';
 
   @override
   String unableToLoadPlot(String error) {
@@ -879,4 +888,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get totalPayment => 'कुल भुगतान';
+
+  @override
+  String get offerDetails => 'ऑफ़र विवरण';
+
+  @override
+  String get offerNotFound => 'ऑफ़र नहीं मिला';
+
+  @override
+  String get promoCode => 'प्रोमो कोड';
+
+  @override
+  String get validText => 'वैध';
+
+  @override
+  String get flat => 'फ्लैट';
+
+  @override
+  String get off => 'छूट';
 }

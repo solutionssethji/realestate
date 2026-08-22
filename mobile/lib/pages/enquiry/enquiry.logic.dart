@@ -14,8 +14,10 @@ class EnquiryLogic extends _$EnquiryLogic {
   Future<bool> submitEnquiry({
     required String name,
     required String phone,
+    String? email,
     String? projectId,
     String? plotRequirement,
+    String? budget,
     String? message,
   }) async {
     state = state.copyWith(
@@ -26,12 +28,14 @@ class EnquiryLogic extends _$EnquiryLogic {
     );
     try {
       await ApiService.submitEnquiry({
-        'name': name,
-        'mobile': phone,
-        'projectId': projectId,
-        'plotRequirement': plotRequirement,
-        'budget':
-            message, // or mapping budget differently, but since we have a message field, let's map it.
+        'customerName': name,
+        'mobileNumber': phone,
+        if (email != null && email.isNotEmpty) 'email': email,
+        if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
+        if (plotRequirement != null && plotRequirement.isNotEmpty)
+          'plotRequirement': plotRequirement,
+        if (budget != null && budget.isNotEmpty) 'budget': budget,
+        if (message != null && message.isNotEmpty) 'message': message,
       });
       state = state.copyWith(isSubmitting: false, isSuccess: true);
       return true;

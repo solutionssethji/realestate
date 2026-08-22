@@ -123,5 +123,7 @@
   "currency_symbol_placeholder": "USD, INR, EUR...",
   "loading": "लोड हो रहा है...",
   "notif_site_visit_title": "नई साइट विज़िट बुकिंग",
-  "notif_site_visit_message": "{name} से नई साइट विज़िट बुकिंग प्राप्त हुई"
+  "notif_site_visit_message": "{name} से नई साइट विज़िट बुकिंग प्राप्त हुई",
+  "notif_enquiry_title": "नई पूछताछ",
+  "notif_enquiry_message": "{name} से नई पूछताछ प्राप्त हुई"
 }

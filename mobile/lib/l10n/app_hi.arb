@@ -64,7 +64,10 @@
   "mobileNumber": "मोबाइल नंबर",
   "pleaseSelectDateAndTime": "कृपया दिनांक और समय चुनें",
   "getInTouch": "संपर्क करें",
-  "messageBudgetReqs": "संदेश / बजट / आवश्यकताएं",
+  "messageBudgetReqs": "संदेश / बजट / आवश्यकताएँ",
+  "plotRequirement": "प्लॉट की आवश्यकता",
+  "budget": "बजट",
+  "message": "संदेश",
   "unableToLoadPlot": "प्लॉट लोड करने में असमर्थ: {error}",
   "plotPrefix": "प्लॉट {number}",
   "residentialPlot": "आवासीय भूखंड",
@@ -266,5 +269,11 @@
   "plotPrice": "प्लॉट की कीमत",
   "calculateEmi": "ईएमआई की गणना करें",
   "approximateEmi": "अनुमानित ईएमआई",
-  "totalPayment": "कुल भुगतान"
+  "totalPayment": "कुल भुगतान",
+  "offerDetails": "ऑफ़र विवरण",
+  "offerNotFound": "ऑफ़र नहीं मिला",
+  "promoCode": "प्रोमो कोड",
+  "validText": "वैध",
+  "flat": "फ्लैट",
+  "off": "छूट"
 }

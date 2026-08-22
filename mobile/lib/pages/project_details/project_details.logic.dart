@@ -8,7 +8,7 @@ part 'project_details.logic.g.dart';
 class ProjectDetailsLogic extends _$ProjectDetailsLogic {
   @override
   ProjectDetailsState build(String projectId) {
-    loadProject(projectId);
+    Future.microtask(() => loadProject(projectId));
     return const ProjectDetailsState();
   }
 

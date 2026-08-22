@@ -24,6 +24,9 @@ class EnquiryPage extends HookConsumerWidget {
     final formKey = useMemoized(() => GlobalKey<FormState>());
     final nameCtrl = useTextEditingController();
     final phoneCtrl = useTextEditingController();
+    final emailCtrl = useTextEditingController();
+    final requirementCtrl = useTextEditingController();
+    final budgetCtrl = useTextEditingController();
     final messageCtrl = useTextEditingController();
 
     return Scaffold(
@@ -78,10 +81,38 @@ class EnquiryPage extends HookConsumerWidget {
                   ),
                   AppSpacing.hLg,
 
+                  // Email
+                  AppTextField(
+                    controller: emailCtrl,
+                    label: loc.email,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  AppSpacing.hLg,
+
+                  // Plot Requirement
+                  AppTextField(
+                    controller: requirementCtrl,
+                    label: loc.plotRequirement,
+                    prefixIcon: const Icon(Icons.landscape_outlined),
+                    textInputAction: TextInputAction.next,
+                  ),
+                  AppSpacing.hLg,
+
+                  // Budget
+                  AppTextField(
+                    controller: budgetCtrl,
+                    label: loc.budget,
+                    prefixIcon: const Icon(Icons.currency_rupee_outlined),
+                    textInputAction: TextInputAction.next,
+                  ),
+                  AppSpacing.hLg,
+
                   // Message
                   AppTextField(
                     controller: messageCtrl,
-                    label: loc.messageBudgetReqs,
+                    label: loc.message,
                     maxLines: 4,
                     textInputAction: TextInputAction.done,
                   ),
@@ -116,6 +147,9 @@ class EnquiryPage extends HookConsumerWidget {
                               logic.submitEnquiry(
                                 name: nameCtrl.text.trim(),
                                 phone: phoneCtrl.text.trim(),
+                                email: emailCtrl.text.trim(),
+                                plotRequirement: requirementCtrl.text.trim(),
+                                budget: budgetCtrl.text.trim(),
                                 projectId: initialProjectId,
                                 message: messageCtrl.text.trim(),
                               );

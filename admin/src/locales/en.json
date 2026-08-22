@@ -122,5 +122,7 @@
   "currency_symbol_placeholder": "USD, INR, EUR...",
   "loading": "Loading...",
   "notif_site_visit_title": "New Site Visit Booking",
-  "notif_site_visit_message": "New site visit booking received from {name}"
+  "notif_site_visit_message": "New site visit booking received from {name}",
+  "notif_enquiry_title": "New Enquiry",
+  "notif_enquiry_message": "New enquiry received from {name}"
 }

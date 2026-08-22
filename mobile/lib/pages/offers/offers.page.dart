@@ -90,12 +90,7 @@ class OffersPage extends ConsumerWidget {
                       final offer = state.offers[index];
                       return GestureDetector(
                         onTap: () {
-                          if (offer.projectId != null &&
-                              offer.projectId!.isNotEmpty) {
-                            context.push('/home/project/${offer.projectId}');
-                          } else {
-                            context.push('/home/offers/${offer.id}');
-                          }
+                          context.push('/home/offers/${offer.id}');
                         },
                         child: Card(
                           clipBehavior: Clip.antiAlias,
@@ -209,10 +204,10 @@ class _OfferInfo extends StatelessWidget {
                 ? offer.projectName!.toUpperCase()
                 : context.l10n.allProjects.toUpperCase(),
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                ),
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

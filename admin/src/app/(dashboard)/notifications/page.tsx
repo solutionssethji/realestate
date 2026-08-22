@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, getDocs, query, orderBy, limit, startAfter, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit, startAfter, doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Bell, Loader2, CheckCircle2, Circle, Check } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -32,45 +32,33 @@ export default function NotificationsPage() {
 
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(true);
-  const [lastDoc, setLastDoc] = useState<any>(null);
-  const [hasMore, setHasMore] = useState(true);
+  const [limitCount, setLimitCount] = useState(PAGE_SIZE);
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
-    fetchNotifications(true);
-  }, []);
-
-  const fetchNotifications = async (reset = false) => {
     setLoading(true);
-    try {
-      let q = query(collection(db, "adminNotifications"), orderBy("createdAt", "desc"));
+    const q = query(
+      collection(db, "adminNotifications"),
+      orderBy("createdAt", "desc"),
+      limit(limitCount)
+    );
 
-      if (!reset && lastDoc) {
-        q = query(q, startAfter(lastDoc), limit(PAGE_SIZE));
-      } else {
-        q = query(q, limit(PAGE_SIZE));
-      }
-
-      const snapshot = await getDocs(q);
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetched: AppNotification[] = [];
       snapshot.forEach((doc) => {
         fetched.push({ id: doc.id, ...doc.data() } as AppNotification);
       });
-
-      if (reset) {
-        setNotifications(fetched);
-      } else {
-        setNotifications([...notifications, ...fetched]);
-      }
-
-      setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
-      setHasMore(snapshot.docs.length === PAGE_SIZE);
-    } catch (error) {
-      toast.error("Failed to load notifications");
-      console.error(error);
-    } finally {
+      setNotifications(fetched);
+      setHasMore(snapshot.docs.length === limitCount);
       setLoading(false);
-    }
-  };
+    }, (error) => {
+      console.error(error);
+      toast.error("Failed to load notifications");
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [limitCount]);
 
   const handleNotificationClick = async (notification: AppNotification) => {
     if (!notification.read) {
@@ -91,6 +79,8 @@ export default function NotificationsPage() {
 
     if (notification.type === 'SITE_VISIT' && notification.relatedId) {
       router.push(`/site-visits?id=${notification.relatedId}`);
+    } else if (notification.type === 'ENQUIRY' && notification.relatedId) {
+      router.push(`/enquiries?id=${notification.relatedId}`);
     }
   };
 
@@ -184,7 +174,7 @@ export default function NotificationsPage() {
 
         {!loading && hasMore && (
           <div className="p-4 border-t border-slate-100 flex justify-center bg-slate-50/50">
-            <Button variant="ghost" onClick={() => fetchNotifications(false)}>
+            <Button variant="ghost" onClick={() => setLimitCount(prev => prev + PAGE_SIZE)}>
               Load Older
             </Button>
           </div>
