@@ -54,12 +54,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         />
       )}
 
-      {/* Premium Dark Sidebar */}
+      {/* Premium Light Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 border-r border-slate-800 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex-shrink-0 shadow-2xl
+        fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex-shrink-0 shadow-xl
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="h-20 flex items-center justify-center px-6 border-b border-white/5 bg-slate-900/50 backdrop-blur-xl">
+        <div className="h-20 flex items-center justify-center px-6 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
           <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="max-h-12 w-auto object-contain" />
         </div>
 
@@ -77,12 +77,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={`
                   flex items-center px-4 py-3 text-sm font-medium rounded-xl group transition-all duration-200
                   ${isActive
-                    ? 'bg-blue-600/10 text-blue-400 shadow-[inset_2px_0_0_0_#3b82f6]'
-                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}
+                    ? 'bg-blue-50 text-blue-700 shadow-[inset_3px_0_0_0_#3b82f6]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}
                 `}
                 onClick={() => setIsSidebarOpen(false)}
               >
-                <Icon className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors duration-200 ${isActive ? 'text-blue-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                <Icon className={`mr-3 h-5 w-5 flex-shrink-0 transition-colors duration-200 ${isActive ? 'text-blue-700' : 'text-slate-400 group-hover:text-slate-600'}`} />
                 {item.name}
               </Link>
             );
