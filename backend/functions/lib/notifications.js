@@ -36,51 +36,67 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.onEnquiryCreated = exports.onSiteVisitCreated = void 0;
 const firestore_1 = require("firebase-functions/v2/firestore");
 const admin = __importStar(require("firebase-admin"));
-exports.onSiteVisitCreated = (0, firestore_1.onDocumentCreated)('siteVisits/{docId}', async (event) => {
+exports.onSiteVisitCreated = (0, firestore_1.onDocumentCreated)("siteVisits/{docId}", async (event) => {
     const snapshot = event.data;
     if (!snapshot) {
         return;
     }
     const data = snapshot.data();
-    const customerName = data.customerName || 'a customer';
+    const customerName = data.customerName || "a customer";
     const siteVisitId = snapshot.id;
     const db = admin.firestore();
-    const notificationRef = db.collection('adminNotifications').doc(siteVisitId);
+    const notificationRef = db
+        .collection("adminNotifications")
+        .doc(siteVisitId);
     await notificationRef.set({
         id: notificationRef.id,
-        type: 'SITE_VISIT',
+        type: "SITE_VISIT",
         relatedId: siteVisitId,
         // Add keys for localization
-        titleKey: 'notif_site_visit_title',
-        messageKey: 'notif_site_visit_message',
+        titleKey: "notif_site_visit_title",
+        messageKey: "notif_site_visit_message",
         messageParams: { name: customerName },
         // Provide fallbacks for backwards compatibility in case UI hasn't updated
-        title: 'New Site Visit Booking',
+        title: "New Site Visit Booking",
         message: `New site visit booking received from ${customerName}`,
         read: false,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 });
-exports.onEnquiryCreated = (0, firestore_1.onDocumentCreated)('customerEnquiries/{docId}', async (event) => {
+exports.onEnquiryCreated = (0, firestore_1.onDocumentCreated)("enquiries/{docId}", async (event) => {
     const snapshot = event.data;
     if (!snapshot) {
         return;
     }
     const data = snapshot.data();
-    const customerName = data.customerName || data.name || 'a customer';
     const enquiryId = snapshot.id;
     const db = admin.firestore();
-    const notificationRef = db.collection('adminNotifications').doc(enquiryId);
+    // Resolve customer name from users collection via customerId
+    let customerName = "a customer";
+    const customerId = data.customerId;
+    if (customerId) {
+        try {
+            const userDoc = await db.collection("users").doc(customerId).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                customerName = userData?.fullName || userData?.name || "a customer";
+            }
+        }
+        catch (_) {
+            // fallback to default
+        }
+    }
+    const notificationRef = db.collection("adminNotifications").doc(enquiryId);
     await notificationRef.set({
         id: notificationRef.id,
-        type: 'ENQUIRY',
+        type: "ENQUIRY",
         relatedId: enquiryId,
         // Add keys for localization
-        titleKey: 'notif_enquiry_title',
-        messageKey: 'notif_enquiry_message',
+        titleKey: "notif_enquiry_title",
+        messageKey: "notif_enquiry_message",
         messageParams: { name: customerName },
         // Provide fallbacks for backwards compatibility in case UI hasn't updated
-        title: 'New Enquiry',
+        title: "New Enquiry",
         message: `New enquiry received from ${customerName}`,
         read: false,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),

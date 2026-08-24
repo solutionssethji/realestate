@@ -1,35 +1,30 @@
-/* eslint-disable react-hooks/immutability */
 "use client";
 
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { Building2, Loader2, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Loader2, Eye, EyeOff, ArrowRight, MailWarning } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
+import { normalizeEmail } from '@/lib/firebase';
+import { Modal } from "@/components/ui/Modal";
 
 export default function LoginPage() {
   const { t } = useLanguage();
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const { login, isAuthenticated } = useAuth(); // Just for types, AuthContext handles auto-redirect
+  const [resendingMail, setResendingMail] = useState(false);
 
-  if (isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-      </div>
-    );
-  }
+  const {
+    unverifiedFirebaseUser,
+    clearUnverifiedFirebaseUser,
+    resendVerificationEmail,
+  } = useAuth();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSuccess(false);
     setLoading(true);
 
     try {
@@ -37,21 +32,27 @@ export default function LoginPage() {
       const { doc, getDoc } = await import("firebase/firestore");
       const { auth, db } = await import("@/lib/firebase");
 
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const normalizedEmail = normalizeEmail(email);
+      const userCredential = await signInWithEmailAndPassword(auth, normalizedEmail, password);
 
-      // Verify the user is actually an admin before declaring success
-      const docRef = doc(db, "admins", userCredential.user.uid);
-      const docSnap = await getDoc(docRef);
+      const adminRef = doc(db, "admins", userCredential.user.uid);
+      const adminSnap = await getDoc(adminRef);
+      const agentRef = doc(db, "agents", userCredential.user.uid);
+      const agentSnap = await getDoc(agentRef);
 
-      if (!docSnap.exists()) {
+      if (!adminSnap.exists() && !agentSnap.exists()) {
         await signOut(auth);
-        throw new Error("Access denied. This account does not have admin privileges.");
+        throw new Error("Access denied. You do not have admin or agent privileges.");
       }
 
-      setSuccess(true);
+      // If agent is unverified — AuthContext will handle the dialog, just silently stop here
+      if (agentSnap.exists() && !adminSnap.exists() && !userCredential.user.emailVerified) {
+        setLoading(false);
+        return;
+      }
+
+      // Unverified agents are handled in AuthContext's onAuthStateChanged — nothing to do here
       toast.success("Login successful!");
-      router.push("/dashboard");
-      // login context will also sync but we push immediately for better UX
     } catch (err: any) {
       let friendlyMessage = err.message || "Login failed. Please check your credentials.";
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
@@ -63,6 +64,22 @@ export default function LoginPage() {
       }
       toast.error(friendlyMessage);
       setLoading(false);
+    }
+  }
+
+  const handleResendVerification = async () => {
+    setResendingMail(true);
+    try {
+      await resendVerificationEmail();
+      toast.success("Verification email sent! Please check your inbox and spam folder.");
+    } catch (error: any) {
+      if (error.code === 'auth/too-many-requests') {
+        toast.error("Too many requests. Please wait a few minutes before trying again.");
+      } else {
+        toast.error(error.message || "Failed to send verification email.");
+      }
+    } finally {
+      setResendingMail(false);
     }
   };
 
@@ -83,7 +100,7 @@ export default function LoginPage() {
 
           <div className="flex flex-col items-center mb-8">
             <div className="mb-6">
-              <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-16 w-auto object-contain" />
+              <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-24 w-auto object-contain" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
               Welcome Back
@@ -163,6 +180,46 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
+
+      <Modal
+        isOpen={!!unverifiedFirebaseUser}
+        onClose={clearUnverifiedFirebaseUser}
+        title="Email Verification Required"
+        maxWidth="md"
+        footer={
+          <div className="flex justify-end gap-3 w-full">
+            <button
+              onClick={clearUnverifiedFirebaseUser}
+              className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleResendVerification}
+              disabled={resendingMail}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2 disabled:opacity-50"
+            >
+              {resendingMail ? <Loader2 className="w-4 h-4 animate-spin" /> : <MailWarning className="w-4 h-4" />}
+              Send Verification Mail
+            </button>
+          </div>
+        }
+      >
+        <div className="py-4 text-slate-600">
+          <div className="flex items-center justify-center w-16 h-16 bg-blue-50 rounded-full mb-4 mx-auto text-blue-600">
+            <MailWarning className="w-8 h-8" />
+          </div>
+          <p className="text-center mb-4 text-slate-800 font-semibold text-lg">
+            Your account is not verified yet.
+          </p>
+          <p className="text-center text-sm">
+            For security reasons, agents must verify their email address before accessing the dashboard.
+            <br /><br />
+            Please check your inbox (and spam folder) for a verification link, or click below to receive a new one. Once verified, you can log in.
+          </p>
+        </div>
+      </Modal>
+
     </div>
   );
 }

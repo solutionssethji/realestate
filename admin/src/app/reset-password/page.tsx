@@ -4,7 +4,7 @@
 import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Building2, Loader2, CheckCircle2 } from "lucide-react";
+import { Building2, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'react-hot-toast';
 import { validateStrongPassword } from "@/lib/validators";
@@ -20,6 +20,8 @@ function ResetPasswordForm() {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -83,9 +85,9 @@ function ResetPasswordForm() {
     <form className="space-y-6" onSubmit={handleSubmit}>
       <div>
         <label className="block text-sm font-medium text-gray-700">{t('new_password')}</label>
-        <div className="mt-1">
+        <div className="mt-1 relative">
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             required
             minLength={6}
             value={password}
@@ -111,17 +113,24 @@ function ResetPasswordForm() {
                 setPasswordError(validateStrongPassword(password));
               }
             }}
-            className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${passwordError ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+            className={`appearance-none block w-full px-3 py-2 pr-10 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${passwordError ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
           />
-          {passwordError && <p className="mt-1.5 text-sm text-red-600">{passwordError}</p>}
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
         </div>
+        {passwordError && <p className="mt-1.5 text-sm text-red-600">{passwordError}</p>}
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700">{t('confirm_password')}</label>
-        <div className="mt-1">
+        <div className="mt-1 relative">
           <input
-            type="password"
+            type={showConfirmPassword ? "text" : "password"}
             required
             minLength={6}
             value={confirmPassword}
@@ -143,10 +152,17 @@ function ResetPasswordForm() {
                 setConfirmPasswordError("Passwords do not match");
               }
             }}
-            className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${confirmPasswordError ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+            className={`appearance-none block w-full px-3 py-2 pr-10 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${confirmPasswordError ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
           />
-          {confirmPasswordError && <p className="mt-1.5 text-sm text-red-600">{confirmPasswordError}</p>}
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+          >
+            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
         </div>
+        {confirmPasswordError && <p className="mt-1.5 text-sm text-red-600">{confirmPasswordError}</p>}
       </div>
 
       <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
@@ -177,7 +193,7 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center mb-6">
-          <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-16 w-auto object-contain" />
+          <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-24 w-auto object-contain" />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Create New Password

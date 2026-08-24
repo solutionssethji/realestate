@@ -38,7 +38,7 @@ export const onSiteVisitCreated = onDocumentCreated(
 );
 
 export const onEnquiryCreated = onDocumentCreated(
-  "customerEnquiries/{docId}",
+  "enquiries/{docId}",
   async (event) => {
     const snapshot = event.data;
     if (!snapshot) {
@@ -46,10 +46,24 @@ export const onEnquiryCreated = onDocumentCreated(
     }
 
     const data = snapshot.data();
-    const customerName = data.customerName || data.name || "a customer";
     const enquiryId = snapshot.id;
-
     const db = admin.firestore();
+
+    // Resolve customer name from users collection via customerId
+    let customerName = "a customer";
+    const customerId = data.customerId;
+    if (customerId) {
+      try {
+        const userDoc = await db.collection("users").doc(customerId).get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          customerName = userData?.fullName || userData?.name || "a customer";
+        }
+      } catch (_) {
+        // fallback to default
+      }
+    }
+
     const notificationRef = db.collection("adminNotifications").doc(enquiryId);
 
     await notificationRef.set({

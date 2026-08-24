@@ -12,9 +12,7 @@ class EnquiryLogic extends _$EnquiryLogic {
   }
 
   Future<bool> submitEnquiry({
-    required String name,
-    required String phone,
-    String? email,
+    required String customerId,
     String? projectId,
     String? plotRequirement,
     String? budget,
@@ -28,9 +26,7 @@ class EnquiryLogic extends _$EnquiryLogic {
     );
     try {
       await ApiService.submitEnquiry({
-        'customerName': name,
-        'mobileNumber': phone,
-        if (email != null && email.isNotEmpty) 'email': email,
+        'customerId': customerId,
         if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
         if (plotRequirement != null && plotRequirement.isNotEmpty)
           'plotRequirement': plotRequirement,

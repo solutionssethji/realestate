@@ -16,9 +16,11 @@ import { ShimmerTable } from "@/components/ui/Shimmer";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { useAuth } from "@/context/AuthContext";
 
 export default function OffersListPage() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [projects, setProjects] = useState<any[]>([]);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
@@ -120,8 +122,8 @@ export default function OffersListPage() {
         const project = projects.find(p => p.id === offer.projectId);
         return (
           <div className="flex items-center">
-            {offer.image ? (
-              <img className="h-12 w-12 rounded-xl object-cover shadow-sm" src={offer.image} alt={offer.title?.en || 'Offer'} />
+            {offer.offerImage ? (
+              <img className="h-12 w-12 rounded-xl object-cover shadow-sm" src={offer.offerImage} alt={offer.title?.en || 'Offer'} />
             ) : (
               <div className="h-12 w-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center shadow-sm">
                 <Tag className="h-6 w-6 text-slate-400" />
@@ -170,10 +172,10 @@ export default function OffersListPage() {
           <select
             value={currentVal}
             onChange={(e) => handleStatusChange(offer.id, e.target.value)}
-            disabled={statusLoading === offer.id || currentVal === 'EXPIRED'}
+            disabled={statusLoading === offer.id || currentVal === 'EXPIRED' || user?.role === 'AGENT'}
             className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium border focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${currentVal === 'ACTIVE' ? 'bg-green-50 text-green-800 border-green-200' :
-                currentVal === 'INACTIVE' ? 'bg-slate-50 text-slate-800 border-slate-200' :
-                  'bg-red-50 text-red-800 border-red-200'
+              currentVal === 'INACTIVE' ? 'bg-slate-50 text-slate-800 border-slate-200' :
+                'bg-red-50 text-red-800 border-red-200'
               }`}
           >
             <option value="ACTIVE">Active</option>
@@ -183,7 +185,7 @@ export default function OffersListPage() {
         );
       }
     },
-    {
+    ...(user?.role !== 'AGENT' ? [{
       header: t('actions'),
       key: "actions",
       render: (offer: any) => (
@@ -203,7 +205,7 @@ export default function OffersListPage() {
           </button>
         </div>
       )
-    }
+    }] : [])
   ];
 
   return (
@@ -212,11 +214,13 @@ export default function OffersListPage() {
         title={t('offers_management')}
         breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Offers" }]}
         actions={
-          <Link href="/offers/new">
-            <Button icon={<Plus className="h-4 w-4" />}>
-              Add Offer
-            </Button>
-          </Link>
+          user?.role !== 'AGENT' && (
+            <Link href="/offers/new">
+              <Button icon={<Plus className="h-4 w-4" />}>
+                Add Offer
+              </Button>
+            </Link>
+          )
         }
       />
 

@@ -85,21 +85,50 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
     setFormData({ ...formData, facilities: newFacs });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: "" });
+  const validateField = (name: string, value: string) => {
+    let error = "";
+    switch (name) {
+      case "name_en": if (!value.trim()) error = "English project name is required"; break;
+      case "name_hi": if (!value.trim()) error = "Hindi project name is required"; break;
+      case "location_en": if (!value.trim()) error = "English location is required"; break;
+      case "location_hi": if (!value.trim()) error = "Hindi location is required"; break;
+      case "googleMap": if (!value.trim()) error = "Google Map URL is required"; break;
+      case "availablePlots": if (!value.toString().trim()) error = "Available plots is required"; break;
+      case "plotSize_en": if (!value.trim()) error = "English plot size is required"; break;
+      case "plotSize_hi": if (!value.trim()) error = "Hindi plot size is required"; break;
+      case "plotPrice_en": if (!value.trim()) error = "English plot price is required"; break;
+      case "plotPrice_hi": if (!value.trim()) error = "Hindi plot price is required"; break;
+      case "roadWidth_en": if (!value.trim()) error = "English road width is required"; break;
+      case "roadWidth_hi": if (!value.trim()) error = "Hindi road width is required"; break;
+      case "projectVideo": if (!value.trim()) error = "Project video is required"; break;
+      default: break;
     }
+    return error;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
   };
 
   const handleNestedChange = (field: 'name' | 'location' | 'plotSize' | 'plotPrice' | 'roadWidth' | 'developmentStatus', lang: 'en' | 'hi', value: string) => {
+    const key = `${field}_${lang}`;
     setFormData({
       ...formData,
       [field]: { ...formData[field], [lang]: value }
     });
-    if (errors[`${field}_${lang}`]) {
-      setErrors({ ...errors, [`${field}_${lang}`]: "" });
-    }
+    setErrors(prev => ({ ...prev, [key]: validateField(key, value) }));
+  };
+
+  const handleNestedBlur = (field: 'name' | 'location' | 'plotSize' | 'plotPrice' | 'roadWidth' | 'developmentStatus', lang: 'en' | 'hi', value: string) => {
+    const key = `${field}_${lang}`;
+    setErrors(prev => ({ ...prev, [key]: validateField(key, value) }));
   };
 
   const handleRemoveExistingPhoto = (index: number) => {
@@ -146,6 +175,7 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      toast.error("Please fix the validation errors in the form.");
       return;
     }
     setErrors({});
@@ -229,8 +259,8 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
           <div className="md:col-span-2 space-y-4">
             <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('english')}</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input label="Project Name " name="name_en" required value={formData.name.en} onChange={(e) => handleNestedChange('name', 'en', e.target.value)} error={errors.name_en} placeholder="e.g. Sunrise Valley" />
-              <Input label="Location " name="location_en" required value={formData.location.en} onChange={(e) => handleNestedChange('location', 'en', e.target.value)} error={errors.location_en} placeholder="e.g. Sector 128, Noida" />
+              <Input label="Project Name " name="name_en" required value={formData.name.en} onChange={(e) => handleNestedChange('name', 'en', e.target.value)} onBlur={(e) => handleNestedBlur('name', 'en', e.target.value)} error={errors.name_en} placeholder="e.g. Sunrise Valley" />
+              <Input label="Location " name="location_en" required value={formData.location.en} onChange={(e) => handleNestedChange('location', 'en', e.target.value)} onBlur={(e) => handleNestedBlur('location', 'en', e.target.value)} error={errors.location_en} placeholder="e.g. Sector 128, Noida" />
               <div className="md:col-span-2">
                 <Select
                   label="Development Status "
@@ -252,8 +282,8 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
           <div className="md:col-span-2 space-y-4 pt-4 border-t border-slate-100">
             <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('hindi')}</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input label="प्रोजेक्ट का नाम " name="name_hi" required value={formData.name.hi} onChange={(e) => handleNestedChange('name', 'hi', e.target.value)} error={errors.name_hi} placeholder="e.g. सनराइज वैली" />
-              <Input label="स्थान " name="location_hi" required value={formData.location.hi} onChange={(e) => handleNestedChange('location', 'hi', e.target.value)} error={errors.location_hi} placeholder="e.g. सेक्टर 128, नोएडा" />
+              <Input label="प्रोजेक्ट का नाम " name="name_hi" required value={formData.name.hi} onChange={(e) => handleNestedChange('name', 'hi', e.target.value)} onBlur={(e) => handleNestedBlur('name', 'hi', e.target.value)} error={errors.name_hi} placeholder="e.g. सनराइज वैली" />
+              <Input label="स्थान " name="location_hi" required value={formData.location.hi} onChange={(e) => handleNestedChange('location', 'hi', e.target.value)} onBlur={(e) => handleNestedBlur('location', 'hi', e.target.value)} error={errors.location_hi} placeholder="e.g. सेक्टर 128, नोएडा" />
               <div className="md:col-span-2">
                 <Select
                   label="विकास की स्थिति "
@@ -273,7 +303,7 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
           <div className="md:col-span-2 space-y-3 pt-4 border-t border-slate-100">
             <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">Map Configuration</h4>
             <div className="relative border-l-4 border-blue-500 pl-4 py-2 bg-slate-50 rounded-r-lg">
-              <Input label="Google Map (Embed or Share URL)" name="googleMap" required value={formData.googleMap} onChange={handleChange} error={errors.googleMap} placeholder="e.g. https://www.google.com/maps/embed?..." />
+              <Input label="Google Map (Embed or Share URL)" name="googleMap" required value={formData.googleMap} onChange={handleChange} onBlur={handleBlur} error={errors.googleMap} placeholder="e.g. https://www.google.com/maps/embed?..." />
               <p className="text-[10px] text-slate-500 mt-1 italic">Note: Use the Google Maps "Embed Map" URL for best results.</p>
             </div>
           </div>
@@ -323,15 +353,15 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
           <CardDescription>Details about the available plots within this project.</CardDescription>
         </CardHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Input label="Available Plots" name="availablePlots" type="number" required value={formData.availablePlots} onChange={handleChange} error={errors.availablePlots} placeholder="e.g. 25" />
+          <Input label="Available Plots" name="availablePlots" type="number" required value={formData.availablePlots} onChange={handleChange} onBlur={handleBlur} error={errors.availablePlots} placeholder="e.g. 25" />
 
           {/* ENGLISH SECTION */}
           <div className="md:col-span-2 space-y-4">
             <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('english')}</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Input label="Plot Size " name="plotSize_en" required value={formData.plotSize.en} onChange={(e) => handleNestedChange('plotSize', 'en', e.target.value)} error={errors.plotSize_en} placeholder="e.g. 100-200 sq.yd" />
-              <Input label="Plot Price " name="plotPrice_en" required value={formData.plotPrice.en} onChange={(e) => handleNestedChange('plotPrice', 'en', e.target.value)} error={errors.plotPrice_en} placeholder="e.g. ₹50L onwards" />
-              <Input label="Road Width " name="roadWidth_en" required value={formData.roadWidth.en} onChange={(e) => handleNestedChange('roadWidth', 'en', e.target.value)} error={errors.roadWidth_en} placeholder="e.g. 40 ft" />
+              <Input label="Plot Size " name="plotSize_en" required value={formData.plotSize.en} onChange={(e) => handleNestedChange('plotSize', 'en', e.target.value)} onBlur={(e) => handleNestedBlur('plotSize', 'en', e.target.value)} error={errors.plotSize_en} placeholder="e.g. 100-200 sq.yd" />
+              <Input label="Plot Price " name="plotPrice_en" required value={formData.plotPrice.en} onChange={(e) => handleNestedChange('plotPrice', 'en', e.target.value)} onBlur={(e) => handleNestedBlur('plotPrice', 'en', e.target.value)} error={errors.plotPrice_en} placeholder="e.g. ₹50L onwards" />
+              <Input label="Road Width " name="roadWidth_en" required value={formData.roadWidth.en} onChange={(e) => handleNestedChange('roadWidth', 'en', e.target.value)} onBlur={(e) => handleNestedBlur('roadWidth', 'en', e.target.value)} error={errors.roadWidth_en} placeholder="e.g. 40 ft" />
             </div>
           </div>
 
@@ -339,9 +369,9 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
           <div className="md:col-span-2 space-y-4 pt-4 border-t border-slate-100">
             <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('hindi')}</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Input label="प्लॉट का आकार " name="plotSize_hi" required value={formData.plotSize.hi} onChange={(e) => handleNestedChange('plotSize', 'hi', e.target.value)} error={errors.plotSize_hi} placeholder="e.g. 100-200 वर्ग गज" />
-              <Input label="प्लॉट की कीमत " name="plotPrice_hi" required value={formData.plotPrice.hi} onChange={(e) => handleNestedChange('plotPrice', 'hi', e.target.value)} error={errors.plotPrice_hi} placeholder="e.g. ₹50 लाख से शुरू" />
-              <Input label="सड़क की चौड़ाई " name="roadWidth_hi" required value={formData.roadWidth.hi} onChange={(e) => handleNestedChange('roadWidth', 'hi', e.target.value)} error={errors.roadWidth_hi} placeholder="e.g. 40 फीट" />
+              <Input label="प्लॉट का आकार " name="plotSize_hi" required value={formData.plotSize.hi} onChange={(e) => handleNestedChange('plotSize', 'hi', e.target.value)} onBlur={(e) => handleNestedBlur('plotSize', 'hi', e.target.value)} error={errors.plotSize_hi} placeholder="e.g. 100-200 वर्ग गज" />
+              <Input label="प्लॉट की कीमत " name="plotPrice_hi" required value={formData.plotPrice.hi} onChange={(e) => handleNestedChange('plotPrice', 'hi', e.target.value)} onBlur={(e) => handleNestedBlur('plotPrice', 'hi', e.target.value)} error={errors.plotPrice_hi} placeholder="e.g. ₹50 लाख से शुरू" />
+              <Input label="सड़क की चौड़ाई " name="roadWidth_hi" required value={formData.roadWidth.hi} onChange={(e) => handleNestedChange('roadWidth', 'hi', e.target.value)} onBlur={(e) => handleNestedBlur('roadWidth', 'hi', e.target.value)} error={errors.roadWidth_hi} placeholder="e.g. 40 फीट" />
             </div>
           </div>
         </div>
@@ -440,7 +470,7 @@ export default function ProjectForm({ initialData, isEdit = false }: ProjectForm
         </CardHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
-            <Input label="High-Quality Video / 360° View (URL)" name="projectVideo" required value={formData.projectVideo} onChange={handleChange} error={errors.projectVideo} placeholder="e.g. YouTube or Matterport link" />
+            <Input label="High-Quality Video / 360° View (URL)" name="projectVideo" required value={formData.projectVideo} onChange={handleChange} onBlur={handleBlur} error={errors.projectVideo} placeholder="e.g. YouTube or Matterport link" />
           </div>
 
           <div className="md:col-span-2 space-y-3">

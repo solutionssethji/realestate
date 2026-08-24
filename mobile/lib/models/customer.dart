@@ -15,6 +15,12 @@ class Customer with _$Customer {
     String? city,
     String? state,
     String? pincode,
+    // KYC Fields
+    String? aadharNumber,
+    String? aadharPhotoUrl,
+    String? panNumber,
+    String? panPhotoUrl,
+    Map<String, dynamic>? bankDetails,
     @TimestampConverter() DateTime? createdAt,
     @TimestampConverter() DateTime? updatedAt,
   }) = _Customer;

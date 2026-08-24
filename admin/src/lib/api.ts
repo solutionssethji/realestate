@@ -22,6 +22,111 @@ const createResponse = (data: any, lastDoc?: any) => ({
 const errorResponse = (msg: string) =>
   Promise.reject({ response: { data: { success: false, message: msg } } });
 
+async function enrichBookingData(bookingData: any) {
+  const fetchPromises = [];
+
+  if (bookingData.customerId && !bookingData.customerName) {
+    fetchPromises.push(
+      getDoc(doc(db, "users", bookingData.customerId))
+        .then((snap) => {
+          if (snap.exists()) {
+            bookingData.customerName = snap.data().fullName || "Unknown";
+          }
+        })
+        .catch(console.error),
+    );
+  }
+
+  if (bookingData.projectId && !bookingData.projectName) {
+    fetchPromises.push(
+      getDoc(doc(db, "projects", bookingData.projectId))
+        .then((snap) => {
+          if (snap.exists()) {
+            const pData = snap.data();
+            bookingData.projectName = pData.name?.en || pData.name || "Unknown";
+          }
+        })
+        .catch(console.error),
+    );
+  }
+
+  if (bookingData.plotId && (!bookingData.plotNumber || !bookingData.status)) {
+    fetchPromises.push(
+      getDoc(doc(db, "plots", bookingData.plotId))
+        .then((snap) => {
+          if (snap.exists()) {
+            const pData = snap.data();
+            bookingData.plotNumber = pData.plotNumber || "Unknown";
+            if (!bookingData.status) {
+              bookingData.status =
+                pData.status === "BOOKED_SOLD"
+                  ? "BOOKED"
+                  : pData.status || "BOOKED";
+            }
+          }
+        })
+        .catch(console.error),
+    );
+  }
+
+  await Promise.all(fetchPromises);
+
+  if (!bookingData.status) {
+    bookingData.status = "BOOKED";
+  }
+
+  return bookingData;
+}
+
+async function enrichPaymentData(paymentData: any) {
+  const fetchPromises = [];
+
+  if (paymentData.customerId && !paymentData.customerName) {
+    fetchPromises.push(
+      getDoc(doc(db, "users", paymentData.customerId))
+        .then((snap) => {
+          if (snap.exists()) {
+            const d = snap.data();
+            paymentData.customerName = d.fullName || d.name || "Unknown";
+          }
+        })
+        .catch(console.error),
+    );
+  }
+
+  if (paymentData.bookingId && (!paymentData.projectName || !paymentData.plotNumber)) {
+    fetchPromises.push(
+      getDoc(doc(db, "assignPlots", paymentData.bookingId))
+        .then(async (snap) => {
+          if (snap.exists()) {
+            const bData = snap.data();
+            paymentData.projectName = bData.projectName;
+            paymentData.plotNumber = bData.plotNumber;
+            
+            if (!paymentData.projectName && bData.projectId) {
+              const pSnap = await getDoc(doc(db, "projects", bData.projectId));
+              if (pSnap.exists()) {
+                const pData = pSnap.data();
+                paymentData.projectName = pData.name?.en || pData.name || "Unknown";
+              }
+            }
+            if (!paymentData.plotNumber && bData.plotId) {
+               const plSnap = await getDoc(doc(db, "plots", bData.plotId));
+               if (plSnap.exists()) {
+                  paymentData.plotNumber = plSnap.data().plotNumber || "Unknown";
+               }
+            }
+          }
+        })
+        .catch(console.error),
+    );
+  }
+
+  await Promise.all(fetchPromises);
+  return paymentData;
+}
+
+
 export interface ApiGetOptions {
   limitCount?: number;
   startAfterDoc?: DocumentSnapshot | null;
@@ -57,14 +162,24 @@ const api = {
         col === "site-visits"
           ? "siteVisits"
           : col === "enquiries"
-            ? "customerEnquiries"
-            : col;
+            ? "enquiries"
+            : col === "bookings"
+              ? "assignPlots"
+              : col;
 
       if (id) {
         const docRef = doc(db, collectionName, id);
         const snap = await getDoc(docRef);
         if (!snap.exists()) return errorResponse("Not found");
-        return createResponse({ id: snap.id, ...snap.data() });
+
+        let data = { id: snap.id, ...snap.data() };
+        if (collectionName === "assignPlots") {
+          data = await enrichBookingData(data);
+        } else if (collectionName === "payments") {
+          data = await enrichPaymentData(data);
+        }
+
+        return createResponse(data);
       } else {
         let baseQuery: any = collection(db, collectionName);
 
@@ -96,10 +211,16 @@ const api = {
         }
 
         const snap = await getDocs(baseQuery);
-        const data = snap.docs.map((d) => ({
+        let data = snap.docs.map((d) => ({
           id: d.id,
           ...(d.data() as Record<string, any>),
         }));
+
+        if (collectionName === "assignPlots") {
+          data = await Promise.all(data.map((b) => enrichBookingData(b)));
+        } else if (collectionName === "payments") {
+          data = await Promise.all(data.map((p) => enrichPaymentData(p)));
+        }
 
         const lastVisible =
           snap.docs.length > 0 ? snap.docs[snap.docs.length - 1] : undefined;
@@ -124,8 +245,10 @@ const api = {
         col === "site-visits"
           ? "siteVisits"
           : col === "enquiries"
-            ? "customerEnquiries"
-            : col;
+            ? "enquiries"
+            : col === "bookings"
+              ? "assignPlots"
+              : col;
 
       const newDocRef = doc(collection(db, collectionName));
       const payload = {
@@ -151,8 +274,10 @@ const api = {
         col === "site-visits"
           ? "siteVisits"
           : col === "enquiries"
-            ? "customerEnquiries"
-            : col;
+            ? "enquiries"
+            : col === "bookings"
+              ? "assignPlots"
+              : col;
 
       const docRef = doc(db, collectionName, id);
       await updateDoc(docRef, { ...data, updatedAt: new Date().toISOString() });
@@ -172,7 +297,7 @@ const api = {
         col === "site-visits"
           ? "siteVisits"
           : col === "enquiries"
-            ? "customerEnquiries"
+            ? "enquiries"
             : col;
 
       await deleteDoc(doc(db, collectionName, id));

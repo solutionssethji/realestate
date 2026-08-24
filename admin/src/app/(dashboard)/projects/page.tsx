@@ -16,9 +16,11 @@ import { ShimmerTable } from "@/components/ui/Shimmer";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ProjectsListPage() {
   const { t } = useLanguage();
+  const { user } = useAuth();
 
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
@@ -177,7 +179,7 @@ export default function ProjectsListPage() {
           <select
             value={currentVal}
             onChange={(e) => handleStatusChange(project.id, e.target.value)}
-            disabled={statusLoading === project.id}
+            disabled={statusLoading === project.id || user?.role === 'AGENT'}
             className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-800 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           >
             <option value="Upcoming">Upcoming</option>
@@ -187,7 +189,7 @@ export default function ProjectsListPage() {
         );
       }
     },
-    {
+    ...(user?.role !== 'AGENT' ? [{
       header: t('actions'),
       key: "actions",
       render: (project: any) => (
@@ -217,7 +219,7 @@ export default function ProjectsListPage() {
           </button>
         </div>
       )
-    }
+    }] : [])
   ];
 
   return (
@@ -226,11 +228,13 @@ export default function ProjectsListPage() {
         title={t('projects_management')}
         breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Projects" }]}
         actions={
-          <Link href="/projects/new">
-            <Button icon={<Plus className="h-4 w-4" />}>
-              Add Project
-            </Button>
-          </Link>
+          user?.role !== 'AGENT' && (
+            <Link href="/projects/new">
+              <Button icon={<Plus className="h-4 w-4" />}>
+                Add Project
+              </Button>
+            </Link>
+          )
         }
       />
 

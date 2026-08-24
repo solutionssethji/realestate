@@ -261,7 +261,14 @@ export default function FaqPage() {
                 <input
                   type="text"
                   value={qEn}
-                  onChange={(e) => { setQEn(e.target.value); if (errors.qEn) setErrors({ ...errors, qEn: undefined }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setQEn(val);
+                    setErrors(prev => ({ ...prev, qEn: val.trim() ? undefined : "English question is required" }));
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value.trim()) setErrors(prev => ({ ...prev, qEn: "English question is required" }));
+                  }}
                   className={`w-full px-3 py-2 bg-slate-50 border ${errors.qEn ? 'border-red-500' : 'border-slate-200'} rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 outline-none`}
                   placeholder="e.g. How to book?"
                 />
@@ -272,7 +279,14 @@ export default function FaqPage() {
                 <textarea
                   rows={4}
                   value={aEn}
-                  onChange={(e) => { setAEn(e.target.value); if (errors.aEn) setErrors({ ...errors, aEn: undefined }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setAEn(val);
+                    setErrors(prev => ({ ...prev, aEn: val.trim() ? undefined : "English answer is required" }));
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value.trim()) setErrors(prev => ({ ...prev, aEn: "English answer is required" }));
+                  }}
                   className={`w-full px-3 py-2 bg-slate-50 border ${errors.aEn ? 'border-red-500' : 'border-slate-200'} rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 outline-none resize-none`}
                   placeholder="Provide the answer here..."
                 />
@@ -287,7 +301,14 @@ export default function FaqPage() {
                 <input
                   type="text"
                   value={qHi}
-                  onChange={(e) => { setQHi(e.target.value); if (errors.qHi) setErrors({ ...errors, qHi: undefined }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setQHi(val);
+                    setErrors(prev => ({ ...prev, qHi: val.trim() ? undefined : "Hindi question is required" }));
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value.trim()) setErrors(prev => ({ ...prev, qHi: "Hindi question is required" }));
+                  }}
                   className={`w-full px-3 py-2 bg-slate-50 border ${errors.qHi ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:ring-blue-500'} rounded-xl text-sm focus:outline-none focus:ring-2 outline-none`}
                   placeholder="e.g. मैं प्लॉट कैसे बुक कर सकता हूं?"
                 />
@@ -298,7 +319,14 @@ export default function FaqPage() {
                 <textarea
                   rows={4}
                   value={aHi}
-                  onChange={(e) => { setAHi(e.target.value); if (errors.aHi) setErrors({ ...errors, aHi: undefined }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setAHi(val);
+                    setErrors(prev => ({ ...prev, aHi: val.trim() ? undefined : "Hindi answer is required" }));
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value.trim()) setErrors(prev => ({ ...prev, aHi: "Hindi answer is required" }));
+                  }}
                   className={`w-full px-3 py-2 bg-slate-50 border ${errors.aHi ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:ring-blue-500'} rounded-xl text-sm focus:outline-none focus:ring-2 outline-none resize-none`}
                   placeholder="e.g. आप हमारी सेल्स टीम से संपर्क कर सकते हैं..."
                 />

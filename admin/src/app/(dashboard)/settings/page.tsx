@@ -94,7 +94,13 @@ function AboutTab() {
       ...prev,
       [field]: { ...prev[field], [lang]: value }
     }));
-    if (errors[`${field}_${lang}`]) setErrors(prev => ({ ...prev, [`${field}_${lang}`]: "" }));
+    const key = `${field}_${lang}`;
+    setErrors(prev => ({ ...prev, [key]: value.trim() ? "" : "Required field" }));
+  };
+
+  const handleNestedBlur = (field: keyof typeof aboutData, lang: 'en' | 'hi', value: string) => {
+    const key = `${field}_${lang}`;
+    setErrors(prev => ({ ...prev, [key]: value.trim() ? "" : "Required field" }));
   };
 
   const handleSave = async () => {
@@ -144,22 +150,22 @@ function AboutTab() {
           <div className="space-y-4">
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">Company Profile <span className="text-red-500">*</span></label>
-              <textarea value={aboutData.companyProfile.en} onChange={e => handleNestedChange("companyProfile", "en", e.target.value)} rows={4} className={getTextareaClass(!!errors.companyProfile_en)} />
+              <textarea value={aboutData.companyProfile.en} onChange={e => handleNestedChange("companyProfile", "en", e.target.value)} onBlur={e => handleNestedBlur("companyProfile", "en", e.target.value)} rows={4} className={getTextareaClass(!!errors.companyProfile_en)} />
               {errors.companyProfile_en && <p className="text-sm text-red-600 font-medium">{errors.companyProfile_en}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">Vision <span className="text-red-500">*</span></label>
-              <textarea value={aboutData.vision.en} onChange={e => handleNestedChange("vision", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.vision_en)} />
+              <textarea value={aboutData.vision.en} onChange={e => handleNestedChange("vision", "en", e.target.value)} onBlur={e => handleNestedBlur("vision", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.vision_en)} />
               {errors.vision_en && <p className="text-sm text-red-600 font-medium">{errors.vision_en}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">Mission <span className="text-red-500">*</span></label>
-              <textarea value={aboutData.mission.en} onChange={e => handleNestedChange("mission", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.mission_en)} />
+              <textarea value={aboutData.mission.en} onChange={e => handleNestedChange("mission", "en", e.target.value)} onBlur={e => handleNestedBlur("mission", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.mission_en)} />
               {errors.mission_en && <p className="text-sm text-red-600 font-medium">{errors.mission_en}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">Why Choose Us <span className="text-red-500">*</span></label>
-              <textarea value={aboutData.whyChooseUs.en} onChange={e => handleNestedChange("whyChooseUs", "en", e.target.value)} rows={4} className={getTextareaClass(!!errors.whyChooseUs_en)} />
+              <textarea value={aboutData.whyChooseUs.en} onChange={e => handleNestedChange("whyChooseUs", "en", e.target.value)} onBlur={e => handleNestedBlur("whyChooseUs", "en", e.target.value)} rows={4} className={getTextareaClass(!!errors.whyChooseUs_en)} />
               {errors.whyChooseUs_en && <p className="text-sm text-red-600 font-medium">{errors.whyChooseUs_en}</p>}
             </div>
           </div>
@@ -171,22 +177,22 @@ function AboutTab() {
           <div className="space-y-4">
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">कंपनी प्रोफ़ाइल <span className="text-red-500">*</span></label>
-              <textarea value={aboutData.companyProfile.hi} onChange={e => handleNestedChange("companyProfile", "hi", e.target.value)} rows={4} className={getTextareaClass(!!errors.companyProfile_hi)} />
+              <textarea value={aboutData.companyProfile.hi} onChange={e => handleNestedChange("companyProfile", "hi", e.target.value)} onBlur={e => handleNestedBlur("companyProfile", "hi", e.target.value)} rows={4} className={getTextareaClass(!!errors.companyProfile_hi)} />
               {errors.companyProfile_hi && <p className="text-sm text-red-600 font-medium">{errors.companyProfile_hi}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">दृष्टिकोण <span className="text-red-500">*</span></label>
-              <textarea value={aboutData.vision.hi} onChange={e => handleNestedChange("vision", "hi", e.target.value)} rows={3} className={getTextareaClass(!!errors.vision_hi)} />
+              <textarea value={aboutData.vision.hi} onChange={e => handleNestedChange("vision", "hi", e.target.value)} onBlur={e => handleNestedBlur("vision", "hi", e.target.value)} rows={3} className={getTextareaClass(!!errors.vision_hi)} />
               {errors.vision_hi && <p className="text-sm text-red-600 font-medium">{errors.vision_hi}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">उद्देश्य <span className="text-red-500">*</span></label>
-              <textarea value={aboutData.mission.hi} onChange={e => handleNestedChange("mission", "hi", e.target.value)} rows={3} className={getTextareaClass(!!errors.mission_hi)} />
+              <textarea value={aboutData.mission.hi} onChange={e => handleNestedChange("mission", "hi", e.target.value)} onBlur={e => handleNestedBlur("mission", "hi", e.target.value)} rows={3} className={getTextareaClass(!!errors.mission_hi)} />
               {errors.mission_hi && <p className="text-sm text-red-600 font-medium">{errors.mission_hi}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">हमें क्यों चुनें <span className="text-red-500">*</span></label>
-              <textarea value={aboutData.whyChooseUs.hi} onChange={e => handleNestedChange("whyChooseUs", "hi", e.target.value)} rows={4} className={getTextareaClass(!!errors.whyChooseUs_hi)} />
+              <textarea value={aboutData.whyChooseUs.hi} onChange={e => handleNestedChange("whyChooseUs", "hi", e.target.value)} onBlur={e => handleNestedBlur("whyChooseUs", "hi", e.target.value)} rows={4} className={getTextareaClass(!!errors.whyChooseUs_hi)} />
               {errors.whyChooseUs_hi && <p className="text-sm text-red-600 font-medium">{errors.whyChooseUs_hi}</p>}
             </div>
           </div>
@@ -235,7 +241,22 @@ function ContactTab() {
       ...prev,
       [field]: { ...prev[field], [lang]: value }
     }));
-    if (errors[`${field}_${lang}`]) setErrors(prev => ({ ...prev, [`${field}_${lang}`]: "" }));
+    const key = `${field}_${lang}`;
+    setErrors(prev => ({ ...prev, [key]: value.trim() ? "" : "Required" }));
+  };
+
+  const handleNestedBlur = (field: "officeLocation", lang: 'en' | 'hi', value: string) => {
+    const key = `${field}_${lang}`;
+    setErrors(prev => ({ ...prev, [key]: value.trim() ? "" : "Required" }));
+  };
+
+  const handleFieldChange = (field: keyof Omit<typeof contactData, 'officeLocation'>, value: string) => {
+    setContactData(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field]: value.trim() ? "" : `${field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')} is required` }));
+  };
+
+  const handleFieldBlur = (field: keyof Omit<typeof contactData, 'officeLocation'>, value: string) => {
+    setErrors(prev => ({ ...prev, [field]: value.trim() ? "" : `This field is required` }));
   };
 
   const handleSave = async () => {
@@ -277,13 +298,13 @@ function ContactTab() {
       </div>
       <div className="p-6 space-y-8">
         <div className="space-y-4">
-          <Input required label="Direct Call (Phone Number to dial)" value={contactData.directCall} error={errors.directCall} onChange={e => { setContactData({ ...contactData, directCall: e.target.value }); if (errors.directCall) setErrors({ ...errors, directCall: "" }); }} placeholder="e.g. +919876543210" />
-          <Input required label="WhatsApp Number (without +)" value={contactData.whatsapp} error={errors.whatsapp} onChange={e => { setContactData({ ...contactData, whatsapp: e.target.value }); if (errors.whatsapp) setErrors({ ...errors, whatsapp: "" }); }} placeholder="e.g. 919876543210" />
-          <Input required label="Google Maps URL" value={contactData.googleMaps} error={errors.googleMaps} onChange={e => { setContactData({ ...contactData, googleMaps: e.target.value }); if (errors.googleMaps) setErrors({ ...errors, googleMaps: "" }); }} placeholder="https://goo.gl/maps/..." />
+          <Input required label="Direct Call (Phone Number to dial)" value={contactData.directCall} error={errors.directCall} onChange={e => handleFieldChange('directCall', e.target.value)} onBlur={e => handleFieldBlur('directCall', e.target.value)} placeholder="e.g. +919876543210" />
+          <Input required label="WhatsApp Number (without +)" value={contactData.whatsapp} error={errors.whatsapp} onChange={e => handleFieldChange('whatsapp', e.target.value)} onBlur={e => handleFieldBlur('whatsapp', e.target.value)} placeholder="e.g. 919876543210" />
+          <Input required label="Google Maps URL" value={contactData.googleMaps} error={errors.googleMaps} onChange={e => handleFieldChange('googleMaps', e.target.value)} onBlur={e => handleFieldBlur('googleMaps', e.target.value)} placeholder="https://goo.gl/maps/..." />
 
           <div className="space-y-1.5 pt-2">
             <label className="block text-sm font-semibold text-slate-700">Contact Number <span className="text-red-500">*</span></label>
-            <textarea value={contactData.contactNumber} onChange={e => { setContactData({ ...contactData, contactNumber: e.target.value }); if (errors.contactNumber) setErrors({ ...errors, contactNumber: "" }); }} rows={2} className={getTextareaClass(!!errors.contactNumber)} placeholder="+91 98765 43210" />
+            <textarea value={contactData.contactNumber} onChange={e => { const val = e.target.value; setContactData(prev => ({ ...prev, contactNumber: val })); setErrors(prev => ({ ...prev, contactNumber: val.trim() ? "" : "Required" })); }} onBlur={e => { if (!e.target.value.trim()) setErrors(prev => ({ ...prev, contactNumber: "Required" })); }} rows={2} className={getTextareaClass(!!errors.contactNumber)} placeholder="+91 98765 43210" />
             {errors.contactNumber && <p className="text-sm text-red-600 font-medium">{errors.contactNumber}</p>}
           </div>
         </div>
@@ -293,7 +314,7 @@ function ContactTab() {
           <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('english')}</h4>
           <div className="space-y-1.5">
             <label className="block text-sm font-semibold text-slate-700">Office Location <span className="text-red-500">*</span></label>
-            <textarea value={contactData.officeLocation.en} onChange={e => handleNestedChange("officeLocation", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.officeLocation_en)} />
+            <textarea value={contactData.officeLocation.en} onChange={e => handleNestedChange("officeLocation", "en", e.target.value)} onBlur={e => handleNestedBlur("officeLocation", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.officeLocation_en)} />
             {errors.officeLocation_en && <p className="text-sm text-red-600 font-medium">{errors.officeLocation_en}</p>}
           </div>
         </div>
@@ -303,7 +324,7 @@ function ContactTab() {
           <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('hindi')}</h4>
           <div className="space-y-1.5">
             <label className="block text-sm font-semibold text-slate-700">कार्यालय का स्थान <span className="text-red-500">*</span></label>
-            <textarea value={contactData.officeLocation.hi} onChange={e => handleNestedChange("officeLocation", "hi", e.target.value)} rows={3} className={getTextareaClass(!!errors.officeLocation_hi)} />
+            <textarea value={contactData.officeLocation.hi} onChange={e => handleNestedChange("officeLocation", "hi", e.target.value)} onBlur={e => handleNestedBlur("officeLocation", "hi", e.target.value)} rows={3} className={getTextareaClass(!!errors.officeLocation_hi)} />
             {errors.officeLocation_hi && <p className="text-sm text-red-600 font-medium">{errors.officeLocation_hi}</p>}
           </div>
         </div>
@@ -345,7 +366,13 @@ function LegalTab() {
       ...prev,
       [field]: { ...prev[field], [lang]: value }
     }));
-    if (errors[`${field}_${lang}`]) setErrors(prev => ({ ...prev, [`${field}_${lang}`]: "" }));
+    const key = `${field}_${lang}`;
+    setErrors(prev => ({ ...prev, [key]: value.trim() ? "" : "Required field" }));
+  };
+
+  const handleNestedBlur = (field: keyof typeof legalData, lang: 'en' | 'hi', value: string) => {
+    const key = `${field}_${lang}`;
+    setErrors(prev => ({ ...prev, [key]: value.trim() ? "" : "Required field" }));
   };
 
   const handleSave = async () => {
@@ -395,12 +422,12 @@ function LegalTab() {
           <div className="space-y-4">
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">Terms & Conditions <span className="text-red-500">*</span></label>
-              <textarea value={legalData.termsAndConditions.en} onChange={e => handleNestedChange("termsAndConditions", "en", e.target.value)} rows={6} className={getTextareaClass(!!errors.termsAndConditions_en)} />
+              <textarea value={legalData.termsAndConditions.en} onChange={e => handleNestedChange("termsAndConditions", "en", e.target.value)} onBlur={e => handleNestedBlur("termsAndConditions", "en", e.target.value)} rows={6} className={getTextareaClass(!!errors.termsAndConditions_en)} />
               {errors.termsAndConditions_en && <p className="text-sm text-red-600 font-medium">{errors.termsAndConditions_en}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">Privacy Policy <span className="text-red-500">*</span></label>
-              <textarea value={legalData.privacyPolicy.en} onChange={e => handleNestedChange("privacyPolicy", "en", e.target.value)} rows={6} className={getTextareaClass(!!errors.privacyPolicy_en)} />
+              <textarea value={legalData.privacyPolicy.en} onChange={e => handleNestedChange("privacyPolicy", "en", e.target.value)} onBlur={e => handleNestedBlur("privacyPolicy", "en", e.target.value)} rows={6} className={getTextareaClass(!!errors.privacyPolicy_en)} />
               {errors.privacyPolicy_en && <p className="text-sm text-red-600 font-medium">{errors.privacyPolicy_en}</p>}
             </div>
           </div>
@@ -412,12 +439,12 @@ function LegalTab() {
           <div className="space-y-4">
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">नियम एवं शर्तें <span className="text-red-500">*</span></label>
-              <textarea value={legalData.termsAndConditions.hi} onChange={e => handleNestedChange("termsAndConditions", "hi", e.target.value)} rows={6} className={getTextareaClass(!!errors.termsAndConditions_hi)} />
+              <textarea value={legalData.termsAndConditions.hi} onChange={e => handleNestedChange("termsAndConditions", "hi", e.target.value)} onBlur={e => handleNestedBlur("termsAndConditions", "hi", e.target.value)} rows={6} className={getTextareaClass(!!errors.termsAndConditions_hi)} />
               {errors.termsAndConditions_hi && <p className="text-sm text-red-600 font-medium">{errors.termsAndConditions_hi}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="block text-sm font-semibold text-slate-700">गोपनीयता नीति <span className="text-red-500">*</span></label>
-              <textarea value={legalData.privacyPolicy.hi} onChange={e => handleNestedChange("privacyPolicy", "hi", e.target.value)} rows={6} className={getTextareaClass(!!errors.privacyPolicy_hi)} />
+              <textarea value={legalData.privacyPolicy.hi} onChange={e => handleNestedChange("privacyPolicy", "hi", e.target.value)} onBlur={e => handleNestedBlur("privacyPolicy", "hi", e.target.value)} rows={6} className={getTextareaClass(!!errors.privacyPolicy_hi)} />
               {errors.privacyPolicy_hi && <p className="text-sm text-red-600 font-medium">{errors.privacyPolicy_hi}</p>}
             </div>
           </div>

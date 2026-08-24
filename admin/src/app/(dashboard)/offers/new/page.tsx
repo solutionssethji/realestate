@@ -1,373 +1,379 @@
-/* eslint-disable react-hooks/immutability */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
-import api from "@/lib/api";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { useLanguage } from '@/context/LanguageContext';
-import { storage } from "@/lib/firebase";
+import { collection, addDoc, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { resizeImage } from "@/lib/imageUtils";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
-import { Button } from "@/components/ui/Button";
+import { db, storage } from "@/lib/firebase";
+import getCroppedImg from "@/lib/cropImage";
+import Cropper from "react-easy-crop";
+import { Modal } from "@/components/ui/Modal";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Tag, Calendar, Percent, IndianRupee, CheckCircle, Image as ImageIcon, FileText } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 export default function NewOfferPage() {
-  const { t } = useLanguage();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [projects, setProjects] = useState([]);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [formData, setFormData] = useState({
-    projectId: "",
-    title: { en: "", hi: "" },
-    description: { en: "", hi: "" },
-    image: "",
-    startDate: "",
-    endDate: "",
-    discountType: "PERCENTAGE",
-    discountValue: "",
-    offerCode: "",
-    status: "ACTIVE",
-  });
+  // Projects fetch
+  const [projects, setProjects] = useState<any[]>([]);
 
   useEffect(() => {
-    api.get("/projects").then(res => setProjects(res.data.data || [])).catch(console.error);
+    async function fetchProjects() {
+      const q = query(collection(db, "projects"), where("isActive", "==", true));
+      const snap = await getDocs(q);
+      const list = snap.docs.map(d => ({ id: d.id, name: d.data().name }));
+      setProjects(list);
+    }
+    fetchProjects();
   }, []);
 
+  // Image states
+  const [offerImage, setOfferImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+  const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+
+  const [formData, setFormData] = useState({
+    titleEn: "",
+    titleHi: "",
+    descriptionEn: "",
+    descriptionHi: "",
+    code: "",
+    discountType: "PERCENTAGE",
+    discountValue: "",
+    projectId: "global", // 'global' or actual ID
+    startDate: "",
+    endDate: "",
+    status: "ACTIVE"
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateField = (name: string, value: string, currentFormData = formData) => {
+    let error = "";
+    if (name.includes("title") || name.includes("description") || name === "code" || name === "discountValue" || name === "startDate" || name === "endDate") {
+      if (!value.trim()) {
+        error = "This field is required";
+      }
+    }
+    if (name === "discountValue" && value.trim() && currentFormData.discountType === "PERCENTAGE") {
+      if (parseFloat(value) > 100) {
+        error = "Percentage cannot exceed 100";
+      }
+    }
+    return error;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
-    setFormData({ ...formData, [e.target.name]: value });
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value } = e.target;
+    let formattedValue = value;
+    if (name === "code") {
+      formattedValue = value.toUpperCase().replace(/\s/g, "");
     }
+    const updatedFormData = { ...formData, [name]: formattedValue };
+
+    // If discountType changes, re-validate discountValue
+    if (name === "discountType") {
+      setErrors(prev => ({
+        ...prev,
+        discountValue: validateField("discountValue", updatedFormData.discountValue, updatedFormData)
+      }));
+    }
+
+    setFormData(updatedFormData);
+    setErrors(prev => ({ ...prev, [name]: validateField(name, formattedValue, updatedFormData) }));
   };
 
-  const handleNestedChange = (field: 'title' | 'description', lang: 'en' | 'hi', value: string) => {
-    setFormData({
-      ...formData,
-      [field]: { ...formData[field], [lang]: value }
-    });
-    if (errors[`${field}_${lang}`]) {
-      setErrors({ ...errors, [`${field}_${lang}`]: "" });
-    }
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value, formData) }));
   };
 
-  async function handleSubmit(e: React.FormEvent) {
+  // Image handlers
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageToCrop(URL.createObjectURL(e.target.files[0]));
+      setIsCropModalOpen(true);
+      e.target.value = "";
+    }
+  };
+  const onCropComplete = (_: any, croppedAreaPixels: any) => setCroppedAreaPixels(croppedAreaPixels);
+  const handleCropConfirm = async () => {
+    if (imageToCrop && croppedAreaPixels) {
+      try {
+        const croppedFile = await getCroppedImg(imageToCrop, croppedAreaPixels, 0);
+        if (croppedFile) {
+          setOfferImage(croppedFile);
+          setImagePreview(URL.createObjectURL(croppedFile));
+          setErrors(prev => ({ ...prev, offerImage: "" }));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    setIsCropModalOpen(false);
+  };
+  const handleRemoveImage = () => {
+    setOfferImage(null);
+    setImagePreview(null);
+    setImageToCrop(null);
+  };
+
+  const checkDuplicateCode = async (code: string) => {
+    const q = query(collection(db, "offers"), where("code", "==", code));
+    const snap = await getDocs(q);
+    return !snap.empty;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const newErrors: Record<string, string> = {};
-    if (!formData.offerCode?.trim()) newErrors.offerCode = "Offer code is required";
-    if (!formData.title.en?.trim()) newErrors.title_en = "English title is required";
-    if (!formData.title.hi?.trim()) newErrors.title_hi = "Hindi title is required";
-    if (!formData.description.en?.trim()) newErrors.description_en = "English description is required";
-    if (!formData.description.hi?.trim()) newErrors.description_hi = "Hindi description is required";
-    if (!formData.startDate) newErrors.startDate = "Start date is required";
-    if (!formData.endDate) newErrors.endDate = "End date is required";
-    if (!formData.discountValue) newErrors.discountValue = "Discount value is required";
-    if (!formData.image && !imageFile) newErrors.image = "Offer image is required";
+    Object.keys(formData).forEach(key => {
+      const err = validateField(key, formData[key as keyof typeof formData] as string, formData);
+      if (err) newErrors[key] = err;
+    });
+    if (!offerImage) newErrors.offerImage = "Offer image is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      toast.error("Please fix all required fields.");
       return;
     }
-    setErrors({});
-    setLoading(true);
 
+    setLoading(true);
     try {
-      // Check for duplicate offerCode
-      const existingOffers = await api.get("/offers", {
-        filters: [{ field: "offerCode", operator: "==", value: formData.offerCode.trim() }]
-      });
-      
-      if (existingOffers.data.data && existingOffers.data.data.length > 0) {
-        setErrors({ offerCode: "An offer with this Promo Code already exists" });
+      const code = formData.code;
+      if (await checkDuplicateCode(code)) {
+        toast.error(`Promo code "${code}" already exists!`);
         setLoading(false);
         return;
       }
 
-      let finalImageUrl = formData.image;
-
-      // Upload image to Firebase Storage if a new file was selected
-      if (imageFile) {
-        // Compress and resize the image before uploading
-        const optimizedFile = await resizeImage(imageFile, 1920, 1080, 0.85);
-
-        const fileExt = optimizedFile.name.split('.').pop() || 'jpg';
-        const fileName = `offer_${Date.now()}.${fileExt}`;
-        const storageRef = ref(storage, `offers/${fileName}`);
-        const snapshot = await uploadBytes(storageRef, optimizedFile);
-        finalImageUrl = await getDownloadURL(snapshot.ref);
-      }
-
-      const payload: any = {
-        ...formData,
-        image: finalImageUrl,
-        startDate: new Date(formData.startDate).toISOString(),
-        endDate: new Date(formData.endDate).toISOString(),
+      const docRef = await addDoc(collection(db, "offers"), {
+        code,
+        title: { en: formData.titleEn, hi: formData.titleHi },
+        description: { en: formData.descriptionEn, hi: formData.descriptionHi },
         discountType: formData.discountType,
-        discountValue: Number(formData.discountValue) || 0,
+        discountValue: parseFloat(formData.discountValue),
+        projectId: formData.projectId === "global" ? null : formData.projectId,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
         status: formData.status,
-      };
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
 
-      if (!formData.projectId) {
-        delete payload.projectId;
+      let photoURL = "";
+      if (offerImage) {
+        const storageRef = ref(storage, `offers/${docRef.id}/image.jpg`);
+        await uploadBytes(storageRef, offerImage);
+        photoURL = await getDownloadURL(storageRef);
       }
 
-      await api.post("/offers", payload);
-      toast.success("Offer created successfully");
+
+      await updateDoc(doc(db, "offers", docRef.id), { id: docRef.id, offerImage: photoURL });
+
+      toast.success("Offer created successfully!");
       router.push("/offers");
-      router.refresh();
     } catch (error: any) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Failed to create offer");
-      setErrors({ submit: error.response?.data?.message || "Failed to create offer" });
+      toast.error(error.message || "Failed to create offer.");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
-        title={t('new_offer')}
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Offers", href: "/offers" }, { label: "New Offer" }]}
+        title="Create New Offer"
+        breadcrumbs={[
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Offers", href: "/offers" },
+          { label: "Create Offer" }
+        ]}
       />
 
-      <form onSubmit={handleSubmit} noValidate className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Offer Details</CardTitle>
-            <CardDescription>Provide the promotional message and target project.</CardDescription>
-          </CardHeader>
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-8">
+
+        {/* Basic Details */}
+        <div>
+          <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <FileText className="h-5 w-5 text-blue-600" /> Basic Details
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* GENERAL SECTION */}
-            <div className="md:col-span-2 space-y-4">
-              <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('general_details')}</h4>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Title *</label>
+              <input type="text" name="titleEn" value={formData.titleEn} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.titleEn ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`} />
+              {errors.titleEn && <p className="text-red-500 text-xs mt-1">{errors.titleEn}</p>}
             </div>
-
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">ऑफ़र शीर्षक *</label>
+              <input type="text" name="titleHi" value={formData.titleHi} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.titleHi ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`} />
+              {errors.titleHi && <p className="text-red-500 text-xs mt-1">{errors.titleHi}</p>}
+            </div>
             <div className="md:col-span-2">
-              <Select
-                label="Applicable Project"
-                name="projectId"
-                value={formData.projectId}
-                onChange={handleChange}
-                error={errors.projectId}
-                options={[
-                  { value: "", label: t('global_offer') },
-                  ...projects.map((p: any) => ({ value: p.id, label: typeof p.name === 'string' ? p.name : (p.name?.en || 'Unnamed Project') }))
-                ]}
-                helperText="Leave empty to make this a global offer across all projects."
-              />
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Description *</label>
+              <textarea name="descriptionEn" rows={3} value={formData.descriptionEn} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.descriptionEn ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`} />
+              {errors.descriptionEn && <p className="text-red-500 text-xs mt-1">{errors.descriptionEn}</p>}
             </div>
-
-            <div className="md:col-span-1">
-              <Select
-                label="Discount Type"
-                name="discountType"
-                value={formData.discountType}
-                onChange={handleChange}
-                options={[
-                  { value: "PERCENTAGE", label: "Percentage (%)" },
-                  { value: "FLAT", label: "Flat Amount (₹)" }
-                ]}
-              />
-            </div>
-            <div className="md:col-span-1">
-              <Input
-                label="Discount Value"
-                name="discountValue"
-                type="number"
-                required
-                value={formData.discountValue}
-                onChange={handleChange}
-                error={errors.discountValue}
-                placeholder="e.g. 10"
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <Input
-                label="Offer/Promo Code"
-                name="offerCode"
-                type="text"
-                required
-                value={formData.offerCode}
-                onChange={handleChange}
-                error={errors.offerCode}
-                placeholder="e.g. SUMMER50"
-              />
-            </div>
-
-            {/* ENGLISH SECTION */}
-            <div className="md:col-span-2 space-y-4">
-              <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('english')}</h4>
-
-              <Input
-                label="Offer Title"
-                name="title_en"
-                required
-                value={formData.title.en}
-                onChange={(e) => handleNestedChange('title', 'en', e.target.value)}
-                error={errors.title_en}
-                placeholder="e.g. Diwali Dhamaka 20% Off"
-              />
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Description<span className="text-red-500">*</span></label>
-                <textarea
-                  required
-                  rows={3}
-                  value={formData.description.en}
-                  onChange={(e) => handleNestedChange('description', 'en', e.target.value)}
-                  placeholder="Details of the offer in English..."
-                  className={`block w-full px-4 py-2.5 bg-white border ${errors.description_en ? 'border-red-300 bg-red-50/50 focus:ring-red-500' : 'border-slate-200 focus:ring-blue-500'} rounded-xl text-slate-900 focus:outline-none focus:ring-2 transition-all shadow-sm resize-none`}
-                />
-                {errors.description_en && (
-                  <p className="mt-1.5 text-sm text-red-600 font-medium animate-in fade-in slide-in-from-top-1">
-                    {errors.description_en}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* HINDI SECTION */}
-            <div className="md:col-span-2 space-y-4 pt-4 border-t border-slate-100">
-              <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('hindi')}</h4>
-
-              <Input
-                label="ऑफ़र शीर्षक "
-                name="title_hi"
-                required
-                value={formData.title.hi}
-                onChange={(e) => handleNestedChange('title', 'hi', e.target.value)}
-                error={errors.title_hi}
-                placeholder="e.g. दिवाली धमाका २०% छूट"
-              />
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">विवरण  <span className="text-red-500">*</span></label>
-                <textarea
-                  required
-                  rows={3}
-                  value={formData.description.hi}
-                  onChange={(e) => handleNestedChange('description', 'hi', e.target.value)}
-                  placeholder="Details of the offer in Hindi..."
-                  className={`block w-full px-4 py-2.5 bg-white border ${errors.description_hi ? 'border-red-300 bg-red-50/50 focus:ring-red-500' : 'border-slate-200 focus:ring-blue-500'} rounded-xl text-slate-900 focus:outline-none focus:ring-2 transition-all shadow-sm resize-none`}
-                />
-                {errors.description_hi && (
-                  <p className="mt-1.5 text-sm text-red-600 font-medium animate-in fade-in slide-in-from-top-1">
-                    {errors.description_hi}
-                  </p>
-                )}
-              </div>
-            </div>
-
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Offer Image *</label>
-              <input
-                type="file"
-                accept="image/*"
-                required={!formData.image}
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    if (file.size > 5 * 1024 * 1024) {
-                      toast.error("Image size must be less than 5MB");
-                      e.target.value = "";
-                      setImageFile(null);
-                      return;
-                    }
-                    setImageFile(file);
-                    if (errors.image) setErrors({ ...errors, image: "" });
-                  }
-                }}
-                className="block w-full text-sm text-slate-500
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-xl file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-blue-50 file:text-blue-700
-                  hover:file:bg-blue-100 transition-colors"
-              />
-              <p className="mt-1.5 text-xs text-slate-500 font-medium">Max file size: 5MB. Recommended resolution: 1920x1080px (Image will be automatically optimized).</p>
-              {errors.image && (
-                <p className="mt-1.5 text-sm text-red-600 font-medium animate-in fade-in slide-in-from-top-1">
-                  {errors.image}
-                </p>
-              )}
-              {formData.image && !imageFile && (
-                <p className="mt-2 text-sm text-slate-500">Current image uploaded.</p>
-              )}
-              {imageFile && (
-                <p className="mt-2 text-sm text-blue-600">New image selected: {imageFile.name} ({(imageFile.size / (1024 * 1024)).toFixed(2)} MB)</p>
-              )}
+              <label className="block text-sm font-semibold text-slate-700 mb-2">विवरण *</label>
+              <textarea name="descriptionHi" rows={3} value={formData.descriptionHi} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.descriptionHi ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`} />
+              {errors.descriptionHi && <p className="text-red-500 text-xs mt-1">{errors.descriptionHi}</p>}
             </div>
           </div>
-        </Card>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Validity & Status</CardTitle>
-            <CardDescription>When should this offer be visible?</CardDescription>
-          </CardHeader>
+        {/* Image */}
+        <div className="pt-6 border-t border-slate-100">
+          <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <ImageIcon className="h-5 w-5 text-blue-600" /> Offer Banner Image *
+          </h2>
+          <div className="flex flex-col gap-4">
+            <div className={`w-full md:w-[480px] h-[270px] rounded-xl border-2 border-dashed flex items-center justify-center bg-slate-50 overflow-hidden ${errors.offerImage ? 'border-red-500' : 'border-slate-300'}`}>
+              {imagePreview ? (
+                <img src={imagePreview} alt="Preview" className="h-full w-full object-cover" />
+              ) : (
+                <div className="text-center text-slate-400">
+                  <ImageIcon className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                  <span className="text-sm font-medium">16:9 Aspect Ratio</span>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center space-x-4">
+              <input type="file" accept="image/*" onChange={handleImageChange} className="block w-full max-w-sm text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+              {imagePreview && (
+                <button type="button" onClick={handleRemoveImage} className="px-3 py-1.5 text-sm text-red-600 bg-red-50 hover:bg-red-100 rounded-full font-medium transition-colors">
+                  Remove
+                </button>
+              )}
+            </div>
+            {errors.offerImage && <p className="text-red-500 text-xs">{errors.offerImage}</p>}
+          </div>
+        </div>
+
+        {/* Discount & Applicability */}
+        <div className="pt-6 border-t border-slate-100">
+          <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+            <Tag className="h-5 w-5 text-blue-600" /> Offer Configuration
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Start Date"
-              type="date"
-              name="startDate"
-              required
-              value={formData.startDate}
-              onChange={handleChange}
-              error={errors.startDate}
-            />
-            <Input
-              label="End Date"
-              type="date"
-              name="endDate"
-              required
-              value={formData.endDate}
-              onChange={handleChange}
-              error={errors.endDate}
-            />
-            <div className="md:col-span-2">
-              <Select
-                label="Offer Status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                options={[
-                  { value: "ACTIVE", label: "Active" },
-                  { value: "INACTIVE", label: "Inactive" },
-                  { value: "EXPIRED", label: "Expired" }
-                ]}
-                helperText="Set the current status of the offer."
-              />
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Applicable Project *</label>
+              <select name="projectId" value={formData.projectId} onChange={handleChange} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <option value="global">Global (All Projects)</option>
+                {projects.map(p => (
+                  <option key={p.id} value={p.id}>{p.name?.en || p.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Promo Code *</label>
+              <input type="text" name="code" value={formData.code} onChange={handleChange} onBlur={handleBlur} placeholder="e.g. DIWALI2026" className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.code ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold uppercase tracking-wide transition-all`} />
+              {errors.code && <p className="text-red-500 text-xs mt-1">{errors.code}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Discount Type *</label>
+              <div className="flex gap-4">
+                <label className={`flex-1 flex items-center justify-center gap-2 p-3 border rounded-xl cursor-pointer transition-all ${formData.discountType === 'PERCENTAGE' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}>
+                  <input type="radio" name="discountType" value="PERCENTAGE" checked={formData.discountType === 'PERCENTAGE'} onChange={handleChange} className="hidden" />
+                  <Percent className="h-4 w-4" />
+                  <span className="font-semibold">Percentage (%)</span>
+                </label>
+                <label className={`flex-1 flex items-center justify-center gap-2 p-3 border rounded-xl cursor-pointer transition-all ${formData.discountType === 'FLAT' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}>
+                  <input type="radio" name="discountType" value="FLAT" checked={formData.discountType === 'FLAT'} onChange={handleChange} className="hidden" />
+                  <IndianRupee className="h-4 w-4" />
+                  <span className="font-semibold">Flat (₹)</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Discount Value *</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  {formData.discountType === 'PERCENTAGE' ? <Percent className="h-4 w-4 text-slate-400" /> : <IndianRupee className="h-4 w-4 text-slate-400" />}
+                </div>
+                <input type="number" name="discountValue" min="0" max={formData.discountType === 'PERCENTAGE' ? "100" : undefined} step="0.01" value={formData.discountValue} onChange={handleChange} onBlur={handleBlur} placeholder={formData.discountType === 'PERCENTAGE' ? '10' : '50000'} className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border ${errors.discountValue ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold transition-all`} />
+              </div>
+              {errors.discountValue && <p className="text-red-500 text-xs mt-1">{errors.discountValue}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-slate-400" /> Start Date *
+              </label>
+              <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.startDate ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`} />
+              {errors.startDate && <p className="text-red-500 text-xs mt-1">{errors.startDate}</p>}
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-slate-400" /> End Date *
+              </label>
+              <input type="date" name="endDate" value={formData.endDate} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.endDate ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`} />
+              {errors.endDate && <p className="text-red-500 text-xs mt-1">{errors.endDate}</p>}
             </div>
           </div>
-        </Card>
+        </div>
 
-        <div className="flex items-center justify-end space-x-4 pt-4">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => router.push("/offers")}
-          >
+        {/* Status */}
+        <div className="pt-6 border-t border-slate-100">
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Offer Status *</label>
+          <select name="status" value={formData.status} onChange={handleChange} className="w-full md:w-1/2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+            <option value="EXPIRED">Expired</option>
+          </select>
+          <p className="text-xs text-slate-500 mt-2">Only Active offers can be applied by users.</p>
+        </div>
+
+        <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-100">
+          <button type="button" onClick={() => router.back()} className="px-6 py-3 text-slate-600 font-semibold hover:bg-slate-100 rounded-xl transition-colors">
             Cancel
-          </Button>
-          <Button
-            type="submit"
-            isLoading={loading}
-          >
-            Save Offer
-          </Button>
+          </button>
+          <button type="submit" disabled={loading} className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 disabled:opacity-70 disabled:cursor-not-allowed">
+            {loading ? (
+              <><div className="h-5 w-5 mr-2 animate-spin rounded-full border-b-2 border-white"></div> Creating...</>
+            ) : (
+              <><CheckCircle className="h-5 w-5 mr-2" /> Create Offer</>
+            )}
+          </button>
         </div>
       </form>
+
+      <Modal
+        isOpen={isCropModalOpen}
+        onClose={() => setIsCropModalOpen(false)}
+        title="Crop Offer Image"
+        maxWidth="2xl"
+        footer={
+          <>
+            <button onClick={() => setIsCropModalOpen(false)} className="px-4 py-2 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors font-medium">Cancel</button>
+            <button onClick={handleCropConfirm} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">Crop & Save</button>
+          </>
+        }
+      >
+        <div className="relative w-full h-[450px] bg-slate-900 rounded-xl overflow-hidden">
+          {imageToCrop && (
+            <Cropper
+              image={imageToCrop}
+              crop={crop}
+              zoom={zoom}
+              aspect={16 / 9}
+              onCropChange={setCrop}
+              onCropComplete={onCropComplete}
+              onZoomChange={setZoom}
+            />
+          )}
+        </div>
+      </Modal>
     </div>
   );
 }

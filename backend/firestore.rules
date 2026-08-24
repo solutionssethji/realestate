@@ -2,8 +2,6 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // For now, since AuthContext strictly logs out anyone without an admin doc,
-    // we can use basic authentication check for dashboard reads to prevent exists() path issues.
     function isAdmin() {
       return request.auth != null;
     }
@@ -25,7 +23,7 @@ service cloud.firestore {
     }
     
     // CUSTOMER WRITES (Enquiries & Site Visits)
-    match /customerEnquiries/{enquiryId} {
+    match /enquiries/{enquiryId} {
       allow create: if true; 
       allow read, update, delete: if isAdmin();
     }
@@ -40,21 +38,22 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
     
-    // CUSTOMERS (Internal records only, accessible to admin or temporary OTP sessions)
-    match /customers/{customerId} {
-      allow read: if request.auth != null && (request.auth.uid == customerId || request.auth.token.phone_number == resource.data.mobileNumber);
-      allow write: if isAdmin();
+    // USERS (Customers of the mobile app)
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isAdmin();
     }
     
     // CUSTOMER PLOTS (Private ownership data)
-    match /customerPlots/{customerPlotId} {
-      allow read: if request.auth != null && (request.auth.uid == resource.data.customerId || request.auth.token.phone_number == resource.data.mobileNumber);
+    match /assignPlots/{customerPlotId} {
+      allow read: if request.auth != null && (request.auth.uid == resource.data.customerId || request.auth.token.phone_number == resource.data.mobileNumber) || isAdmin();
       allow write: if isAdmin();
     }
     
     // PAYMENTS (Private transaction history)
     match /payments/{paymentId} {
-      allow read: if request.auth != null && (request.auth.uid == resource.data.customerId || request.auth.token.phone_number == resource.data.mobileNumber);
+      allow read: if request.auth != null && (request.auth.uid == resource.data.customerId || request.auth.token.phone_number == resource.data.mobileNumber) || isAdmin();
       allow write: if isAdmin();
     }
     
@@ -63,9 +62,24 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
     
+    // BOOKINGS
+    match /bookings/{bookingId} {
+      allow read, write: if isAdmin();
+      allow create: if request.auth != null; // Allows users to create bookings
+      allow read: if request.auth != null && resource.data.customerId == request.auth.uid; // Read own
+    }
+    
     // ADMINS
     match /admins/{adminId} {
       allow read: if true; // Allow public read so forgot-password can query email
+      allow write: if isAdmin();
+    }
+    
+    // AGENTS
+    match /agents/{agentId} {
+      // Public read allowed so forgot-password page can verify agent email without auth
+      // Write is restricted to admins only
+      allow read: if true;
       allow write: if isAdmin();
     }
     

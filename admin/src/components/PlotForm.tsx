@@ -39,21 +39,67 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
     api.get("/projects").then(res => setProjects(res.data.data || [])).catch(console.error);
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errors[e.target.name]) {
-      setErrors({ ...errors, [e.target.name]: "" });
+  const validateField = (name: string, value: string) => {
+    let error = "";
+    switch (name) {
+      case "projectId":
+        if (!value) error = "Project is required";
+        break;
+      case "plotNumber":
+        if (!value.trim()) error = "Plot number is required";
+        break;
+      case "size":
+        if (!value.toString().trim()) error = "Size is required";
+        else if (isNaN(parseFloat(value.toString()))) error = "Must be a valid number";
+        break;
+      case "dimensions":
+        if (!value.trim()) error = "Dimensions are required";
+        break;
+      case "facing_en":
+        if (!value.trim()) error = "English facing is required";
+        break;
+      case "facing_hi":
+        if (!value.trim()) error = "Hindi facing is required";
+        break;
+      case "road_en":
+        if (!value.trim()) error = "English road is required";
+        break;
+      case "road_hi":
+        if (!value.trim()) error = "Hindi road is required";
+        break;
+      case "price":
+        if (!value.toString().trim()) error = "Price is required";
+        else if (isNaN(parseFloat(value.toString()))) error = "Must be a valid number";
+        break;
+      default:
+        break;
     }
+    return error;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
   };
 
   const handleNestedChange = (field: 'facing' | 'road', lang: 'en' | 'hi', value: string) => {
+    const key = `${field}_${lang}`;
     setFormData({
       ...formData,
       [field]: { ...formData[field], [lang]: value }
     });
-    if (errors[`${field}_${lang}`]) {
-      setErrors({ ...errors, [`${field}_${lang}`]: "" });
-    }
+    setErrors(prev => ({ ...prev, [key]: validateField(key, value) }));
+  };
+
+  const handleNestedBlur = (field: 'facing' | 'road', lang: 'en' | 'hi', value: string) => {
+    const key = `${field}_${lang}`;
+    setErrors(prev => ({ ...prev, [key]: validateField(key, value) }));
   };
 
   async function handleSubmit(e: React.FormEvent) {
@@ -72,6 +118,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      toast.error("Please fix the validation errors in the form.");
       return;
     }
     setErrors({});
@@ -120,6 +167,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
             required
             value={formData.projectId}
             onChange={handleChange}
+            onBlur={handleBlur}
             error={errors.projectId}
             options={[
               { value: "", label: t('select_a_project') },
@@ -132,6 +180,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
             required
             value={formData.plotNumber}
             onChange={handleChange}
+            onBlur={handleBlur}
             error={errors.plotNumber}
             placeholder="e.g. A-101"
           />
@@ -152,6 +201,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
             required
             value={formData.size}
             onChange={handleChange}
+            onBlur={handleBlur}
             error={errors.size}
             placeholder="e.g. 150"
           />
@@ -161,6 +211,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
             required
             value={formData.dimensions}
             onChange={handleChange}
+            onBlur={handleBlur}
             error={errors.dimensions}
             placeholder="e.g. 30x45"
           />
@@ -176,6 +227,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
                 required
                 value={formData.facing.en}
                 onChange={(e) => handleNestedChange('facing', 'en', e.target.value)}
+                onBlur={(e) => handleNestedBlur('facing', 'en', e.target.value)}
                 error={errors.facing_en}
                 placeholder="e.g. North-East"
               />
@@ -185,6 +237,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
                 required
                 value={formData.road.en}
                 onChange={(e) => handleNestedChange('road', 'en', e.target.value)}
+                onBlur={(e) => handleNestedBlur('road', 'en', e.target.value)}
                 error={errors.road_en}
                 placeholder="e.g. 40 ft"
               />
@@ -201,6 +254,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
                 required
                 value={formData.facing.hi}
                 onChange={(e) => handleNestedChange('facing', 'hi', e.target.value)}
+                onBlur={(e) => handleNestedBlur('facing', 'hi', e.target.value)}
                 error={errors.facing_hi}
                 placeholder="e.g. उत्तर-पूर्व"
               />
@@ -210,6 +264,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
                 required
                 value={formData.road.hi}
                 onChange={(e) => handleNestedChange('road', 'hi', e.target.value)}
+                onBlur={(e) => handleNestedBlur('road', 'hi', e.target.value)}
                 error={errors.road_hi}
                 placeholder="e.g. 40 फीट"
               />
@@ -225,6 +280,7 @@ export default function PlotForm({ initialData, isEdit = false }: PlotFormProps)
               required
               value={formData.price}
               onChange={handleChange}
+              onBlur={handleBlur}
               error={errors.price}
               placeholder="e.g. 4500000"
             />

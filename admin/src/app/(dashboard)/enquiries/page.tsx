@@ -1,17 +1,16 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import api from "@/lib/api";
 import { useServerPagination } from "@/hooks/useServerPagination";
-import { PhoneIncoming, Loader2, Search, Filter, Eye } from "lucide-react";
+import { PhoneIncoming, Loader2, Search, Eye, User } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 import { ShimmerTable } from "@/components/ui/Shimmer";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
@@ -21,9 +20,7 @@ import { formatDateTime } from "@/lib/formatters";
 
 type Enquiry = {
   id: string;
-  customerName: string;
-  mobileNumber: string;
-  email?: string;
+  customerId: string;
   projectId?: string;
   plotId?: string;
   plotRequirement?: string;
@@ -31,6 +28,12 @@ type Enquiry = {
   message?: string;
   status: string;
   createdAt: any;
+};
+
+type UserInfo = {
+  fullName: string;
+  mobileNumber: string;
+  email?: string;
 };
 
 const PAGE_SIZE = 15;
@@ -45,6 +48,11 @@ function EnquiriesContent() {
 
   const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
   const [updating, setUpdating] = useState(false);
+
+  // Cache of customerId → user info
+  const [userCache, setUserCache] = useState<Record<string, UserInfo>>({});
+  // Cache of projectId → project info
+  const [projectCache, setProjectCache] = useState<Record<string, any>>({});
 
   const filters: any[] = [];
   if (statusFilter !== "ALL") {
@@ -61,11 +69,75 @@ function EnquiriesContent() {
     handlePrevPage
   } = useServerPagination({
     endpoint: "/enquiries",
-    searchField: "customerName",
+    searchField: "customerId",
     searchQuery,
     filters,
-    capitalizeSearch: true
+    capitalizeSearch: false
   });
+
+  // Batch-fetch user and project info when enquiries change
+  useEffect(() => {
+    if (!enquiries || enquiries.length === 0) return;
+
+    // Fetch users
+    const userIdsToFetch = [
+      ...new Set(
+        enquiries
+          .map((e: Enquiry) => e.customerId)
+          .filter((id: string) => id && !userCache[id])
+      )
+    ] as string[];
+
+    if (userIdsToFetch.length > 0) {
+      Promise.allSettled(
+        userIdsToFetch.map(async (id) => {
+          const docSnap = await getDoc(doc(db, "users", id));
+          if (docSnap.exists()) {
+            const d = docSnap.data();
+            return { id, info: { fullName: d.fullName || d.name || "Unknown", mobileNumber: d.mobileNumber || "—", email: d.email } };
+          }
+          return { id, info: { fullName: "Unknown User", mobileNumber: "—" } };
+        })
+      ).then((results) => {
+        const newEntries: Record<string, UserInfo> = {};
+        results.forEach((r) => {
+          if (r.status === "fulfilled" && r.value) {
+            newEntries[r.value.id] = r.value.info;
+          }
+        });
+        setUserCache((prev) => ({ ...prev, ...newEntries }));
+      });
+    }
+
+    // Fetch projects
+    const projectIdsToFetch = [
+      ...new Set(
+        enquiries
+          .map((e: Enquiry) => e.projectId)
+          .filter((id: string | undefined) => id && !projectCache[id])
+      )
+    ] as string[];
+
+    if (projectIdsToFetch.length > 0) {
+      Promise.allSettled(
+        projectIdsToFetch.map(async (id) => {
+          const docSnap = await getDoc(doc(db, "projects", id));
+          if (docSnap.exists()) {
+            return { id, info: docSnap.data() };
+          }
+          return { id, info: null };
+        })
+      ).then((results) => {
+        const newEntries: Record<string, any> = {};
+        results.forEach((r) => {
+          if (r.status === "fulfilled" && r.value) {
+            newEntries[r.value.id] = r.value.info;
+          }
+        });
+        setProjectCache((prev) => ({ ...prev, ...newEntries }));
+      });
+    }
+  }, [enquiries]);
 
   useEffect(() => {
     if (notificationId) {
@@ -75,24 +147,48 @@ function EnquiriesContent() {
 
   const loadSpecificEnquiry = async (id: string) => {
     try {
-      const docSnap = await getDoc(doc(db, "customerEnquiries", id));
+      const docSnap = await getDoc(doc(db, "enquiries", id));
       if (docSnap.exists()) {
-        setSelectedEnquiry({ id: docSnap.id, ...docSnap.data() } as Enquiry);
+        const enq = { id: docSnap.id, ...docSnap.data() } as Enquiry;
+        setSelectedEnquiry(enq);
+        // Also fetch user if not in cache
+        if (enq.customerId && !userCache[enq.customerId]) {
+          const userSnap = await getDoc(doc(db, "users", enq.customerId));
+          if (userSnap.exists()) {
+            const d = userSnap.data();
+            setUserCache((prev) => ({
+              ...prev,
+              [enq.customerId]: { fullName: d.fullName || d.name || "Unknown", mobileNumber: d.mobileNumber || "—", email: d.email }
+            }));
+          }
+        }
+        // Also fetch project if not in cache
+        if (enq.projectId && !projectCache[enq.projectId]) {
+          const projectSnap = await getDoc(doc(db, "projects", enq.projectId));
+          if (projectSnap.exists()) {
+            setProjectCache((prev) => ({
+              ...prev,
+              [enq.projectId!]: projectSnap.data()
+            }));
+          }
+        }
       }
     } catch (error) {
       console.error("Failed to load specific enquiry", error);
     }
-  }; const [statusLoading, setStatusLoading] = useState<string | null>(null);
+  };
+
+  const [statusLoading, setStatusLoading] = useState<string | null>(null);
 
   const handleQuickStatusUpdate = async (id: string, newStatus: string) => {
     setStatusLoading(id);
     try {
-      await updateDoc(doc(db, "customerEnquiries", id), {
+      await updateDoc(doc(db, "enquiries", id), {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
-      toast.success(`Project status updated successfully.`);
-      setEnquiries(enquiries.map(e => e.id === id ? { ...e, status: newStatus } : e));
+      toast.success(`Enquiry status updated successfully.`);
+      setEnquiries(enquiries.map((e: Enquiry) => e.id === id ? { ...e, status: newStatus } : e));
     } catch (error) {
       toast.error("Failed to update status");
     } finally {
@@ -104,13 +200,13 @@ function EnquiriesContent() {
     if (!selectedEnquiry) return;
     setUpdating(true);
     try {
-      await updateDoc(doc(db, "customerEnquiries", selectedEnquiry.id), {
+      await updateDoc(doc(db, "enquiries", selectedEnquiry.id), {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
-      toast.success(`Project status updated successfully.`);
+      toast.success(`Enquiry status updated successfully.`);
       setSelectedEnquiry({ ...selectedEnquiry, status: newStatus });
-      setEnquiries(enquiries.map(e => e.id === selectedEnquiry.id ? { ...e, status: newStatus } : e));
+      setEnquiries(enquiries.map((e: Enquiry) => e.id === selectedEnquiry.id ? { ...e, status: newStatus } : e));
     } catch (error) {
       toast.error("Failed to update status");
     } finally {
@@ -137,20 +233,57 @@ function EnquiriesContent() {
     },
     {
       header: t('customer'),
-      key: "customerName",
-      render: (enq: Enquiry) => (
-        <div>
-          <div className="font-bold text-slate-900">{enq.customerName}</div>
-          {enq.email && <div className="text-xs text-slate-500 mt-0.5">{enq.email}</div>}
-        </div>
-      )
+      key: "customerId",
+      render: (enq: Enquiry) => {
+        const user = userCache[enq.customerId];
+        return (
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+              <User className="h-4 w-4 text-blue-500" />
+            </div>
+            <div>
+              <div className="font-bold text-slate-900">
+                {user ? user.fullName : <span className="text-slate-400 italic text-xs">Loading...</span>}
+              </div>
+              {user?.email && <div className="text-xs text-slate-500 mt-0.5">{user.email}</div>}
+            </div>
+          </div>
+        );
+      }
     },
     {
       header: t('mobile'),
       key: "mobileNumber",
-      render: (enq: Enquiry) => (
-        <span className="font-medium text-slate-700">{enq.mobileNumber}</span>
-      )
+      render: (enq: Enquiry) => {
+        const user = userCache[enq.customerId];
+        return (
+          <span className="font-medium text-slate-700">
+            {user ? user.mobileNumber : <span className="text-slate-300">—</span>}
+          </span>
+        );
+      }
+    },
+    {
+      header: "Project",
+      key: "project",
+      render: (enq: Enquiry) => {
+        const project = enq.projectId ? projectCache[enq.projectId] : null;
+        const projectName = project?.name?.en || (typeof project?.name === 'string' ? project.name : null);
+        
+        return (
+          <div>
+            {projectName ? (
+              <span className="font-bold text-blue-900">{projectName}</span>
+            ) : enq.projectId ? (
+              <span className="font-bold text-blue-900">{enq.projectId}</span>
+            ) : enq.plotId ? (
+              <span className="font-bold text-slate-700">Plot: {enq.plotId}</span>
+            ) : (
+              <span className="text-slate-400">—</span>
+            )}
+          </div>
+        );
+      }
     },
     {
       header: t('status'),
@@ -190,6 +323,10 @@ function EnquiriesContent() {
     }
   ];
 
+  const selectedUser = selectedEnquiry ? userCache[selectedEnquiry.customerId] : null;
+  const selectedProject = (selectedEnquiry && selectedEnquiry.projectId) ? projectCache[selectedEnquiry.projectId] : null;
+  const projectName = selectedProject?.name?.en || (typeof selectedProject?.name === 'string' ? selectedProject.name : null);
+
   return (
     <div className="space-y-6 pb-8">
       <PageHeader
@@ -202,7 +339,7 @@ function EnquiriesContent() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by customer name..."
+            placeholder="Search by customer ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
@@ -263,19 +400,26 @@ function EnquiriesContent() {
           }
         >
           <div className="space-y-6">
+            {/* Customer Info — resolved from users collection */}
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 grid grid-cols-2 gap-4">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase">{t('customer_name')}</p>
-                <p className="text-sm font-bold text-slate-900 mt-1">{selectedEnquiry.customerName}</p>
+                <p className="text-sm font-bold text-slate-900 mt-1">
+                  {selectedUser ? selectedUser.fullName : (
+                    <span className="italic text-slate-400">Loading...</span>
+                  )}
+                </p>
               </div>
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase">{t('mobile_number')}</p>
-                <p className="text-sm font-bold text-slate-900 mt-1">{selectedEnquiry.mobileNumber}</p>
+                <p className="text-sm font-bold text-slate-900 mt-1">
+                  {selectedUser ? selectedUser.mobileNumber : "—"}
+                </p>
               </div>
-              {selectedEnquiry.email && (
+              {selectedUser?.email && (
                 <div className="col-span-2">
                   <p className="text-xs font-semibold text-slate-500 uppercase">{t('email')}</p>
-                  <p className="text-sm font-bold text-slate-900 mt-1">{selectedEnquiry.email}</p>
+                  <p className="text-sm font-bold text-slate-900 mt-1">{selectedUser.email}</p>
                 </div>
               )}
             </div>
@@ -285,7 +429,9 @@ function EnquiriesContent() {
                 {selectedEnquiry.projectId && (
                   <div>
                     <p className="text-xs font-semibold text-blue-600 uppercase">Project</p>
-                    <p className="text-sm font-bold text-blue-900 mt-1">{selectedEnquiry.projectId}</p>
+                    <p className="text-sm font-bold text-blue-900 mt-1">
+                      {projectName || selectedEnquiry.projectId}
+                    </p>
                   </div>
                 )}
                 {selectedEnquiry.plotId && (

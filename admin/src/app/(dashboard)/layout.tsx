@@ -4,25 +4,40 @@
 import { useAuth } from "@/context/AuthContext";
 import {
   LayoutDashboard, Building2, Map, Tag, PhoneIncoming, CalendarCheck,
-  CreditCard, Users, Settings, LogOut, Menu, X, FileText, HelpCircle
+  CreditCard, Users, Settings, LogOut, Menu, X, FileText, HelpCircle, Bookmark, Briefcase, User as UserIcon, Lock, Bell
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Projects", href: "/projects", icon: Building2 },
-  { name: "Plots", href: "/plots", icon: Map },
-  { name: "Offers", href: "/offers", icon: Tag },
-  { name: "Enquiries", href: "/enquiries", icon: PhoneIncoming },
-  { name: "Site Visits", href: "/site-visits", icon: CalendarCheck },
-  { name: "Transactions", href: "/transactions", icon: CreditCard },
+const getNavItems = (role?: string) => {
+  if (role === 'AGENT') {
+    return [
+      { name: "Projects", href: "/projects", icon: Building2 },
+      { name: "Plots", href: "/plots", icon: Map },
+      { name: "Offers", href: "/offers", icon: Tag },
+      { name: "Profile", href: "/profile", icon: UserIcon },
+      { name: "Change Password", href: "/change-password", icon: Lock },
+    ];
+  }
 
-  { name: "FAQs", href: "/faq", icon: HelpCircle },
-  { name: "Settings", href: "/settings", icon: Settings },
-];
+  return [
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Projects", href: "/projects", icon: Building2 },
+    { name: "Plots", href: "/plots", icon: Map },
+    { name: "Offers", href: "/offers", icon: Tag },
+    { name: "Bookings", href: "/bookings", icon: Bookmark },
+    { name: "Agents", href: "/agents", icon: Briefcase },
+    { name: "Enquiries", href: "/enquiries", icon: PhoneIncoming },
+    { name: "Site Visits", href: "/site-visits", icon: CalendarCheck },
+    { name: "Transactions", href: "/transactions", icon: CreditCard },
+    { name: "Users", href: "/users", icon: Users },
+    { name: "Notifications", href: "/notifications", icon: Bell },
+    { name: "FAQs", href: "/faq", icon: HelpCircle },
+    { name: "Settings", href: "/settings", icon: Settings },
+  ];
+};
 
 import NotificationBell from "@/components/NotificationBell";
 import { useLanguage } from '@/context/LanguageContext';
@@ -59,15 +74,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex-shrink-0 shadow-xl
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="h-20 flex items-center justify-center px-6 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
-          <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="max-h-12 w-auto object-contain" />
+        <div className="h-28 flex items-center justify-center px-2 py-4 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
+          <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="max-h-24 w-full object-contain" />
         </div>
 
-        <nav className="p-4 space-y-1.5 h-[calc(100vh-5rem)] overflow-y-auto scrollbar-hide">
+        <nav className="p-4 space-y-1.5 h-[calc(100vh-7rem)] overflow-y-auto scrollbar-hide">
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 mt-2 px-3">
             Overview
           </div>
-          {navItems.map((item) => {
+          {getNavItems(user?.role).map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
             return (
@@ -104,15 +119,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex-1" />
 
           <div className="flex items-center space-x-6">
-            <NotificationBell />
+            {user?.role === "ADMIN" && <NotificationBell />}
             <div className="h-8 w-px bg-slate-200"></div>
             <div className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="hidden sm:flex flex-col items-end">
                 <span className="text-sm font-semibold text-slate-900">{user?.name || 'Admin'}</span>
                 <span className="text-xs font-medium text-slate-500">{user?.role || 'Administrator'}</span>
               </div>
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
-                {user?.name?.charAt(0) || 'A'}
+              <div className="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt={user.name} className="h-full w-full object-cover" />
+                ) : (
+                  user?.name?.charAt(0) || 'A'
+                )}
               </div>
             </div>
             <button
@@ -125,20 +144,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
         </header>
 
-        {/* Main Body */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-5 relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="h-full"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+          {children}
         </main>
       </div>
     </div>

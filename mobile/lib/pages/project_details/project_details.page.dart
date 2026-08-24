@@ -1,16 +1,14 @@
+import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'project_details.logic.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import '../../widgets/premium_button.dart';
-import '../../widgets/status_badge.dart';
-import '../../models/plot_status.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProjectDetailsPage extends ConsumerWidget {
@@ -22,198 +20,225 @@ class ProjectDetailsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = AppLocalizations.of(context);
     final state = ref.watch(projectDetailsLogicProvider(projectId));
-    final bool isDesktop = ResponsiveBreakpoints.of(context).largerThan(TABLET);
 
-    if (state.isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-    if (state.isError || state.project == null) {
-      return Scaffold(
-        appBar: AppBar(),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                context.l10n.unableToLoadProject,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              AppSpacing.hLg,
-              OutlinedButton.icon(
-                onPressed: () => ref
-                    .read(projectDetailsLogicProvider(projectId).notifier)
-                    .loadProject(projectId),
-                icon: const Icon(Icons.refresh),
-                label: Text(loc.tryAgain),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    final project = state.project!;
+    final project = state.project;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // ── Cinematic Header ────────────────────────────────────────────────
-          SliverAppBar(
-            expandedHeight: isDesktop ? 500 : 350,
-            pinned: true,
-            iconTheme: const IconThemeData(color: Colors.white),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: project.coverImage,
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) =>
-                        Container(color: AppTheme.slateBlue),
-                    errorWidget: (_, __, ___) => Container(
-                      color: AppTheme.slateBlue,
-                      child: const Icon(
-                        Icons.home,
-                        color: Colors.white54,
-                        size: 64,
-                      ),
+      appBar: PremiumAppBar(title: context.l10n.projects),
+      body: SafeArea(
+        top: false,
+        child: state.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : (state.isError || state.project == null || project == null)
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      context.l10n.unableToLoadProject,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    AppSpacing.hLg,
+                    OutlinedButton.icon(
+                      onPressed: () => ref
+                          .read(projectDetailsLogicProvider(projectId).notifier)
+                          .loadProject(projectId),
+                      icon: const Icon(Icons.refresh),
+                      label: Text(loc.tryAgain),
+                    ),
+                  ],
+                ),
+              )
+            : CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Image.network(
+                      project.coverImage,
+                      width: double.infinity,
+                      height: 250,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withValues(alpha: 0.3),
-                          Colors.transparent,
-                          AppTheme.midnightNavy.withValues(alpha: 0.9),
-                        ],
-                        stops: const [0.0, 0.45, 1.0],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: AppSpacing.lg,
-                    left: AppSpacing.lg,
-                    right: AppSpacing.lg,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const StatusBadge(status: PlotStatus.available),
-                        AppSpacing.hSm,
-                        Text(
-                          project.name,
-                          style: Theme.of(context).textTheme.displaySmall
-                              ?.copyWith(color: Colors.white),
-                        ),
-                        AppSpacing.hXs,
-                        Row(
+                  // ── Body Content ────────────────────────────────────────────────────
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 1200),
+                        padding: AppSpacing.allLg,
+                        child: Column(
                           children: [
-                            const Icon(
-                              Icons.location_on,
-                              color: AppTheme.softGold,
-                              size: 18,
-                            ),
-                            AppSpacing.wXs,
-                            Expanded(
-                              child: Text(
-                                project.location,
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(color: Colors.white70),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: AppSpacing.xl,
                               ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      if (project.isFeatured) ...[
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppTheme.midnightNavy,
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'FEATURED',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 1.2,
+                                            ),
+                                          ),
+                                        ),
+                                        AppSpacing.wSm,
+                                      ],
+                                      if (project.developmentStatus.isNotEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppTheme.softGold,
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            project.developmentStatus,
+                                            style: const TextStyle(
+                                              color: AppTheme.midnightNavy,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                  if (project.isFeatured ||
+                                      project.developmentStatus.isNotEmpty)
+                                    AppSpacing.hSm,
+                                  Text(
+                                    project.name,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          color: AppTheme.textPrimary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  AppSpacing.hXs,
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on,
+                                        color: AppTheme.textSecondary,
+                                        size: 16,
+                                      ),
+                                      AppSpacing.wXs,
+                                      Expanded(
+                                        child: Text(
+                                          project.location,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge
+                                              ?.copyWith(
+                                                color: AppTheme.textSecondary,
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (project.plotCount > 0) ...[
+                                    AppSpacing.hSm,
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.grid_view_rounded,
+                                          color: AppTheme.midnightNavy,
+                                          size: 16,
+                                        ),
+                                        AppSpacing.wXs,
+                                        Text(
+                                          '${project.plotCount} Total Plots',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: AppTheme.midnightNavy,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                            _LeftContent(project: project),
+                            AppSpacing.hXXl,
+                            _RightActions(
+                              projectId: projectId,
+                              project: project,
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-
-          // ── Body Content ────────────────────────────────────────────────────
-          SliverToBoxAdapter(
-            child: Center(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 1200),
-                padding: AppSpacing.allLg,
-                child: isDesktop
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: _LeftContent(project: project),
-                          ),
-                          AppSpacing.wXXl,
-                          SizedBox(
-                            width: 340,
-                            child: _RightActions(
-                              projectId: projectId,
-                              project: project,
-                            ),
-                          ),
-                        ],
-                      )
-                    : Column(
-                        children: [
-                          _LeftContent(project: project),
-                          AppSpacing.hXXl,
-                          _RightActions(projectId: projectId, project: project),
-                        ],
-                      ),
-              ),
-            ),
-          ),
-          const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
-        ],
       ),
-      // Mobile sticky bottom bar
-      bottomNavigationBar: isDesktop
-          ? null
-          : SafeArea(
-              child: Container(
-                padding: AppSpacing.allLg,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.06),
-                      blurRadius: 12,
-                      offset: const Offset(0, -4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: PremiumButton(
-                        text: context.l10n.viewPlots,
-                        icon: Icons.grid_view_rounded,
-                        onPressed: () =>
-                            context.push('/home/project/$projectId/plots'),
-                      ),
-                    ),
-                    AppSpacing.wMd,
-                    Expanded(
-                      child: PremiumButton(
-                        text: context.l10n.siteVisit,
-                        style: PremiumButtonStyle.secondary,
-                        icon: Icons.directions_car_outlined,
-                        onPressed: () => context.push(
-                          '/home/site-visit?projectId=$projectId',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+      // // Mobile sticky bottom bar
+      // bottomNavigationBar: isDesktop
+      //     ? null
+      //     : SafeArea(
+      //         child: Container(
+      //           padding: AppSpacing.allLg,
+      //           decoration: BoxDecoration(
+      //             color: Colors.white,
+      //             boxShadow: [
+      //               BoxShadow(
+      //                 color: Colors.black.withValues(alpha: 0.06),
+      //                 blurRadius: 12,
+      //                 offset: const Offset(0, -4),
+      //               ),
+      //             ],
+      //           ),
+      //           child: Row(
+      //             children: [
+      //               Expanded(
+      //                 child: PremiumButton(
+      //                   text: context.l10n.viewPlots,
+      //                   icon: Icons.grid_view_rounded,
+      //                   onPressed: () =>
+      //                       context.push('/home/project/$projectId/plots'),
+      //                 ),
+      //               ),
+      //               AppSpacing.wMd,
+      //               Expanded(
+      //                 child: PremiumButton(
+      //                   text: context.l10n.siteVisit,
+      //                   style: PremiumButtonStyle.secondary,
+      //                   icon: Icons.directions_car_outlined,
+      //                   onPressed: () => context.push(
+      //                     '/home/site-visit?projectId=$projectId',
+      //                   ),
+      //                 ),
+      //               ),
+      //             ],
+      //           ),
+      //         ),
+      //       ),
     );
   }
 }
@@ -231,16 +256,19 @@ class _LeftContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Section(
-          title: loc.aboutTheProject,
-          child: Text(
-            project.description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.textSecondary,
-              height: 1.6,
+        if (project.description.isNotEmpty) ...[
+          _Section(
+            title: loc.aboutTheProject,
+            child: Text(
+              project.description,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: AppTheme.textSecondary,
+                height: 1.6,
+              ),
             ),
           ),
-        ),
+          AppSpacing.hXXl,
+        ],
 
         if (project.gallery.isNotEmpty) ...[
           AppSpacing.hXXl,
@@ -277,7 +305,12 @@ class _LeftContent extends StatelessWidget {
               children: (project.amenities as List<String>)
                   .map(
                     (a) => Chip(
-                      label: Text(a),
+                      label: Text(
+                        a,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
                       avatar: const Icon(
                         Icons.check_circle,
                         size: 16,
@@ -325,19 +358,21 @@ class _RightActions extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                context.l10n.startingFrom,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
-              ),
-              Text(
-                project.priceRange,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppTheme.midnightNavy,
+              if (project.priceRange.isNotEmpty) ...[
+                Text(
+                  context.l10n.startingFrom,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppTheme.textSecondary,
+                  ),
                 ),
-              ),
-              AppSpacing.hLg,
+                Text(
+                  project.priceRange,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: AppTheme.midnightNavy,
+                  ),
+                ),
+                AppSpacing.hLg,
+              ],
               PremiumButton(
                 text: context.l10n.viewPlotAvailability,
                 icon: Icons.grid_view_rounded,
@@ -383,6 +418,7 @@ class _RightActions extends StatelessWidget {
         // 360° Card / Video
         if (project.projectVideo.isNotEmpty)
           Container(
+            width: double.infinity,
             padding: AppSpacing.allLg,
             decoration: BoxDecoration(
               gradient: const LinearGradient(

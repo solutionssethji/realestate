@@ -3,9 +3,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Building2, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import { Loader2, CheckCircle2, ArrowRight } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'react-hot-toast';
+import { findAdminOrAgentByEmail, normalizeEmail } from '@/lib/firebase';
 
 export default function ForgotPasswordPage() {
   const { t } = useLanguage();
@@ -19,26 +20,31 @@ export default function ForgotPasswordPage() {
 
     try {
       const { sendPasswordResetEmail } = await import("firebase/auth");
-      const { collection, query, where, getDocs } = await import("firebase/firestore");
-      const { auth, db } = await import("@/lib/firebase");
+      const { auth } = await import("@/lib/firebase");
 
-      // Verify if the email belongs to an admin
-      const adminsRef = collection(db, "admins");
-      const q = query(adminsRef, where("email", "==", email.toLowerCase().trim()));
-      const querySnapshot = await getDocs(q);
+      const normalizedEmail = normalizeEmail(email);
+      const adminOrAgent = await findAdminOrAgentByEmail(normalizedEmail);
 
-      if (querySnapshot.empty) {
-        throw new Error("Access denied. No admin account found with this email.");
+      if (!adminOrAgent) {
+        toast.error("Invalid email ID.");
+        return;
       }
 
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, normalizedEmail);
       setSuccess(true);
     } catch (err: any) {
-      let friendlyMessage = err.message || "Something went wrong. Please check the email provided.";
-      if (err.code === 'auth/invalid-email') {
-        friendlyMessage = "Please enter a valid email address.";
+      let friendlyMessage = "Something went wrong. Please check the email provided.";
+      if (
+        err.code === 'permission-denied' ||
+        err.code === 'firestore/permission-denied' ||
+        err.message?.includes('Missing or insufficient permissions')
+      ) {
+        // Firestore blocked the agents query (unauthenticated) → treat as invalid email
+        friendlyMessage = "Invalid email ID.";
+      } else if (err.code === 'auth/invalid-email') {
+        friendlyMessage = "Invalid email ID.";
       } else if (err.code === 'auth/user-not-found') {
-        friendlyMessage = "No account found with this email.";
+        friendlyMessage = "Invalid email ID.";
       } else if (err.code === 'auth/too-many-requests') {
         friendlyMessage = "Too many requests. Please try again later.";
       } else if (err.code === 'auth/network-request-failed') {
@@ -67,7 +73,7 @@ export default function ForgotPasswordPage() {
 
           <div className="flex flex-col items-center mb-8">
             <div className="mb-6">
-              <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-16 w-auto object-contain" />
+              <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-24 w-auto object-contain" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
               Reset Password

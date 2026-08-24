@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import api from "@/lib/api";
 import { useServerPagination } from "@/hooks/useServerPagination";
 import Link from "next/link";
-import { Plus, Edit2, Trash2, Map as MapIcon, Filter, Search, Loader2, Eye, EyeOff } from "lucide-react";
+import { Plus, Edit2, Trash2, Map as MapIcon, Filter, Search, Loader2, Eye, EyeOff, UserPlus } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -15,9 +15,12 @@ import { ShimmerTable } from "@/components/ui/Shimmer";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { AssignPlotDialog } from "@/components/AssignPlotDialog";
+import { useAuth } from "@/context/AuthContext";
 
 export default function PlotsListPage() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [projects, setProjects] = useState<any[]>([]);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [statusLoading, setStatusLoading] = useState<string | null>(null);
@@ -30,6 +33,11 @@ export default function PlotsListPage() {
     isDanger?: boolean;
     confirmText?: string;
   }>({ isOpen: false, title: "", message: "", onConfirm: () => { } });
+
+  const [assignDialog, setAssignDialog] = useState<{
+    isOpen: boolean;
+    plot: any | null;
+  }>({ isOpen: false, plot: null });
 
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
@@ -94,6 +102,12 @@ export default function PlotsListPage() {
   }
 
   async function handleStatusChange(id: string, newStatus: string) {
+    if (newStatus === "BOOKED_SOLD") {
+      const plot = plots.find((p: any) => p.id === id);
+      setAssignDialog({ isOpen: true, plot });
+      return;
+    }
+
     setConfirmModal({
       isOpen: true,
       title: "Change Status",
@@ -128,6 +142,9 @@ export default function PlotsListPage() {
       toast.error("Failed to update plot visibility");
     }
   }
+  const handlePlotAssigned = (plotId: string, assignedUserId: string) => {
+    setPlots(plots.map((p: any) => p.id === plotId ? { ...p, status: "BOOKED_SOLD", assignedUserId } : p) as any);
+  };
 
   // Filtered dynamically by useServerPagination
 
@@ -178,6 +195,7 @@ export default function PlotsListPage() {
           ) : (
             <select
               value={plot.status}
+              disabled={plot.status === 'BOOKED_SOLD'}
               onChange={(e) => handleStatusChange(plot.id, e.target.value)}
               className={`
                 text-xs font-bold rounded-full px-3 py-1 border outline-none appearance-none cursor-pointer transition-colors
@@ -185,7 +203,7 @@ export default function PlotsListPage() {
                 bg-[length:0.5rem_0.5rem] bg-[position:right_0.5rem_center] bg-no-repeat pr-6
                 ${plot.status === 'AVAILABLE' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' :
                   plot.status === 'HOLD' ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100' :
-                    'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+                    'bg-red-50 text-red-700 border-red-200 hover:bg-red-100 disabled:opacity-80 disabled:cursor-not-allowed'
                 }
               `}
             >
@@ -197,36 +215,54 @@ export default function PlotsListPage() {
         </div>
       )
     },
-    {
+    ...(user?.role !== 'AGENT' ? [{
       header: t('actions'),
       key: "actions",
       render: (plot: any) => (
         <div className="flex items-center space-x-2">
-          <button
-            onClick={() => handleToggleVisibility(plot)}
-            title={plot.isActive === false ? "Enable Plot" : "Disable Plot"}
-            className={`p-2 rounded-lg transition-colors ${plot.isActive === false
-              ? "text-slate-400 hover:text-green-600 hover:bg-green-50"
-              : "text-blue-600 hover:text-orange-600 hover:bg-orange-50 bg-blue-50"
-              }`}
-          >
-            {plot.isActive === false ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
-          <Link href={`/plots/${plot.id}/edit`}>
-            <button title="Edit Plot" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-              <Edit2 className="h-4 w-4" />
-            </button>
-          </Link>
-          <button
-            onClick={() => handleDelete(plot.id, plot.plotNumber)}
-            disabled={deleteLoading === plot.id}
-            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          {plot.status === 'BOOKED_SOLD' ? (
+            !plot.assignedUserId ? (
+              <button
+                onClick={() => setAssignDialog({ isOpen: true, plot })}
+                title="Assign Plot"
+                className="flex items-center space-x-1 px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                <UserPlus className="h-4 w-4" />
+                <span>Assign</span>
+              </button>
+            ) : (
+              <span className="text-xs text-slate-400 font-medium italic">No actions available</span>
+            )
+          ) : (
+            <>
+              <button
+                onClick={() => handleToggleVisibility(plot)}
+                title={plot.isActive === false ? "Enable Plot" : "Disable Plot"}
+                className={`p-2 rounded-lg transition-colors ${plot.isActive === false
+                  ? "text-slate-400 hover:text-green-600 hover:bg-green-50"
+                  : "text-blue-600 hover:text-orange-600 hover:bg-orange-50 bg-blue-50"
+                  }`}
+              >
+                {plot.isActive === false ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+              <Link href={`/plots/${plot.id}/edit`}>
+                <button title="Edit Plot" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                  <Edit2 className="h-4 w-4" />
+                </button>
+              </Link>
+              <button
+                onClick={() => handleDelete(plot.id, plot.plotNumber)}
+                title="Delete Plot"
+                disabled={deleteLoading === plot.id}
+                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </>
+          )}
         </div>
       )
-    }
+    }] : [])
   ];
 
   return (
@@ -235,11 +271,13 @@ export default function PlotsListPage() {
         title={t('plots_management')}
         breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Plots" }]}
         actions={
-          <Link href="/plots/new">
-            <Button icon={<Plus className="h-4 w-4" />}>
-              Add Plot
-            </Button>
-          </Link>
+          user?.role !== 'AGENT' && (
+            <Link href="/plots/new">
+              <Button icon={<Plus className="h-4 w-4" />}>
+                Add Plot
+              </Button>
+            </Link>
+          )
         }
       />
 
@@ -313,6 +351,15 @@ export default function PlotsListPage() {
         confirmText={confirmModal.confirmText}
         isLoading={deleteLoading !== null || statusLoading !== null}
       />
+
+      {assignDialog.plot && (
+        <AssignPlotDialog
+          isOpen={assignDialog.isOpen}
+          onClose={() => setAssignDialog({ isOpen: false, plot: null })}
+          plot={assignDialog.plot}
+          onAssigned={handlePlotAssigned}
+        />
+      )}
     </div>
   );
 }

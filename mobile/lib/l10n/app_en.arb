@@ -439,5 +439,132 @@
   "promoCode": "PROMO CODE",
   "validText": "Valid",
   "flat": "Flat",
-  "off": "Off"
+  "off": "Off",
+  "authErrInvalidEmail": "Please enter a valid email address.",
+  "authErrInvalidCredentialCurrent": "Current password is incorrect.",
+  "authErrInvalidCredential": "Invalid email or password.",
+  "authErrWrongPassword": "Incorrect password. Please try again.",
+  "authErrUserNotFound": "No account found with this email. Please signup first",
+  "authErrUserDisabled": "Your account has been disabled. Please contact support.",
+  "authErrEmailAlreadyInUse": "An account with this email already exists.",
+  "authErrWeakPassword": "Password is too weak. Please choose a stronger password.",
+  "authErrOperationNotAllowed": "This authentication method is currently disabled.",
+  "authErrTooManyRequests": "Too many attempts. Please try again later.",
+  "authErrNetworkRequestFailed": "Please check your internet connection.",
+  "authErrRequiresRecentLogin": "Please sign in again to continue.",
+  "authErrCredentialAlreadyInUse": "This credential is already associated with another account.",
+  "authErrAccountExistsWithDifferentCredential": "An account already exists with a different sign-in method.",
+  "authErrProviderAlreadyLinked": "This sign-in provider is already linked to your account.",
+  "authErrNoSuchProvider": "The requested sign-in provider is not linked to this account.",
+  "authErrInvalidVerificationCode": "The verification code is invalid.",
+  "authErrInvalidVerificationId": "The verification ID is invalid.",
+  "authErrSessionExpired": "The verification session has expired. Please try again.",
+  "authErrQuotaExceeded": "Request limit exceeded. Please try again later.",
+  "authErrAppNotAuthorized": "This app is not authorized. Please contact support.",
+  "authErrInvalidApiKey": "Invalid Firebase configuration.",
+  "authErrInternalError": "Something went wrong. Please try again later.",
+  "authErrWebContextCancelled": "Sign-in was cancelled.",
+  "authErrWebStorageUnsupported": "This browser does not support authentication.",
+  "authErrPopupBlocked": "Popup was blocked. Please allow popups and try again.",
+  "authErrAuthDomainConfigRequired": "Authentication domain configuration is required. Please contact support.",
+  "authErrOperationNotSupported": "This operation is not supported in the current environment.",
+  "authErrTimeout": "The request timed out. Please try again.",
+  "authErrDefault": "Authentication failed. Please try again.",
+  "kycAndDocuments": "KYC & Documents",
+  "identityDocuments": "Identity Documents",
+  "aadharCard": "Aadhar Card",
+  "enterAadharNumber": "Enter 12-digit Aadhar Number",
+  "panCard": "PAN Card",
+  "enterPanNumber": "Enter 10-character PAN Number",
+  "bankDetails": "Bank Details",
+  "bankName": "Bank Name",
+  "accountNumber": "Account Number",
+  "ifscCode": "IFSC Code",
+  "saveDetails": "Save Details",
+  "uploadDocumentImage": "Upload Document Image:",
+  "tapToPickImage": "Tap to pick image",
+  "userNotFound": "User not found",
+  "failedToPickImage": "Failed to pick image: {error}",
+  "@failedToPickImage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "kycUpdatedSuccessfully": "KYC details updated successfully!",
+  "failedToUpdateKyc": "Failed to update KYC: {error}",
+  "@failedToUpdateKyc": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "emiAndPayments": "EMI & Payments",
+  "paymentSummary": "Payment Summary",
+  "totalAmount": "Total Amount",
+  "amountPaid": "Amount Paid",
+  "pendingBalance": "Pending Balance",
+  "noPaymentRecords": "No payment records found.",
+  "paymentRef": "Ref: {ref}",
+  "@paymentRef": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "supportCenter": "Support Center",
+  "howCanWeHelp": "How can we help you?",
+  "supportDesc": "Our team is available to assist you with any questions about properties, payments, or your account.",
+  "whatsappSupport": "WhatsApp Support",
+  "whatsappSubtitle": "Fastest response time",
+  "callUs": "Call Us",
+  "callUsSubtitle": "Mon-Sat, 10 AM to 6 PM",
+  "emailSupport": "Email Support",
+  "emailSupportSubtitle": "support@realestate.com",
+  "faqTitle": "Frequently Asked Questions",
+  "faq1Question": "How do I book a plot?",
+  "faq1Answer": "You can browse available plots in any active project and click \"Enquire\" or \"Book\". An agent will contact you shortly.",
+  "faq2Question": "Where can I see my EMI status?",
+  "faq2Answer": "Go to Profile > My Properties, and select your booked plot to see your complete EMI tracker and payment history.",
+  "faq3Question": "Can I change my registered email?",
+  "faq3Answer": "For security reasons, your registered email cannot be changed from the app. Please contact support.",
+  "myProfile": "My Profile",
+  "notLoggedIn": "You are not logged in.",
+  "myProperties": "My Properties",
+  "myEnquiries": "My Enquiries",
+  "mySiteVisits": "My Site Visits",
+  "loginBtn": "Login",
+  "pleaseLoginToViewProperties": "Please login to view your properties.",
+  "noPropertiesYet": "You have no booked or purchased plots yet.",
+  "plotNoLabel": "Plot No: {number}",
+  "@plotNoLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "loginPageTitle": "Login",
+  "welcomeBack": "Welcome Back",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "forgotPassword": "Forgot Password?",
+  "dontHaveAccount": "Don't have an account? Register",
+  "forgotPasswordTitle": "Forgot Password",
+  "resetPassword": "Reset Password",
+  "resetPasswordDesc": "Enter your email address and we will send you a link to reset your password.",
+  "sendResetLink": "Send Reset Link",
+  "resetLinkSent": "Reset link sent! Please check your email inbox.",
+  "backToLogin": "Back to Login",
+  "createAccount": "Create Account",
+  "joinUs": "Join Us",
+  "chooseFromGallery": "Choose from Gallery",
+  "takeAPhoto": "Take a Photo",
+  "removePhoto": "Remove Photo",
+  "emailAddress": "Email Address",
+  "register": "Register",
+  "alreadyHaveAccount": "Already have an account? Login"
 }

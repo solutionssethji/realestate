@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/premium_app_bar.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -22,9 +23,6 @@ class EnquiryPage extends HookConsumerWidget {
     final logic = ref.read(enquiryLogicProvider.notifier);
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    final nameCtrl = useTextEditingController();
-    final phoneCtrl = useTextEditingController();
-    final emailCtrl = useTextEditingController();
     final requirementCtrl = useTextEditingController();
     final budgetCtrl = useTextEditingController();
     final messageCtrl = useTextEditingController();
@@ -55,41 +53,6 @@ class EnquiryPage extends HookConsumerWidget {
                     ),
                   ),
                   AppSpacing.hXXl,
-
-                  // Name
-                  AppTextField(
-                    controller: nameCtrl,
-                    label: loc.fullName,
-                    prefixIcon: const Icon(Icons.person_outline),
-                    textInputAction: TextInputAction.next,
-                    validator: (v) => (v == null || v.trim().isEmpty)
-                        ? context.l10n.nameRequired
-                        : null,
-                  ),
-                  AppSpacing.hLg,
-
-                  // Phone
-                  AppTextField(
-                    controller: phoneCtrl,
-                    label: loc.mobileNumber,
-                    prefixIcon: const Icon(Icons.phone_outlined),
-                    keyboardType: TextInputType.phone,
-                    textInputAction: TextInputAction.next,
-                    validator: (v) => (v == null || v.trim().length < 10)
-                        ? context.l10n.enterValidMobile
-                        : null,
-                  ),
-                  AppSpacing.hLg,
-
-                  // Email
-                  AppTextField(
-                    controller: emailCtrl,
-                    label: loc.email,
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  AppSpacing.hLg,
 
                   // Plot Requirement
                   AppTextField(
@@ -143,11 +106,20 @@ class EnquiryPage extends HookConsumerWidget {
                     onPressed: state.isSuccess || state.isSubmitting
                         ? null
                         : () {
+                            final currentUser =
+                                FirebaseAuth.instance.currentUser;
+                            if (currentUser == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Please log in to submit an enquiry.'),
+                                ),
+                              );
+                              return;
+                            }
                             if (formKey.currentState!.validate()) {
                               logic.submitEnquiry(
-                                name: nameCtrl.text.trim(),
-                                phone: phoneCtrl.text.trim(),
-                                email: emailCtrl.text.trim(),
+                                customerId: currentUser.uid,
                                 plotRequirement: requirementCtrl.text.trim(),
                                 budget: budgetCtrl.text.trim(),
                                 projectId: initialProjectId,
