@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Modal } from "@/components/ui/Modal";
 
 const getNavItems = (role?: string) => {
   if (role === 'AGENT') {
@@ -36,6 +37,7 @@ const getNavItems = (role?: string) => {
     { name: "Notifications", href: "/notifications", icon: Bell },
     { name: "FAQs", href: "/faq", icon: HelpCircle },
     { name: "Settings", href: "/settings", icon: Settings },
+    { name: "Profile", href: "/profile", icon: UserIcon },
   ];
 };
 
@@ -48,6 +50,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -135,7 +138,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             </div>
             <button
-              onClick={logout}
+              onClick={() => setShowLogoutModal(true)}
               className="p-2.5 text-slate-400 hover:text-red-500 rounded-full hover:bg-red-50 transition-all duration-200"
               title="Logout"
             >
@@ -148,6 +151,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </main>
       </div>
+
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title="Confirm Logout"
+        maxWidth="sm"
+        footer={
+          <div className="flex justify-end gap-3 w-full">
+            <button
+              onClick={() => setShowLogoutModal(false)}
+              className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
+            >
+              No, Cancel
+            </button>
+            <button
+              onClick={() => {
+                setShowLogoutModal(false);
+                logout();
+              }}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+            >
+              Yes, Logout
+            </button>
+          </div>
+        }
+      >
+        <div className="py-4 text-slate-600">
+          Are you sure you want to log out of your account?
+        </div>
+      </Modal>
     </div>
   );
 }

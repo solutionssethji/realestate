@@ -66,6 +66,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const agentSnap = await getDocFn(docFn(db, "agents", firebaseUser.uid));
 
             if (agentSnap.exists()) {
+              const data = agentSnap.data();
+
+              if (data.status !== "ACTIVE") {
+                // If inactive, just sign out. login/page.tsx will handle showing the error toast.
+                await signOut(auth);
+                setIsAuthenticated(false);
+                setUser(null);
+                Cookies.remove("token");
+                setLoading(false);
+                setInitialLoading(false);
+                return;
+              }
+
               if (!firebaseUser.emailVerified) {
                 // Store unverified user in context BEFORE signing out
                 setUnverifiedFirebaseUser(firebaseUser);
@@ -74,7 +87,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 // Sign out AFTER updating state so signOut's onAuthStateChanged(null) doesn't wipe unverifiedFirebaseUser
                 await signOut(auth);
               } else {
-                const data = agentSnap.data();
                 setUser({
                   id: firebaseUser.uid,
                   name: data.fullName || data.name || firebaseUser.displayName || "Agent",

@@ -45,6 +45,15 @@ export default function LoginPage() {
         throw new Error("Access denied. You do not have admin or agent privileges.");
       }
 
+      // If agent is disabled, explicitly reject them
+      if (agentSnap.exists() && !adminSnap.exists()) {
+        const agentData = agentSnap.data();
+        if (agentData.status !== "ACTIVE") {
+          await signOut(auth);
+          throw new Error("Your account has been disabled. Please contact the administrator.");
+        }
+      }
+
       // If agent is unverified — AuthContext will handle the dialog, just silently stop here
       if (agentSnap.exists() && !adminSnap.exists() && !userCredential.user.emailVerified) {
         setLoading(false);

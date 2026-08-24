@@ -90,12 +90,12 @@ export default function ProfilePage() {
     async function fetchProfile() {
       if (!auth.currentUser || !user?.role) return;
       try {
-        const col = user.role === "ADMIN" ? "admins" : "agents";
+        const col = user.role.toUpperCase() === "ADMIN" ? "admins" : "agents";
         const snap = await getDoc(doc(db, col, auth.currentUser.uid));
         if (snap.exists()) {
           const d = snap.data();
           setFormData({
-            fullName: d.fullName || "",
+            fullName: d.fullName || d.name || "",
             mobileNumber: d.mobileNumber || "",
             whatsappNumber: d.whatsappNumber || "",
             firmName: d.firmName || "",
@@ -164,8 +164,11 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate all required fields
-    const requiredFields = ["fullName", "mobileNumber", "whatsappNumber", "panNumber", "aadharNumber", "bankAccountNumber", "ifscCode", "bankName"];
+    // Validate required fields based on role
+    const requiredFields = user?.role?.toUpperCase() === "ADMIN"
+      ? ["fullName"]
+      : ["fullName", "mobileNumber", "whatsappNumber", "panNumber", "aadharNumber", "bankAccountNumber", "ifscCode", "bankName"];
+
     const newErrors: Record<string, string> = {};
     requiredFields.forEach((key) => {
       const err = validateField(key, formData[key as keyof typeof formData]);
@@ -190,16 +193,25 @@ export default function ProfilePage() {
         updates.photoURL = await getDownloadURL(storageRef);
       }
 
-      const col = user.role === "ADMIN" ? "admins" : "agents";
-      await updateDoc(doc(db, col, auth.currentUser.uid), {
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      });
+      const col = user.role.toUpperCase() === "ADMIN" ? "admins" : "agents";
+
+      if (user.role.toUpperCase() === "ADMIN") {
+        await updateDoc(doc(db, col, auth.currentUser.uid), {
+          name: updates.fullName,
+          photoURL: updates.photoURL || "",
+          updatedAt: new Date().toISOString(),
+        });
+      } else {
+        await updateDoc(doc(db, col, auth.currentUser.uid), {
+          ...updates,
+          updatedAt: new Date().toISOString(),
+        });
+      }
 
       setFormData((prev) => ({ ...prev, photoURL: updates.photoURL || "" }));
       setProfileImage(null);
       if (updateUser) {
-        updateUser({ 
+        updateUser({
           name: updates.fullName,
           photoURL: updates.photoURL || ""
         });
@@ -217,12 +229,12 @@ export default function ProfilePage() {
     if (!auth.currentUser || !user?.role) return;
     setSaving(true);
     try {
-      const col = user.role === "ADMIN" ? "admins" : "agents";
+      const col = user.role.toUpperCase() === "ADMIN" ? "admins" : "agents";
       await updateDoc(doc(db, col, auth.currentUser.uid), {
         photoURL: "",
         updatedAt: new Date().toISOString(),
       });
-      setFormData(prev => ({ ...prev, photoURL: "" })); 
+      setFormData(prev => ({ ...prev, photoURL: "" }));
       setImagePreview(null);
       if (updateUser) updateUser({ photoURL: "" });
       toast.success("Profile photo removed!");
@@ -301,84 +313,92 @@ export default function ProfilePage() {
               {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mobile Number *</label>
-              <input name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} className={inputCls("mobileNumber")} placeholder="10-digit number" />
-              {errors.mobileNumber && <p className="text-red-500 text-xs mt-1">{errors.mobileNumber}</p>}
-            </div>
+            {user?.role?.toUpperCase() !== "ADMIN" && (
+              <>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mobile Number *</label>
+                  <input name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} className={inputCls("mobileNumber")} placeholder="10-digit number" />
+                  {errors.mobileNumber && <p className="text-red-500 text-xs mt-1">{errors.mobileNumber}</p>}
+                </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">WhatsApp Number *</label>
-              <input name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} className={inputCls("whatsappNumber")} placeholder="10-digit number" />
-              {errors.whatsappNumber && <p className="text-red-500 text-xs mt-1">{errors.whatsappNumber}</p>}
-            </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">WhatsApp Number *</label>
+                  <input name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} className={inputCls("whatsappNumber")} placeholder="10-digit number" />
+                  {errors.whatsappNumber && <p className="text-red-500 text-xs mt-1">{errors.whatsappNumber}</p>}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
-        {/* ── Firm Info ── */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="text-lg font-semibold text-slate-900 flex items-center">
-              <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
-              Agency / Firm Details
-            </h3>
-          </div>
-          <div className="p-6">
-            <label className="block text-sm font-semibold text-slate-700 mb-1.5">Firm / Company Name (Optional)</label>
-            <input name="firmName" value={formData.firmName} onChange={handleChange} className={inputCls("firmName")} />
-          </div>
-        </div>
+        {user?.role?.toUpperCase() !== "ADMIN" && (
+          <>
+            {/* ── Firm Info ── */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+                <h3 className="text-lg font-semibold text-slate-900 flex items-center">
+                  <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
+                  Agency / Firm Details
+                </h3>
+              </div>
+              <div className="p-6">
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Firm / Company Name (Optional)</label>
+                <input name="firmName" value={formData.firmName} onChange={handleChange} className={inputCls("firmName")} />
+              </div>
+            </div>
 
-        {/* ── KYC ── */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="text-lg font-semibold text-slate-900 flex items-center">
-              <FileText className="w-5 h-5 mr-2 text-blue-600" />
-              KYC Documents
-            </h3>
-          </div>
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">PAN Card Number *</label>
-              <input name="panNumber" value={formData.panNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} placeholder="ABCDE1234F" className={`${inputCls("panNumber")} uppercase`} />
-              {errors.panNumber && <p className="text-red-500 text-xs mt-1">{errors.panNumber}</p>}
+            {/* ── KYC ── */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+                <h3 className="text-lg font-semibold text-slate-900 flex items-center">
+                  <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                  KYC Documents
+                </h3>
+              </div>
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">PAN Card Number *</label>
+                  <input name="panNumber" value={formData.panNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} placeholder="ABCDE1234F" className={`${inputCls("panNumber")} uppercase`} />
+                  {errors.panNumber && <p className="text-red-500 text-xs mt-1">{errors.panNumber}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Aadhaar Number *</label>
+                  <input name="aadharNumber" value={formData.aadharNumber} onChange={handleChange} onBlur={handleBlur} maxLength={12} placeholder="123456789012" className={inputCls("aadharNumber")} />
+                  {errors.aadharNumber && <p className="text-red-500 text-xs mt-1">{errors.aadharNumber}</p>}
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Aadhaar Number *</label>
-              <input name="aadharNumber" value={formData.aadharNumber} onChange={handleChange} onBlur={handleBlur} maxLength={12} placeholder="123456789012" className={inputCls("aadharNumber")} />
-              {errors.aadharNumber && <p className="text-red-500 text-xs mt-1">{errors.aadharNumber}</p>}
-            </div>
-          </div>
-        </div>
 
-        {/* ── Bank Details ── */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="text-lg font-semibold text-slate-900 flex items-center">
-              <Building2 className="w-5 h-5 mr-2 text-blue-600" />
-              Bank Details
-            </h3>
-          </div>
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Bank Name *</label>
-              <input name="bankName" value={formData.bankName} onChange={handleChange} onBlur={handleBlur} className={inputCls("bankName")} />
-              {errors.bankName && <p className="text-red-500 text-xs mt-1">{errors.bankName}</p>}
+            {/* ── Bank Details ── */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+                <h3 className="text-lg font-semibold text-slate-900 flex items-center">
+                  <Building2 className="w-5 h-5 mr-2 text-blue-600" />
+                  Bank Details
+                </h3>
+              </div>
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Bank Name *</label>
+                  <input name="bankName" value={formData.bankName} onChange={handleChange} onBlur={handleBlur} className={inputCls("bankName")} />
+                  {errors.bankName && <p className="text-red-500 text-xs mt-1">{errors.bankName}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Account Number *</label>
+                  <input name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleChange} onBlur={handleBlur} className={inputCls("bankAccountNumber")} />
+                  {errors.bankAccountNumber && <p className="text-red-500 text-xs mt-1">{errors.bankAccountNumber}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">IFSC Code *</label>
+                  <input name="ifscCode" value={formData.ifscCode} onChange={handleChange} onBlur={handleBlur} maxLength={11} placeholder="SBIN0001234" className={`${inputCls("ifscCode")} uppercase`} />
+                  {errors.ifscCode && <p className="text-red-500 text-xs mt-1">{errors.ifscCode}</p>}
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Account Number *</label>
-              <input name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleChange} onBlur={handleBlur} className={inputCls("bankAccountNumber")} />
-              {errors.bankAccountNumber && <p className="text-red-500 text-xs mt-1">{errors.bankAccountNumber}</p>}
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">IFSC Code *</label>
-              <input name="ifscCode" value={formData.ifscCode} onChange={handleChange} onBlur={handleBlur} maxLength={11} placeholder="SBIN0001234" className={`${inputCls("ifscCode")} uppercase`} />
-              {errors.ifscCode && <p className="text-red-500 text-xs mt-1">{errors.ifscCode}</p>}
-            </div>
-          </div>
-        </div>
+          </>
+        )}
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-end pt-4 border-t border-slate-200">
           <Button
             type="submit"
             disabled={saving}
