@@ -7,8 +7,10 @@ import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 
 import { toast } from "react-hot-toast";
 import { Lock, Save, Loader2, Eye, EyeOff } from "lucide-react";
 import { validateStrongPassword } from "@/lib/validators";
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function ChangePasswordPage() {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -33,7 +35,7 @@ export default function ChangePasswordPage() {
       return;
     }
     if (newPassword !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match");
+      setConfirmPasswordError(t('passwords_do_not_match'));
       return;
     }
 
@@ -43,7 +45,7 @@ export default function ChangePasswordPage() {
       await reauthenticateWithCredential(auth.currentUser, credential);
       await updatePassword(auth.currentUser, newPassword);
 
-      toast.success("Password updated successfully!");
+      toast.success(t('password_updated'));
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -52,9 +54,9 @@ export default function ChangePasswordPage() {
     } catch (err: any) {
       console.error(err);
       if (err.code === "auth/invalid-credential") {
-        toast.error("Incorrect current password.");
+        toast.error(t('incorrect_current_password'));
       } else {
-        toast.error(err.message || "Failed to update password.");
+        toast.error(err.message || t('failed_update_password'));
       }
     } finally {
       setLoading(false);
@@ -68,8 +70,8 @@ export default function ChangePasswordPage() {
           <Lock className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Change Password</h1>
-          <p className="text-gray-500 text-sm">Ensure your account is using a long, random password to stay secure.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('change_password_page_title')}</h1>
+          <p className="text-gray-500 text-sm">{t('change_password_subtitle')}</p>
         </div>
       </div>
 
@@ -79,7 +81,7 @@ export default function ChangePasswordPage() {
           {/* Current Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Current Password
+              {t('current_password')}
             </label>
             <div className="relative">
               <input
@@ -88,7 +90,7 @@ export default function ChangePasswordPage() {
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
                 className="w-full px-4 py-2 pr-11 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-                placeholder="Enter current password"
+                placeholder={t('enter_current_password')}
               />
               <button
                 type="button"
@@ -103,7 +105,7 @@ export default function ChangePasswordPage() {
           {/* New Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              New Password
+              {t('new_password')}
             </label>
             <div className="relative">
               <input
@@ -114,7 +116,7 @@ export default function ChangePasswordPage() {
                   setNewPassword(val);
                   setNewPasswordError(val ? validateStrongPassword(val) : null);
                   if (confirmPassword && val !== confirmPassword) {
-                    setConfirmPasswordError("Passwords do not match");
+                    setConfirmPasswordError(t('passwords_do_not_match'));
                   } else if (confirmPassword && val === confirmPassword) {
                     setConfirmPasswordError(null);
                   }
@@ -123,7 +125,7 @@ export default function ChangePasswordPage() {
                 required
                 className={`w-full px-4 py-2 pr-11 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none ${newPasswordError ? "border-red-300 bg-red-50" : "bg-gray-50 border-gray-200 focus:bg-white"
                   }`}
-                placeholder="Enter new password"
+                placeholder={t('enter_new_password')}
               />
               <button
                 type="button"
@@ -139,7 +141,7 @@ export default function ChangePasswordPage() {
           {/* Confirm Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm New Password
+              {t('confirm_new_password')}
             </label>
             <div className="relative">
               <input
@@ -148,18 +150,18 @@ export default function ChangePasswordPage() {
                 onChange={(e) => {
                   const val = e.target.value;
                   setConfirmPassword(val);
-                  if (!val) setConfirmPasswordError("Please confirm your new password");
-                  else if (val !== newPassword) setConfirmPasswordError("Passwords do not match");
+                  if (!val) setConfirmPasswordError(t('confirm_new_password'));
+                  else if (val !== newPassword) setConfirmPasswordError(t('passwords_do_not_match'));
                   else setConfirmPasswordError(null);
                 }}
                 onBlur={() => {
-                  if (!confirmPassword) setConfirmPasswordError("Please confirm your new password");
-                  else if (confirmPassword !== newPassword) setConfirmPasswordError("Passwords do not match");
+                  if (!confirmPassword) setConfirmPasswordError(t('confirm_new_password'));
+                  else if (confirmPassword !== newPassword) setConfirmPasswordError(t('passwords_do_not_match'));
                 }}
                 required
                 className={`w-full px-4 py-2 pr-11 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none ${confirmPasswordError ? "border-red-300 bg-red-50" : "bg-gray-50 border-gray-200 focus:bg-white"
                   }`}
-                placeholder="Confirm new password"
+                placeholder={t('confirm_new_password_placeholder')}
               />
               <button
                 type="button"
@@ -174,11 +176,11 @@ export default function ChangePasswordPage() {
 
           {/* Password Requirements */}
           <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-            <p className="text-sm text-blue-800 font-medium mb-1">Password Requirements:</p>
+            <p className="text-sm text-blue-800 font-medium mb-1">{t('password_requirements')}</p>
             <ul className="text-xs text-blue-600/80 list-disc list-inside space-y-0.5">
-              <li>Must be at least 8 characters</li>
-              <li>1 uppercase and 1 lowercase letter</li>
-              <li>1 number and 1 special character</li>
+              <li>{t('password_req_length')}</li>
+              <li>{t('password_req_case')}</li>
+              <li>{t('password_req_special')}</li>
             </ul>
           </div>
 
@@ -193,7 +195,7 @@ export default function ChangePasswordPage() {
               ) : (
                 <Save className="w-5 h-5 mr-2" />
               )}
-              Update Password
+              {t('update_password')}
             </button>
           </div>
         </form>

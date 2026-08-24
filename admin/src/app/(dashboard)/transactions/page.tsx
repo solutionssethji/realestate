@@ -8,6 +8,7 @@ import { DataTable } from "@/components/ui/DataTable";
 import { ShimmerTable } from "@/components/ui/Shimmer";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDateTime, formatCurrency } from "@/lib/formatters";
+import { useLanguage } from "@/context/LanguageContext";
 
 type Payment = {
   id: string;
@@ -28,6 +29,7 @@ type Payment = {
 const PAGE_SIZE = 15;
 
 function TransactionsContent() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
 
   const {
@@ -51,7 +53,7 @@ function TransactionsContent() {
 
   const columns = [
     {
-      header: "Date",
+      header: t('date'),
       key: "createdAt",
       render: (p: Payment) => (
         <div>
@@ -65,45 +67,45 @@ function TransactionsContent() {
       )
     },
     {
-      header: "Customer",
+      header: t('customer'),
       key: "customerName",
       render: (p: Payment) => (
         <div className="font-medium text-slate-900">
-          {p.customerName || "Unknown User"}
+          {p.customerName || t('unknown_user')}
         </div>
       )
     },
     {
-      header: "Project & Plot",
+      header: t('project_plot'),
       key: "projectName",
       render: (p: Payment) => (
         <div>
-          <div className="font-semibold text-slate-900">{p.projectName || "Unknown Project"}</div>
-          <div className="text-xs text-slate-500">Plot {p.plotNumber || "N/A"}</div>
+          <div className="font-semibold text-slate-900">{p.projectName || t('unknown_project')}</div>
+          <div className="text-xs text-slate-500">{t('plot')} {p.plotNumber || "N/A"}</div>
         </div>
       )
     },
     {
-      header: "Amount",
+      header: t('amount'),
       key: "amount",
       render: (p: Payment) => (
         <div className="font-bold text-slate-900">{formatCurrency(p.amount)}</div>
       )
     },
     {
-      header: "Mode & Details",
+      header: t('mode_details'),
       key: "mode",
       render: (p: Payment) => (
         <div>
           <div className="text-sm font-semibold text-slate-800">{p.mode}</div>
           {p.transactionId && (
-            <div className="text-xs text-slate-500 font-mono mt-0.5">Txn: {p.transactionId}</div>
+            <div className="text-xs text-slate-500 font-mono mt-0.5">{t('txn')}: {p.transactionId}</div>
           )}
         </div>
       )
     },
     {
-      header: "Status",
+      header: t('status'),
       key: "status",
       render: (p: Payment) => (
         <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -118,10 +120,10 @@ function TransactionsContent() {
   return (
     <div className="space-y-6 pb-8">
       <PageHeader
-        title="Transactions Ledger"
+        title={t('transactions_ledger')}
         breadcrumbs={[
-          { label: "Dashboard", href: "/dashboard" },
-          { label: "Transactions" }
+          { label: t('dashboard'), href: "/dashboard" },
+          { label: t('transactions') }
         ]}
       />
 
@@ -132,7 +134,7 @@ function TransactionsContent() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search by Transaction ID..."
+                placeholder={t('search_transaction_id')}
                 value={searchQuery}
                 onChange={handleSearch}
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
@@ -148,8 +150,8 @@ function TransactionsContent() {
         ) : payments.length === 0 ? (
           <EmptyState
             icon={<CreditCard className="h-12 w-12 text-slate-300" />}
-            title="No Transactions Found"
-            description="No payments have been recorded yet or match your search."
+            title={t('no_transactions')}
+            description={t('no_transactions_desc')}
           />
         ) : (
           <DataTable

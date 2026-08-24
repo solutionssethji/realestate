@@ -26,11 +26,11 @@ function ResetPasswordForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!token) {
-      toast.error("Invalid or missing reset token.");
+      toast.error(t('invalid_missing_token'));
       return;
     }
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
+      toast.error(t('passwords_do_not_match'));
       return;
     }
 
@@ -48,7 +48,7 @@ function ResetPasswordForm() {
       await confirmPasswordReset(auth, token, password);
       setSuccess(true);
     } catch (err: any) {
-      toast.error(err.message || "Failed to reset password.");
+      toast.error(err.message || t('failed_to_reset_password'));
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ function ResetPasswordForm() {
   if (!token && !success) {
     return (
       <div className="text-center">
-        <p className="text-red-600 mb-4">Invalid or missing reset token.</p>
+        <p className="text-red-600 mb-4">{t('invalid_missing_token')}</p>
         <Link href="/login" className="text-blue-600 hover:underline">{t('return_to_login')}</Link>
       </div>
     );
@@ -67,14 +67,14 @@ function ResetPasswordForm() {
     return (
       <div className="text-center">
         <CheckCircle2 className="mx-auto h-12 w-12 text-green-500" />
-        <h3 className="mt-2 text-lg font-medium text-gray-900">Password Reset!</h3>
-        <p className="mt-1 text-sm text-gray-500">Your password has been successfully updated.</p>
+        <h3 className="mt-2 text-lg font-medium text-gray-900">{t('password_reset_success')}</h3>
+        <p className="mt-1 text-sm text-gray-500">{t('password_updated_successfully')}</p>
         <div className="mt-6">
           <Link
             href="/login"
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
           >
-            Login Now
+            {t('login_now')}
           </Link>
         </div>
       </div>
@@ -95,20 +95,20 @@ function ResetPasswordForm() {
               const val = e.target.value;
               setPassword(val);
               if (!val) {
-                setPasswordError("New password is required");
+                setPasswordError(t('new_password_required'));
               } else {
                 setPasswordError(validateStrongPassword(val));
               }
 
               if (confirmPassword && val !== confirmPassword) {
-                setConfirmPasswordError("Passwords do not match");
+                setConfirmPasswordError(t('passwords_do_not_match'));
               } else if (confirmPassword && val === confirmPassword) {
                 setConfirmPasswordError(null);
               }
             }}
             onBlur={() => {
               if (!password) {
-                setPasswordError("New password is required");
+                setPasswordError(t('new_password_required'));
               } else {
                 setPasswordError(validateStrongPassword(password));
               }
@@ -138,18 +138,18 @@ function ResetPasswordForm() {
               const val = e.target.value;
               setConfirmPassword(val);
               if (!val) {
-                setConfirmPasswordError("Please confirm your new password");
+                setConfirmPasswordError(t('confirm_new_password'));
               } else if (val !== password) {
-                setConfirmPasswordError("Passwords do not match");
+                setConfirmPasswordError(t('passwords_do_not_match'));
               } else {
                 setConfirmPasswordError(null);
               }
             }}
             onBlur={() => {
               if (!confirmPassword) {
-                setConfirmPasswordError("Please confirm your new password");
+                setConfirmPasswordError(t('confirm_new_password'));
               } else if (confirmPassword !== password) {
-                setConfirmPasswordError("Passwords do not match");
+                setConfirmPasswordError(t('passwords_do_not_match'));
               }
             }}
             className={`appearance-none block w-full px-3 py-2 pr-10 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${confirmPasswordError ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
@@ -166,11 +166,11 @@ function ResetPasswordForm() {
       </div>
 
       <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-        <p className="text-sm text-blue-800 font-medium mb-1">Password Requirements:</p>
+        <p className="text-sm text-blue-800 font-medium mb-1">{t('password_requirements')}</p>
         <ul className="text-xs text-blue-600/80 list-disc list-inside space-y-0.5">
-          <li>Must be at least 8 characters</li>
-          <li>1 uppercase and 1 lowercase letter</li>
-          <li>1 number and 1 special character</li>
+          <li>{t('password_req_length')}</li>
+          <li>{t('password_req_case')}</li>
+          <li>{t('password_req_special')}</li>
         </ul>
       </div>
 

@@ -14,20 +14,21 @@ import { auth } from "@/lib/firebase";
 import { validateStrongPassword } from "@/lib/validators";
 
 export default function SettingsDashboard() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("about");
 
   const tabs = [
-    { id: "about", label: "About Company", icon: Info },
-    { id: "contact", label: "Contact Us", icon: Phone },
-    { id: "legal", label: "Legal & Policies", icon: FileText },
-    { id: "security", label: "Security", icon: Lock },
+    { id: "about", label: t('tab_about'), icon: Info },
+    { id: "contact", label: t('tab_contact'), icon: Phone },
+    { id: "legal", label: t('tab_legal'), icon: FileText },
+    { id: "security", label: t('tab_security'), icon: Lock },
   ];
 
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
-        title="App Settings"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Settings" }]}
+        title={t('app_settings')}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('settings') }]}
       />
 
       <div className="flex space-x-1 border-b border-slate-200 overflow-x-auto scrollbar-hide">
@@ -116,16 +117,16 @@ function AboutTab() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error("Please fill in all required fields in both languages");
+      toast.error(t('fill_all_required_both_langs'));
       return;
     }
     setErrors({});
     setSaving(true);
     try {
       await saveSetting("aboutCompany", aboutData);
-      toast.success("About Company saved successfully!");
+      toast.success(t('about_saved'));
     } catch (error) {
-      toast.error("Failed to save data");
+      toast.error(t('failed_save_data'));
     } finally {
       setSaving(false);
     }
@@ -139,8 +140,8 @@ function AboutTab() {
   return (
     <Card>
       <div className="p-6 border-b border-slate-100">
-        <h3 className="text-lg font-bold text-slate-900">About Company</h3>
-        <p className="text-sm text-slate-500 mt-1">Configure company details displayed in the mobile app.</p>
+        <h3 className="text-lg font-bold text-slate-900">{t('about_company')}</h3>
+        <p className="text-sm text-slate-500 mt-1">{t('about_company_desc')}</p>
       </div>
       <div className="p-6 space-y-8">
 
@@ -149,22 +150,22 @@ function AboutTab() {
           <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('english')}</h4>
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">Company Profile <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700">{t('company_profile')} <span className="text-red-500">*</span></label>
               <textarea value={aboutData.companyProfile.en} onChange={e => handleNestedChange("companyProfile", "en", e.target.value)} onBlur={e => handleNestedBlur("companyProfile", "en", e.target.value)} rows={4} className={getTextareaClass(!!errors.companyProfile_en)} />
               {errors.companyProfile_en && <p className="text-sm text-red-600 font-medium">{errors.companyProfile_en}</p>}
             </div>
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">Vision <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700">{t('vision')} <span className="text-red-500">*</span></label>
               <textarea value={aboutData.vision.en} onChange={e => handleNestedChange("vision", "en", e.target.value)} onBlur={e => handleNestedBlur("vision", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.vision_en)} />
               {errors.vision_en && <p className="text-sm text-red-600 font-medium">{errors.vision_en}</p>}
             </div>
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">Mission <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700">{t('mission')} <span className="text-red-500">*</span></label>
               <textarea value={aboutData.mission.en} onChange={e => handleNestedChange("mission", "en", e.target.value)} onBlur={e => handleNestedBlur("mission", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.mission_en)} />
               {errors.mission_en && <p className="text-sm text-red-600 font-medium">{errors.mission_en}</p>}
             </div>
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">Why Choose Us <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700">{t('why_choose_us')} <span className="text-red-500">*</span></label>
               <textarea value={aboutData.whyChooseUs.en} onChange={e => handleNestedChange("whyChooseUs", "en", e.target.value)} onBlur={e => handleNestedBlur("whyChooseUs", "en", e.target.value)} rows={4} className={getTextareaClass(!!errors.whyChooseUs_en)} />
               {errors.whyChooseUs_en && <p className="text-sm text-red-600 font-medium">{errors.whyChooseUs_en}</p>}
             </div>
@@ -199,7 +200,7 @@ function AboutTab() {
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSave} isLoading={saving}>Save Changes</Button>
+          <Button onClick={handleSave} isLoading={saving}>{t('save_changes')}</Button>
         </div>
       </div>
     </Card>
@@ -270,16 +271,16 @@ function ContactTab() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error("Please fill in all required fields");
+      toast.error(t('fill_all_required'));
       return;
     }
     setErrors({});
     setSaving(true);
     try {
       await saveSetting("contactUs", contactData);
-      toast.success("Contact settings saved successfully!");
+      toast.success(t('contact_saved'));
     } catch (error) {
-      toast.error("Failed to save data");
+      toast.error(t('failed_save_data'));
     } finally {
       setSaving(false);
     }
@@ -293,17 +294,17 @@ function ContactTab() {
   return (
     <Card>
       <div className="p-6 border-b border-slate-100">
-        <h3 className="text-lg font-bold text-slate-900">Contact Us</h3>
-        <p className="text-sm text-slate-500 mt-1">Configure action buttons and display information for contact details.</p>
+        <h3 className="text-lg font-bold text-slate-900">{t('contact_us')}</h3>
+        <p className="text-sm text-slate-500 mt-1">{t('contact_us_desc')}</p>
       </div>
       <div className="p-6 space-y-8">
         <div className="space-y-4">
-          <Input required label="Direct Call (Phone Number to dial)" value={contactData.directCall} error={errors.directCall} onChange={e => handleFieldChange('directCall', e.target.value)} onBlur={e => handleFieldBlur('directCall', e.target.value)} placeholder="e.g. +919876543210" />
-          <Input required label="WhatsApp Number (without +)" value={contactData.whatsapp} error={errors.whatsapp} onChange={e => handleFieldChange('whatsapp', e.target.value)} onBlur={e => handleFieldBlur('whatsapp', e.target.value)} placeholder="e.g. 919876543210" />
-          <Input required label="Google Maps URL" value={contactData.googleMaps} error={errors.googleMaps} onChange={e => handleFieldChange('googleMaps', e.target.value)} onBlur={e => handleFieldBlur('googleMaps', e.target.value)} placeholder="https://goo.gl/maps/..." />
+          <Input required label={t('direct_call_label')} value={contactData.directCall} error={errors.directCall} onChange={e => handleFieldChange('directCall', e.target.value)} onBlur={e => handleFieldBlur('directCall', e.target.value)} placeholder="e.g. +919876543210" />
+          <Input required label={t('whatsapp_label')} value={contactData.whatsapp} error={errors.whatsapp} onChange={e => handleFieldChange('whatsapp', e.target.value)} onBlur={e => handleFieldBlur('whatsapp', e.target.value)} placeholder="e.g. 919876543210" />
+          <Input required label={t('google_maps_label')} value={contactData.googleMaps} error={errors.googleMaps} onChange={e => handleFieldChange('googleMaps', e.target.value)} onBlur={e => handleFieldBlur('googleMaps', e.target.value)} placeholder="https://goo.gl/maps/..." />
 
           <div className="space-y-1.5 pt-2">
-            <label className="block text-sm font-semibold text-slate-700">Contact Number <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-semibold text-slate-700">{t('contact_number')} <span className="text-red-500">*</span></label>
             <textarea value={contactData.contactNumber} onChange={e => { const val = e.target.value; setContactData(prev => ({ ...prev, contactNumber: val })); setErrors(prev => ({ ...prev, contactNumber: val.trim() ? "" : "Required" })); }} onBlur={e => { if (!e.target.value.trim()) setErrors(prev => ({ ...prev, contactNumber: "Required" })); }} rows={2} className={getTextareaClass(!!errors.contactNumber)} placeholder="+91 98765 43210" />
             {errors.contactNumber && <p className="text-sm text-red-600 font-medium">{errors.contactNumber}</p>}
           </div>
@@ -313,7 +314,7 @@ function ContactTab() {
         <div className="space-y-4 pt-4 border-t border-slate-100">
           <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('english')}</h4>
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-slate-700">Office Location <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-semibold text-slate-700">{t('office_location')} <span className="text-red-500">*</span></label>
             <textarea value={contactData.officeLocation.en} onChange={e => handleNestedChange("officeLocation", "en", e.target.value)} onBlur={e => handleNestedBlur("officeLocation", "en", e.target.value)} rows={3} className={getTextareaClass(!!errors.officeLocation_en)} />
             {errors.officeLocation_en && <p className="text-sm text-red-600 font-medium">{errors.officeLocation_en}</p>}
           </div>
@@ -330,7 +331,7 @@ function ContactTab() {
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSave} isLoading={saving}>Save Changes</Button>
+          <Button onClick={handleSave} isLoading={saving}>{t('save_changes')}</Button>
         </div>
       </div>
     </Card>
@@ -388,16 +389,16 @@ function LegalTab() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error("Please fill in all required fields in both languages");
+      toast.error(t('fill_all_required_both_langs'));
       return;
     }
     setErrors({});
     setSaving(true);
     try {
       await saveSetting("legalPolicies", legalData);
-      toast.success("Legal policies saved successfully!");
+      toast.success(t('legal_saved'));
     } catch (error) {
-      toast.error("Failed to save data");
+      toast.error(t('failed_save_data'));
     } finally {
       setSaving(false);
     }
@@ -411,8 +412,8 @@ function LegalTab() {
   return (
     <Card>
       <div className="p-6 border-b border-slate-100">
-        <h3 className="text-lg font-bold text-slate-900">Legal & Policies</h3>
-        <p className="text-sm text-slate-500 mt-1">Configure Terms & Conditions and Privacy Policy for the app.</p>
+        <h3 className="text-lg font-bold text-slate-900">{t('legal_policies')}</h3>
+        <p className="text-sm text-slate-500 mt-1">{t('legal_policies_desc')}</p>
       </div>
       <div className="p-6 space-y-8">
 
@@ -421,12 +422,12 @@ function LegalTab() {
           <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('english')}</h4>
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">Terms & Conditions <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700">{t('terms_conditions')} <span className="text-red-500">*</span></label>
               <textarea value={legalData.termsAndConditions.en} onChange={e => handleNestedChange("termsAndConditions", "en", e.target.value)} onBlur={e => handleNestedBlur("termsAndConditions", "en", e.target.value)} rows={6} className={getTextareaClass(!!errors.termsAndConditions_en)} />
               {errors.termsAndConditions_en && <p className="text-sm text-red-600 font-medium">{errors.termsAndConditions_en}</p>}
             </div>
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">Privacy Policy <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700">{t('privacy_policy')} <span className="text-red-500">*</span></label>
               <textarea value={legalData.privacyPolicy.en} onChange={e => handleNestedChange("privacyPolicy", "en", e.target.value)} onBlur={e => handleNestedBlur("privacyPolicy", "en", e.target.value)} rows={6} className={getTextareaClass(!!errors.privacyPolicy_en)} />
               {errors.privacyPolicy_en && <p className="text-sm text-red-600 font-medium">{errors.privacyPolicy_en}</p>}
             </div>
@@ -451,7 +452,7 @@ function LegalTab() {
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button onClick={handleSave} isLoading={saving}>Save Changes</Button>
+          <Button onClick={handleSave} isLoading={saving}>{t('save_changes')}</Button>
         </div>
       </div>
     </Card>
@@ -459,6 +460,7 @@ function LegalTab() {
 }
 
 function SecurityTab() {
+  const { t } = useLanguage();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -468,9 +470,9 @@ function SecurityTab() {
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
-    if (!currentPassword) newErrors.currentPassword = "Current password is required";
-    if (!newPassword) newErrors.newPassword = "New password is required";
-    if (!confirmPassword) newErrors.confirmPassword = "Please confirm your new password";
+    if (!currentPassword) newErrors.currentPassword = t('current_password_required');
+    if (!newPassword) newErrors.newPassword = t('new_password_required');
+    if (!confirmPassword) newErrors.confirmPassword = t('please_confirm_password');
     
     if (newPassword) {
       const passwordError = validateStrongPassword(newPassword);
@@ -480,18 +482,18 @@ function SecurityTab() {
     }
     
     if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-      newErrors.confirmPassword = "New passwords do not match";
+      newErrors.confirmPassword = t('new_passwords_no_match');
     }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error("Please fix the validation errors.");
+      toast.error(t('fix_validation_errors'));
       return;
     }
 
     const user = auth.currentUser;
     if (!user || !user.email) {
-      toast.error("User not found. Please login again.");
+      toast.error(t('user_not_found_login'));
       return;
     }
 
@@ -504,19 +506,19 @@ function SecurityTab() {
 
       // Update password
       await updatePassword(user, newPassword);
-      toast.success("Password updated successfully!");
+      toast.success(t('password_updated'));
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (error: any) {
       console.error(error);
       if (error.code === 'auth/invalid-credential') {
-        toast.error("Incorrect current password.");
-        setErrors({ currentPassword: "Incorrect current password." });
+        toast.error(t('incorrect_current_password'));
+        setErrors({ currentPassword: t('incorrect_current_password') });
       } else if (error.code === 'auth/requires-recent-login') {
-        toast.error("Please log out and log back in to change your password.");
+        toast.error(t('relogin_change_password'));
       } else {
-        toast.error(error.message || "Failed to update password.");
+        toast.error(error.message || t('failed_update_password'));
       }
     } finally {
       setLoading(false);
@@ -525,10 +527,10 @@ function SecurityTab() {
 
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold text-slate-800 mb-4">Change Password</h3>
+      <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('change_password')}</h3>
       <form onSubmit={handleUpdatePassword} noValidate className="space-y-6 max-w-md">
         <Input
-          label="Current Password"
+          label={t('current_password')}
           type="password"
           required
           value={currentPassword}
@@ -537,19 +539,19 @@ function SecurityTab() {
             const val = e.target.value;
             setCurrentPassword(val);
             if (!val) {
-              setErrors(prev => ({ ...prev, currentPassword: "Current password is required" }));
+              setErrors(prev => ({ ...prev, currentPassword: t('current_password_required') }));
             } else {
               setErrors(prev => { const next = { ...prev }; delete next.currentPassword; return next; });
             }
           }}
           onBlur={() => {
             if (!currentPassword) {
-              setErrors(prev => ({ ...prev, currentPassword: "Current password is required" }));
+              setErrors(prev => ({ ...prev, currentPassword: t('current_password_required') }));
             }
           }}
         />
         <Input
-          label="New Password"
+          label={t('new_password')}
           type="password"
           required
           value={newPassword}
@@ -558,7 +560,7 @@ function SecurityTab() {
             const val = e.target.value;
             setNewPassword(val);
             if (!val) {
-              setErrors(prev => ({ ...prev, newPassword: "New password is required" }));
+              setErrors(prev => ({ ...prev, newPassword: t('new_password_required') }));
             } else {
               const err = validateStrongPassword(val);
               if (err) {
@@ -569,14 +571,14 @@ function SecurityTab() {
             }
             
             if (confirmPassword && val !== confirmPassword) {
-              setErrors(prev => ({ ...prev, confirmPassword: "New passwords do not match" }));
+              setErrors(prev => ({ ...prev, confirmPassword: t('new_passwords_no_match') }));
             } else if (confirmPassword && val === confirmPassword) {
               setErrors(prev => { const next = { ...prev }; delete next.confirmPassword; return next; });
             }
           }}
           onBlur={() => {
             if (!newPassword) {
-              setErrors(prev => ({ ...prev, newPassword: "New password is required" }));
+              setErrors(prev => ({ ...prev, newPassword: t('new_password_required') }));
             } else {
               const err = validateStrongPassword(newPassword);
               if (err) {
@@ -586,7 +588,7 @@ function SecurityTab() {
           }}
         />
         <Input
-          label="Confirm New Password"
+          label={t('confirm_new_password')}
           type="password"
           required
           value={confirmPassword}
@@ -595,34 +597,34 @@ function SecurityTab() {
             const val = e.target.value;
             setConfirmPassword(val);
             if (!val) {
-              setErrors(prev => ({ ...prev, confirmPassword: "Please confirm your new password" }));
+              setErrors(prev => ({ ...prev, confirmPassword: t('please_confirm_password') }));
             } else if (val !== newPassword) {
-              setErrors(prev => ({ ...prev, confirmPassword: "New passwords do not match" }));
+              setErrors(prev => ({ ...prev, confirmPassword: t('new_passwords_no_match') }));
             } else {
               setErrors(prev => { const next = { ...prev }; delete next.confirmPassword; return next; });
             }
           }}
           onBlur={() => {
             if (!confirmPassword) {
-              setErrors(prev => ({ ...prev, confirmPassword: "Please confirm your new password" }));
+              setErrors(prev => ({ ...prev, confirmPassword: t('please_confirm_password') }));
             } else if (confirmPassword !== newPassword) {
-              setErrors(prev => ({ ...prev, confirmPassword: "New passwords do not match" }));
+              setErrors(prev => ({ ...prev, confirmPassword: t('new_passwords_no_match') }));
             }
           }}
         />
         
         <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-          <p className="text-sm text-blue-800 font-medium mb-1">Password Requirements:</p>
+          <p className="text-sm text-blue-800 font-medium mb-1">{t('password_requirements')}</p>
           <ul className="text-xs text-blue-600/80 list-disc list-inside space-y-0.5">
-            <li>Must be at least 8 characters</li>
-            <li>1 uppercase and 1 lowercase letter</li>
-            <li>1 number and 1 special character</li>
+            <li>{t('password_req_length')}</li>
+            <li>{t('password_req_case')}</li>
+            <li>{t('password_req_special')}</li>
           </ul>
         </div>
 
         <div className="pt-2">
           <Button type="submit" isLoading={loading} className="w-full">
-            Update Password
+            {t('update_password')}
           </Button>
         </div>
       </form>

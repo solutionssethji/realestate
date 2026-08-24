@@ -192,10 +192,10 @@ function SiteVisitsContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
-      toast.success(`Project status updated successfully.`);
+      toast.success(t('site_visit_status_updated'));
       setSiteVisits(siteVisits.map((v: SiteVisit) => v.id === id ? { ...v, status: newStatus } : v));
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error(t('failed_update_enquiry_status'));
     } finally {
       setStatusLoading(null);
     }
@@ -209,11 +209,11 @@ function SiteVisitsContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
-      toast.success(`Project status updated successfully.`);
+      toast.success(t('site_visit_status_updated'));
       setSelectedVisit({ ...selectedVisit, status: newStatus });
       setSiteVisits(siteVisits.map((v: SiteVisit) => v.id === selectedVisit.id ? { ...v, status: newStatus } : v));
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error(t('failed_update_enquiry_status'));
     } finally {
       setUpdating(false);
     }
@@ -223,7 +223,7 @@ function SiteVisitsContent() {
 
   const columns = [
     {
-      header: t('date time'),
+      header: t('date_time'),
       key: "preferredDate",
       render: (visit: SiteVisit) => {
         let dateStr = "N/A";
@@ -239,7 +239,7 @@ function SiteVisitsContent() {
         return (
           <div>
             <div className="font-bold text-slate-900">{dateStr}</div>
-            <div className="text-xs text-slate-500 mt-0.5">{visit.preferredTime || "Time not specified"}</div>
+            <div className="text-xs text-slate-500 mt-0.5">{visit.preferredTime || t('time_not_specified')}</div>
           </div>
         );
       }
@@ -280,7 +280,7 @@ function SiteVisitsContent() {
       }
     },
     {
-      header: "Project",
+      header: t('project'),
       key: "project",
       render: (visit: SiteVisit) => {
         const project = visit.projectId ? projectCache[visit.projectId] : null;
@@ -346,8 +346,8 @@ function SiteVisitsContent() {
   return (
     <div className="space-y-6 pb-8">
       <PageHeader
-        title="Site Visits"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Site Visits" }]}
+        title={t('site_visits')}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('site_visits') }]}
       />
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -355,7 +355,7 @@ function SiteVisitsContent() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by customer ID..."
+            placeholder={t('search_by_customer_id')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
@@ -392,8 +392,8 @@ function SiteVisitsContent() {
             emptyState={
               <EmptyState
                 icon={<CalendarCheck className="h-12 w-12 text-slate-300" />}
-                title="No Site Visits"
-                description="There are no site visits matching your criteria."
+                title={t('no_site_visits')}
+                description={t('no_site_visits_desc')}
               />
             }
           />
@@ -409,7 +409,7 @@ function SiteVisitsContent() {
           maxWidth="lg"
           footer={
             <Button variant="secondary" onClick={() => setSelectedVisit(null)}>
-              Close
+              {t('close')}
             </Button>
           }
         >
@@ -419,7 +419,7 @@ function SiteVisitsContent() {
                 <p className="text-xs font-semibold text-slate-500 uppercase">{t('customer_name')}</p>
                 <p className="text-sm font-bold text-slate-900 mt-1">
                   {selectedUser ? selectedUser.fullName : (
-                    <span className="italic text-slate-400">Loading...</span>
+                    <span className="italic text-slate-400">{t('loading_ellipsis')}</span>
                   )}
                 </p>
               </div>
@@ -438,17 +438,17 @@ function SiteVisitsContent() {
             <div className="bg-purple-50/50 p-4 rounded-xl border border-purple-100 grid grid-cols-2 gap-4">
               <div>
                 <p className="text-xs font-semibold text-purple-600 uppercase">{t('preferred_date')}</p>
-                <p className="text-sm font-bold text-purple-900 mt-1">{selectedVisit.preferredDate || 'Not provided'}</p>
+                <p className="text-sm font-bold text-purple-900 mt-1">{selectedVisit.preferredDate || t('not_provided')}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold text-purple-600 uppercase">{t('preferred_time')}</p>
-                <p className="text-sm font-bold text-purple-900 mt-1">{selectedVisit.preferredTime || 'Not provided'}</p>
+                <p className="text-sm font-bold text-purple-900 mt-1">{selectedVisit.preferredTime || t('not_provided')}</p>
               </div>
             </div>
 
             {selectedVisit.projectId && (
               <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                <p className="text-xs font-semibold text-blue-600 uppercase">Interested Project</p>
+                <p className="text-xs font-semibold text-blue-600 uppercase">{t('interested_project')}</p>
                 <p className="text-sm font-bold text-blue-900 mt-1">
                   {projectName || selectedVisit.projectId}
                 </p>
@@ -458,7 +458,7 @@ function SiteVisitsContent() {
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{t('message')}</p>
               <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-sm text-slate-700 leading-relaxed">
-                {selectedVisit.message || "No message provided."}
+                {selectedVisit.message || t('no_message_provided')}
               </div>
             </div>
 

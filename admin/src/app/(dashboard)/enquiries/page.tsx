@@ -187,10 +187,10 @@ function EnquiriesContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
-      toast.success(`Enquiry status updated successfully.`);
+      toast.success(t('enquiry_status_updated'));
       setEnquiries(enquiries.map((e: Enquiry) => e.id === id ? { ...e, status: newStatus } : e));
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error(t('failed_update_enquiry_status'));
     } finally {
       setStatusLoading(null);
     }
@@ -204,11 +204,11 @@ function EnquiriesContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
-      toast.success(`Enquiry status updated successfully.`);
+      toast.success(t('enquiry_status_updated'));
       setSelectedEnquiry({ ...selectedEnquiry, status: newStatus });
       setEnquiries(enquiries.map((e: Enquiry) => e.id === selectedEnquiry.id ? { ...e, status: newStatus } : e));
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error(t('failed_update_enquiry_status'));
     } finally {
       setUpdating(false);
     }
@@ -243,7 +243,7 @@ function EnquiriesContent() {
             </div>
             <div>
               <div className="font-bold text-slate-900">
-                {user ? user.fullName : <span className="text-slate-400 italic text-xs">Loading...</span>}
+                {user ? user.fullName : <span className="text-slate-400 italic text-xs">{t('loading_ellipsis')}</span>}
               </div>
               {user?.email && <div className="text-xs text-slate-500 mt-0.5">{user.email}</div>}
             </div>
@@ -264,7 +264,7 @@ function EnquiriesContent() {
       }
     },
     {
-      header: "Project",
+      header: t('project'),
       key: "project",
       render: (enq: Enquiry) => {
         const project = enq.projectId ? projectCache[enq.projectId] : null;
@@ -277,7 +277,7 @@ function EnquiriesContent() {
             ) : enq.projectId ? (
               <span className="font-bold text-blue-900">{enq.projectId}</span>
             ) : enq.plotId ? (
-              <span className="font-bold text-slate-700">Plot: {enq.plotId}</span>
+              <span className="font-bold text-slate-700">{t('plot_id')}: {enq.plotId}</span>
             ) : (
               <span className="text-slate-400">—</span>
             )}
@@ -300,7 +300,7 @@ function EnquiriesContent() {
             >
               <option value="NEW">{t('new_status')}</option>
               <option value="CONTACTED">{t('contacted')}</option>
-              <option value="FOLLOW_UP">Follow Up</option>
+              <option value="FOLLOW_UP">{t('follow_up')}</option>
               <option value="IN_PROGRESS">{t('in_progress')}</option>
               <option value="RESOLVED">{t('resolved')}</option>
               <option value="CLOSED">{t('closed')}</option>
@@ -330,8 +330,8 @@ function EnquiriesContent() {
   return (
     <div className="space-y-6 pb-8">
       <PageHeader
-        title="Customer Enquiries"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Enquiries" }]}
+        title={t('customer_enquiries')}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('enquiries') }]}
       />
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -339,7 +339,7 @@ function EnquiriesContent() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by customer ID..."
+            placeholder={t('search_by_customer_id')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
@@ -354,7 +354,7 @@ function EnquiriesContent() {
             <option value="ALL">{t('all_statuses')}</option>
             <option value="NEW">{t('new_status')}</option>
             <option value="CONTACTED">{t('contacted')}</option>
-            <option value="FOLLOW_UP">Follow Up</option>
+            <option value="FOLLOW_UP">{t('follow_up')}</option>
             <option value="IN_PROGRESS">{t('in_progress')}</option>
             <option value="RESOLVED">{t('resolved')}</option>
             <option value="CLOSED">{t('closed')}</option>
@@ -378,8 +378,8 @@ function EnquiriesContent() {
             emptyState={
               <EmptyState
                 icon={<PhoneIncoming className="h-12 w-12 text-slate-300" />}
-                title="No Enquiries"
-                description="There are no customer enquiries matching your criteria."
+                title={t('no_enquiries')}
+                description={t('no_enquiries_desc')}
               />
             }
           />
@@ -395,7 +395,7 @@ function EnquiriesContent() {
           maxWidth="lg"
           footer={
             <Button variant="secondary" onClick={() => setSelectedEnquiry(null)}>
-              Close
+              {t('close')}
             </Button>
           }
         >
@@ -406,7 +406,7 @@ function EnquiriesContent() {
                 <p className="text-xs font-semibold text-slate-500 uppercase">{t('customer_name')}</p>
                 <p className="text-sm font-bold text-slate-900 mt-1">
                   {selectedUser ? selectedUser.fullName : (
-                    <span className="italic text-slate-400">Loading...</span>
+                    <span className="italic text-slate-400">{t('loading_ellipsis')}</span>
                   )}
                 </p>
               </div>
@@ -428,7 +428,7 @@ function EnquiriesContent() {
               <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 grid grid-cols-2 gap-4">
                 {selectedEnquiry.projectId && (
                   <div>
-                    <p className="text-xs font-semibold text-blue-600 uppercase">Project</p>
+                    <p className="text-xs font-semibold text-blue-600 uppercase">{t('project')}</p>
                     <p className="text-sm font-bold text-blue-900 mt-1">
                       {projectName || selectedEnquiry.projectId}
                     </p>
@@ -436,19 +436,19 @@ function EnquiriesContent() {
                 )}
                 {selectedEnquiry.plotId && (
                   <div>
-                    <p className="text-xs font-semibold text-blue-600 uppercase">Plot ID</p>
+                    <p className="text-xs font-semibold text-blue-600 uppercase">{t('plot_id')}</p>
                     <p className="text-sm font-bold text-blue-900 mt-1">{selectedEnquiry.plotId}</p>
                   </div>
                 )}
                 {selectedEnquiry.plotRequirement && (
                   <div className="col-span-2 sm:col-span-1">
-                    <p className="text-xs font-semibold text-blue-600 uppercase">Plot Requirement</p>
+                    <p className="text-xs font-semibold text-blue-600 uppercase">{t('plot_requirement')}</p>
                     <p className="text-sm font-bold text-blue-900 mt-1">{selectedEnquiry.plotRequirement}</p>
                   </div>
                 )}
                 {selectedEnquiry.budget && (
                   <div className="col-span-2 sm:col-span-1">
-                    <p className="text-xs font-semibold text-blue-600 uppercase">Budget</p>
+                    <p className="text-xs font-semibold text-blue-600 uppercase">{t('budget')}</p>
                     <p className="text-sm font-bold text-blue-900 mt-1">{selectedEnquiry.budget}</p>
                   </div>
                 )}
@@ -458,7 +458,7 @@ function EnquiriesContent() {
             <div>
               <p className="text-xs font-semibold text-slate-500 uppercase mb-2">{t('message')}</p>
               <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-sm text-slate-700 leading-relaxed">
-                {selectedEnquiry.message || "No message provided."}
+                {selectedEnquiry.message || t('no_message_provided')}
               </div>
             </div>
 
@@ -468,7 +468,7 @@ function EnquiriesContent() {
                 options={[
                   { value: 'NEW', label: t('new_status') },
                   { value: 'CONTACTED', label: t('contacted') },
-                  { value: 'FOLLOW_UP', label: 'Follow Up' },
+                  { value: 'FOLLOW_UP', label: t('follow_up') },
                   { value: 'IN_PROGRESS', label: t('in_progress') },
                   { value: 'RESOLVED', label: t('resolved') },
                   { value: 'CLOSED', label: t('closed') },

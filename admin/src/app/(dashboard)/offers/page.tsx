@@ -75,10 +75,10 @@ export default function OffersListPage() {
   async function handleDelete(id: string, title: string) {
     setConfirmModal({
       isOpen: true,
-      title: "Delete Offer",
-      message: `Are you sure you want to delete offer "${title}"?`,
+      title: t('delete_offer'),
+      message: t('delete_offer_confirm', { title }),
       isDanger: true,
-      confirmText: "Delete",
+      confirmText: t('delete'),
       onConfirm: async () => {
         try {
           setDeleteLoading(id);
@@ -86,7 +86,7 @@ export default function OffersListPage() {
           setOffers(offers.filter((o: any) => o.id !== id));
           setConfirmModal(prev => ({ ...prev, isOpen: false }));
         } catch (error: any) {
-          toast.error("Failed to delete offer");
+          toast.error(t('failed_delete_offer'));
         } finally {
           setDeleteLoading(null);
         }
@@ -106,9 +106,9 @@ export default function OffersListPage() {
       await api.put(`/offers/${offerId}`, updatedOffer);
 
       setOffers(offers.map((o: any) => o.id === offerId ? updatedOffer : o));
-      toast.success("Offer status updated successfully");
+      toast.success(t('offer_status_updated'));
     } catch (error) {
-      toast.error("Failed to update offer status");
+      toast.error(t('failed_update_offer_status'));
     } finally {
       setStatusLoading(null);
     }
@@ -144,7 +144,7 @@ export default function OffersListPage() {
       }
     },
     {
-      header: "Discount",
+      header: t('discount'),
       key: "discount",
       render: (offer: any) => {
         if (offer.discountType === 'PERCENTAGE') {
@@ -158,8 +158,8 @@ export default function OffersListPage() {
       key: "validity",
       render: (offer: any) => (
         <div className="text-sm">
-          <div className="text-slate-900">From: {new Date(offer.startDate).toLocaleDateString()}</div>
-          <div className="text-slate-500">To: {new Date(offer.endDate).toLocaleDateString()}</div>
+          <div className="text-slate-900">{t('date_from')} {new Date(offer.startDate).toLocaleDateString()}</div>
+          <div className="text-slate-500">{t('date_to')} {new Date(offer.endDate).toLocaleDateString()}</div>
         </div>
       )
     },
@@ -178,9 +178,9 @@ export default function OffersListPage() {
                 'bg-red-50 text-red-800 border-red-200'
               }`}
           >
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
-            <option value="EXPIRED">Expired</option>
+            <option value="ACTIVE">{t('offer_active')}</option>
+            <option value="INACTIVE">{t('offer_inactive')}</option>
+            <option value="EXPIRED">{t('offer_expired')}</option>
           </select>
         );
       }
@@ -191,13 +191,13 @@ export default function OffersListPage() {
       render: (offer: any) => (
         <div className="flex items-center space-x-2">
           <Link href={`/offers/${offer.id}/edit`}>
-            <button title="Edit Offer" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+            <button title={t('edit_offer')} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
               <Edit2 className="h-4 w-4" />
             </button>
           </Link>
           <button
-            onClick={() => handleDelete(offer.id, offer.title?.en || (typeof offer.title === 'string' ? offer.title : 'Offer'))}
-            title="Delete Offer"
+            onClick={() => handleDelete(offer.id, offer.title?.en || (typeof offer.title === 'string' ? offer.title : t('offer')))}
+            title={t('delete_offer')}
             disabled={deleteLoading === offer.id}
             className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
           >
@@ -212,12 +212,12 @@ export default function OffersListPage() {
     <div className="space-y-6 pb-8">
       <PageHeader
         title={t('offers_management')}
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Offers" }]}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('offers') }]}
         actions={
           user?.role !== 'AGENT' && (
             <Link href="/offers/new">
               <Button icon={<Plus className="h-4 w-4" />}>
-                Add Offer
+                {t('add_offer')}
               </Button>
             </Link>
           )
@@ -230,7 +230,7 @@ export default function OffersListPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search offers by title..."
+            placeholder={t('search_offers_by_title')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
@@ -242,10 +242,10 @@ export default function OffersListPage() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="block w-full pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394A3B8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:0.75rem_0.75rem] bg-[position:right_1rem_center] bg-no-repeat"
           >
-            <option value="ALL">All Offers</option>
-            <option value="ACTIVE">Active</option>
-            <option value="INACTIVE">Inactive</option>
-            <option value="EXPIRED">Expired</option>
+            <option value="ALL">{t('all_offers')}</option>
+            <option value="ACTIVE">{t('offer_active')}</option>
+            <option value="INACTIVE">{t('offer_inactive')}</option>
+            <option value="EXPIRED">{t('offer_expired')}</option>
           </select>
         </div>
       </div>
@@ -266,7 +266,7 @@ export default function OffersListPage() {
             <EmptyState
               icon={<Tag className="h-12 w-12 text-slate-300" />}
               title={t('no_offers_found')}
-              description="Create promotional offers and discounts to display to your customers."
+              description={t('no_offers_desc')}
             />
           }
         />

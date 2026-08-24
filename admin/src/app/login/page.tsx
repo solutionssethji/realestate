@@ -42,7 +42,7 @@ export default function LoginPage() {
 
       if (!adminSnap.exists() && !agentSnap.exists()) {
         await signOut(auth);
-        throw new Error("Access denied. You do not have admin or agent privileges.");
+        throw new Error(t('access_denied_privileges'));
       }
 
       // If agent is disabled, explicitly reject them
@@ -50,7 +50,7 @@ export default function LoginPage() {
         const agentData = agentSnap.data();
         if (agentData.status !== "ACTIVE") {
           await signOut(auth);
-          throw new Error("Your account has been disabled. Please contact the administrator.");
+          throw new Error(t('account_disabled_contact_admin'));
         }
       }
 
@@ -61,15 +61,15 @@ export default function LoginPage() {
       }
 
       // Unverified agents are handled in AuthContext's onAuthStateChanged — nothing to do here
-      toast.success("Login successful!");
+      toast.success(t('login_successful'));
     } catch (err: any) {
-      let friendlyMessage = err.message || "Login failed. Please check your credentials.";
+      let friendlyMessage = err.message || t('login_failed_credentials');
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-        friendlyMessage = "Incorrect email or password. Please try again.";
+        friendlyMessage = t('incorrect_email_password');
       } else if (err.code === 'auth/too-many-requests') {
-        friendlyMessage = "Too many failed attempts. Please try again later.";
+        friendlyMessage = t('too_many_failed_attempts');
       } else if (err.code === 'auth/network-request-failed') {
-        friendlyMessage = "Network error. Please check your internet connection.";
+        friendlyMessage = t('network_error');
       }
       toast.error(friendlyMessage);
       setLoading(false);
@@ -80,12 +80,12 @@ export default function LoginPage() {
     setResendingMail(true);
     try {
       await resendVerificationEmail();
-      toast.success("Verification email sent! Please check your inbox and spam folder.");
+      toast.success(t('verification_email_sent'));
     } catch (error: any) {
       if (error.code === 'auth/too-many-requests') {
-        toast.error("Too many requests. Please wait a few minutes before trying again.");
+        toast.error(t('verification_email_too_many_requests'));
       } else {
-        toast.error(error.message || "Failed to send verification email.");
+        toast.error(error.message || t('verification_email_failed'));
       }
     } finally {
       setResendingMail(false);
@@ -112,10 +112,10 @@ export default function LoginPage() {
               <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-24 w-auto object-contain" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-              Welcome Back
+              {t('welcome_back')}
             </h2>
             <p className="text-slate-500 text-sm mt-1">
-              Sign in to manage your Shubhaytanam Connect portfolio
+              {t('sign_in_to_manage')}
             </p>
           </div>
 
@@ -138,7 +138,7 @@ export default function LoginPage() {
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-sm font-semibold text-slate-700">{t('password')}</label>
                 <Link href="/forgot-password" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
-                  Forgot password?
+                  {t('forgot_password')}
                 </Link>
               </div>
               <div className="relative">
@@ -174,7 +174,7 @@ export default function LoginPage() {
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   <>
-                    Sign In <ArrowRight className="ml-2 h-4 w-4" />
+                    {t('sign_in')} <ArrowRight className="ml-2 h-4 w-4" />
                   </>
                 )}
               </button>
@@ -185,7 +185,7 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-white/60 text-sm">
-            &copy; {new Date().getFullYear()} {t('real_estate')}. All rights reserved.
+            &copy; {new Date().getFullYear()} {t('real_estate')}. {t('all_rights_reserved')}
           </p>
         </div>
       </div>
@@ -193,7 +193,7 @@ export default function LoginPage() {
       <Modal
         isOpen={!!unverifiedFirebaseUser}
         onClose={clearUnverifiedFirebaseUser}
-        title="Email Verification Required"
+        title={t('email_verification_required')}
         maxWidth="md"
         footer={
           <div className="flex justify-end gap-3 w-full">
@@ -201,7 +201,7 @@ export default function LoginPage() {
               onClick={clearUnverifiedFirebaseUser}
               className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               onClick={handleResendVerification}
@@ -209,7 +209,7 @@ export default function LoginPage() {
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2 disabled:opacity-50"
             >
               {resendingMail ? <Loader2 className="w-4 h-4 animate-spin" /> : <MailWarning className="w-4 h-4" />}
-              Send Verification Mail
+              {t('send_verification_mail')}
             </button>
           </div>
         }
@@ -219,12 +219,12 @@ export default function LoginPage() {
             <MailWarning className="w-8 h-8" />
           </div>
           <p className="text-center mb-4 text-slate-800 font-semibold text-lg">
-            Your account is not verified yet.
+            {t('account_not_verified')}
           </p>
           <p className="text-center text-sm">
-            For security reasons, agents must verify their email address before accessing the dashboard.
+            {t('agent_verification_reason')}
             <br /><br />
-            Please check your inbox (and spam folder) for a verification link, or click below to receive a new one. Once verified, you can log in.
+            {t('check_inbox_verification')}
           </p>
         </div>
       </Modal>

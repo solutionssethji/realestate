@@ -8,8 +8,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function NotificationBell() {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
@@ -37,7 +39,7 @@ export default function NotificationBell() {
       if (pathnameRef.current !== '/notifications') {
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
-            toast.success("New notification received!", {
+            toast.success(t('new_notification_received'), {
               position: 'top-right',
               duration: 4000,
             });

@@ -12,6 +12,7 @@ import { ShimmerTable } from "@/components/ui/Shimmer";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDateTime } from "@/lib/formatters";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 type User = {
   id: string;
@@ -23,6 +24,7 @@ type User = {
 };
 
 function UsersContent() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [statusLoading, setStatusLoading] = useState<string | null>(null);
@@ -55,10 +57,10 @@ function UsersContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
-      toast.success(`User status updated to ${newStatus}`);
+      toast.success(t('user_status_updated', { status: newStatus }));
       setUsers(users.map((u: User) => u.id === user.id ? { ...u, status: newStatus } : u));
     } catch (error) {
-      toast.error("Failed to update user status");
+      toast.error(t('failed_update_user_status'));
     } finally {
       setStatusLoading(null);
     }
@@ -66,7 +68,7 @@ function UsersContent() {
 
   const columns = [
     {
-      header: "Joined Date",
+      header: t('joined_date'),
       key: "createdAt",
       render: (u: User) => {
         if (!u.createdAt) return <span>N/A</span>;
@@ -81,24 +83,24 @@ function UsersContent() {
       }
     },
     {
-      header: "Customer",
+      header: t('customer'),
       key: "fullName",
       render: (u: User) => (
         <div>
-          <div className="font-bold text-slate-900">{u.fullName || 'Unknown'}</div>
+          <div className="font-bold text-slate-900">{u.fullName || t('unknown_user')}</div>
           {u.email && <div className="text-xs text-slate-500 mt-0.5">{u.email}</div>}
         </div>
       )
     },
     {
-      header: "Mobile",
+      header: t('mobile'),
       key: "mobileNumber",
       render: (u: User) => (
         <span className="font-medium text-slate-700">{u.mobileNumber}</span>
       )
     },
     {
-      header: "Status",
+      header: t('status'),
       key: "status",
       render: (u: User) => (
         <div className="relative inline-block">
@@ -111,9 +113,9 @@ function UsersContent() {
                   'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
               } ${statusLoading === u.id ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            <option value="ACTIVE">Active</option>
-            <option value="BLOCKED">Blocked</option>
-            <option value="DELETED">Deleted</option>
+            <option value="ACTIVE">{t('active')}</option>
+            <option value="BLOCKED">{t('blocked')}</option>
+            <option value="DELETED">{t('deleted')}</option>
           </select>
           <div className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2">
             {statusLoading === u.id
@@ -125,7 +127,7 @@ function UsersContent() {
       )
     },
     {
-      header: "Actions",
+      header: t('actions'),
       key: "actions",
       render: (u: User) => (
         <Link
@@ -133,7 +135,7 @@ function UsersContent() {
           className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-semibold rounded-lg hover:bg-blue-100 transition-colors"
         >
           <Eye className="h-3.5 w-3.5" />
-          View Profile
+          {t('view_profile')}
         </Link>
       )
     }
@@ -142,8 +144,8 @@ function UsersContent() {
   return (
     <div className="space-y-6 pb-8">
       <PageHeader
-        title="Users Management"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Users" }]}
+        title={t('users_management')}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('users') }]}
       />
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -151,7 +153,7 @@ function UsersContent() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search by name..."
+            placeholder={t('search_by_name')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
@@ -163,9 +165,9 @@ function UsersContent() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="block w-full pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394A3B8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:0.75rem_0.75rem] bg-[position:right_1rem_center] bg-no-repeat"
           >
-            <option value="ALL">All Users</option>
-            <option value="ACTIVE">Active</option>
-            <option value="BLOCKED">Blocked</option>
+            <option value="ALL">{t('all_users')}</option>
+            <option value="ACTIVE">{t('active')}</option>
+            <option value="BLOCKED">{t('blocked')}</option>
           </select>
         </div>
       </div>
@@ -186,8 +188,8 @@ function UsersContent() {
             emptyState={
               <EmptyState
                 icon={<Users className="h-12 w-12 text-slate-300" />}
-                title="No Users"
-                description="There are no users matching your criteria."
+                title={t('no_users')}
+                description={t('no_users_desc')}
               />
             }
           />

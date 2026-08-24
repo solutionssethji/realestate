@@ -82,10 +82,10 @@ export default function PlotsListPage() {
   async function handleDelete(id: string, plotNumber: string) {
     setConfirmModal({
       isOpen: true,
-      title: "Delete Plot",
-      message: `Are you sure you want to delete plot "${plotNumber}"?`,
+      title: t('delete_plot'),
+      message: t('delete_plot_confirm', { plotNumber }),
       isDanger: true,
-      confirmText: "Delete",
+      confirmText: t('delete'),
       onConfirm: async () => {
         try {
           setDeleteLoading(id);
@@ -93,7 +93,7 @@ export default function PlotsListPage() {
           setPlots(plots.filter((p: any) => p.id !== id));
           setConfirmModal(prev => ({ ...prev, isOpen: false }));
         } catch (error: any) {
-          toast.error(error.response?.data?.message || "Failed to delete plot");
+          toast.error(error.response?.data?.message || t('failed_delete_plot'));
         } finally {
           setDeleteLoading(null);
         }
@@ -110,10 +110,10 @@ export default function PlotsListPage() {
 
     setConfirmModal({
       isOpen: true,
-      title: "Change Status",
-      message: `Change status to ${newStatus.replace('_', ' ')}?`,
+      title: t('change_status'),
+      message: t('change_status_confirm', { status: newStatus.replace('_', ' ') }),
       isDanger: false,
-      confirmText: "Confirm",
+      confirmText: t('confirm'),
       onConfirm: async () => {
         try {
           setStatusLoading(id);
@@ -121,7 +121,7 @@ export default function PlotsListPage() {
           setPlots(plots.map((p: any) => p.id === id ? { ...p, status: newStatus } : p) as any);
           setConfirmModal(prev => ({ ...prev, isOpen: false }));
         } catch (error: any) {
-          toast.error(error.response?.data?.message || "Failed to update status");
+          toast.error(error.response?.data?.message || t('failed_update_status'));
         } finally {
           setStatusLoading(null);
         }
@@ -135,11 +135,11 @@ export default function PlotsListPage() {
       const newStatus = !isCurrentlyActive;
 
       setPlots(plots.map(p => p.id === plot.id ? { ...p, isActive: newStatus } : p) as any);
-      await api.put(`/plots/${plot.id}`, { ...plot, isActive: newStatus });
-      toast.success(newStatus ? "Plot enabled successfully" : "Plot disabled successfully");
+      await api.put(`/plots/${plot.id}`, { ...project, isActive: newStatus });
+      toast.success(newStatus ? t('plot_enabled_success') : t('plot_disabled_success'));
     } catch (error: any) {
       setPlots(plots.map(p => p.id === plot.id ? { ...p, isActive: plot.isActive } : p) as any);
-      toast.error("Failed to update plot visibility");
+      toast.error(t('failed_update_plot_visibility'));
     }
   }
   const handlePlotAssigned = (plotId: string, assignedUserId: string) => {
@@ -161,7 +161,7 @@ export default function PlotsListPage() {
       key: "project",
       render: (plot: any) => {
         const project = projects.find((p: any) => p.id === plot.projectId);
-        return <span className="font-medium text-slate-600">{project?.name?.en || (typeof project?.name === 'string' ? project.name : 'Unknown')}</span>;
+        return <span className="font-medium text-slate-600">{project?.name?.en || (typeof project?.name === 'string' ? project.name : t('unknown'))}</span>;
       }
     },
     {
@@ -175,13 +175,13 @@ export default function PlotsListPage() {
       )
     },
     {
-      header: "Specifications",
+      header: t('specifications'),
       key: "specs",
       render: (plot: any) => (
         <div className="text-xs text-slate-500 space-y-0.5">
-          <div><span className="font-medium text-slate-700">Dim:</span> {plot.dimensions || 'N/A'}</div>
-          <div><span className="font-medium text-slate-700">Facing:</span> {plot.facing?.en || (typeof plot.facing === 'string' ? plot.facing : 'N/A')}</div>
-          <div><span className="font-medium text-slate-700">Road:</span> {plot.road?.en || (typeof plot.road === 'string' ? plot.road : 'N/A')}</div>
+          <div><span className="font-medium text-slate-700">{t('dimensions_short')}</span> {plot.dimensions || 'N/A'}</div>
+          <div><span className="font-medium text-slate-700">{t('facing_short')}</span> {plot.facing?.en || (typeof plot.facing === 'string' ? plot.facing : 'N/A')}</div>
+          <div><span className="font-medium text-slate-700">{t('road_short')}</span> {plot.road?.en || (typeof plot.road === 'string' ? plot.road : 'N/A')}</div>
         </div>
       )
     },
@@ -207,9 +207,9 @@ export default function PlotsListPage() {
                 }
               `}
             >
-              <option value="AVAILABLE" className="bg-white text-slate-900">🟢 Available</option>
-              <option value="HOLD" className="bg-white text-slate-900">🟡 Hold</option>
-              <option value="BOOKED_SOLD" className="bg-white text-slate-900">🔴 Booked/Sold</option>
+              <option value="AVAILABLE" className="bg-white text-slate-900">{t('status_available')}</option>
+              <option value="HOLD" className="bg-white text-slate-900">{t('status_hold')}</option>
+              <option value="BOOKED_SOLD" className="bg-white text-slate-900">{t('status_booked_sold')}</option>
             </select>
           )}
         </div>
@@ -224,20 +224,20 @@ export default function PlotsListPage() {
             !plot.assignedUserId ? (
               <button
                 onClick={() => setAssignDialog({ isOpen: true, plot })}
-                title="Assign Plot"
+                title={t('assign_plot')}
                 className="flex items-center space-x-1 px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors"
               >
                 <UserPlus className="h-4 w-4" />
-                <span>Assign</span>
+                <span>{t('assign')}</span>
               </button>
             ) : (
-              <span className="text-xs text-slate-400 font-medium italic">No actions available</span>
+              <span className="text-xs text-slate-400 font-medium italic">{t('no_actions_available')}</span>
             )
           ) : (
             <>
               <button
                 onClick={() => handleToggleVisibility(plot)}
-                title={plot.isActive === false ? "Enable Plot" : "Disable Plot"}
+                title={plot.isActive === false ? t('enable_plot') : t('disable_plot')}
                 className={`p-2 rounded-lg transition-colors ${plot.isActive === false
                   ? "text-slate-400 hover:text-green-600 hover:bg-green-50"
                   : "text-blue-600 hover:text-orange-600 hover:bg-orange-50 bg-blue-50"
@@ -246,13 +246,13 @@ export default function PlotsListPage() {
                 {plot.isActive === false ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
               <Link href={`/plots/${plot.id}/edit`}>
-                <button title="Edit Plot" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                <button title={t('edit_plot')} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                   <Edit2 className="h-4 w-4" />
                 </button>
               </Link>
               <button
                 onClick={() => handleDelete(plot.id, plot.plotNumber)}
-                title="Delete Plot"
+                title={t('delete_plot')}
                 disabled={deleteLoading === plot.id}
                 className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
               >
@@ -269,12 +269,12 @@ export default function PlotsListPage() {
     <div className="space-y-6 pb-8">
       <PageHeader
         title={t('plots_management')}
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Plots" }]}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('plots') }]}
         actions={
           user?.role !== 'AGENT' && (
             <Link href="/plots/new">
               <Button icon={<Plus className="h-4 w-4" />}>
-                Add Plot
+                {t('add_plot')}
               </Button>
             </Link>
           )
@@ -287,7 +287,7 @@ export default function PlotsListPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search plots by number..."
+            placeholder={t('search_plots_by_number')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
@@ -299,10 +299,10 @@ export default function PlotsListPage() {
             onChange={(e) => setSelectedStatus(e.target.value)}
             className="block w-full pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394A3B8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:0.75rem_0.75rem] bg-[position:right_1rem_center] bg-no-repeat"
           >
-            <option value="">All Statuses</option>
-            <option value="AVAILABLE">Available</option>
-            <option value="HOLD">Hold</option>
-            <option value="BOOKED_SOLD">Booked/Sold</option>
+            <option value="">{t('all_statuses')}</option>
+            <option value="AVAILABLE">{t('available')}</option>
+            <option value="HOLD">{t('hold')}</option>
+            <option value="BOOKED_SOLD">{t('booked_sold')}</option>
           </select>
         </div>
         <div className="w-full sm:w-64">
@@ -313,7 +313,7 @@ export default function PlotsListPage() {
           >
             <option value="">{t('all_projects')}</option>
             {projects.map((proj: any) => (
-              <option key={proj.id} value={proj.id}>{proj.name?.en || (typeof proj.name === 'string' ? proj.name : 'Unknown')}</option>
+              <option key={proj.id} value={proj.id}>{proj.name?.en || (typeof proj.name === 'string' ? proj.name : t('unknown'))}</option>
             ))}
           </select>
         </div>
@@ -335,7 +335,7 @@ export default function PlotsListPage() {
             <EmptyState
               icon={<MapIcon className="h-12 w-12 text-slate-300" />}
               title={t('no_plots_found')}
-              description="No plots match your current filters. Add a new plot or change your search."
+              description={t('no_plots_desc')}
             />
           }
         />

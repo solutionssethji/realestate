@@ -12,32 +12,34 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Modal } from "@/components/ui/Modal";
 
-const getNavItems = (role?: string) => {
+const getNavItems = (role?: string, t?: (key: string) => string) => {
+  const translate = (key: string, fallback: string) => t ? t(key) : fallback;
+
   if (role === 'AGENT') {
     return [
-      { name: "Projects", href: "/projects", icon: Building2 },
-      { name: "Plots", href: "/plots", icon: Map },
-      { name: "Offers", href: "/offers", icon: Tag },
-      { name: "Profile", href: "/profile", icon: UserIcon },
-      { name: "Change Password", href: "/change-password", icon: Lock },
+      { name: translate("projects", "Projects"), href: "/projects", icon: Building2 },
+      { name: translate("plots", "Plots"), href: "/plots", icon: Map },
+      { name: translate("offers", "Offers"), href: "/offers", icon: Tag },
+      { name: translate("profile", "Profile"), href: "/profile", icon: UserIcon },
+      { name: translate("change_password", "Change Password"), href: "/change-password", icon: Lock },
     ];
   }
 
   return [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Projects", href: "/projects", icon: Building2 },
-    { name: "Plots", href: "/plots", icon: Map },
-    { name: "Offers", href: "/offers", icon: Tag },
-    { name: "Bookings", href: "/bookings", icon: Bookmark },
-    { name: "Agents", href: "/agents", icon: Briefcase },
-    { name: "Enquiries", href: "/enquiries", icon: PhoneIncoming },
-    { name: "Site Visits", href: "/site-visits", icon: CalendarCheck },
-    { name: "Transactions", href: "/transactions", icon: CreditCard },
-    { name: "Users", href: "/users", icon: Users },
-    { name: "Notifications", href: "/notifications", icon: Bell },
-    { name: "FAQs", href: "/faq", icon: HelpCircle },
-    { name: "Settings", href: "/settings", icon: Settings },
-    { name: "Profile", href: "/profile", icon: UserIcon },
+    { name: translate("dashboard", "Dashboard"), href: "/dashboard", icon: LayoutDashboard },
+    { name: translate("projects", "Projects"), href: "/projects", icon: Building2 },
+    { name: translate("plots", "Plots"), href: "/plots", icon: Map },
+    { name: translate("offers", "Offers"), href: "/offers", icon: Tag },
+    { name: translate("bookings", "Bookings"), href: "/bookings", icon: Bookmark },
+    { name: translate("agents", "Agents"), href: "/agents", icon: Briefcase },
+    { name: translate("enquiries", "Enquiries"), href: "/enquiries", icon: PhoneIncoming },
+    { name: translate("site_visits", "Site Visits"), href: "/site-visits", icon: CalendarCheck },
+    { name: translate("transactions", "Transactions"), href: "/transactions", icon: CreditCard },
+    { name: translate("users", "Users"), href: "/users", icon: Users },
+    { name: translate("notifications", "Notifications"), href: "/notifications", icon: Bell },
+    { name: translate("faq", "FAQs"), href: "/faq", icon: HelpCircle },
+    { name: translate("settings", "Settings"), href: "/settings", icon: Settings },
+    { name: translate("profile", "Profile"), href: "/profile", icon: UserIcon },
   ];
 };
 
@@ -83,9 +85,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <nav className="p-4 space-y-1.5 h-[calc(100vh-7rem)] overflow-y-auto scrollbar-hide">
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 mt-2 px-3">
-            Overview
+            {t('overview')}
           </div>
-          {getNavItems(user?.role).map((item) => {
+          {getNavItems(user?.role, t).map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
             return (
@@ -126,8 +128,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="h-8 w-px bg-slate-200"></div>
             <div className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="hidden sm:flex flex-col items-end">
-                <span className="text-sm font-semibold text-slate-900">{user?.name || 'Admin'}</span>
-                <span className="text-xs font-medium text-slate-500">{user?.role || 'Administrator'}</span>
+                <span className="text-sm font-semibold text-slate-900">{user?.name || t('administrator')}</span>
+                <span className="text-xs font-medium text-slate-500">{user?.role ? (user.role.toUpperCase() === 'ADMIN' ? t('administrator') : t('agent')) : t('administrator')}</span>
               </div>
               <div className="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
                 {user?.photoURL ? (
@@ -140,7 +142,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <button
               onClick={() => setShowLogoutModal(true)}
               className="p-2.5 text-slate-400 hover:text-red-500 rounded-full hover:bg-red-50 transition-all duration-200"
-              title="Logout"
+              title={t('logout')}
             >
               <LogOut className="h-5 w-5" />
             </button>
@@ -155,7 +157,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Modal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
-        title="Confirm Logout"
+        title={t('confirm_logout')}
         maxWidth="sm"
         footer={
           <div className="flex justify-end gap-3 w-full">
@@ -163,7 +165,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               onClick={() => setShowLogoutModal(false)}
               className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
             >
-              No, Cancel
+              {t('no_cancel')}
             </button>
             <button
               onClick={() => {
@@ -172,13 +174,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               }}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
             >
-              Yes, Logout
+              {t('yes_logout')}
             </button>
           </div>
         }
       >
         <div className="py-4 text-slate-600">
-          Are you sure you want to log out of your account?
+          {t('are_you_sure_logout')}
         </div>
       </Modal>
     </div>

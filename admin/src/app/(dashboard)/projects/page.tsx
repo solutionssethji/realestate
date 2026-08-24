@@ -66,10 +66,10 @@ export default function ProjectsListPage() {
   async function handleDelete(id: string, name: string) {
     setConfirmModal({
       isOpen: true,
-      title: "Delete Project",
-      message: `Are you sure you want to delete project "${name}"? This action cannot be undone.`,
+      title: t('delete_project'),
+      message: t('delete_project_confirm', { name }),
       isDanger: true,
-      confirmText: "Delete",
+      confirmText: t('delete'),
       onConfirm: async () => {
         try {
           setDeleteLoading(id);
@@ -77,7 +77,7 @@ export default function ProjectsListPage() {
           setProjects(projects.filter((p: any) => p.id !== id));
           setConfirmModal(prev => ({ ...prev, isOpen: false }));
         } catch (error: any) {
-          toast.error(error.response?.data?.message || "Failed to delete project");
+          toast.error(error.response?.data?.message || t('failed_delete_project'));
         } finally {
           setDeleteLoading(null);
         }
@@ -92,10 +92,10 @@ export default function ProjectsListPage() {
 
       setProjects(projects.map(p => p.id === project.id ? { ...p, isActive: newStatus } : p));
       await api.put(`/projects/${project.id}`, { ...project, isActive: newStatus });
-      toast.success(newStatus ? "Project enabled successfully" : "Project disabled successfully");
+      toast.success(newStatus ? t('project_enabled_success') : t('project_disabled_success'));
     } catch (error: any) {
       setProjects(projects.map(p => p.id === project.id ? { ...p, isActive: project.isActive } : p));
-      toast.error("Failed to update project visibility");
+      toast.error(t('failed_update_project_visibility'));
     }
   }
 
@@ -119,9 +119,9 @@ export default function ProjectsListPage() {
       await api.put(`/projects/${projectId}`, updatedProject);
 
       setProjects(projects.map(p => p.id === projectId ? updatedProject : p));
-      toast.success("Project status updated successfully");
+      toast.success(t('project_status_updated_success'));
     } catch (error) {
-      toast.error("Failed to update project status");
+      toast.error(t('failed_update_project_status'));
     } finally {
       setStatusLoading(null);
     }
@@ -144,9 +144,9 @@ export default function ProjectsListPage() {
           )}
           <div className="ml-4">
             <div className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              {project.name?.en || (typeof project.name === 'string' ? project.name : 'Project')}
+              {project.name?.en || (typeof project.name === 'string' ? project.name : t('project'))}
             </div>
-            <div className="text-xs text-slate-500 mt-0.5">{project.plotPrice?.en || (typeof project.plotPrice === 'string' ? project.plotPrice : 'Price unlisted')}</div>
+            <div className="text-xs text-slate-500 mt-0.5">{project.plotPrice?.en || (typeof project.plotPrice === 'string' ? project.plotPrice : t('price_unlisted'))}</div>
           </div>
         </div>
       )
@@ -157,12 +157,12 @@ export default function ProjectsListPage() {
       render: (project: any) => (
         <div className="flex items-center text-sm font-medium text-slate-700">
           <MapPin className="h-4 w-4 mr-1.5 text-slate-400" />
-          {project.location?.en || (typeof project.location === 'string' ? project.location : 'Location')}
+          {project.location?.en || (typeof project.location === 'string' ? project.location : t('location'))}
         </div>
       )
     },
     {
-      header: "Available Plots",
+      header: t('available_plots'),
       key: "availablePlots",
       render: (project: any) => (
         <div className="text-sm font-medium text-slate-700">
@@ -182,9 +182,9 @@ export default function ProjectsListPage() {
             disabled={statusLoading === project.id || user?.role === 'AGENT'}
             className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-800 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
           >
-            <option value="Upcoming">Upcoming</option>
-            <option value="Ongoing">Ongoing</option>
-            <option value="Completed">Completed</option>
+            <option value="Upcoming">{t('upcoming')}</option>
+            <option value="Ongoing">{t('ongoing')}</option>
+            <option value="Completed">{t('completed')}</option>
           </select>
         );
       }
@@ -196,7 +196,7 @@ export default function ProjectsListPage() {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => handleToggleVisibility(project)}
-            title={project.isActive === false ? "Enable Project" : "Disable Project"}
+            title={project.isActive === false ? t('enable_project') : t('disable_project')}
             className={`p-2 rounded-lg transition-colors ${project.isActive === false
               ? "text-slate-400 hover:text-green-600 hover:bg-green-50"
               : "text-blue-600 hover:text-orange-600 hover:bg-orange-50 bg-blue-50"
@@ -205,13 +205,13 @@ export default function ProjectsListPage() {
             {project.isActive === false ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
           <Link href={`/projects/${project.id}/edit`}>
-            <button title="Edit Project" className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+            <button title={t('edit_project')} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
               <Edit2 className="h-4 w-4" />
             </button>
           </Link>
           <button
-            onClick={() => handleDelete(project.id, project.name?.en || (typeof project.name === 'string' ? project.name : 'Project'))}
-            title="Delete Project"
+            onClick={() => handleDelete(project.id, project.name?.en || (typeof project.name === 'string' ? project.name : t('project')))}
+            title={t('delete_project')}
             disabled={deleteLoading === project.id}
             className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
           >
@@ -226,12 +226,12 @@ export default function ProjectsListPage() {
     <div className="space-y-6 pb-8">
       <PageHeader
         title={t('projects_management')}
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Projects" }]}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('projects') }]}
         actions={
           user?.role !== 'AGENT' && (
             <Link href="/projects/new">
               <Button icon={<Plus className="h-4 w-4" />}>
-                Add Project
+                {t('add_project')}
               </Button>
             </Link>
           )
@@ -244,7 +244,7 @@ export default function ProjectsListPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
           <input
             type="text"
-            placeholder="Search projects by name..."
+            placeholder={t('search_projects_by_name')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
@@ -256,12 +256,12 @@ export default function ProjectsListPage() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="block w-full pl-4 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394A3B8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:0.75rem_0.75rem] bg-[position:right_1rem_center] bg-no-repeat"
           >
-            <option value="ALL">All Projects</option>
-            <option value="ACTIVE">Active Projects</option>
-            <option value="INACTIVE">Hidden/Inactive</option>
-            <option value="UPCOMING">Upcoming</option>
-            <option value="ONGOING">Ongoing</option>
-            <option value="COMPLETED">Completed</option>
+            <option value="ALL">{t('all_projects')}</option>
+            <option value="ACTIVE">{t('active_projects')}</option>
+            <option value="INACTIVE">{t('hidden_inactive_projects')}</option>
+            <option value="UPCOMING">{t('upcoming')}</option>
+            <option value="ONGOING">{t('ongoing')}</option>
+            <option value="COMPLETED">{t('completed')}</option>
           </select>
         </div>
       </div>
@@ -282,7 +282,7 @@ export default function ProjectsListPage() {
             <EmptyState
               icon={<Building2 className="h-12 w-12 text-slate-300" />}
               title={t('no_projects_found')}
-              description="Get started by creating a new project. It will appear here once published."
+              description={t('no_projects_desc')}
             />
           }
         />

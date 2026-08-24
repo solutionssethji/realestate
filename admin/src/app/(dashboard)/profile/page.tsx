@@ -12,8 +12,10 @@ import { Button } from "@/components/ui/Button";
 import getCroppedImg from "@/lib/cropImage";
 import Cropper from "react-easy-crop";
 import { Modal } from "@/components/ui/Modal";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function ProfilePage() {
+  const { t } = useLanguage();
   const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -46,40 +48,40 @@ export default function ProfilePage() {
   const validateField = (name: string, value: string): string => {
     switch (name) {
       case "fullName":
-        return value.trim() ? "" : "Full name is required";
+        return value.trim() ? "" : t('field_required');
       case "mobileNumber":
       case "whatsappNumber": {
         const phoneRegex = /^[0-9]{10}$/;
-        if (!value) return "Number is required";
-        if (!phoneRegex.test(value)) return "Enter a valid 10-digit number";
+        if (!value) return t('number_required');
+        if (!phoneRegex.test(value)) return t('valid_10_digit');
         return "";
       }
       case "panNumber": {
         const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-        if (!value) return "PAN number is required";
-        if (!panRegex.test(value.toUpperCase())) return "Enter a valid PAN (e.g. ABCDE1234F)";
+        if (!value) return t('pan_required');
+        if (!panRegex.test(value.toUpperCase())) return t('valid_pan');
         return "";
       }
       case "aadharNumber": {
         const aadharRegex = /^\d{12}$/;
-        if (!value) return "Aadhaar number is required";
-        if (!aadharRegex.test(value.replace(/\s/g, ""))) return "Enter a valid 12-digit Aadhaar";
+        if (!value) return t('aadhar_required');
+        if (!aadharRegex.test(value.replace(/\s/g, ""))) return t('valid_12_digit_aadhar');
         return "";
       }
       case "ifscCode": {
         const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-        if (!value) return "IFSC code is required";
-        if (!ifscRegex.test(value.toUpperCase())) return "Enter a valid IFSC code";
+        if (!value) return t('ifsc_required');
+        if (!ifscRegex.test(value.toUpperCase())) return t('valid_ifsc');
         return "";
       }
       case "bankAccountNumber": {
         const accRegex = /^\d{9,18}$/;
-        if (!value) return "Account number is required";
-        if (!accRegex.test(value)) return "Enter a valid bank account number";
+        if (!value) return t('account_number_required');
+        if (!accRegex.test(value)) return t('valid_account_number');
         return "";
       }
       case "bankName":
-        return value.trim() ? "" : "Bank name is required";
+        return value.trim() ? "" : t('field_required');
       default:
         return "";
     }
@@ -177,7 +179,7 @@ export default function ProfilePage() {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error("Please fix the validation errors before saving.");
+      toast.error(t('please_fix_validation_errors'));
       return;
     }
 
@@ -216,10 +218,10 @@ export default function ProfilePage() {
           photoURL: updates.photoURL || ""
         });
       }
-      toast.success("Profile updated successfully!");
+      toast.success(t('profile_saved'));
     } catch (error) {
       console.error(error);
-      toast.error("Failed to update profile");
+      toast.error(t('profile_save_failed'));
     } finally {
       setSaving(false);
     }
@@ -237,10 +239,10 @@ export default function ProfilePage() {
       setFormData(prev => ({ ...prev, photoURL: "" }));
       setImagePreview(null);
       if (updateUser) updateUser({ photoURL: "" });
-      toast.success("Profile photo removed!");
+      toast.success(t('photo_removed'));
     } catch (error) {
       console.error(error);
-      toast.error("Failed to remove profile photo");
+      toast.error(t('photo_remove_failed'));
     } finally {
       setSaving(false);
     }
@@ -260,8 +262,8 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
-        title="My Profile"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Profile" }]}
+        title={t('profile_page')}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('profile_page') }]}
       />
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -271,7 +273,7 @@ export default function ProfilePage() {
           <div className="p-6 border-b border-slate-100 bg-slate-50/50">
             <h3 className="text-lg font-semibold text-slate-900 flex items-center">
               <User className="w-5 h-5 mr-2 text-blue-600" />
-              Personal Information
+              {t('personal_information')}
             </h3>
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -290,25 +292,25 @@ export default function ProfilePage() {
                 </label>
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-700">Profile Photo</p>
-                <p className="text-xs text-slate-500 mt-1">JPG or PNG (Max 5MB)</p>
+                <p className="text-sm font-medium text-slate-700">{t('profile_photo')}</p>
+                <p className="text-xs text-slate-500 mt-1">{t('jpg_png_gif_max')}</p>
                 {profileImage && (
                   <button type="button" onClick={() => { setProfileImage(null); setImagePreview(formData.photoURL || null); }}
                     className="mt-1 text-xs text-red-500 hover:text-red-700 font-medium">
-                    Remove new photo
+                    {t('remove')}
                   </button>
                 )}
                 {!profileImage && formData.photoURL && (
                   <button type="button" onClick={removeProfilePhoto} disabled={saving}
                     className="mt-1 text-xs text-red-500 hover:text-red-700 font-medium disabled:opacity-50">
-                    Remove profile photo
+                    {t('remove_profile_photo')}
                   </button>
                 )}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5">Full Name *</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('full_name')} *</label>
               <input name="fullName" value={formData.fullName} onChange={handleChange} onBlur={handleBlur} required className={inputCls("fullName")} />
               {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
             </div>
@@ -316,13 +318,13 @@ export default function ProfilePage() {
             {user?.role?.toUpperCase() !== "ADMIN" && (
               <>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Mobile Number *</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('mobile_number_label')} *</label>
                   <input name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} className={inputCls("mobileNumber")} placeholder="10-digit number" />
                   {errors.mobileNumber && <p className="text-red-500 text-xs mt-1">{errors.mobileNumber}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">WhatsApp Number *</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('whatsapp_number_label')} *</label>
                   <input name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} className={inputCls("whatsappNumber")} placeholder="10-digit number" />
                   {errors.whatsappNumber && <p className="text-red-500 text-xs mt-1">{errors.whatsappNumber}</p>}
                 </div>
@@ -338,11 +340,11 @@ export default function ProfilePage() {
               <div className="p-6 border-b border-slate-100 bg-slate-50/50">
                 <h3 className="text-lg font-semibold text-slate-900 flex items-center">
                   <Briefcase className="w-5 h-5 mr-2 text-blue-600" />
-                  Agency / Firm Details
+                  {t('agency_firm_details')}
                 </h3>
               </div>
               <div className="p-6">
-                <label className="block text-sm font-semibold text-slate-700 mb-1.5">Firm / Company Name (Optional)</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('firm_company_name_optional')}</label>
                 <input name="firmName" value={formData.firmName} onChange={handleChange} className={inputCls("firmName")} />
               </div>
             </div>
@@ -352,17 +354,17 @@ export default function ProfilePage() {
               <div className="p-6 border-b border-slate-100 bg-slate-50/50">
                 <h3 className="text-lg font-semibold text-slate-900 flex items-center">
                   <FileText className="w-5 h-5 mr-2 text-blue-600" />
-                  KYC Documents
+                  {t('kyc_documents')}
                 </h3>
               </div>
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">PAN Card Number *</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('pan_card_number_label')} *</label>
                   <input name="panNumber" value={formData.panNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} placeholder="ABCDE1234F" className={`${inputCls("panNumber")} uppercase`} />
                   {errors.panNumber && <p className="text-red-500 text-xs mt-1">{errors.panNumber}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Aadhaar Number *</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('aadhar_number_label')} *</label>
                   <input name="aadharNumber" value={formData.aadharNumber} onChange={handleChange} onBlur={handleBlur} maxLength={12} placeholder="123456789012" className={inputCls("aadharNumber")} />
                   {errors.aadharNumber && <p className="text-red-500 text-xs mt-1">{errors.aadharNumber}</p>}
                 </div>
@@ -374,22 +376,22 @@ export default function ProfilePage() {
               <div className="p-6 border-b border-slate-100 bg-slate-50/50">
                 <h3 className="text-lg font-semibold text-slate-900 flex items-center">
                   <Building2 className="w-5 h-5 mr-2 text-blue-600" />
-                  Bank Details
+                  {t('bank_details')}
                 </h3>
               </div>
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Bank Name *</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('bank_name_label')} *</label>
                   <input name="bankName" value={formData.bankName} onChange={handleChange} onBlur={handleBlur} className={inputCls("bankName")} />
                   {errors.bankName && <p className="text-red-500 text-xs mt-1">{errors.bankName}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">Account Number *</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('account_number_label')} *</label>
                   <input name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleChange} onBlur={handleBlur} className={inputCls("bankAccountNumber")} />
                   {errors.bankAccountNumber && <p className="text-red-500 text-xs mt-1">{errors.bankAccountNumber}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">IFSC Code *</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('ifsc_code_label')} *</label>
                   <input name="ifscCode" value={formData.ifscCode} onChange={handleChange} onBlur={handleBlur} maxLength={11} placeholder="SBIN0001234" className={`${inputCls("ifscCode")} uppercase`} />
                   {errors.ifscCode && <p className="text-red-500 text-xs mt-1">{errors.ifscCode}</p>}
                 </div>
@@ -404,7 +406,7 @@ export default function ProfilePage() {
             disabled={saving}
             icon={saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           >
-            {saving ? "Saving..." : "Save Profile"}
+            {saving ? t('saving') : t('save_profile')}
           </Button>
         </div>
       </form>
@@ -413,15 +415,15 @@ export default function ProfilePage() {
       <Modal
         isOpen={isCropModalOpen}
         onClose={() => setIsCropModalOpen(false)}
-        title="Crop Profile Image"
+        title={t('crop_profile_image')}
         maxWidth="lg"
         footer={
           <>
             <button onClick={() => setIsCropModalOpen(false)} className="px-4 py-2 text-slate-600 hover:bg-slate-200 rounded-lg transition-colors font-medium">
-              Cancel
+              {t('cancel')}
             </button>
             <button onClick={handleCropConfirm} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-              Crop & Save
+              {t('crop_save')}
             </button>
           </>
         }
