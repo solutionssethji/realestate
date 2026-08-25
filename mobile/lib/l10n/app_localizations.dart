@@ -1753,6 +1753,594 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Off'**
   String get off;
+
+  /// No description provided for @authErrInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get authErrInvalidEmail;
+
+  /// No description provided for @authErrInvalidCredentialCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is incorrect.'**
+  String get authErrInvalidCredentialCurrent;
+
+  /// No description provided for @authErrInvalidCredential.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email or password.'**
+  String get authErrInvalidCredential;
+
+  /// No description provided for @authErrWrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password. Please try again.'**
+  String get authErrWrongPassword;
+
+  /// No description provided for @authErrUserNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No account found with this email. Please signup first'**
+  String get authErrUserNotFound;
+
+  /// No description provided for @authErrUserDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been disabled. Please contact support.'**
+  String get authErrUserDisabled;
+
+  /// No description provided for @authErrEmailAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists.'**
+  String get authErrEmailAlreadyInUse;
+
+  /// No description provided for @authErrWeakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too weak. Please choose a stronger password.'**
+  String get authErrWeakPassword;
+
+  /// No description provided for @authErrOperationNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'This authentication method is currently disabled.'**
+  String get authErrOperationNotAllowed;
+
+  /// No description provided for @authErrTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please try again later.'**
+  String get authErrTooManyRequests;
+
+  /// No description provided for @authErrNetworkRequestFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your internet connection.'**
+  String get authErrNetworkRequestFailed;
+
+  /// No description provided for @authErrRequiresRecentLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Please sign in again to continue.'**
+  String get authErrRequiresRecentLogin;
+
+  /// No description provided for @authErrCredentialAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This credential is already associated with another account.'**
+  String get authErrCredentialAlreadyInUse;
+
+  /// No description provided for @authErrAccountExistsWithDifferentCredential.
+  ///
+  /// In en, this message translates to:
+  /// **'An account already exists with a different sign-in method.'**
+  String get authErrAccountExistsWithDifferentCredential;
+
+  /// No description provided for @authErrProviderAlreadyLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'This sign-in provider is already linked to your account.'**
+  String get authErrProviderAlreadyLinked;
+
+  /// No description provided for @authErrNoSuchProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'The requested sign-in provider is not linked to this account.'**
+  String get authErrNoSuchProvider;
+
+  /// No description provided for @authErrInvalidVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'The verification code is invalid.'**
+  String get authErrInvalidVerificationCode;
+
+  /// No description provided for @authErrInvalidVerificationId.
+  ///
+  /// In en, this message translates to:
+  /// **'The verification ID is invalid.'**
+  String get authErrInvalidVerificationId;
+
+  /// No description provided for @authErrSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'The verification session has expired. Please try again.'**
+  String get authErrSessionExpired;
+
+  /// No description provided for @authErrQuotaExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Request limit exceeded. Please try again later.'**
+  String get authErrQuotaExceeded;
+
+  /// No description provided for @authErrAppNotAuthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'This app is not authorized. Please contact support.'**
+  String get authErrAppNotAuthorized;
+
+  /// No description provided for @authErrInvalidApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Firebase configuration.'**
+  String get authErrInvalidApiKey;
+
+  /// No description provided for @authErrInternalError.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again later.'**
+  String get authErrInternalError;
+
+  /// No description provided for @authErrWebContextCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in was cancelled.'**
+  String get authErrWebContextCancelled;
+
+  /// No description provided for @authErrWebStorageUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This browser does not support authentication.'**
+  String get authErrWebStorageUnsupported;
+
+  /// No description provided for @authErrPopupBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Popup was blocked. Please allow popups and try again.'**
+  String get authErrPopupBlocked;
+
+  /// No description provided for @authErrAuthDomainConfigRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication domain configuration is required. Please contact support.'**
+  String get authErrAuthDomainConfigRequired;
+
+  /// No description provided for @authErrOperationNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'This operation is not supported in the current environment.'**
+  String get authErrOperationNotSupported;
+
+  /// No description provided for @authErrTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The request timed out. Please try again.'**
+  String get authErrTimeout;
+
+  /// No description provided for @authErrDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed. Please try again.'**
+  String get authErrDefault;
+
+  /// No description provided for @kycAndDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC & Documents'**
+  String get kycAndDocuments;
+
+  /// No description provided for @identityDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity Documents'**
+  String get identityDocuments;
+
+  /// No description provided for @aadharCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Aadhar Card'**
+  String get aadharCard;
+
+  /// No description provided for @enterAadharNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 12-digit Aadhar Number'**
+  String get enterAadharNumber;
+
+  /// No description provided for @panCard.
+  ///
+  /// In en, this message translates to:
+  /// **'PAN Card'**
+  String get panCard;
+
+  /// No description provided for @enterPanNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 10-character PAN Number'**
+  String get enterPanNumber;
+
+  /// No description provided for @bankDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Details'**
+  String get bankDetails;
+
+  /// No description provided for @bankName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Name'**
+  String get bankName;
+
+  /// No description provided for @accountNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Number'**
+  String get accountNumber;
+
+  /// No description provided for @ifscCode.
+  ///
+  /// In en, this message translates to:
+  /// **'IFSC Code'**
+  String get ifscCode;
+
+  /// No description provided for @saveDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Details'**
+  String get saveDetails;
+
+  /// No description provided for @uploadDocumentImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Document Image:'**
+  String get uploadDocumentImage;
+
+  /// No description provided for @tapToPickImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to pick image'**
+  String get tapToPickImage;
+
+  /// No description provided for @userNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found'**
+  String get userNotFound;
+
+  /// No description provided for @failedToPickImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick image: {error}'**
+  String failedToPickImage(String error);
+
+  /// No description provided for @kycUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC details updated successfully!'**
+  String get kycUpdatedSuccessfully;
+
+  /// No description provided for @failedToUpdateKyc.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update KYC: {error}'**
+  String failedToUpdateKyc(String error);
+
+  /// No description provided for @emiAndPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'EMI & Payments'**
+  String get emiAndPayments;
+
+  /// No description provided for @paymentSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Summary'**
+  String get paymentSummary;
+
+  /// No description provided for @totalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Amount'**
+  String get totalAmount;
+
+  /// No description provided for @amountPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Paid'**
+  String get amountPaid;
+
+  /// No description provided for @pendingBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Balance'**
+  String get pendingBalance;
+
+  /// No description provided for @noPaymentRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'No payment records found.'**
+  String get noPaymentRecords;
+
+  /// No description provided for @paymentRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Ref: {ref}'**
+  String paymentRef(String ref);
+
+  /// No description provided for @supportCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Center'**
+  String get supportCenter;
+
+  /// No description provided for @howCanWeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'How can we help you?'**
+  String get howCanWeHelp;
+
+  /// No description provided for @supportDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Our team is available to assist you with any questions about properties, payments, or your account.'**
+  String get supportDesc;
+
+  /// No description provided for @whatsappSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp Support'**
+  String get whatsappSupport;
+
+  /// No description provided for @whatsappSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fastest response time'**
+  String get whatsappSubtitle;
+
+  /// No description provided for @callUsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon-Sat, 10 AM to 6 PM'**
+  String get callUsSubtitle;
+
+  /// No description provided for @emailSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Support'**
+  String get emailSupport;
+
+  /// No description provided for @emailSupportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'support@realestate.com'**
+  String get emailSupportSubtitle;
+
+  /// No description provided for @faqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently Asked Questions'**
+  String get faqTitle;
+
+  /// No description provided for @faq1Question.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I book a plot?'**
+  String get faq1Question;
+
+  /// No description provided for @faq1Answer.
+  ///
+  /// In en, this message translates to:
+  /// **'You can browse available plots in any active project and click \"Enquire\" or \"Book\". An agent will contact you shortly.'**
+  String get faq1Answer;
+
+  /// No description provided for @faq2Question.
+  ///
+  /// In en, this message translates to:
+  /// **'Where can I see my EMI status?'**
+  String get faq2Question;
+
+  /// No description provided for @faq2Answer.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Profile > My Properties, and select your booked plot to see your complete EMI tracker and payment history.'**
+  String get faq2Answer;
+
+  /// No description provided for @faq3Question.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I change my registered email?'**
+  String get faq3Question;
+
+  /// No description provided for @faq3Answer.
+  ///
+  /// In en, this message translates to:
+  /// **'For security reasons, your registered email cannot be changed from the app. Please contact support.'**
+  String get faq3Answer;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
+  String get myProfile;
+
+  /// No description provided for @notLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not logged in.'**
+  String get notLoggedIn;
+
+  /// No description provided for @myProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'My Properties'**
+  String get myProperties;
+
+  /// No description provided for @myEnquiries.
+  ///
+  /// In en, this message translates to:
+  /// **'My Enquiries'**
+  String get myEnquiries;
+
+  /// No description provided for @mySiteVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'My Site Visits'**
+  String get mySiteVisits;
+
+  /// No description provided for @loginBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginBtn;
+
+  /// No description provided for @pleaseLoginToViewProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Please login to view your properties.'**
+  String get pleaseLoginToViewProperties;
+
+  /// No description provided for @noPropertiesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no booked or purchased plots yet.'**
+  String get noPropertiesYet;
+
+  /// No description provided for @plotNoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot No: {number}'**
+  String plotNoLabel(String number);
+
+  /// No description provided for @loginPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get loginPageTitle;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get welcomeBack;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordLabel;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get forgotPassword;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Register'**
+  String get dontHaveAccount;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @resetPasswordDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we will send you a link to reset your password.'**
+  String get resetPasswordDesc;
+
+  /// No description provided for @sendResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Reset Link'**
+  String get sendResetLink;
+
+  /// No description provided for @resetLinkSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset link sent! Please check your email inbox.'**
+  String get resetLinkSent;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get backToLogin;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @joinUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Us'**
+  String get joinUs;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @takeAPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a Photo'**
+  String get takeAPhoto;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Photo'**
+  String get removePhoto;
+
+  /// No description provided for @emailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get emailAddress;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Login'**
+  String get alreadyHaveAccount;
 }
 
 class _AppLocalizationsDelegate

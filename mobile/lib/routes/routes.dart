@@ -1,7 +1,17 @@
+import 'package:customer_app/pages/auth/forgot_password/forgot_password.page.dart'
+    show ForgotPasswordPage;
+import 'package:customer_app/pages/auth/login/login.page.dart' show LoginPage;
+import 'package:customer_app/pages/auth/register/register.page.dart'
+    show RegisterPage;
+import 'package:customer_app/pages/emi_tracker/emi_tracker.page.dart'
+    show EmiTrackerPage;
 import 'package:customer_app/pages/offer_details/offer_details.page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
+import '../pages/profile/profile.page.dart';
+import '../pages/profile/kyc_page.dart';
+import '../pages/my_properties/my_properties.page.dart';
+import '../pages/support/support.page.dart';
 // Splash page removed
 import '../pages/home/home.page.dart';
 import '../pages/projects/projects.page.dart';
@@ -134,6 +144,36 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(path: 'faq', builder: (context, state) => const FaqPage()),
         ],
+      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfilePage(),
+      ),
+      GoRoute(
+        path: '/kyc',
+        builder: (context, state) => const KycPage(),
+      ),
+      GoRoute(
+        path: '/my-properties',
+        builder: (context, state) => const MyPropertiesPage(),
+      ),
+      GoRoute(
+        path: '/my-properties/:plotId/emi-tracker',
+        builder: (context, state) =>
+            EmiTrackerPage(plotId: state.pathParameters['plotId']!),
+      ),
+      GoRoute(
+        path: '/support',
+        builder: (context, state) => const SupportPage(),
       ),
     ],
   );

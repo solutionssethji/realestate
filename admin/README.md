@@ -3,9 +3,10 @@
 The administration dashboard for the Shubhaytanam Connect real estate platform, built with **Next.js (App Router)**, **React**, and **Tailwind CSS**. It connects directly to **Firebase (Firestore)** for data management.
 
 This dashboard allows administrators to manage:
+
 - Projects & Properties
 - Plot Inventory & Pricing
-- Customer Enquiries
+- Enquiries
 - Site Visits & Bookings
 - Application Settings
 
@@ -22,7 +23,7 @@ npm install
 npm run dev
 ```
 
-*The dashboard will run on `http://localhost:3000`*
+_The dashboard will run on `http://localhost:3000`_
 
 ## ⚙️ Configuration
 

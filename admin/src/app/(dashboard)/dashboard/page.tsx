@@ -56,7 +56,7 @@ export default function DashboardPage() {
         });
       } catch (err) {
         console.error("Dashboard fetch error:", err);
-        toast.error("Failed to load dashboard data. Please refresh.");
+        toast.error(t('dashboard_fetch_error'));
       } finally {
         setLoading(false);
       }
@@ -75,7 +75,7 @@ export default function DashboardPage() {
   const chartData = [
     { name: t('available'), value: stats?.availablePlots || 0 },
     { name: t('on_hold'), value: stats?.holdPlots || 0 },
-    { name: 'Booked / Sold', value: stats?.bookedPlots || 0 },
+    { name: t('booked_sold_status'), value: stats?.bookedPlots || 0 },
   ];
 
   return (
@@ -87,10 +87,10 @@ export default function DashboardPage() {
         </div>
         <div className="relative z-10">
           <h1 className="text-3xl font-extrabold text-white tracking-tight">
-            Welcome back, {user?.name || 'Admin'}!
+            {t('welcome_back_user', { name: user?.name || t('administrator') })}
           </h1>
           <p className="mt-1.5 text-slate-50 max-w-2xl text-sm leading-relaxed">
-            Here is what's happening across your Shubhaytanam Connect portfolio today.
+            {t('dashboard_subtitle')}
           </p>
         </div>
       </div>
@@ -110,7 +110,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-6">
             <Link href="/projects" className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center group-hover:translate-x-1 transition-transform">
-              View all projects <ArrowRight className="ml-1.5 h-4 w-4" />
+              {t('view_all_projects')} <ArrowRight className="ml-1.5 h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-6">
             <Link href="/plots" className="text-sm font-medium text-indigo-600 hover:text-indigo-700 flex items-center group-hover:translate-x-1 transition-transform">
-              Manage inventory <ArrowRight className="ml-1.5 h-4 w-4" />
+              {t('manage_inventory')} <ArrowRight className="ml-1.5 h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-6">
             <Link href="/enquiries" className="text-sm font-medium text-emerald-600 hover:text-emerald-700 flex items-center group-hover:translate-x-1 transition-transform">
-              View enquiries <ArrowRight className="ml-1.5 h-4 w-4" />
+              {t('view_all_enquiries')} <ArrowRight className="ml-1.5 h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -164,7 +164,7 @@ export default function DashboardPage() {
           </div>
           <div className="mt-6">
             <Link href="/site-visits" className="text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center group-hover:translate-x-1 transition-transform">
-              Check schedule <ArrowRight className="ml-1.5 h-4 w-4" />
+              {t('check_schedule')} <ArrowRight className="ml-1.5 h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -187,7 +187,7 @@ export default function DashboardPage() {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {chartData.map((entry, index) => (
+                  {chartData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
 
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col justify-center relative overflow-hidden">
             <div className="absolute -right-4 -bottom-4 h-24 w-24 bg-red-50 rounded-full blur-2xl"></div>
-            <dt className="text-sm font-medium text-slate-500 uppercase tracking-wider relative z-10">Booked / Sold</dt>
+            <dt className="text-sm font-medium text-slate-500 uppercase tracking-wider relative z-10">{t('booked_sold_status')}</dt>
             <dd className="mt-2 text-4xl font-extrabold text-slate-900 relative z-10">{stats?.bookedPlots}</dd>
             <div className="mt-4 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
               <div className="h-full bg-red-500 w-full"></div>

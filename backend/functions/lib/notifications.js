@@ -33,57 +33,165 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onEnquiryCreated = exports.onSiteVisitCreated = void 0;
+exports.onPlotAssigned = exports.onEnquiryCreated = exports.onSiteVisitCreated = void 0;
 const firestore_1 = require("firebase-functions/v2/firestore");
 const admin = __importStar(require("firebase-admin"));
-exports.onSiteVisitCreated = (0, firestore_1.onDocumentCreated)('siteVisits/{docId}', async (event) => {
+async function resolveCustomerFcmTokens(customerId) {
+    if (!customerId)
+        return [];
+    const userDoc = await admin.firestore().collection("users").doc(customerId).get();
+    if (!userDoc.exists)
+        return [];
+    const userData = userDoc.data() ?? {};
+    const storedTokens = Array.isArray(userData.fcmTokens)
+        ? userData.fcmTokens.filter((token) => typeof token === "string" && token.trim())
+        : [];
+    const legacyToken = typeof userData.fcmToken === "string" && userData.fcmToken.trim()
+        ? [userData.fcmToken.trim()]
+        : [];
+    return [...new Set([...storedTokens, ...legacyToken])];
+}
+async function removeInvalidFcmTokens(customerId, invalidTokens) {
+    if (!customerId || invalidTokens.length === 0)
+        return;
+    const userRef = admin.firestore().collection("users").doc(customerId);
+    await userRef.update({
+        fcmTokens: admin.firestore.FieldValue.arrayRemove(...invalidTokens),
+    });
+}
+exports.onSiteVisitCreated = (0, firestore_1.onDocumentCreated)("siteVisits/{docId}", async (event) => {
     const snapshot = event.data;
     if (!snapshot) {
         return;
     }
     const data = snapshot.data();
-    const customerName = data.customerName || 'a customer';
+    const customerName = data.customerName || "a customer";
     const siteVisitId = snapshot.id;
     const db = admin.firestore();
-    const notificationRef = db.collection('adminNotifications').doc(siteVisitId);
+    const notificationRef = db
+        .collection("adminNotifications")
+        .doc(siteVisitId);
     await notificationRef.set({
         id: notificationRef.id,
-        type: 'SITE_VISIT',
+        type: "SITE_VISIT",
         relatedId: siteVisitId,
-        // Add keys for localization
-        titleKey: 'notif_site_visit_title',
-        messageKey: 'notif_site_visit_message',
+        titleKey: "notif_site_visit_title",
+        messageKey: "notif_site_visit_message",
         messageParams: { name: customerName },
-        // Provide fallbacks for backwards compatibility in case UI hasn't updated
-        title: 'New Site Visit Booking',
+        title: "New Site Visit Booking",
         message: `New site visit booking received from ${customerName}`,
         read: false,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 });
-exports.onEnquiryCreated = (0, firestore_1.onDocumentCreated)('customerEnquiries/{docId}', async (event) => {
+exports.onEnquiryCreated = (0, firestore_1.onDocumentCreated)("enquiries/{docId}", async (event) => {
     const snapshot = event.data;
     if (!snapshot) {
         return;
     }
     const data = snapshot.data();
-    const customerName = data.customerName || data.name || 'a customer';
     const enquiryId = snapshot.id;
     const db = admin.firestore();
-    const notificationRef = db.collection('adminNotifications').doc(enquiryId);
+    let customerName = "a customer";
+    const customerId = data.customerId;
+    if (customerId) {
+        try {
+            const userDoc = await db.collection("users").doc(customerId).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                customerName = userData?.fullName || userData?.name || "a customer";
+            }
+        }
+        catch (_) {
+            // fallback to default
+        }
+    }
+    const notificationRef = db.collection("adminNotifications").doc(enquiryId);
     await notificationRef.set({
         id: notificationRef.id,
-        type: 'ENQUIRY',
+        type: "ENQUIRY",
         relatedId: enquiryId,
-        // Add keys for localization
-        titleKey: 'notif_enquiry_title',
-        messageKey: 'notif_enquiry_message',
+        titleKey: "notif_enquiry_title",
+        messageKey: "notif_enquiry_message",
         messageParams: { name: customerName },
-        // Provide fallbacks for backwards compatibility in case UI hasn't updated
-        title: 'New Enquiry',
+        title: "New Enquiry",
         message: `New enquiry received from ${customerName}`,
         read: false,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
+});
+exports.onPlotAssigned = (0, firestore_1.onDocumentWritten)("assignPlots/{assignmentId}", async (event) => {
+    const snapshot = event.data?.after;
+    if (!snapshot || !snapshot.exists) {
+        return;
+    }
+    const assignment = snapshot.data() ?? {};
+    const customerId = assignment.customerId || assignment.userId;
+    if (!customerId) {
+        return;
+    }
+    const db = admin.firestore();
+    const plotNumber = assignment.plotNumber || assignment.plotId || "your plot";
+    const projectName = assignment.projectName || "Project";
+    const title = "Plot assigned";
+    const body = `${projectName} — Plot ${plotNumber} has been assigned to you.`;
+    const notificationId = `${snapshot.id}-${Date.now()}`;
+    const userNotificationRef = db
+        .collection("users")
+        .doc(customerId)
+        .collection("notifications")
+        .doc(notificationId);
+    await userNotificationRef.set({
+        id: userNotificationRef.id,
+        type: "PLOT_ASSIGNED",
+        relatedId: assignment.plotId || snapshot.id,
+        title,
+        body,
+        read: false,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        payload: {
+            plotId: assignment.plotId || null,
+            projectId: assignment.projectId || null,
+            assignmentId: snapshot.id,
+        },
+    });
+    const tokens = await resolveCustomerFcmTokens(customerId);
+    if (tokens.length === 0) {
+        return;
+    }
+    const result = await admin.messaging().sendEachForMulticast({
+        tokens,
+        notification: {
+            title,
+            body,
+        },
+        data: {
+            type: "PLOT_ASSIGNED",
+            plotId: assignment.plotId || "",
+            projectId: assignment.projectId || "",
+            assignmentId: snapshot.id,
+        },
+        android: {
+            priority: "high",
+        },
+        apns: {
+            payload: {
+                aps: {
+                    sound: "default",
+                    badge: 1,
+                },
+            },
+        },
+    });
+    if (result.failureCount > 0) {
+        const invalidTokens = result.responses
+            .map((response, index) => ({ response, index }))
+            .filter(({ response }) => !response.success)
+            .map(({ index }) => tokens[index])
+            .filter((token) => Boolean(token));
+        if (invalidTokens.length > 0) {
+            await removeInvalidFcmTokens(customerId, invalidTokens);
+        }
+    }
 });
 //# sourceMappingURL=notifications.js.map

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
-import { motion } from "framer-motion";
 
 interface DataTableProps {
   columns: { header: string; key: string; render?: (item: any) => React.ReactNode }[];
@@ -76,35 +75,20 @@ export const DataTable = ({
               ))}
             </tr>
           </thead>
-          <motion.tbody
-            className="divide-y divide-slate-100"
-            initial="hidden"
-            animate="visible"
-            variants={{
-              visible: {
-                transition: {
-                  staggerChildren: 0.05
-                }
-              }
-            }}
-          >
+          <tbody className="divide-y divide-slate-100">
             {paginatedData.map((item, rowIndex) => (
-              <motion.tr
+              <tr
                 key={item.id || rowIndex}
                 className="hover:bg-slate-50/80 transition-colors duration-150"
-                variants={{
-                  hidden: { opacity: 0, y: 10 },
-                  visible: { opacity: 1, y: 0 }
-                }}
               >
                 {columns.map((col, colIndex) => (
                   <td key={colIndex} className="px-6 py-4 whitespace-nowrap">
                     {col.render ? col.render(item) : item[col.key]}
                   </td>
                 ))}
-              </motion.tr>
+              </tr>
             ))}
-          </motion.tbody>
+          </tbody>
         </table>
       </div>
 

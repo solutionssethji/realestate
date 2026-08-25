@@ -4,25 +4,43 @@
 import { useAuth } from "@/context/AuthContext";
 import {
   LayoutDashboard, Building2, Map, Tag, PhoneIncoming, CalendarCheck,
-  CreditCard, Users, Settings, LogOut, Menu, X, FileText, HelpCircle
+  CreditCard, Users, Settings, LogOut, Menu, HelpCircle, Bookmark, Briefcase, User as UserIcon, Lock, Bell
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Modal } from "@/components/ui/Modal";
 
-const navItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Projects", href: "/projects", icon: Building2 },
-  { name: "Plots", href: "/plots", icon: Map },
-  { name: "Offers", href: "/offers", icon: Tag },
-  { name: "Enquiries", href: "/enquiries", icon: PhoneIncoming },
-  { name: "Site Visits", href: "/site-visits", icon: CalendarCheck },
-  { name: "Transactions", href: "/transactions", icon: CreditCard },
+const getNavItems = (role?: string, t?: (key: string) => string) => {
+  const translate = (key: string, fallback: string) => t ? t(key) : fallback;
 
-  { name: "FAQs", href: "/faq", icon: HelpCircle },
-  { name: "Settings", href: "/settings", icon: Settings },
-];
+  if (role === 'AGENT') {
+    return [
+      { name: translate("projects", "Projects"), href: "/projects", icon: Building2 },
+      { name: translate("plots", "Plots"), href: "/plots", icon: Map },
+      { name: translate("offers", "Offers"), href: "/offers", icon: Tag },
+      { name: translate("profile", "Profile"), href: "/profile", icon: UserIcon },
+      { name: translate("change_password", "Change Password"), href: "/change-password", icon: Lock },
+    ];
+  }
+
+  return [
+    { name: translate("dashboard", "Dashboard"), href: "/dashboard", icon: LayoutDashboard },
+    { name: translate("projects", "Projects"), href: "/projects", icon: Building2 },
+    { name: translate("plots", "Plots"), href: "/plots", icon: Map },
+    { name: translate("offers", "Offers"), href: "/offers", icon: Tag },
+    { name: translate("bookings", "Bookings"), href: "/bookings", icon: Bookmark },
+    { name: translate("agents", "Agents"), href: "/agents", icon: Briefcase },
+    { name: translate("enquiries", "Enquiries"), href: "/enquiries", icon: PhoneIncoming },
+    { name: translate("site_visits", "Site Visits"), href: "/site-visits", icon: CalendarCheck },
+    { name: translate("transactions", "Transactions"), href: "/transactions", icon: CreditCard },
+    { name: translate("users", "Users"), href: "/users", icon: Users },
+    { name: translate("notifications", "Notifications"), href: "/notifications", icon: Bell },
+    { name: translate("faq", "FAQs"), href: "/faq", icon: HelpCircle },
+    { name: translate("settings", "Settings"), href: "/settings", icon: Settings },
+    { name: translate("profile", "Profile"), href: "/profile", icon: UserIcon },
+  ];
+};
 
 import NotificationBell from "@/components/NotificationBell";
 import { useLanguage } from '@/context/LanguageContext';
@@ -33,6 +51,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -59,15 +78,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex-shrink-0 shadow-xl
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="h-20 flex items-center justify-center px-6 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
-          <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="max-h-12 w-auto object-contain" />
+        <div className="h-28 flex items-center justify-center px-2 py-4 border-b border-slate-100 bg-white/80 backdrop-blur-xl">
+          <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="max-h-24 w-full object-contain" />
         </div>
 
-        <nav className="p-4 space-y-1.5 h-[calc(100vh-5rem)] overflow-y-auto scrollbar-hide">
+        <nav className="p-4 space-y-1.5 h-[calc(100vh-7rem)] overflow-y-auto scrollbar-hide">
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 mt-2 px-3">
-            Overview
+            {t('overview')}
           </div>
-          {navItems.map((item) => {
+          {getNavItems(user?.role, t).map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
             return (
@@ -104,43 +123,65 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex-1" />
 
           <div className="flex items-center space-x-6">
-            <NotificationBell />
+            {user?.role === "ADMIN" && <NotificationBell />}
             <div className="h-8 w-px bg-slate-200"></div>
             <div className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="hidden sm:flex flex-col items-end">
-                <span className="text-sm font-semibold text-slate-900">{user?.name || 'Admin'}</span>
-                <span className="text-xs font-medium text-slate-500">{user?.role || 'Administrator'}</span>
+                <span className="text-sm font-semibold text-slate-900">{user?.name || t('administrator')}</span>
+                <span className="text-xs font-medium text-slate-500">{user?.role ? (user.role.toUpperCase() === 'ADMIN' ? t('administrator') : t('agent')) : t('administrator')}</span>
               </div>
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
-                {user?.name?.charAt(0) || 'A'}
+              <div className="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold shadow-sm">
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt={user.name} className="h-full w-full object-cover" />
+                ) : (
+                  user?.name?.charAt(0) || 'A'
+                )}
               </div>
             </div>
             <button
-              onClick={logout}
+              onClick={() => setShowLogoutModal(true)}
               className="p-2.5 text-slate-400 hover:text-red-500 rounded-full hover:bg-red-50 transition-all duration-200"
-              title="Logout"
+              title={t('logout')}
             >
               <LogOut className="h-5 w-5" />
             </button>
           </div>
         </header>
 
-        {/* Main Body */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-5 relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={pathname}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="h-full"
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+          {children}
         </main>
       </div>
+
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title={t('confirm_logout')}
+        maxWidth="sm"
+        footer={
+          <div className="flex justify-end gap-3 w-full">
+            <button
+              onClick={() => setShowLogoutModal(false)}
+              className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors font-medium"
+            >
+              {t('no_cancel')}
+            </button>
+            <button
+              onClick={() => {
+                setShowLogoutModal(false);
+                logout();
+              }}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+            >
+              {t('yes_logout')}
+            </button>
+          </div>
+        }
+      >
+        <div className="py-4 text-slate-600">
+          {t('are_you_sure_logout')}
+        </div>
+      </Modal>
     </div>
   );
 }

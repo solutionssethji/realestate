@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/project.dart';
 import '../models/plot.dart';
 import '../models/plot_status.dart';
@@ -42,10 +44,10 @@ class ApiService {
       }
       return {'phone': '', 'whatsapp': ''};
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getContactSettings()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'getContactSettings()', error: e);
+      logApi(
+        function: 'getContactSettings()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       return {'phone': '', 'whatsapp': ''};
     }
   }
@@ -89,10 +91,10 @@ class ApiService {
         newLastDoc,
       );
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getProjects()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'getProjects()', error: e);
+      logApi(
+        function: 'getProjects()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -115,10 +117,10 @@ class ApiService {
       logApi(function: 'getProject()', response: 'Found');
       return Project.fromJson({'id': doc.id, ...data});
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getProject()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'getProject()', error: e);
+      logApi(
+        function: 'getProject()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -141,10 +143,10 @@ class ApiService {
       );
       return snapshot.docs.map((doc) => _plotFromDoc(doc)).toList();
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getPlots()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'getPlots()', error: e);
+      logApi(
+        function: 'getPlots()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -166,7 +168,10 @@ class ApiService {
           return snap.docs.map((doc) => _plotFromDoc(doc)).toList();
         })
         .handleError((error) {
-          logApi(function: 'watchPlots()', error: error);
+          logApi(
+            function: 'watchPlots()',
+            error: FirebaseAuthErrorMapper.getMessage(error.code),
+          );
         });
   }
 
@@ -181,10 +186,10 @@ class ApiService {
       logApi(function: 'getPlot()', response: 'Found');
       return _plotFromDoc(doc);
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getPlot()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'getPlot()', error: e);
+      logApi(
+        function: 'getPlot()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -252,10 +257,10 @@ class ApiService {
 
       return (offers, newLastDoc);
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getOffers()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'getOffers()', error: e);
+      logApi(
+        function: 'getOffers()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -291,10 +296,10 @@ class ApiService {
       logApi(function: 'getOffer()', response: 'Found');
       return offer;
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getOffer()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'getOffer()', error: e);
+      logApi(
+        function: 'getOffer()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -304,18 +309,26 @@ class ApiService {
   static Future<void> submitEnquiry(Map<String, dynamic> data) async {
     logApi(function: 'submitEnquiry()', request: data);
     try {
-      await _db.collection('customerEnquiries').add({
+      final batch = _db.batch();
+
+      // Generate new ID for Enquiry
+      final enquiriesRef = _db.collection('enquiries').doc();
+
+      batch.set(enquiriesRef, {
         ...data,
+        'id': enquiriesRef.id,
         'status': 'NEW',
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
+
+      await batch.commit();
       logApi(function: 'submitEnquiry()', response: 'Success');
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'submitEnquiry()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'submitEnquiry()', error: e);
+      logApi(
+        function: 'submitEnquiry()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -341,10 +354,10 @@ class ApiService {
       await batch.commit();
       logApi(function: 'submitSiteVisit()', response: {'id': siteVisitRef.id});
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'submitSiteVisit()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'submitSiteVisit()', error: e);
+      logApi(
+        function: 'submitSiteVisit()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -366,10 +379,10 @@ class ApiService {
       logApi(function: 'submitPayment()', response: result.data);
       return Map<String, dynamic>.from(result.data as Map);
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'submitPayment()', error: e);
-      rethrow;
-    } catch (e) {
-      logApi(function: 'submitPayment()', error: e);
+      logApi(
+        function: 'submitPayment()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     }
   }
@@ -473,4 +486,104 @@ void logApi({
     developer.log('Error: $error');
   }
   developer.log('=========================================\n');
+}
+
+class FirebaseAuthErrorMapper {
+  static String getMessage(String code, {bool? isChangePassword}) {
+    final langCode = BilingualHelper.currentLangCode;
+    final l10n = lookupAppLocalizations(Locale(langCode));
+
+    switch (code) {
+      /// Email / Password Authentication
+      case 'invalid-email':
+        return l10n.authErrInvalidEmail;
+
+      case 'invalid-credential':
+        if (isChangePassword == true) {
+          return l10n.authErrInvalidCredentialCurrent;
+        }
+        return l10n.authErrInvalidCredential;
+
+      case 'wrong-password':
+        return l10n.authErrWrongPassword;
+
+      case 'user-not-found':
+        return l10n.authErrUserNotFound;
+
+      case 'user-disabled':
+        return l10n.authErrUserDisabled;
+
+      case 'email-already-in-use':
+        return l10n.authErrEmailAlreadyInUse;
+
+      case 'weak-password':
+        return l10n.authErrWeakPassword;
+
+      case 'operation-not-allowed':
+        return l10n.authErrOperationNotAllowed;
+
+      case 'too-many-requests':
+        return l10n.authErrTooManyRequests;
+
+      case 'network-request-failed':
+        return l10n.authErrNetworkRequestFailed;
+
+      case 'requires-recent-login':
+        return l10n.authErrRequiresRecentLogin;
+
+      case 'credential-already-in-use':
+        return l10n.authErrCredentialAlreadyInUse;
+
+      case 'account-exists-with-different-credential':
+        return l10n.authErrAccountExistsWithDifferentCredential;
+
+      case 'provider-already-linked':
+        return l10n.authErrProviderAlreadyLinked;
+
+      case 'no-such-provider':
+        return l10n.authErrNoSuchProvider;
+
+      case 'invalid-verification-code':
+        return l10n.authErrInvalidVerificationCode;
+
+      case 'invalid-verification-id':
+        return l10n.authErrInvalidVerificationId;
+
+      case 'session-expired':
+        return l10n.authErrSessionExpired;
+
+      case 'quota-exceeded':
+        return l10n.authErrQuotaExceeded;
+
+      case 'app-not-authorized':
+        return l10n.authErrAppNotAuthorized;
+
+      case 'invalid-api-key':
+        return l10n.authErrInvalidApiKey;
+
+      case 'internal-error':
+        return l10n.authErrInternalError;
+
+      case 'web-context-cancelled':
+        return l10n.authErrWebContextCancelled;
+
+      case 'web-storage-unsupported':
+        return l10n.authErrWebStorageUnsupported;
+
+      case 'popup-blocked':
+        return l10n.authErrPopupBlocked;
+
+      case 'auth-domain-config-required':
+        return l10n.authErrAuthDomainConfigRequired;
+
+      case 'operation-not-supported-in-this-environment':
+        return l10n.authErrOperationNotSupported;
+
+      case 'timeout':
+        return l10n.authErrTimeout;
+
+      default:
+        return l10n.authErrDefault;
+    }
+  }
 }

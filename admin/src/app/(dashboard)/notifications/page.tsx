@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, getDocs, query, orderBy, limit, startAfter, doc, updateDoc, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, limit, doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Bell, Loader2, CheckCircle2, Circle, Check } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -53,7 +53,7 @@ export default function NotificationsPage() {
       setLoading(false);
     }, (error) => {
       console.error(error);
-      toast.error("Failed to load notifications");
+      toast.error(t('failed_load_notifications'));
       setLoading(false);
     });
 
@@ -98,22 +98,22 @@ export default function NotificationsPage() {
       );
 
       await Promise.all(batchPromises);
-      toast.success("All visible notifications marked as read");
+      toast.success(t('all_marked_as_read'));
 
       setNotifications(notifications.map(n => ({ ...n, read: true })));
     } catch (error) {
-      toast.error("Failed to mark all as read");
+      toast.error(t('failed_mark_all_read'));
     }
   };
 
   return (
     <div className="space-y-6 pb-8">
       <PageHeader
-        title="Notifications"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Notifications" }]}
+        title={t('notifications')}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('notifications') }]}
         actions={
           <Button variant="secondary" onClick={markAllAsRead} icon={<Check className="h-4 w-4" />}>
-            Mark all as read
+            {t('mark_all_as_read')}
           </Button>
         }
       />
@@ -135,7 +135,7 @@ export default function NotificationsPage() {
           <EmptyState
             icon={<Bell className="h-12 w-12 text-slate-300" />}
             title={t('no_notifications')}
-            description="You're all caught up! There are no new notifications to review."
+            description={t('all_caught_up')}
           />
         ) : (
           <ul className="divide-y divide-slate-100">
@@ -175,7 +175,7 @@ export default function NotificationsPage() {
         {!loading && hasMore && (
           <div className="p-4 border-t border-slate-100 flex justify-center bg-slate-50/50">
             <Button variant="ghost" onClick={() => setLimitCount(prev => prev + PAGE_SIZE)}>
-              Load Older
+              {t('load_older')}
             </Button>
           </div>
         )}

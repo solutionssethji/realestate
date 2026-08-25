@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { HelpCircle, Plus, Edit2, Trash2, Loader2, Save, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -58,7 +58,7 @@ export default function FaqPage() {
       console.error(error);
       // Suppress missing index or permission errors if collection is empty
       if (error?.code !== 'permission-denied') {
-        toast.error(error?.message || "Failed to load FAQs");
+        toast.error(error?.message || t('failed_save_faq'));
       }
     } finally {
       setLoading(false);
@@ -111,12 +111,12 @@ export default function FaqPage() {
         updatedAt: new Date().toISOString()
       }, { merge: true });
 
-      toast.success(editingId ? "FAQ updated!" : "FAQ created!");
+      toast.success(editingId ? t('faq_updated') : t('faq_created'));
       setIsModalOpen(false);
       fetchFaqs();
     } catch (error: any) {
       console.error(error);
-      toast.error(error?.message || "Failed to save FAQ.");
+      toast.error(error?.message || t('failed_save_faq'));
     } finally {
       setSaving(false);
     }
@@ -130,11 +130,11 @@ export default function FaqPage() {
     try {
       setDeleteLoading(true);
       await deleteDoc(doc(db, "faqs", confirmModal.id));
-      toast.success("FAQ deleted!");
+      toast.success(t('faq_deleted'));
       setConfirmModal({ isOpen: false, id: "" });
       fetchFaqs();
     } catch (error: any) {
-      toast.error(error?.message || "Failed to delete FAQ.");
+      toast.error(error?.message || t('failed_delete_faq'));
     } finally {
       setDeleteLoading(false);
     }
@@ -149,22 +149,22 @@ export default function FaqPage() {
       setFaqs(faqs.map(f => f.id === faq.id ? { ...f, active: newStatus } : f));
 
       await updateDoc(doc(db, "faqs", faq.id), { active: newStatus, updatedAt: new Date().toISOString() });
-      toast.success(newStatus ? "FAQ enabled successfully" : "FAQ disabled successfully");
+      toast.success(newStatus ? t('faq_enabled') : t('faq_disabled'));
     } catch (error: any) {
       // Revert on error
       setFaqs(faqs.map(f => f.id === faq.id ? { ...f, active: faq.active } : f));
-      toast.error("Failed to update FAQ visibility");
+      toast.error(t('failed_update_faq_visibility'));
     }
   };
 
   return (
     <div className="space-y-6 pb-8">
       <PageHeader
-        title="Frequently Asked Questions"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "FAQs" }]}
+        title={t('faq_page_title')}
+        breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('faqs') }]}
         actions={
           <Button onClick={openNewFaqModal} icon={<Plus className="h-4 w-4" />}>
-            Add FAQ
+            {t('add_faq')}
           </Button>
         }
       />
@@ -177,7 +177,7 @@ export default function FaqPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
           <HelpCircle className="mx-auto h-12 w-12 text-slate-300 mb-4" />
           <h3 className="text-lg font-medium text-slate-900">{t('no_faqs_found')}</h3>
-          <p className="mt-1 text-sm text-slate-500">Get started by creating your first FAQ.</p>
+          <p className="mt-1 text-sm text-slate-500">{t('faq_started_desc')}</p>
         </div>
       ) : (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -185,13 +185,13 @@ export default function FaqPage() {
             <thead className="bg-slate-50">
               <tr>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Question (EN)
+                  {t('question_en')}
                 </th>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Status
+                  {t('status')}
                 </th>
                 <th scope="col" className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Actions
+                  {t('actions')}
                 </th>
               </tr>
             </thead>
@@ -204,13 +204,13 @@ export default function FaqPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2.5 py-1 inline-flex text-xs font-bold rounded-full ${faq.active ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-700'}`}>
-                      {faq.active ? 'Active' : 'Hidden'}
+                      {faq.active ? t('faq_active') : t('faq_hidden')}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button
                       onClick={() => handleToggleVisibility(faq)}
-                      title={faq.active === false ? "Enable FAQ" : "Disable FAQ"}
+                      title={faq.active === false ? t('enable_faq') : t('disable_faq')}
                       className={`p-2 rounded-lg transition-colors mr-2 ${faq.active === false
                         ? "text-slate-400 hover:text-green-600 hover:bg-green-50"
                         : "text-blue-600 hover:text-orange-600 hover:bg-orange-50 bg-blue-50"
@@ -235,20 +235,20 @@ export default function FaqPage() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingId ? "Edit FAQ" : "Create FAQ"}
+        title={editingId ? t('edit_faq') : t('create_faq')}
         maxWidth="xl"
       >
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="block text-sm font-semibold text-slate-700 mb-1">Status</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">{t('faq_status')}</label>
               <select
                 value={isActive ? "true" : "false"}
                 onChange={(e) => setIsActive(e.target.value === "true")}
                 className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 outline-none"
               >
-                <option value="true">Active (Visible)</option>
-                <option value="false">Inactive (Hidden)</option>
+                <option value="true">{t('faq_active_visible')}</option>
+                <option value="false">{t('faq_inactive_hidden')}</option>
               </select>
             </div>
           </div>
@@ -261,7 +261,14 @@ export default function FaqPage() {
                 <input
                   type="text"
                   value={qEn}
-                  onChange={(e) => { setQEn(e.target.value); if (errors.qEn) setErrors({ ...errors, qEn: undefined }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setQEn(val);
+                    setErrors(prev => ({ ...prev, qEn: val.trim() ? undefined : "English question is required" }));
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value.trim()) setErrors(prev => ({ ...prev, qEn: "English question is required" }));
+                  }}
                   className={`w-full px-3 py-2 bg-slate-50 border ${errors.qEn ? 'border-red-500' : 'border-slate-200'} rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 outline-none`}
                   placeholder="e.g. How to book?"
                 />
@@ -272,7 +279,14 @@ export default function FaqPage() {
                 <textarea
                   rows={4}
                   value={aEn}
-                  onChange={(e) => { setAEn(e.target.value); if (errors.aEn) setErrors({ ...errors, aEn: undefined }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setAEn(val);
+                    setErrors(prev => ({ ...prev, aEn: val.trim() ? undefined : "English answer is required" }));
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value.trim()) setErrors(prev => ({ ...prev, aEn: "English answer is required" }));
+                  }}
                   className={`w-full px-3 py-2 bg-slate-50 border ${errors.aEn ? 'border-red-500' : 'border-slate-200'} rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 outline-none resize-none`}
                   placeholder="Provide the answer here..."
                 />
@@ -287,7 +301,14 @@ export default function FaqPage() {
                 <input
                   type="text"
                   value={qHi}
-                  onChange={(e) => { setQHi(e.target.value); if (errors.qHi) setErrors({ ...errors, qHi: undefined }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setQHi(val);
+                    setErrors(prev => ({ ...prev, qHi: val.trim() ? undefined : "Hindi question is required" }));
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value.trim()) setErrors(prev => ({ ...prev, qHi: "Hindi question is required" }));
+                  }}
                   className={`w-full px-3 py-2 bg-slate-50 border ${errors.qHi ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:ring-blue-500'} rounded-xl text-sm focus:outline-none focus:ring-2 outline-none`}
                   placeholder="e.g. मैं प्लॉट कैसे बुक कर सकता हूं?"
                 />
@@ -298,7 +319,14 @@ export default function FaqPage() {
                 <textarea
                   rows={4}
                   value={aHi}
-                  onChange={(e) => { setAHi(e.target.value); if (errors.aHi) setErrors({ ...errors, aHi: undefined }); }}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setAHi(val);
+                    setErrors(prev => ({ ...prev, aHi: val.trim() ? undefined : "Hindi answer is required" }));
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value.trim()) setErrors(prev => ({ ...prev, aHi: "Hindi answer is required" }));
+                  }}
                   className={`w-full px-3 py-2 bg-slate-50 border ${errors.aHi ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:ring-blue-500'} rounded-xl text-sm focus:outline-none focus:ring-2 outline-none resize-none`}
                   placeholder="e.g. आप हमारी सेल्स टीम से संपर्क कर सकते हैं..."
                 />
@@ -312,14 +340,14 @@ export default function FaqPage() {
               variant="secondary"
               onClick={() => setIsModalOpen(false)}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving}
               icon={saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             >
-              {saving ? "Saving..." : "Save FAQ"}
+              {saving ? t('saving') : t('save_faq')}
             </Button>
           </div>
         </div>
@@ -329,10 +357,10 @@ export default function FaqPage() {
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false, id: "" })}
         onConfirm={confirmDelete}
-        title="Delete FAQ"
-        message="Are you sure you want to delete this FAQ?"
+        title={t('delete_faq')}
+        message={t('delete_faq_confirm')}
         isDanger={true}
-        confirmText="Delete"
+        confirmText={t('delete')}
         isLoading={deleteLoading}
       />
     </div>

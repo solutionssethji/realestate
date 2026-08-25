@@ -906,4 +906,333 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get off => 'छूट';
+
+  @override
+  String get authErrInvalidEmail => 'Please enter a valid email address.';
+
+  @override
+  String get authErrInvalidCredentialCurrent =>
+      'Current password is incorrect.';
+
+  @override
+  String get authErrInvalidCredential => 'Invalid email or password.';
+
+  @override
+  String get authErrWrongPassword => 'Incorrect password. Please try again.';
+
+  @override
+  String get authErrUserNotFound =>
+      'No account found with this email. Please signup first';
+
+  @override
+  String get authErrUserDisabled =>
+      'Your account has been disabled. Please contact support.';
+
+  @override
+  String get authErrEmailAlreadyInUse =>
+      'An account with this email already exists.';
+
+  @override
+  String get authErrWeakPassword =>
+      'Password is too weak. Please choose a stronger password.';
+
+  @override
+  String get authErrOperationNotAllowed =>
+      'This authentication method is currently disabled.';
+
+  @override
+  String get authErrTooManyRequests =>
+      'Too many attempts. Please try again later.';
+
+  @override
+  String get authErrNetworkRequestFailed =>
+      'Please check your internet connection.';
+
+  @override
+  String get authErrRequiresRecentLogin => 'Please sign in again to continue.';
+
+  @override
+  String get authErrCredentialAlreadyInUse =>
+      'This credential is already associated with another account.';
+
+  @override
+  String get authErrAccountExistsWithDifferentCredential =>
+      'An account already exists with a different sign-in method.';
+
+  @override
+  String get authErrProviderAlreadyLinked =>
+      'This sign-in provider is already linked to your account.';
+
+  @override
+  String get authErrNoSuchProvider =>
+      'The requested sign-in provider is not linked to this account.';
+
+  @override
+  String get authErrInvalidVerificationCode =>
+      'The verification code is invalid.';
+
+  @override
+  String get authErrInvalidVerificationId => 'The verification ID is invalid.';
+
+  @override
+  String get authErrSessionExpired =>
+      'The verification session has expired. Please try again.';
+
+  @override
+  String get authErrQuotaExceeded =>
+      'Request limit exceeded. Please try again later.';
+
+  @override
+  String get authErrAppNotAuthorized =>
+      'This app is not authorized. Please contact support.';
+
+  @override
+  String get authErrInvalidApiKey => 'Invalid Firebase configuration.';
+
+  @override
+  String get authErrInternalError =>
+      'Something went wrong. Please try again later.';
+
+  @override
+  String get authErrWebContextCancelled => 'Sign-in was cancelled.';
+
+  @override
+  String get authErrWebStorageUnsupported =>
+      'This browser does not support authentication.';
+
+  @override
+  String get authErrPopupBlocked =>
+      'Popup was blocked. Please allow popups and try again.';
+
+  @override
+  String get authErrAuthDomainConfigRequired =>
+      'Authentication domain configuration is required. Please contact support.';
+
+  @override
+  String get authErrOperationNotSupported =>
+      'This operation is not supported in the current environment.';
+
+  @override
+  String get authErrTimeout => 'The request timed out. Please try again.';
+
+  @override
+  String get authErrDefault => 'Authentication failed. Please try again.';
+
+  @override
+  String get kycAndDocuments => 'KYC & Documents';
+
+  @override
+  String get identityDocuments => 'Identity Documents';
+
+  @override
+  String get aadharCard => 'Aadhar Card';
+
+  @override
+  String get enterAadharNumber => 'Enter 12-digit Aadhar Number';
+
+  @override
+  String get panCard => 'PAN Card';
+
+  @override
+  String get enterPanNumber => 'Enter 10-character PAN Number';
+
+  @override
+  String get bankDetails => 'Bank Details';
+
+  @override
+  String get bankName => 'Bank Name';
+
+  @override
+  String get accountNumber => 'Account Number';
+
+  @override
+  String get ifscCode => 'IFSC Code';
+
+  @override
+  String get saveDetails => 'Save Details';
+
+  @override
+  String get uploadDocumentImage => 'Upload Document Image:';
+
+  @override
+  String get tapToPickImage => 'Tap to pick image';
+
+  @override
+  String get userNotFound => 'User not found';
+
+  @override
+  String failedToPickImage(String error) {
+    return 'Failed to pick image: $error';
+  }
+
+  @override
+  String get kycUpdatedSuccessfully => 'KYC details updated successfully!';
+
+  @override
+  String failedToUpdateKyc(String error) {
+    return 'Failed to update KYC: $error';
+  }
+
+  @override
+  String get emiAndPayments => 'EMI & Payments';
+
+  @override
+  String get paymentSummary => 'Payment Summary';
+
+  @override
+  String get totalAmount => 'Total Amount';
+
+  @override
+  String get amountPaid => 'Amount Paid';
+
+  @override
+  String get pendingBalance => 'Pending Balance';
+
+  @override
+  String get noPaymentRecords => 'No payment records found.';
+
+  @override
+  String paymentRef(String ref) {
+    return 'Ref: $ref';
+  }
+
+  @override
+  String get supportCenter => 'Support Center';
+
+  @override
+  String get howCanWeHelp => 'How can we help you?';
+
+  @override
+  String get supportDesc =>
+      'Our team is available to assist you with any questions about properties, payments, or your account.';
+
+  @override
+  String get whatsappSupport => 'WhatsApp Support';
+
+  @override
+  String get whatsappSubtitle => 'Fastest response time';
+
+  @override
+  String get callUsSubtitle => 'Mon-Sat, 10 AM to 6 PM';
+
+  @override
+  String get emailSupport => 'Email Support';
+
+  @override
+  String get emailSupportSubtitle => 'support@realestate.com';
+
+  @override
+  String get faqTitle => 'Frequently Asked Questions';
+
+  @override
+  String get faq1Question => 'How do I book a plot?';
+
+  @override
+  String get faq1Answer =>
+      'You can browse available plots in any active project and click \"Enquire\" or \"Book\". An agent will contact you shortly.';
+
+  @override
+  String get faq2Question => 'Where can I see my EMI status?';
+
+  @override
+  String get faq2Answer =>
+      'Go to Profile > My Properties, and select your booked plot to see your complete EMI tracker and payment history.';
+
+  @override
+  String get faq3Question => 'Can I change my registered email?';
+
+  @override
+  String get faq3Answer =>
+      'For security reasons, your registered email cannot be changed from the app. Please contact support.';
+
+  @override
+  String get myProfile => 'My Profile';
+
+  @override
+  String get notLoggedIn => 'You are not logged in.';
+
+  @override
+  String get myProperties => 'My Properties';
+
+  @override
+  String get myEnquiries => 'My Enquiries';
+
+  @override
+  String get mySiteVisits => 'My Site Visits';
+
+  @override
+  String get loginBtn => 'Login';
+
+  @override
+  String get pleaseLoginToViewProperties =>
+      'Please login to view your properties.';
+
+  @override
+  String get noPropertiesYet => 'You have no booked or purchased plots yet.';
+
+  @override
+  String plotNoLabel(String number) {
+    return 'Plot No: $number';
+  }
+
+  @override
+  String get loginPageTitle => 'Login';
+
+  @override
+  String get welcomeBack => 'Welcome Back';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get forgotPassword => 'Forgot Password?';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account? Register';
+
+  @override
+  String get forgotPasswordTitle => 'Forgot Password';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get resetPasswordDesc =>
+      'Enter your email address and we will send you a link to reset your password.';
+
+  @override
+  String get sendResetLink => 'Send Reset Link';
+
+  @override
+  String get resetLinkSent => 'Reset link sent! Please check your email inbox.';
+
+  @override
+  String get backToLogin => 'Back to Login';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get joinUs => 'Join Us';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get takeAPhoto => 'Take a Photo';
+
+  @override
+  String get removePhoto => 'Remove Photo';
+
+  @override
+  String get emailAddress => 'Email Address';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account? Login';
 }

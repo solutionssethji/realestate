@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/premium_app_bar.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -6,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'site_visit.logic.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
-import '../../widgets/app_text_field.dart';
 import '../../widgets/premium_button.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
@@ -23,8 +23,6 @@ class SiteVisitPage extends HookConsumerWidget {
     final logic = ref.read(siteVisitLogicProvider.notifier);
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    final nameCtrl = useTextEditingController();
-    final phoneCtrl = useTextEditingController();
     final selectedDate = useState<DateTime?>(null);
     final selectedTime = useState<TimeOfDay?>(null);
 
@@ -95,35 +93,6 @@ class SiteVisitPage extends HookConsumerWidget {
                   ),
                   AppSpacing.hXXl,
 
-                  Text(
-                    context.l10n.yourDetailsAlt,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  AppSpacing.hLg,
-
-                  AppTextField(
-                    controller: nameCtrl,
-                    label: loc.fullName,
-                    prefixIcon: const Icon(Icons.person_outline),
-                    textInputAction: TextInputAction.next,
-                    validator: (v) => (v == null || v.trim().isEmpty)
-                        ? context.l10n.nameRequired
-                        : null,
-                  ),
-                  AppSpacing.hLg,
-
-                  AppTextField(
-                    controller: phoneCtrl,
-                    label: loc.mobileNumber,
-                    prefixIcon: const Icon(Icons.phone_outlined),
-                    keyboardType: TextInputType.phone,
-                    textInputAction: TextInputAction.done,
-                    validator: (v) => (v == null || v.trim().length < 10)
-                        ? context.l10n.enterValidNumber
-                        : null,
-                  ),
-                  AppSpacing.hXXl,
-
                   if (state.isError) ...[
                     _Banner(
                       text: state.errorMessage ?? context.l10n.bookingFailed,
@@ -151,6 +120,18 @@ class SiteVisitPage extends HookConsumerWidget {
                     onPressed: state.isSuccess || state.isSubmitting
                         ? null
                         : () {
+                            final currentUser =
+                                FirebaseAuth.instance.currentUser;
+                            if (currentUser == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Please log in to book a site visit.',
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
                             if (selectedDate.value == null ||
                                 selectedTime.value == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -169,8 +150,7 @@ class SiteVisitPage extends HookConsumerWidget {
                                 selectedTime.value!.minute,
                               );
                               logic.bookVisit(
-                                name: nameCtrl.text.trim(),
-                                phone: phoneCtrl.text.trim(),
+                                customerId: currentUser.uid,
                                 projectId: initialProjectId ?? '',
                                 date: dt,
                                 time: selectedTime.value!.format(context),

@@ -12,12 +12,10 @@ class SiteVisitLogic extends _$SiteVisitLogic {
   }
 
   Future<bool> bookVisit({
-    required String name,
-    required String phone,
+    required String customerId,
     required String projectId,
     required DateTime date,
     required String time,
-    String? message,
   }) async {
     state = state.copyWith(
       isSubmitting: true,
@@ -27,8 +25,7 @@ class SiteVisitLogic extends _$SiteVisitLogic {
     );
     try {
       await ApiService.submitSiteVisit({
-        'name': name,
-        'mobile': phone,
+        'customerId': customerId,
         'projectId': projectId,
         'preferredDate': date.toIso8601String(),
         'preferredTime': time,

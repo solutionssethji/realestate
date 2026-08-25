@@ -3,9 +3,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Building2, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import { Loader2, CheckCircle2, ArrowRight } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'react-hot-toast';
+import { findAdminOrAgentByEmail, normalizeEmail } from '@/lib/firebase';
 
 export default function ForgotPasswordPage() {
   const { t } = useLanguage();
@@ -19,30 +20,34 @@ export default function ForgotPasswordPage() {
 
     try {
       const { sendPasswordResetEmail } = await import("firebase/auth");
-      const { collection, query, where, getDocs } = await import("firebase/firestore");
-      const { auth, db } = await import("@/lib/firebase");
+      const { auth } = await import("@/lib/firebase");
 
-      // Verify if the email belongs to an admin
-      const adminsRef = collection(db, "admins");
-      const q = query(adminsRef, where("email", "==", email.toLowerCase().trim()));
-      const querySnapshot = await getDocs(q);
+      const normalizedEmail = normalizeEmail(email);
+      const adminOrAgent = await findAdminOrAgentByEmail(normalizedEmail);
 
-      if (querySnapshot.empty) {
-        throw new Error("Access denied. No admin account found with this email.");
+      if (!adminOrAgent) {
+        toast.error(t('invalid_email_id'));
+        return;
       }
 
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth, normalizedEmail);
       setSuccess(true);
     } catch (err: any) {
-      let friendlyMessage = err.message || "Something went wrong. Please check the email provided.";
-      if (err.code === 'auth/invalid-email') {
-        friendlyMessage = "Please enter a valid email address.";
+      let friendlyMessage = t('something_went_wrong_email');
+      if (
+        err.code === 'permission-denied' ||
+        err.code === 'firestore/permission-denied' ||
+        err.message?.includes('Missing or insufficient permissions')
+      ) {
+        friendlyMessage = t('invalid_email_id');
+      } else if (err.code === 'auth/invalid-email') {
+        friendlyMessage = t('invalid_email_id');
       } else if (err.code === 'auth/user-not-found') {
-        friendlyMessage = "No account found with this email.";
+        friendlyMessage = t('invalid_email_id');
       } else if (err.code === 'auth/too-many-requests') {
-        friendlyMessage = "Too many requests. Please try again later.";
+        friendlyMessage = t('too_many_failed_attempts');
       } else if (err.code === 'auth/network-request-failed') {
-        friendlyMessage = "Network error. Please check your internet connection.";
+        friendlyMessage = t('network_error');
       }
       toast.error(friendlyMessage);
     } finally {
@@ -67,14 +72,14 @@ export default function ForgotPasswordPage() {
 
           <div className="flex flex-col items-center mb-8">
             <div className="mb-6">
-              <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-16 w-auto object-contain" />
+              <img src="/logo_with_text.png" alt="SHUBHAYTANAM CONNECT" className="h-24 w-auto object-contain" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-              Reset Password
+              {t('forgot_password_title')}
             </h2>
             {!success && (
               <p className="text-slate-500 text-sm mt-1 text-center">
-                Enter your email address to receive a secure reset link.
+                {t('enter_email_to_reset')}
               </p>
             )}
           </div>
@@ -86,9 +91,9 @@ export default function ForgotPasswordPage() {
                   <CheckCircle2 className="h-10 w-10 text-emerald-600" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-900">Link Sent!</h3>
+              <h3 className="text-xl font-bold text-slate-900">{t('reset_link_sent')}</h3>
               <p className="mt-2 text-sm text-slate-500">
-                If an account exists with <span className="font-semibold text-slate-700">{email}</span>, you will receive a password reset email shortly.
+                {t('reset_link_sent_desc')}
               </p>
               <div className="mt-8">
                 <Link
@@ -124,14 +129,14 @@ export default function ForgotPasswordPage() {
                   {loading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
-                    "Send Reset Link"
+                    t('send_reset_link')
                   )}
                 </button>
               </div>
 
               <div className="text-center pt-2">
                 <Link href="/login" className="text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors">
-                  Nevermind, back to login
+                  {t('nevermind_back_to_login')}
                 </Link>
               </div>
             </form>
@@ -141,7 +146,7 @@ export default function ForgotPasswordPage() {
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-white/60 text-sm">
-            &copy; {new Date().getFullYear()} {t('real_estate')}. All rights reserved.
+            &copy; {new Date().getFullYear()} {t('real_estate')}. {t('all_rights_reserved')}
           </p>
         </div>
       </div>
