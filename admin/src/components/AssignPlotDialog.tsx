@@ -48,7 +48,7 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
         mobileNumber: user.mobileNumber || "",
         projectId: plot.projectId || "",
         plotId: plot.id || "",
-        totalAmount: 0,
+        totalAmount: plot.price || 0,
         paidAmount: 0,
       };
 
