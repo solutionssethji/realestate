@@ -4,7 +4,7 @@ import { useState, Suspense } from "react";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useServerPagination } from "@/hooks/useServerPagination";
-import { Users, Search, ShieldAlert, ShieldCheck, UserPlus, Trash2, Edit } from "lucide-react";
+import { Users, Search, ShieldAlert, ShieldCheck, UserPlus, Trash2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";

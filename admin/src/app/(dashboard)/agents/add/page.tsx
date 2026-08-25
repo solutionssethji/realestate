@@ -9,7 +9,7 @@ import getCroppedImg from "@/lib/cropImage";
 import Cropper from "react-easy-crop";
 import { Modal } from "@/components/ui/Modal";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { User, Mail, Phone, Briefcase, FileText, Building, CheckCircle, Eye, EyeOff } from "lucide-react";
+import { User, FileText, Eye, EyeOff, Building, CheckCircle } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { validateStrongPassword } from "@/lib/validators";
 import { useLanguage } from '@/context/LanguageContext';
@@ -134,7 +134,7 @@ export default function AddAgentPage() {
     }
   };
 
-  const onCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
+  const onCropComplete = (_croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 

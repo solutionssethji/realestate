@@ -4,12 +4,11 @@
 import { useAuth } from "@/context/AuthContext";
 import {
   LayoutDashboard, Building2, Map, Tag, PhoneIncoming, CalendarCheck,
-  CreditCard, Users, Settings, LogOut, Menu, X, FileText, HelpCircle, Bookmark, Briefcase, User as UserIcon, Lock, Bell
+  CreditCard, Users, Settings, LogOut, Menu, HelpCircle, Bookmark, Briefcase, User as UserIcon, Lock, Bell
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Modal } from "@/components/ui/Modal";
 
 const getNavItems = (role?: string, t?: (key: string) => string) => {

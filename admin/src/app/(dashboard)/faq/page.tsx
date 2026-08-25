@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, deleteDoc, updateDoc, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { HelpCircle, Plus, Edit2, Trash2, Loader2, Save, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-hot-toast";
