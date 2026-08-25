@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import api from "@/lib/api";
 import { useServerPagination } from "@/hooks/useServerPagination";
 import Link from "next/link";
-import { Plus, Edit2, Trash2, Map as MapIcon, Filter, Search, Loader2, Eye, EyeOff, UserPlus } from "lucide-react";
+import { Plus, Edit2, Trash2, Map as MapIcon, Search, Loader2, Eye, EyeOff, UserPlus } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -135,7 +135,7 @@ export default function PlotsListPage() {
       const newStatus = !isCurrentlyActive;
 
       setPlots(plots.map(p => p.id === plot.id ? { ...p, isActive: newStatus } : p) as any);
-      await api.put(`/plots/${plot.id}`, { ...project, isActive: newStatus });
+      await api.put(`/plots/${plot.id}`, { ...plot, isActive: newStatus });
       toast.success(newStatus ? t('plot_enabled_success') : t('plot_disabled_success'));
     } catch (error: any) {
       setPlots(plots.map(p => p.id === plot.id ? { ...p, isActive: plot.isActive } : p) as any);

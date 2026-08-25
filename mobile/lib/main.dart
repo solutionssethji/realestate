@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,6 +14,32 @@ import 'theme/theme.dart';
 import 'routes/routes.dart';
 import 'constants.dart';
 import 'firebase_options.dart';
+
+Future<void> syncCurrentUserFcmToken() async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  final settings = await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.denied) {
+    return;
+  }
+
+  final token = await FirebaseMessaging.instance.getToken();
+  if (token == null || token.trim().isEmpty) return;
+
+  await FirebaseFirestore.instance.collection('users').doc(user.uid).set(
+    {
+      'fcmTokens': FieldValue.arrayUnion([token]),
+      'updatedAt': FieldValue.serverTimestamp(),
+    },
+    SetOptions(merge: true),
+  );
+}
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -29,7 +57,16 @@ void main() async {
   }
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((message) {
+    debugPrint('Foreground push notification received: ${message.messageId}');
+  });
+
   FirebaseAnalytics.instance;
+  FirebaseAuth.instance.authStateChanges().listen((user) async {
+    if (user != null) {
+      await syncCurrentUserFcmToken();
+    }
+  });
 
   runApp(const ProviderScope(child: RealEstateApp()));
 }

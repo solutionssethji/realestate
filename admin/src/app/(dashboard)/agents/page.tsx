@@ -2,9 +2,9 @@
 
 import { useState, Suspense } from "react";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, auth } from "@/lib/firebase";
 import { useServerPagination } from "@/hooks/useServerPagination";
-import { Users, Search, ShieldAlert, ShieldCheck, UserPlus, Trash2, Edit } from "lucide-react";
+import { Users, Search, ShieldAlert, ShieldCheck, UserPlus, Trash2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
@@ -25,6 +25,12 @@ type Agent = {
   firmName?: string;
   status: string; // e.g., 'ACTIVE', 'DISABLED'
   createdAt: any;
+  kyc?: {
+    status?: string;
+    docs?: Array<{ type: string; url: string; path?: string; uploadedAt?: string }>; 
+    reviewedBy?: string;
+    reviewedAt?: string;
+  } | null;
 };
 
 function AgentsContent() {
@@ -36,6 +42,11 @@ function AgentsContent() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [agentToDelete, setAgentToDelete] = useState<Agent | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  // KYC review modal state
+  const [isKycModalOpen, setIsKycModalOpen] = useState(false);
+  const [selectedKycAgent, setSelectedKycAgent] = useState<Agent | null>(null);
+  const [kycReviewing, setKycReviewing] = useState(false);
 
   const filters: any[] = [];
   if (statusFilter !== "ALL") {
@@ -145,6 +156,20 @@ function AgentsContent() {
       )
     },
     {
+      header: t('kyc_status'),
+      key: "kyc",
+      render: (a: Agent) => {
+        const kyc = (a as any).kyc;
+        const status = kyc?.status || 'NONE';
+        const className = status === 'APPROVED' ? 'bg-green-100 text-green-700' : status === 'REJECTED' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700';
+        return (
+          <div>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${className}`}>{status}</span>
+          </div>
+        );
+      }
+    },
+    {
       header: t('actions'),
       key: "actions",
       render: (a: Agent) => (
@@ -166,6 +191,14 @@ function AgentsContent() {
             ) : (
               <ShieldAlert className="h-5 w-5" />
             )}
+          </button>
+
+          <button
+            onClick={() => { setSelectedKycAgent(a); setIsKycModalOpen(true); }}
+            className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors"
+            title={t('view_kyc')}
+          >
+            KYC
           </button>
           
           <button
@@ -240,6 +273,128 @@ function AgentsContent() {
           />
         )}
       </div>
+
+      {/* KYC Review Modal */}
+      <Modal
+        isOpen={isKycModalOpen}
+        onClose={() => { setIsKycModalOpen(false); setSelectedKycAgent(null); }}
+        title={t('kyc_documents')}
+        maxWidth="lg"
+        footer={
+          <div className="flex items-center justify-end gap-3 w-full">
+            <div className="flex-1"></div>
+            <Button variant="secondary" onClick={() => { setIsKycModalOpen(false); setSelectedKycAgent(null); }}>
+              {t('close')}
+            </Button>
+            <Button variant="danger-outline" onClick={async () => {
+              if (!selectedKycAgent) return;
+              setKycReviewing(true);
+              try {
+                const reviewedAt = new Date().toISOString();
+                await updateDoc(doc(db, 'agents', selectedKycAgent.id), {
+                  'kyc.status': 'REJECTED',
+                  'kyc.reviewedBy': auth?.currentUser?.uid || null,
+                  'kyc.reviewedAt': reviewedAt,
+                  updatedAt: reviewedAt
+                });
+
+                // Update local cached agents list so UI reflects change immediately
+                setAgents((prev: any) => prev.map((a: any) => {
+                  if (a.id !== selectedKycAgent.id) return a;
+                  const prevKyc = a.kyc || {};
+                  return {
+                    ...a,
+                    kyc: {
+                      ...prevKyc,
+                      status: 'REJECTED',
+                      reviewedBy: auth?.currentUser?.uid || null,
+                      reviewedAt
+                    },
+                    updatedAt: reviewedAt
+                  };
+                }));
+
+                toast.success(t('kyc_rejected'));
+                setSelectedKycAgent(null);
+                setIsKycModalOpen(false);
+              } catch (e) {
+                toast.error(t('failed_update'));
+              } finally {
+                setKycReviewing(false);
+              }
+            }} isLoading={kycReviewing}>
+              {t('reject')}
+            </Button>
+            <Button variant="success" onClick={async () => {
+              if (!selectedKycAgent) return;
+              setKycReviewing(true);
+              try {
+                const reviewedAt = new Date().toISOString();
+                await updateDoc(doc(db, 'agents', selectedKycAgent.id), {
+                  'kyc.status': 'APPROVED',
+                  'kyc.reviewedBy': auth?.currentUser?.uid || null,
+                  'kyc.reviewedAt': reviewedAt,
+                  updatedAt: reviewedAt
+                });
+
+                // Update local cached agents list so UI reflects change immediately
+                setAgents((prev: any) => prev.map((a: any) => {
+                  if (a.id !== selectedKycAgent.id) return a;
+                  const prevKyc = a.kyc || {};
+                  return {
+                    ...a,
+                    kyc: {
+                      ...prevKyc,
+                      status: 'APPROVED',
+                      reviewedBy: auth?.currentUser?.uid || null,
+                      reviewedAt
+                    },
+                    updatedAt: reviewedAt
+                  };
+                }));
+
+                toast.success(t('kyc_approved'));
+                setSelectedKycAgent(null);
+                setIsKycModalOpen(false);
+              } catch (e) {
+                toast.error(t('failed_update'));
+              } finally {
+                setKycReviewing(false);
+              }
+            }} isLoading={kycReviewing}>
+              {t('approve')}
+            </Button>
+          </div>
+        }
+      >
+        <div className="min-h-[160px] flex flex-col gap-4">
+          {selectedKycAgent?.kyc?.docs && selectedKycAgent.kyc.docs.length > 0 ? (
+            <div className="grid grid-cols-1 gap-3">
+              {selectedKycAgent.kyc.docs.map((d: any, idx: number) => (
+                <div key={idx} className="flex items-center justify-between border rounded-lg p-3 bg-white">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-md bg-slate-100 flex items-center justify-center text-slate-500 font-semibold">{d.type?.slice(0,1) || 'D'}</div>
+                    <div>
+                      <div className="text-sm font-semibold text-slate-900">{d.type}</div>
+                      <div className="text-xs text-slate-500">{d.uploadedAt ? `Uploaded: ${d.uploadedAt}` : ''}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a href={d.url} target="_blank" rel="noreferrer" className="inline-flex items-center px-3 py-2 bg-slate-50 rounded-md text-sm text-slate-700 border border-slate-200">View</a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center text-slate-600">
+                <div className="text-3xl mb-2">📄</div>
+                <div className="text-sm">{t('no_kyc_uploaded')}</div>
+              </div>
+            </div>
+          )}
+        </div>
+      </Modal>
 
       <Modal
         isOpen={isDeleteModalOpen}

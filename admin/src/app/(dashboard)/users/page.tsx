@@ -4,7 +4,7 @@ import { useState, Suspense } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useServerPagination } from "@/hooks/useServerPagination";
-import { Users, Search, Eye, ShieldAlert, ShieldCheck, ChevronDown } from "lucide-react";
+import { Users, Search, Eye, ChevronDown } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";

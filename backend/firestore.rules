@@ -37,6 +37,11 @@ service cloud.firestore {
     match /adminNotifications/{notificationId} {
       allow read, write: if isAdmin();
     }
+
+    match /users/{userId}/notifications/{notificationId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if isAdmin();
+    }
     
     // USERS (Customers of the mobile app)
     match /users/{userId} {

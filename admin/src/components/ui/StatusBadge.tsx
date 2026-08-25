@@ -1,5 +1,3 @@
-import React from "react";
-import { Loader2 } from "lucide-react";
 
 export const StatusBadge = ({ status, className = "" }: { status: string; className?: string }) => {
   const normalized = status.toUpperCase().trim();
