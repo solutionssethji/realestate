@@ -3,21 +3,18 @@
 import { useState, useEffect, Suspense } from "react";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import api from "@/lib/api";
 import { useServerPagination } from "@/hooks/useServerPagination";
-import { CalendarCheck, Loader2, Search, Filter, Eye, User } from "lucide-react";
+import { CalendarCheck, Search, Eye, User } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 import { ShimmerTable } from "@/components/ui/Shimmer";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Select } from "@/components/ui/Select";
-import { formatDateTime } from "@/lib/formatters";
 
 type SiteVisit = {
   id: string;
@@ -39,7 +36,6 @@ type UserInfo = {
   email?: string;
 };
 
-const PAGE_SIZE = 15;
 
 function SiteVisitsContent() {
   const { t } = useLanguage();
@@ -336,10 +332,6 @@ function SiteVisitsContent() {
   ];
 
   const selectedUser = (selectedVisit && selectedVisit.customerId) ? userCache[selectedVisit.customerId] : null;
-  const selectedName = selectedUser ? selectedUser.fullName : (selectedVisit?.customerName || "Unknown");
-  const selectedMobile = selectedUser ? selectedUser.mobileNumber : (selectedVisit?.mobileNumber || "—");
-  const selectedEmail = selectedUser?.email || selectedVisit?.email;
-
   const selectedProject = (selectedVisit && selectedVisit.projectId) ? projectCache[selectedVisit.projectId] : null;
   const projectName = selectedProject?.name?.en || (typeof selectedProject?.name === 'string' ? selectedProject.name : null);
 

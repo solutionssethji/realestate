@@ -2,9 +2,9 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Building2, Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { Loader2, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'react-hot-toast';
 import { validateStrongPassword } from "@/lib/validators";
@@ -188,7 +188,6 @@ function ResetPasswordForm() {
 }
 
 export default function ResetPasswordPage() {
-  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">

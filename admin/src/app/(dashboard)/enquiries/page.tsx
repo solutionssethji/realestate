@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { doc, updateDoc, getDoc, collection, getDocs } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import api from "@/lib/api";
 import { useServerPagination } from "@/hooks/useServerPagination";
-import { PhoneIncoming, Loader2, Search, Eye, User } from "lucide-react";
+import { PhoneIncoming, Search, Eye, User } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from '@/context/LanguageContext';
@@ -36,7 +35,6 @@ type UserInfo = {
   email?: string;
 };
 
-const PAGE_SIZE = 15;
 
 function EnquiriesContent() {
   const { t } = useLanguage();

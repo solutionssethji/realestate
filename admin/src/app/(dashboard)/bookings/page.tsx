@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useServerPagination } from "@/hooks/useServerPagination";
-import { Bookmark, Search, Eye, FileText } from "lucide-react";
+import { Bookmark, Search, Eye } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { DataTable } from "@/components/ui/DataTable";
 import { ShimmerTable } from "@/components/ui/Shimmer";

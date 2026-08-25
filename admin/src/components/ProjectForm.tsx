@@ -13,7 +13,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Ca
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
-import { X, UploadCloud } from "lucide-react";
+import { X } from "lucide-react";
 
 interface ProjectFormProps {
   initialData?: any;

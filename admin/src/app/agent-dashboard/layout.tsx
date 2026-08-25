@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext";
 import {
-  LayoutDashboard, User, LogOut, Menu, X, Building2, Map
+  LayoutDashboard, User, LogOut, Menu, X
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";

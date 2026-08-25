@@ -5,7 +5,7 @@ import { updateDoc, collection, setDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import api from "@/lib/api";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Bookmark, User, CreditCard, DollarSign, Calendar } from "lucide-react";
+import { Bookmark, User, CreditCard } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { formatCurrency, formatDateTime } from "@/lib/formatters";
 import { Modal } from "@/components/ui/Modal";

@@ -2,10 +2,34 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { onAuthStateChanged, signOut, sendEmailVerification, User as FirebaseUser } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  onIdTokenChanged,
+  signOut,
+  sendEmailVerification,
+  User as FirebaseUser,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import Cookies from "js-cookie";
+
+const AUTH_TOKEN_COOKIE = "token";
+const TOKEN_REFRESH_MARGIN_MS = 5 * 60 * 1000;
+
+async function syncAuthCookie(firebaseUser: FirebaseUser | null) {
+  if (!firebaseUser) {
+    Cookies.remove(AUTH_TOKEN_COOKIE);
+    return null;
+  }
+
+  const token = await firebaseUser.getIdToken();
+  Cookies.set(AUTH_TOKEN_COOKIE, token, {
+    expires: 1,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+  return token;
+}
 
 interface User {
   id: string;
@@ -57,8 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             });
             setIsAuthenticated(true);
             setUnverifiedFirebaseUser(null);
-            const token = await firebaseUser.getIdToken();
-            Cookies.set("token", token, { expires: 1 });
+            await syncAuthCookie(firebaseUser);
             setLoading(false);
             setInitialLoading(false);
           } else {
@@ -69,22 +92,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               const data = agentSnap.data();
 
               if (data.status !== "ACTIVE") {
-                // If inactive, just sign out. login/page.tsx will handle showing the error toast.
                 await signOut(auth);
                 setIsAuthenticated(false);
                 setUser(null);
-                Cookies.remove("token");
+                Cookies.remove(AUTH_TOKEN_COOKIE);
                 setLoading(false);
                 setInitialLoading(false);
                 return;
               }
 
               if (!firebaseUser.emailVerified) {
-                // Store unverified user in context BEFORE signing out
                 setUnverifiedFirebaseUser(firebaseUser);
                 setLoading(false);
                 setInitialLoading(false);
-                // Sign out AFTER updating state so signOut's onAuthStateChanged(null) doesn't wipe unverifiedFirebaseUser
                 await signOut(auth);
               } else {
                 setUser({
@@ -96,8 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 });
                 setIsAuthenticated(true);
                 setUnverifiedFirebaseUser(null);
-                const token = await firebaseUser.getIdToken();
-                Cookies.set("token", token, { expires: 1 });
+                await syncAuthCookie(firebaseUser);
                 setLoading(false);
                 setInitialLoading(false);
               }
@@ -105,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               await signOut(auth);
               setIsAuthenticated(false);
               setUser(null);
-              Cookies.remove("token");
+              Cookies.remove(AUTH_TOKEN_COOKIE);
               setLoading(false);
               setInitialLoading(false);
             }
@@ -118,10 +137,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setInitialLoading(false);
         }
       } else {
-        // Signed out: clear auth but DO NOT clear unverifiedFirebaseUser
         setIsAuthenticated(false);
         setUser(null);
-        Cookies.remove("token");
+        Cookies.remove(AUTH_TOKEN_COOKIE);
         setLoading(false);
         setInitialLoading(false);
       }
@@ -129,6 +147,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const refreshTokenLoop = async () => {
+      if (!auth.currentUser) return;
+
+      try {
+        const tokenResult = await auth.currentUser.getIdTokenResult();
+        const expirationTime = new Date(tokenResult.expirationTime).getTime();
+        const refreshInMs = Math.max(expirationTime - Date.now() - TOKEN_REFRESH_MARGIN_MS, 1000);
+
+        const timeoutId = window.setTimeout(async () => {
+          try {
+            await auth.currentUser?.getIdToken(true);
+            await syncAuthCookie(auth.currentUser);
+          } catch (error) {
+            console.warn("Token refresh failed", error);
+          }
+          refreshTokenLoop();
+        }, refreshInMs);
+
+        return () => window.clearTimeout(timeoutId);
+      } catch (error) {
+        console.warn("Failed to schedule token refresh", error);
+      }
+    };
+
+    let cleanup: (() => void) | undefined;
+
+    const setupRefresh = async () => {
+      cleanup = await refreshTokenLoop();
+    };
+
+    setupRefresh();
+
+    const unsubscribe = onIdTokenChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser) {
+        Cookies.remove(AUTH_TOKEN_COOKIE);
+        return;
+      }
+
+      await syncAuthCookie(firebaseUser);
+      cleanup?.();
+      setupRefresh();
+    });
+
+    return () => {
+      unsubscribe();
+      cleanup?.();
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     if (!loading && isAuthenticated && pathname === "/login") {
