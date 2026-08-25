@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { collection, query, orderBy, limit, doc, updateDoc, onSnapshot, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { Bell, Loader2, CheckCircle2, Circle, Check } from "lucide-react";
+import { httpsCallable } from "firebase/functions";
+import { db, functions } from "@/lib/firebase";
+import { Bell, Loader2, CheckCircle2, Circle, Check, Send } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -11,6 +12,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
+import { Modal } from "@/components/ui/Modal";
 import { formatRelativeTime } from "@/lib/formatters";
 
 type AppNotification = {
@@ -34,6 +36,10 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [limitCount, setLimitCount] = useState(PAGE_SIZE);
   const [hasMore, setHasMore] = useState(false);
+  const [showComposer, setShowComposer] = useState(false);
+  const [notificationTitle, setNotificationTitle] = useState("");
+  const [notificationBody, setNotificationBody] = useState("");
+  const [sendingNotification, setSendingNotification] = useState(false);
 
   // Map of customerId -> displayName
   const [userNames, setUserNames] = useState<Record<string, string>>({});
@@ -51,7 +57,9 @@ export default function NotificationsPage() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetched: AppNotification[] = [];
       snapshot.forEach((doc) => {
-        fetched.push({ id: doc.id, ...doc.data() } as AppNotification);
+        const data = doc.data() ?? {};
+        const { id: _docDataId, ...rest } = data as any;
+        fetched.push({ id: doc.id, ...rest } as AppNotification);
       });
       setNotifications(fetched);
       setHasMore(snapshot.docs.length === limitCount);
@@ -164,6 +172,32 @@ export default function NotificationsPage() {
     }
   };
 
+  const handleSendNotification = async () => {
+    const title = notificationTitle.trim();
+    const body = notificationBody.trim();
+
+    if (!title || !body) {
+      toast.error("Please enter both title and message");
+      return;
+    }
+
+    setSendingNotification(true);
+    try {
+      const sendNotificationFn = httpsCallable(functions, "sendBroadcastNotification");
+      const result: any = await sendNotificationFn({ title, body });
+      const payload = result?.data ?? {};
+      toast.success(`Notification sent to ${payload.total ?? 0} user(s)`);
+      setShowComposer(false);
+      setNotificationTitle("");
+      setNotificationBody("");
+    } catch (error: any) {
+      console.error("Failed to send notification", error);
+      toast.error(error?.message || "Failed to send notification");
+    } finally {
+      setSendingNotification(false);
+    }
+  };
+
   const markAllAsRead = async () => {
     try {
       const unreadNotifs = notifications.filter(n => !n.read);
@@ -192,9 +226,14 @@ export default function NotificationsPage() {
         title={t('notifications')}
         breadcrumbs={[{ label: t('dashboard'), href: "/dashboard" }, { label: t('notifications') }]}
         actions={
-          <Button variant="secondary" onClick={markAllAsRead} icon={<Check className="h-4 w-4" />}>
-            {t('mark_all_as_read')}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="primary" onClick={() => setShowComposer(true)} icon={<Send className="h-4 w-4" />}>
+              Send Notification
+            </Button>
+            <Button variant="secondary" onClick={markAllAsRead} icon={<Check className="h-4 w-4" />}>
+              {t('mark_all_as_read')}
+            </Button>
+          </div>
         }
       />
 
@@ -276,6 +315,45 @@ export default function NotificationsPage() {
           </div>
         )}
       </div>
+
+      <Modal
+        isOpen={showComposer}
+        onClose={() => setShowComposer(false)}
+        title="Send push notification"
+        maxWidth="md"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setShowComposer(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleSendNotification} disabled={sendingNotification}>
+              {sendingNotification ? "Sending..." : "Send to all users"}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
+            <input
+              type="text"
+              value={notificationTitle}
+              onChange={(e) => setNotificationTitle(e.target.value)}
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Project launch"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Message</label>
+            <textarea
+              value={notificationBody}
+              onChange={(e) => setNotificationBody(e.target.value)}
+              className="w-full min-h-[120px] px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Share a special offer or an important update with all customers."
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
