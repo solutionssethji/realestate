@@ -26,6 +26,10 @@ export default function AddAgentPage() {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   
+  // KYC file uploads
+  const [panFile, setPanFile] = useState<File | null>(null);
+  const [aadharFile, setAadharFile] = useState<File | null>(null);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -134,6 +138,20 @@ export default function AddAgentPage() {
     }
   };
 
+  const handlePanFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPanFile(e.target.files[0]);
+      e.target.value = "";
+    }
+  };
+
+  const handleAadharFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setAadharFile(e.target.files[0]);
+      e.target.value = "";
+    }
+  };
+
   const onCropComplete = (_croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
   };
@@ -188,6 +206,22 @@ export default function AddAgentPage() {
         photoURL = await getDownloadURL(storageRef);
       }
 
+      // Upload KYC files (PAN / Aadhar) if provided
+      const kycDocs: Array<any> = [];
+      if (panFile) {
+        const panRef = ref(storage, `agents/${newAgentRef.id}/kyc/pan_${Date.now()}_${panFile.name}`);
+        await uploadBytes(panRef, panFile);
+        const panUrl = await getDownloadURL(panRef);
+        kycDocs.push({ type: 'PAN', url: panUrl, path: panRef.fullPath, uploadedAt: new Date().toISOString() });
+      }
+
+      if (aadharFile) {
+        const aadharRef = ref(storage, `agents/${newAgentRef.id}/kyc/aadhar_${Date.now()}_${aadharFile.name}`);
+        await uploadBytes(aadharRef, aadharFile);
+        const aadharUrl = await getDownloadURL(aadharRef);
+        kycDocs.push({ type: 'AADHAR', url: aadharUrl, path: aadharRef.fullPath, uploadedAt: new Date().toISOString() });
+      }
+
       const { password, ...agentDataToSave } = formData;
 
       await setDoc(newAgentRef, {
@@ -196,6 +230,10 @@ export default function AddAgentPage() {
         photoURL,
         status: "ACTIVE",
         role: "AGENT",
+        kyc: {
+          status: kycDocs.length > 0 ? 'PENDING' : 'NONE',
+          docs: kycDocs
+        },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
@@ -311,11 +349,19 @@ export default function AddAgentPage() {
               <label className="block text-sm font-semibold text-slate-700 mb-2">{t('pan_card_number')} *</label>
               <input type="text" name="panNumber" required value={formData.panNumber} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.panNumber ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all uppercase`} placeholder="ABCDE1234F" />
               {errors.panNumber && <p className="text-red-500 text-xs mt-1">{errors.panNumber}</p>}
+
+              <label className="block text-sm font-semibold text-slate-700 mb-2 mt-4">{t('pan_card_required')}</label>
+              <input type="file" accept="image/*,application/pdf" onChange={handlePanFileChange} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+              {panFile && <p className="text-xs text-slate-600 mt-2">{panFile.name}</p>}
             </div>
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">{t('aadhar_number')} *</label>
               <input type="text" name="aadharNumber" required value={formData.aadharNumber} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.aadharNumber ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all`} placeholder="1234 5678 9012" />
               {errors.aadharNumber && <p className="text-red-500 text-xs mt-1">{errors.aadharNumber}</p>}
+
+              <label className="block text-sm font-semibold text-slate-700 mb-2 mt-4">{t('aadhar_required')}</label>
+              <input type="file" accept="image/*,application/pdf" onChange={handleAadharFileChange} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+              {aadharFile && <p className="text-xs text-slate-600 mt-2">{aadharFile.name}</p>}
             </div>
           </div>
         </div>

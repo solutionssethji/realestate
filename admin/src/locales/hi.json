@@ -125,5 +125,11 @@
   "notif_site_visit_title": "नई साइट विज़िट बुकिंग",
   "notif_site_visit_message": "{name} से नई साइट विज़िट बुकिंग प्राप्त हुई",
   "notif_enquiry_title": "नई पूछताछ",
-  "notif_enquiry_message": "{name} से नई पूछताछ प्राप्त हुई"
+  "notif_enquiry_message": "{name} से नई पूछताछ प्राप्त हुई",
+  "pan_card_required": "PAN कार्ड आवश्यक",
+  "aadhar_required": "आधार आवश्यक",
+  "kyc_status": "KYC स्थिति",
+  "no_kyc_uploaded": "कोई KYC दस्तावेज़ अपलोड नहीं किया गया",
+  "approve": "स्वीकृत",
+  "reject": "अस्वीकृत"
 }

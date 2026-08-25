@@ -1,4 +1,5 @@
 import { onDocumentCreated, onDocumentWritten } from "firebase-functions/v2/firestore";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 
 async function resolveCustomerFcmTokens(customerId: string) {
@@ -26,6 +27,118 @@ async function removeInvalidFcmTokens(customerId: string, invalidTokens: string[
     fcmTokens: admin.firestore.FieldValue.arrayRemove(...invalidTokens),
   });
 }
+
+export const sendBroadcastNotification = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Login required to send notifications.");
+  }
+
+  const db = admin.firestore();
+  const adminSnap = await db.collection("admins").doc(request.auth.uid).get();
+  if (!adminSnap.exists) {
+    throw new HttpsError("permission-denied", "Only admins can send notifications.");
+  }
+
+  const title = String(request.data?.title ?? "").trim();
+  const body = String(request.data?.body ?? "").trim();
+
+  if (!title || !body) {
+    throw new HttpsError("invalid-argument", "Title and body are required.");
+  }
+
+  const usersSnap = await db.collection("users").get();
+  const allTokens: string[] = [];
+  const userIds: string[] = [];
+
+  for (const userDoc of usersSnap.docs) {
+    const userData = userDoc.data() ?? {};
+    const fcmTokens = Array.isArray(userData.fcmTokens)
+      ? userData.fcmTokens.filter((token: unknown) => typeof token === "string" && token.trim())
+      : [];
+    const legacyToken = typeof userData.fcmToken === "string" && userData.fcmToken.trim()
+      ? [userData.fcmToken.trim()]
+      : [];
+
+    const uniqueTokens = [...new Set([...fcmTokens, ...legacyToken])];
+    if (uniqueTokens.length === 0) continue;
+
+    userIds.push(userDoc.id);
+    allTokens.push(...uniqueTokens);
+
+    const notificationId = `${Date.now()}-${userDoc.id}`;
+    await userDoc.ref.collection("notifications").doc(notificationId).set({
+      id: notificationId,
+      type: "ADMIN_BROADCAST",
+      title,
+      body,
+      read: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      payload: {
+        senderId: request.auth.uid,
+        target: "ALL_USERS",
+      },
+    });
+  }
+
+  if (allTokens.length === 0) {
+    const adminNotificationRef = db.collection("adminNotifications").doc();
+    await adminNotificationRef.set({
+      id: adminNotificationRef.id,
+      type: "ADMIN_BROADCAST",
+      title,
+      body,
+      read: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      target: "ALL_USERS",
+      recipients: 0,
+    });
+
+    return { success: true, sent: 0, failed: 0, total: 0 };
+  }
+
+  const adminNotificationRef = db.collection("adminNotifications").doc();
+  await adminNotificationRef.set({
+    id: adminNotificationRef.id,
+    type: "ADMIN_BROADCAST",
+    title,
+    body,
+    read: false,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    target: "ALL_USERS",
+    recipients: userIds.length,
+  });
+
+  const result = await admin.messaging().sendEachForMulticast({
+    tokens: [...new Set(allTokens)],
+    notification: {
+      title,
+      body,
+    },
+    data: {
+      type: "ADMIN_BROADCAST",
+      title,
+      body,
+    },
+    android: {
+      priority: "high",
+    },
+    apns: {
+      payload: {
+        aps: {
+          sound: "default",
+          badge: 1,
+        },
+      },
+    },
+  });
+
+  return {
+    success: true,
+    sent: result.successCount,
+    failed: result.failureCount,
+    total: result.successCount + result.failureCount,
+  };
+});
 
 export const onSiteVisitCreated = onDocumentCreated(
   "siteVisits/{docId}",
