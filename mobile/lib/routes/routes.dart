@@ -32,9 +32,49 @@ import '../pages/legal/legal_content.page.dart';
 import '../pages/faq/faq.page.dart';
 import '../utils/l10n_extension.dart';
 
+import 'package:flutter/foundation.dart';
+import '../providers/auth_provider.dart';
+
+class RouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+  RouterNotifier(this._ref) {
+    _ref.listen(authStateProvider, (_, __) => notifyListeners());
+  }
+}
+
+final routerNotifierProvider = Provider<RouterNotifier>((ref) {
+  return RouterNotifier(ref);
+});
+
 final routerProvider = Provider<GoRouter>((ref) {
+  final notifier = ref.watch(routerNotifierProvider);
+
   return GoRouter(
     initialLocation: '/home',
+    refreshListenable: notifier,
+    redirect: (context, state) {
+      final user = ref.read(currentUserProvider);
+      final isAuth = user != null;
+      
+      final isGoingToAuth = state.matchedLocation == '/login' || 
+                            state.matchedLocation == '/register' || 
+                            state.matchedLocation == '/forgot-password';
+                            
+      final isGoingToPublic = state.matchedLocation == '/terms' || 
+                              state.matchedLocation == '/privacy';
+
+      // If not logged in, and not going to an Auth page or Public page, redirect to login
+      if (!isAuth && !isGoingToAuth && !isGoingToPublic) {
+        return '/login';
+      }
+
+      // If logged in and trying to access auth pages, redirect to home
+      if (isAuth && isGoingToAuth) {
+        return '/home';
+      }
+
+      return null;
+    },
     debugLogDiagnostics: false,
     routes: [
       GoRoute(
