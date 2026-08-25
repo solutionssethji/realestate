@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, query, orderBy, limit, doc, updateDoc, onSnapshot } from "firebase/firestore";
+import { collection, query, orderBy, limit, doc, updateDoc, onSnapshot, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Bell, Loader2, CheckCircle2, Circle, Check } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -35,6 +35,11 @@ export default function NotificationsPage() {
   const [limitCount, setLimitCount] = useState(PAGE_SIZE);
   const [hasMore, setHasMore] = useState(false);
 
+  // Map of customerId -> displayName
+  const [userNames, setUserNames] = useState<Record<string, string>>({});
+  // Map of notificationId -> resolved customerId (if found)
+  const [notifCustomerMap, setNotifCustomerMap] = useState<Record<string, string>>({});
+
   useEffect(() => {
     setLoading(true);
     const q = query(
@@ -59,6 +64,81 @@ export default function NotificationsPage() {
 
     return () => unsubscribe();
   }, [limitCount]);
+
+  // Resolve customer names for notifications (client-side)
+  useEffect(() => {
+    if (!notifications || notifications.length === 0) {
+      setUserNames({});
+      setNotifCustomerMap({});
+      return;
+    }
+
+    let cancelled = false;
+
+    const resolveNames = async () => {
+      try {
+        const directIds = new Set<string>();
+        const assignLookups: { notifId: string; assignId: string }[] = [];
+
+        notifications.forEach((n: any) => {
+          // common direct fields
+          if (n.customerId) directIds.add(n.customerId);
+          if (n.userId) directIds.add(n.userId);
+          if (n.payload && n.payload.customerId) directIds.add(n.payload.customerId);
+          if (n.messageParams && n.messageParams.customerId) directIds.add(n.messageParams.customerId);
+
+          // If notification references an assignPlots doc (booking/assignment), try to resolve customerId from that doc
+          if (!n.customerId && n.relatedId && ['PLOT_ASSIGNED', 'BOOKING', 'PAYMENT'].includes(n.type || '')) {
+            assignLookups.push({ notifId: n.id, assignId: n.relatedId });
+          }
+
+          if (!n.customerId && n.payload && n.payload.assignmentId) {
+            assignLookups.push({ notifId: n.id, assignId: n.payload.assignmentId });
+          }
+        });
+
+        // Fetch assignPlots docs to extract customerIds
+        const assignFetches = assignLookups.map(a =>
+          getDoc(doc(db, 'assignPlots', a.assignId)).then(s => ({ notifId: a.notifId, customerId: s.exists() ? (s.data() as any).customerId : null }))
+        );
+
+        const assignResults = await Promise.all(assignFetches);
+        const notifToCustomer: Record<string, string> = {};
+        assignResults.forEach(r => {
+          if (r.customerId) {
+            directIds.add(r.customerId);
+            notifToCustomer[r.notifId] = r.customerId;
+          }
+        });
+
+        // Batch fetch user docs for all unique customer ids
+        const ids = Array.from(directIds);
+        const userFetches = ids.map(id =>
+          getDoc(doc(db, 'users', id)).then(s => ({ id, data: s.exists() ? s.data() : null }))
+        );
+
+        const userResults = await Promise.all(userFetches);
+        const nameMap: Record<string, string> = {};
+        userResults.forEach(r => {
+          if (r.data) {
+            const d: any = r.data;
+            nameMap[r.id] = d.fullName || d.name || d.displayName || d.email || 'Customer';
+          }
+        });
+
+        if (cancelled) return;
+
+        setUserNames(nameMap);
+        setNotifCustomerMap(notifToCustomer);
+      } catch (e) {
+        console.warn('Failed to resolve notification user names', e);
+      }
+    };
+
+    resolveNames();
+
+    return () => { cancelled = true; };
+  }, [notifications]);
 
   const handleNotificationClick = async (notification: AppNotification) => {
     if (!notification.read) {
@@ -157,6 +237,17 @@ export default function NotificationsPage() {
                     <p className={`text-sm font-semibold ${!notification.read ? 'text-slate-900' : 'text-slate-600'}`}>
                       {(notification as any).titleKey ? t((notification as any).titleKey) : notification.title}
                     </p>
+                    {/* Display resolved customer name (if available) */}
+                    {(() => {
+                      const anyN = notification as any;
+                      const directCid = anyN.customerId || anyN.userId || anyN.payload?.customerId || anyN.messageParams?.customerId;
+                      const resolvedCid = directCid || notifCustomerMap[notification.id];
+                      const displayName = resolvedCid ? userNames[resolvedCid] : null;
+                      return displayName ? (
+                        <p className="text-sm text-slate-500">{displayName}</p>
+                      ) : null;
+                    })()}
+
                     <p className={`text-sm mt-1 ${!notification.read ? 'text-slate-700' : 'text-slate-500'}`}>
                       {(notification as any).messageKey
                         ? t((notification as any).messageKey, (notification as any).messageParams || {})
