@@ -212,6 +212,8 @@
   "aadhar_required": "Aadhar required",
   "kyc_status": "KYC Status",
   "no_kyc_uploaded": "No KYC documents uploaded",
+  "approve": "Approve",
+  "reject": "Reject",
   "bank_details_commission": "Bank Details (For Commission Payouts)",
   "bank_name": "Bank Name",
   "account_number": "Account Number",

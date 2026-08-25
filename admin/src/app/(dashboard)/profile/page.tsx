@@ -44,6 +44,11 @@ export default function ProfilePage() {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  // KYC files (agent-side upload)
+  const [panFile, setPanFile] = useState<File | null>(null);
+  const [aadharFile, setAadharFile] = useState<File | null>(null);
+  const [kycDocs, setKycDocs] = useState<Array<any>>([]);
+
   // ── Validation (same logic as Add Agent page) ──────────────────────
   const validateField = (name: string, value: string): string => {
     switch (name) {
@@ -109,6 +114,11 @@ export default function ProfilePage() {
             photoURL: d.photoURL || "",
           });
           if (d.photoURL) setImagePreview(d.photoURL);
+
+          // Load existing KYC docs if present
+          if (d.kyc && Array.isArray(d.kyc.docs)) {
+            setKycDocs(d.kyc.docs);
+          }
         }
       } catch (e) {
         toast.error("Failed to load profile data");
@@ -129,6 +139,20 @@ export default function ProfilePage() {
     }
     setFormData((prev) => ({ ...prev, [name]: formatted }));
     setErrors((prev) => ({ ...prev, [name]: validateField(name, formatted) }));
+  };
+
+  const handlePanFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPanFile(e.target.files[0]);
+      e.target.value = "";
+    }
+  };
+
+  const handleAadharFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setAadharFile(e.target.files[0]);
+      e.target.value = "";
+    }
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -195,6 +219,21 @@ export default function ProfilePage() {
         updates.photoURL = await getDownloadURL(storageRef);
       }
 
+      // Upload KYC files if agent uploaded them from profile
+      const newKycDocs: Array<any> = [...kycDocs];
+      if (panFile) {
+        const panRef = ref(storage, `agents/${auth.currentUser.uid}/kyc/pan_${Date.now()}_${panFile.name}`);
+        await uploadBytes(panRef, panFile);
+        const panUrl = await getDownloadURL(panRef);
+        newKycDocs.push({ type: 'PAN', url: panUrl, path: panRef.fullPath, uploadedAt: new Date().toISOString() });
+      }
+      if (aadharFile) {
+        const aadharRef = ref(storage, `agents/${auth.currentUser.uid}/kyc/aadhar_${Date.now()}_${aadharFile.name}`);
+        await uploadBytes(aadharRef, aadharFile);
+        const aadharUrl = await getDownloadURL(aadharRef);
+        newKycDocs.push({ type: 'AADHAR', url: aadharUrl, path: aadharRef.fullPath, uploadedAt: new Date().toISOString() });
+      }
+
       const col = user.role.toUpperCase() === "ADMIN" ? "admins" : "agents";
 
       if (user.role.toUpperCase() === "ADMIN") {
@@ -204,20 +243,36 @@ export default function ProfilePage() {
           updatedAt: new Date().toISOString(),
         });
       } else {
+        // If new KYC docs were uploaded, set kyc.status to PENDING and persist docs
+        const kycPayload: any = {};
+        if (newKycDocs.length > 0) {
+          kycPayload['kyc.status'] = 'PENDING';
+          kycPayload['kyc.docs'] = newKycDocs;
+        }
+
         await updateDoc(doc(db, col, auth.currentUser.uid), {
           ...updates,
+          ...kycPayload,
           updatedAt: new Date().toISOString(),
         });
       }
 
+      // Update UI state
       setFormData((prev) => ({ ...prev, photoURL: updates.photoURL || "" }));
       setProfileImage(null);
+      setPanFile(null);
+      setAadharFile(null);
+      if (newKycDocs.length > 0) {
+        setKycDocs(newKycDocs);
+      }
+
       if (updateUser) {
         updateUser({
-          name: updates.fullName,
+          name: updates.fullName || updates.name,
           photoURL: updates.photoURL || ""
         });
       }
+
       toast.success(t('profile_saved'));
     } catch (error) {
       console.error(error);
@@ -362,12 +417,41 @@ export default function ProfilePage() {
                   <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('pan_card_number_label')} *</label>
                   <input name="panNumber" value={formData.panNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} placeholder="ABCDE1234F" className={`${inputCls("panNumber")} uppercase`} />
                   {errors.panNumber && <p className="text-red-500 text-xs mt-1">{errors.panNumber}</p>}
+
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5 mt-4">{t('pan_card_required')}</label>
+                  <input type="file" accept="image/*,application/pdf" onChange={handlePanFileChange} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                  {panFile && <p className="text-xs text-slate-600 mt-2">{panFile.name}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('aadhar_number_label')} *</label>
                   <input name="aadharNumber" value={formData.aadharNumber} onChange={handleChange} onBlur={handleBlur} maxLength={12} placeholder="123456789012" className={inputCls("aadharNumber")} />
                   {errors.aadharNumber && <p className="text-red-500 text-xs mt-1">{errors.aadharNumber}</p>}
+
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5 mt-4">{t('aadhar_required')}</label>
+                  <input type="file" accept="image/*,application/pdf" onChange={handleAadharFileChange} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                  {aadharFile && <p className="text-xs text-slate-600 mt-2">{aadharFile.name}</p>}
                 </div>
+              </div>
+
+              {/* Show existing uploaded docs */}
+              <div className="p-4 border-t">
+                {kycDocs && kycDocs.length > 0 ? (
+                  <div className="grid gap-2">
+                    {kycDocs.map((d: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between p-3 bg-slate-50 rounded-md border">
+                        <div>
+                          <div className="text-sm font-semibold text-slate-900">{d.type}</div>
+                          <div className="text-xs text-slate-500">{d.uploadedAt}</div>
+                        </div>
+                        <div>
+                          <a href={d.url} target="_blank" rel="noreferrer" className="inline-flex items-center px-3 py-2 bg-white border rounded-md text-sm text-slate-700">View</a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-sm text-slate-500">{t('no_kyc_uploaded')}</div>
+                )}
               </div>
             </div>
 

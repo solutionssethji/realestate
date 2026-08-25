@@ -286,7 +286,7 @@ function AgentsContent() {
             <Button variant="secondary" onClick={() => { setIsKycModalOpen(false); setSelectedKycAgent(null); }}>
               {t('close')}
             </Button>
-            <Button variant="danger" onClick={async () => {
+            <Button variant="danger-outline" onClick={async () => {
               if (!selectedKycAgent) return;
               setKycReviewing(true);
               try {
@@ -325,7 +325,7 @@ function AgentsContent() {
             }} isLoading={kycReviewing}>
               {t('reject')}
             </Button>
-            <Button variant="primary" onClick={async () => {
+            <Button variant="success" onClick={async () => {
               if (!selectedKycAgent) return;
               setKycReviewing(true);
               try {
