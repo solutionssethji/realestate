@@ -62,6 +62,7 @@ export interface BookingApplicationFormData {
     plotArea4: string;
     salePricePerSqFt: string;
     developmentChargePerSqFt: string;
+    totalAmount: string;
     applicationDate: string;
     applicationPlace: string;
     remarks: string;
@@ -78,7 +79,7 @@ export const emptyBookingApplicationForm: BookingApplicationFormData = {
     firstApplicantTelephoneOffice: "", secondApplicantTelephoneOffice: "", firstApplicantTelephoneResidence: "", secondApplicantTelephoneResidence: "",
     firstApplicantMobile: "", secondApplicantMobile: "", firstApplicantEmail: "", secondApplicantEmail: "", firstApplicantPan: "", secondApplicantPan: "", firstApplicantAadhaar: "", secondApplicantAadhaar: "", firstApplicantPassportOrId: "", secondApplicantPassportOrId: "",
     firstNomineeName: "", firstNomineeRelationship: "", secondNomineeName: "", secondNomineeRelationship: "", paymentPlan: "", paymentMode: "CASH", initialPayment: "", initialPaymentInWords: "", paymentReference: "", paymentDate: "", bankName: "",
-    plotArea1: "", plotArea2: "", plotArea3: "", plotArea4: "", salePricePerSqFt: "", developmentChargePerSqFt: "", applicationDate: "", applicationPlace: "", remarks: "", notes: "", firstApplicantPhoto: "", secondApplicantPhoto: "",
+    plotArea1: "", plotArea2: "", plotArea3: "", plotArea4: "", salePricePerSqFt: "", developmentChargePerSqFt: "", totalAmount: "", applicationDate: "", applicationPlace: "", remarks: "", notes: "", firstApplicantPhoto: "", secondApplicantPhoto: "",
 };
 
 export type BookingApplicationFormErrors = Partial<Record<keyof BookingApplicationFormData, string>>;
@@ -100,6 +101,7 @@ export function validateBookingApplicationForm(value: BookingApplicationFormData
         ["paymentDate", "Payment date is required."],
         ["plotArea1", "Plot area is required."],
         ["salePricePerSqFt", "Plot sale price is required."],
+        ["totalAmount", "Total amount is required."],
         ["applicationDate", "Application date is required."],
         ["applicationPlace", "Application place is required."],
     ];
@@ -139,7 +141,7 @@ export function validateBookingApplicationForm(value: BookingApplicationFormData
     });
 
     const numericFields: Array<keyof BookingApplicationFormData> = [
-        "initialPayment", "plotArea1", "plotArea2", "plotArea3", "plotArea4", "salePricePerSqFt", "developmentChargePerSqFt",
+        "initialPayment", "plotArea1", "plotArea2", "plotArea3", "plotArea4", "salePricePerSqFt", "developmentChargePerSqFt", "totalAmount",
     ];
     numericFields.forEach((field) => {
         const numericValue = value[field].trim();
@@ -360,6 +362,7 @@ export function BookingApplicationForm({ value, onChange, disabled = false, erro
                         {field("Plot Area 4 (sq. ft.)", "plotArea4", "number")}
                         {field("17. Plot Sale Price (Rs. per sq. ft.)", "salePricePerSqFt", "number", true)}
                         {field("18. Additional / Development Charge (Rs. per sq. ft.)", "developmentChargePerSqFt", "number")}
+                        {field("Total Amount (Rs.)", "totalAmount", "number", true)}
                         {field("Application Date", "applicationDate", "date", true)}
                         {field("Application Place", "applicationPlace", "text", true)}
                         {textarea("19. Any Other Remarks", "remarks", true)}

@@ -234,6 +234,7 @@ export default function BookingDetailsPage() {
         payment.transactionId ||
         payment.mode ||
         "N/A";
+      const narration = payment.narration || payment.notes || "";
       const wrap = (text: string, x: number, y: number, width: number) =>
         receipt.text(receipt.splitTextToSize(text, width), x, y, {
           lineHeightFactor: 1.35,
@@ -308,6 +309,7 @@ export default function BookingDetailsPage() {
       };
       row(rowHeights[0], "Account :", account, amountText);
       row(rowHeights[1], "Through :", through);
+      row(25, "Narration :", narration || " ");
       row(
         rowHeights[2],
         "Amount (in words) :",
@@ -379,17 +381,7 @@ export default function BookingDetailsPage() {
 
     setUpdatingApplicationForm(true);
     try {
-      const totalArea = [
-        applicationForm.plotArea1,
-        applicationForm.plotArea2,
-        applicationForm.plotArea3,
-        applicationForm.plotArea4,
-      ].reduce((total, area) => total + (Number(area) || 0), 0);
-      const salePricePerSqFt = Number(applicationForm.salePricePerSqFt) || 0;
-      const developmentChargePerSqFt =
-        Number(applicationForm.developmentChargePerSqFt) || 0;
-      const totalAmount =
-        totalArea * (salePricePerSqFt + developmentChargePerSqFt);
+      const totalAmount = Number(applicationForm.totalAmount) || 0;
       const initialPaymentAmount = Number(applicationForm.initialPayment) || 0;
 
       await api.put(`/bookings/${booking.id}`, {
@@ -414,6 +406,7 @@ export default function BookingDetailsPage() {
               : applicationForm.paymentReference.trim(),
           bankName: applicationForm.bankName.trim(),
           updatedAt: new Date().toISOString(),
+          notes: applicationForm.notes.trim() || initialPaymentRecord.notes,
         });
       } else if (initialPaymentAmount > 0) {
         const paymentRef = doc(collection(db, "payments"));
@@ -429,7 +422,9 @@ export default function BookingDetailsPage() {
               : applicationForm.paymentReference.trim(),
           bankName: applicationForm.bankName.trim(),
           paymentType: "BOOKING_INITIAL",
-          notes: "Initial payment from booking application",
+          notes:
+            applicationForm.notes.trim() ||
+            "Initial payment from booking application",
           status: "COMPLETED",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -571,24 +566,24 @@ export default function BookingDetailsPage() {
         loadImage("/hands.jpg"),
       ]);
 
-      // Page 1
-      await addBrandHeader();
-      pdf.setTextColor(181, 43, 32);
-      pdf.setFontSize(11);
-      pdf.setTextColor(91, 48, 41);
-      pdf.setFont("times", "bold");
-      pdf.setFontSize(11);
-      pdf.addImage(handsImage, "JPEG", 0, 100, 210, 180);
-      pdf.text(
-        "THE APPLICATION FORM IS ON THE NEXT PAGE.\nPLEASE OPEN AND FILL IT OUT.",
-        105,
-        250,
-        { align: "center", maxWidth: 120 },
-      );
-      addRegistrationDetails();
-      addPdfFooter();
-      pdf.setTextColor(0, 0, 0);
-      pdf.addPage();
+      // // Page 1
+      // await addBrandHeader();
+      // pdf.setTextColor(181, 43, 32);
+      // pdf.setFontSize(11);
+      // pdf.setTextColor(91, 48, 41);
+      // pdf.setFont("times", "bold");
+      // pdf.setFontSize(11);
+      // pdf.addImage(handsImage, "JPEG", 0, 100, 210, 180);
+      // pdf.text(
+      //   "THE APPLICATION FORM IS ON THE NEXT PAGE.\nPLEASE OPEN AND FILL IT OUT.",
+      //   105,
+      //   250,
+      //   { align: "center", maxWidth: 120 },
+      // );
+      // addRegistrationDetails();
+      // addPdfFooter();
+      // pdf.setTextColor(0, 0, 0);
+      // pdf.addPage();
       // Page 2
       await addBrandHeader();
       pdf.setTextColor(181, 43, 32);
@@ -1116,9 +1111,19 @@ export default function BookingDetailsPage() {
         ``,
       );
       y += 4;
-      text("FOR SUBHAYTANAM BUILDTECH PVT. LTD.", 10, false, 120);
+      text(
+        `FOR ${(applicationSettings.companyName || "").toUpperCase()}`,
+        10,
+        false,
+        120,
+      );
       y += 8;
-      text("AUTHORISED SIGNATORY", 10, false, 120);
+      text(
+        (applicationSettings.authorisedSignatory || "Authorised Signatory").toUpperCase(),
+        10,
+        false,
+        120,
+      );
 
       pdf.addPage();
       y = 16;
@@ -1489,13 +1494,13 @@ export default function BookingDetailsPage() {
           )}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
-              Notes
+              Narration
             </label>
             <textarea
               value={paymentNotes}
               onChange={(e) => setPaymentNotes(e.target.value)}
               className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Cheque number, UTR, etc."
+              placeholder="Enter payment narration"
               rows={3}
             />
           </div>
