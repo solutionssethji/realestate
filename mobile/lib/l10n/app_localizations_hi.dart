@@ -908,115 +908,114 @@ class AppLocalizationsHi extends AppLocalizations {
   String get off => 'छूट';
 
   @override
-  String get authErrInvalidEmail => 'Please enter a valid email address.';
+  String get authErrInvalidEmail => 'कृपया एक मान्य ईमेल पता दर्ज करें।';
 
   @override
-  String get authErrInvalidCredentialCurrent =>
-      'Current password is incorrect.';
+  String get authErrInvalidCredentialCurrent => 'वर्तमान पासवर्ड गलत है।';
 
   @override
-  String get authErrInvalidCredential => 'Invalid email or password.';
+  String get authErrInvalidCredential => 'ईमेल या पासवर्ड गलत है।';
 
   @override
-  String get authErrWrongPassword => 'Incorrect password. Please try again.';
+  String get authErrWrongPassword => 'पासवर्ड गलत है। कृपया पुनः प्रयास करें।';
 
   @override
   String get authErrUserNotFound =>
-      'No account found with this email. Please signup first';
+      'इस ईमेल से कोई खाता नहीं मिला। कृपया पहले साइन अप करें।';
 
   @override
   String get authErrUserDisabled =>
-      'Your account has been disabled. Please contact support.';
+      'आपका खाता निष्क्रिय कर दिया गया है। कृपया सहायता से संपर्क करें।';
 
   @override
-  String get authErrEmailAlreadyInUse =>
-      'An account with this email already exists.';
+  String get authErrEmailAlreadyInUse => 'इस ईमेल से पहले से एक खाता मौजूद है।';
 
   @override
   String get authErrWeakPassword =>
-      'Password is too weak. Please choose a stronger password.';
+      'पासवर्ड बहुत कमजोर है। कृपया एक मजबूत पासवर्ड चुनें।';
 
   @override
   String get authErrOperationNotAllowed =>
-      'This authentication method is currently disabled.';
+      'यह प्रमाणीकरण विधि वर्तमान में निष्क्रिय है।';
 
   @override
   String get authErrTooManyRequests =>
-      'Too many attempts. Please try again later.';
+      'बहुत अधिक प्रयास किए गए हैं। कृपया बाद में पुनः प्रयास करें।';
 
   @override
   String get authErrNetworkRequestFailed =>
-      'Please check your internet connection.';
+      'कृपया अपना इंटरनेट कनेक्शन जांचें।';
 
   @override
-  String get authErrRequiresRecentLogin => 'Please sign in again to continue.';
+  String get authErrRequiresRecentLogin =>
+      'जारी रखने के लिए कृपया दोबारा साइन इन करें।';
 
   @override
   String get authErrCredentialAlreadyInUse =>
-      'This credential is already associated with another account.';
+      'यह क्रेडेंशियल पहले से किसी अन्य खाते से जुड़ा हुआ है।';
 
   @override
   String get authErrAccountExistsWithDifferentCredential =>
-      'An account already exists with a different sign-in method.';
+      'इस ईमेल से पहले से एक खाता अलग साइन-इन विधि के साथ मौजूद है।';
 
   @override
   String get authErrProviderAlreadyLinked =>
-      'This sign-in provider is already linked to your account.';
+      'यह साइन-इन प्रदाता पहले से आपके खाते से जुड़ा हुआ है।';
 
   @override
   String get authErrNoSuchProvider =>
-      'The requested sign-in provider is not linked to this account.';
+      'अनुरोधित साइन-इन प्रदाता इस खाते से जुड़ा हुआ नहीं है।';
 
   @override
-  String get authErrInvalidVerificationCode =>
-      'The verification code is invalid.';
+  String get authErrInvalidVerificationCode => 'सत्यापन कोड गलत है।';
 
   @override
-  String get authErrInvalidVerificationId => 'The verification ID is invalid.';
+  String get authErrInvalidVerificationId => 'सत्यापन आईडी गलत है।';
 
   @override
   String get authErrSessionExpired =>
-      'The verification session has expired. Please try again.';
+      'सत्यापन सत्र समाप्त हो गया है। कृपया पुनः प्रयास करें।';
 
   @override
   String get authErrQuotaExceeded =>
-      'Request limit exceeded. Please try again later.';
+      'अनुरोध की सीमा पार हो गई है। कृपया बाद में पुनः प्रयास करें।';
 
   @override
   String get authErrAppNotAuthorized =>
-      'This app is not authorized. Please contact support.';
+      'यह ऐप अधिकृत नहीं है। कृपया सहायता से संपर्क करें।';
 
   @override
-  String get authErrInvalidApiKey => 'Invalid Firebase configuration.';
+  String get authErrInvalidApiKey => 'Firebase कॉन्फ़िगरेशन गलत है।';
 
   @override
   String get authErrInternalError =>
-      'Something went wrong. Please try again later.';
+      'कुछ गलत हो गया। कृपया बाद में पुनः प्रयास करें।';
 
   @override
-  String get authErrWebContextCancelled => 'Sign-in was cancelled.';
+  String get authErrWebContextCancelled => 'साइन-इन रद्द कर दिया गया।';
 
   @override
   String get authErrWebStorageUnsupported =>
-      'This browser does not support authentication.';
+      'यह ब्राउज़र प्रमाणीकरण का समर्थन नहीं करता है।';
 
   @override
   String get authErrPopupBlocked =>
-      'Popup was blocked. Please allow popups and try again.';
+      'पॉप-अप ब्लॉक कर दिया गया है। कृपया पॉप-अप की अनुमति दें और पुनः प्रयास करें।';
 
   @override
   String get authErrAuthDomainConfigRequired =>
-      'Authentication domain configuration is required. Please contact support.';
+      'प्रमाणीकरण डोमेन कॉन्फ़िगरेशन आवश्यक है। कृपया सहायता से संपर्क करें।';
 
   @override
   String get authErrOperationNotSupported =>
-      'This operation is not supported in the current environment.';
+      'यह ऑपरेशन वर्तमान वातावरण में समर्थित नहीं है।';
 
   @override
-  String get authErrTimeout => 'The request timed out. Please try again.';
+  String get authErrTimeout =>
+      'अनुरोध का समय समाप्त हो गया। कृपया पुनः प्रयास करें।';
 
   @override
-  String get authErrDefault => 'Authentication failed. Please try again.';
+  String get authErrDefault => 'प्रमाणीकरण विफल रहा। कृपया पुनः प्रयास करें।';
 
   @override
   String get kycAndDocuments => 'KYC & Documents';
@@ -1208,6 +1207,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get resetLinkSent => 'Reset link sent! Please check your email inbox.';
+
+  @override
+  String get permissionDenied => 'Permission denied. Please contact support.';
 
   @override
   String get backToLogin => 'Back to Login';

@@ -1211,6 +1211,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetLinkSent => 'Reset link sent! Please check your email inbox.';
 
   @override
+  String get permissionDenied => 'Permission denied. Please contact support.';
+
+  @override
   String get backToLogin => 'Back to Login';
 
   @override

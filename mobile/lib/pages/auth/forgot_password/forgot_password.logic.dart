@@ -75,7 +75,7 @@ class ForgotPasswordLogic extends _$ForgotPasswordLogic {
       state = state.copyWith(
         isLoading: false,
         isSent: false,
-        errorMessage: 'An unexpected error occurred.',
+        errorMessage: 'Please enter a valid email address.',
       );
 
       return false;

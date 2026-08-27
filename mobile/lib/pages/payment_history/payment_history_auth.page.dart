@@ -29,8 +29,6 @@ class _PaymentHistoryAuthPageState
 
   Future<void> _sendOtp() async {
     final phone = _phoneController.text.trim();
-    if (phone.isEmpty) return;
-
     // Add country code if missing
     final formattedPhone = phone.startsWith('+') ? phone : '+91$phone';
 

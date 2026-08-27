@@ -558,6 +558,7 @@
   "resetPasswordDesc": "Enter your email address and we will send you a link to reset your password.",
   "sendResetLink": "Send Reset Link",
   "resetLinkSent": "Reset link sent! Please check your email inbox.",
+  "permissionDenied": "Permission denied. Please contact support.",
   "backToLogin": "Back to Login",
   "createAccount": "Create Account",
   "joinUs": "Join Us",

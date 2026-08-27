@@ -119,6 +119,13 @@ class ProfilePage extends HookConsumerWidget {
                 ),
                 const Divider(),
                 ListTile(
+                  leading: const Icon(Icons.card_giftcard),
+                  title: const Text('Referral & Rewards'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/referral'),
+                ),
+                const Divider(),
+                ListTile(
                   leading: const Icon(Icons.support_agent),
                   title: Text(l10n.supportCenter),
                   trailing: const Icon(Icons.chevron_right),

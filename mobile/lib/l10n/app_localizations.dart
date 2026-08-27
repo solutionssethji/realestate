@@ -2288,6 +2288,12 @@ abstract class AppLocalizations {
   /// **'Reset link sent! Please check your email inbox.'**
   String get resetLinkSent;
 
+  /// No description provided for @permissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission denied. Please contact support.'**
+  String get permissionDenied;
+
   /// No description provided for @backToLogin.
   ///
   /// In en, this message translates to:

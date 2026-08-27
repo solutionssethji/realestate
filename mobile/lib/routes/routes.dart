@@ -6,13 +6,13 @@ import 'package:customer_app/pages/auth/register/register.page.dart'
 import 'package:customer_app/pages/emi_tracker/emi_tracker.page.dart'
     show EmiTrackerPage;
 import 'package:customer_app/pages/offer_details/offer_details.page.dart';
+import 'package:customer_app/referral/referral.page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../pages/profile/profile.page.dart';
 import '../pages/profile/kyc_page.dart';
 import '../pages/my_properties/my_properties.page.dart';
 import '../pages/support/support.page.dart';
-// Splash page removed
 import '../pages/home/home.page.dart';
 import '../pages/projects/projects.page.dart';
 import '../pages/project_details/project_details.page.dart';
@@ -55,13 +55,15 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final user = ref.read(currentUserProvider);
       final isAuth = user != null;
-      
-      final isGoingToAuth = state.matchedLocation == '/login' || 
-                            state.matchedLocation == '/register' || 
-                            state.matchedLocation == '/forgot-password';
-                            
-      final isGoingToPublic = state.matchedLocation == '/terms' || 
-                              state.matchedLocation == '/privacy';
+
+      final isGoingToAuth =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register' ||
+          state.matchedLocation == '/forgot-password';
+
+      final isGoingToPublic =
+          state.matchedLocation == '/terms' ||
+          state.matchedLocation == '/privacy';
 
       // If not logged in, and not going to an Auth page or Public page, redirect to login
       if (!isAuth && !isGoingToAuth && !isGoingToPublic) {
@@ -198,10 +200,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/profile',
         builder: (context, state) => const ProfilePage(),
       ),
-      GoRoute(
-        path: '/kyc',
-        builder: (context, state) => const KycPage(),
-      ),
+      GoRoute(path: '/kyc', builder: (context, state) => const KycPage()),
       GoRoute(
         path: '/my-properties',
         builder: (context, state) => const MyPropertiesPage(),
@@ -214,6 +213,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/support',
         builder: (context, state) => const SupportPage(),
+      ),
+      GoRoute(
+        path: '/referral',
+        builder: (context, state) => const ReferralPage(),
       ),
     ],
   );
