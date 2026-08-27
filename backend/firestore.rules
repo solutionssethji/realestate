@@ -61,6 +61,11 @@ service cloud.firestore {
       allow read: if request.auth != null && (request.auth.uid == resource.data.customerId || request.auth.token.phone_number == resource.data.mobileNumber) || isAdmin();
       allow write: if isAdmin();
     }
+
+    // Sequential payment voucher counters
+    match /counters/{counterId} {
+      allow read, write: if isAdmin();
+    }
     
     // TRANSACTIONS
     match /transactions/{transactionId} {

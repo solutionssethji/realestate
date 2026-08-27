@@ -6,6 +6,7 @@ import {
   getDoc,
   setDoc,
   updateDoc,
+  runTransaction,
   deleteDoc,
   query,
   where,
@@ -21,6 +22,76 @@ const createResponse = (data: any, lastDoc?: any) => ({
 });
 const errorResponse = (msg: string) =>
   Promise.reject({ response: { data: { success: false, message: msg } } });
+
+export async function createBookingIfPlotAvailable(
+  plotId: string,
+  bookingData: Record<string, unknown>,
+  paymentData?: Record<string, unknown>,
+) {
+  try {
+    const plotRef = doc(db, "plots", plotId);
+    const bookingRef = doc(collection(db, "assignPlots"));
+    const paymentRef = paymentData
+      ? doc(collection(db, "payments"))
+      : null;
+    const counterRef = paymentData
+      ? doc(collection(db, "counters"), "payments")
+      : null;
+
+    await runTransaction(db, async (transaction) => {
+      const plotSnapshot = await transaction.get(plotRef);
+      const counterSnapshot = counterRef
+        ? await transaction.get(counterRef)
+        : null;
+      if (!plotSnapshot.exists()) {
+        throw new Error("Plot does not exist.");
+      }
+      if (plotSnapshot.data().status !== "AVAILABLE") {
+        throw new Error("This plot is already assigned to another person.");
+      }
+
+      const now = new Date().toISOString();
+      transaction.set(bookingRef, {
+        ...bookingData,
+        id: bookingRef.id,
+        plotId,
+        status: "BOOKED",
+        ...(paymentRef ? { initialPaymentId: paymentRef.id } : {}),
+        createdAt: now,
+        updatedAt: now,
+      });
+      transaction.update(plotRef, {
+        status: "BOOKED_SOLD",
+        assignedUserId: bookingData.customerId,
+        updatedAt: now,
+      });
+
+      if (paymentData && paymentRef && counterRef) {
+        const lastVoucherNumber = Number(
+          counterSnapshot?.data()?.lastVoucherNumber || 0,
+        );
+        transaction.set(
+          counterRef,
+          { lastVoucherNumber: lastVoucherNumber + 1 },
+          { merge: true },
+        );
+        transaction.set(paymentRef, {
+          ...paymentData,
+          id: paymentRef.id,
+          bookingId: bookingRef.id,
+          voucherNumber: lastVoucherNumber + 1,
+        });
+      }
+    });
+
+    return {
+      bookingId: bookingRef.id,
+      paymentId: paymentRef?.id,
+    };
+  } catch (error: any) {
+    return errorResponse(error.message || "Unable to assign plot");
+  }
+}
 
 async function enrichBookingData(bookingData: any) {
   const fetchPromises = [];

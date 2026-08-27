@@ -9,6 +9,24 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET || 'mock_key_secret',
 });
 
+async function createPaymentWithVoucher(
+  paymentRef: FirebaseFirestore.DocumentReference,
+  data: FirebaseFirestore.DocumentData,
+) {
+  const counterRef = admin.firestore().collection('counters').doc('payments');
+
+  await admin.firestore().runTransaction(async (transaction) => {
+    const counterSnapshot = await transaction.get(counterRef);
+    const lastVoucherNumber = Number(
+      counterSnapshot.data()?.lastVoucherNumber ?? 0,
+    );
+    const voucherNumber = lastVoucherNumber + 1;
+
+    transaction.set(counterRef, { lastVoucherNumber: voucherNumber }, { merge: true });
+    transaction.set(paymentRef, { ...data, voucherNumber });
+  });
+}
+
 // 1. Payment Initialization (Real Gateway)
 export const initiatePayment = functions.https.onCall(async (request) => {
   const { amount, projectId, plotId, description, referenceId } = request.data;
@@ -35,7 +53,7 @@ export const initiatePayment = functions.https.onCall(async (request) => {
       orderId = order.id;
     }
 
-    await paymentRef.set({
+    await createPaymentWithVoucher(paymentRef, {
       id: paymentRef.id,
       userId: uid || 'anonymous',
       projectId: projectId || null,
@@ -171,6 +189,7 @@ export const getCustomerPayments = functions.https.onCall(async (request) => {
       const data = doc.data();
       return {
         id: doc.id,
+        voucherNumber: data.voucherNumber,
         amount: data.amount,
         currency: data.currency,
         status: data.status,
