@@ -16,7 +16,11 @@ interface AssignPlotDialogProps {
   isOpen: boolean;
   onClose: () => void;
   plot: any;
-  onAssigned: (plotId: string, assignedUserId: string) => void;
+  onAssigned: (
+    plotId: string,
+    assignedUserId: string,
+    assignedUserName?: string,
+  ) => void;
 }
 
 export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPlotDialogProps) {
@@ -112,7 +116,7 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
       );
 
       toast.success(`Plot assigned to ${applicationForm.firstApplicantName}`);
-      onAssigned(plot.id, selectedUser.id);
+      onAssigned(plot.id, selectedUser.id, selectedUser.fullName || selectedUser.name);
       onClose();
     } catch (e: any) {
       console.error(e);
