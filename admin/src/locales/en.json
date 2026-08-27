@@ -209,7 +209,6 @@
   "pan_card_number": "PAN Card Number",
   "aadhar_number": "Aadhar Number",
   "pan_card_required": "Pan card required",
-  "aadhar_required": "Aadhar required",
   "kyc_status": "KYC Status",
   "no_kyc_uploaded": "No KYC documents uploaded",
   "approve": "Approve",

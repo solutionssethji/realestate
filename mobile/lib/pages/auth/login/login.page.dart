@@ -89,7 +89,7 @@ class LoginPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: PremiumAppBar(title: l10n.loginPageTitle),
+      appBar: PremiumAppBar(title: l10n.loginPageTitle, showBackButton: false),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

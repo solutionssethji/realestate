@@ -58,10 +58,10 @@ class CmsService {
       return response;
     } on FirebaseAuthException catch (e) {
       logApi(function: 'getContactInfo()', error: e.toString());
-      return null;
+      rethrow;
     } catch (e) {
       logApi(function: 'getContactInfo()', error: e.toString());
-      return null;
+      rethrow;
     }
   }
 
@@ -119,10 +119,11 @@ class CmsService {
       return null;
     } on FirebaseAuthException catch (e) {
       logApi(function: 'getPublicContent()', error: e.toString());
+      rethrow;
     } catch (e) {
       logApi(function: 'getPublicContent()', error: e.toString());
+      rethrow;
     }
-    return null;
   }
 
   /// Fetches active FAQs ordered by sortOrder.
@@ -138,10 +139,10 @@ class CmsService {
       return response;
     } on FirebaseAuthException catch (e) {
       logApi(function: 'getFaqs()', error: e.toString());
-      return [];
+      rethrow;
     } catch (e) {
       logApi(function: 'getFaqs()', error: e.toString());
-      return [];
+      rethrow;
     }
   }
 }

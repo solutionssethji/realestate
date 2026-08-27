@@ -131,6 +131,166 @@ class OfferCardSkeleton extends StatelessWidget {
   }
 }
 
+class DocumentListTileSkeleton extends StatelessWidget {
+  const DocumentListTileSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => _shimmerCard(
+    const Row(
+      children: [
+        _ShimmerBox(height: 40, width: 40, radius: 8),
+        AppSpacing.wMd,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ShimmerBox(height: 14, width: 180),
+              AppSpacing.hSm,
+              _ShimmerBox(height: 11, width: 70),
+            ],
+          ),
+        ),
+        _ShimmerBox(height: 24, width: 24, radius: 12),
+      ],
+    ),
+  );
+}
+
+class NotificationListTileSkeleton extends StatelessWidget {
+  const NotificationListTileSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => _shimmerCard(
+    const Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ShimmerBox(height: 14, width: 150),
+              AppSpacing.hSm,
+              _ShimmerBox(height: 11, width: double.infinity),
+              AppSpacing.hXs,
+              _ShimmerBox(height: 11, width: 210),
+            ],
+          ),
+        ),
+        AppSpacing.wMd,
+        _ShimmerBox(height: 20, width: 20, radius: 10),
+      ],
+    ),
+  );
+}
+
+class PaymentCardSkeleton extends StatelessWidget {
+  const PaymentCardSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => _shimmerCard(
+    const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(child: _ShimmerBox(height: 16, width: 180)),
+            Spacer(),
+            _ShimmerBox(height: 16, width: 70),
+          ],
+        ),
+        AppSpacing.hMd,
+        Row(
+          children: [
+            Expanded(child: _ShimmerBox(height: 11, width: 130)),
+            _ShimmerBox(height: 14, width: 64, radius: 8),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+class PropertyListTileSkeleton extends StatelessWidget {
+  const PropertyListTileSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => _shimmerCard(
+    const Row(
+      children: [
+        _ShimmerBox(height: 72, width: 92),
+        AppSpacing.wMd,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ShimmerBox(height: 16, width: 170),
+              AppSpacing.hSm,
+              _ShimmerBox(height: 12, width: 120),
+              AppSpacing.hSm,
+              _ShimmerBox(height: 12, width: 90),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class DetailPageSkeleton extends StatelessWidget {
+  const DetailPageSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) => ListView(
+    padding: AppSpacing.allMd,
+    children: [
+      Shimmer.fromColors(
+        baseColor: Colors.grey.shade200,
+        highlightColor: Colors.grey.shade100,
+        child: const _ShimmerBox(
+          height: 220,
+          width: double.infinity,
+          radius: 12,
+        ),
+      ),
+      AppSpacing.hMd,
+      _shimmerCard(
+        const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _ShimmerBox(height: 22, width: 220),
+            AppSpacing.hMd,
+            _ShimmerBox(height: 14, width: double.infinity),
+            AppSpacing.hSm,
+            _ShimmerBox(height: 14, width: 180),
+            AppSpacing.hLg,
+            Row(
+              children: [
+                Expanded(
+                  child: _ShimmerBox(height: 70, width: double.infinity),
+                ),
+                AppSpacing.wSm,
+                Expanded(
+                  child: _ShimmerBox(height: 70, width: double.infinity),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _shimmerCard(Widget child) => Card(
+  child: Padding(
+    padding: AppSpacing.allMd,
+    child: Shimmer.fromColors(
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade100,
+      child: child,
+    ),
+  ),
+);
+
 // ─── Private helper ──────────────────────────────────────────────────────────
 
 class _ShimmerBox extends StatelessWidget {

@@ -6,6 +6,7 @@ import '../../config/locale_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../utils/l10n_extension.dart';
+import 'settings.logic.dart';
 
 class SettingsPage extends HookConsumerWidget {
   const SettingsPage({super.key});
@@ -13,6 +14,7 @@ class SettingsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeControllerProvider);
+    final settingsState = const SettingsLogic().fromLocale(locale.languageCode);
     final loc = AppLocalizations.of(context);
 
     return Scaffold(
@@ -31,7 +33,7 @@ class SettingsPage extends HookConsumerWidget {
               ref,
               context.l10n.langEnglish,
               'en',
-              locale.languageCode == 'en',
+              settingsState.languageCode == 'en',
             ),
             const SizedBox(height: 12),
             _buildLanguageTile(
@@ -39,7 +41,7 @@ class SettingsPage extends HookConsumerWidget {
               ref,
               context.l10n.langHindi,
               'hi',
-              locale.languageCode == 'hi',
+              settingsState.languageCode == 'hi',
             ),
             const SizedBox(height: 32),
             Text(

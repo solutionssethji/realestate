@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../utils/l10n_extension.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import 'about.logic.dart';
 
-class AboutCompanyPage extends ConsumerWidget {
+class AboutCompanyPage extends HookConsumerWidget {
   const AboutCompanyPage({super.key});
 
   @override
@@ -17,9 +17,7 @@ class AboutCompanyPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.aboutCompany),
-      body: SafeArea(
-        child: _buildBody(context, state),
-      ),
+      body: SafeArea(child: _buildBody(context, state)),
     );
   }
 
@@ -30,7 +28,10 @@ class AboutCompanyPage extends ConsumerWidget {
 
     if (state.isError) {
       return Center(
-        child: Text(state.errorMessage ?? 'Error loading about info', style: const TextStyle(color: Colors.red)),
+        child: Text(
+          state.errorMessage ?? 'Error loading about info',
+          style: const TextStyle(color: Colors.red),
+        ),
       );
     }
 
@@ -46,21 +47,27 @@ class AboutCompanyPage extends ConsumerWidget {
           context,
           title: context.l10n.companyProfile,
           icon: LucideIcons.building,
-          content: info.about.isNotEmpty ? info.about : 'We are a leading real estate platform...',
+          content: info.about.isNotEmpty
+              ? info.about
+              : 'We are a leading real estate platform...',
         ),
         AppSpacing.hXl,
         _buildSection(
           context,
           title: context.l10n.vision,
           icon: LucideIcons.eye,
-          content: info.vision.isNotEmpty ? info.vision : 'To revolutionize the real estate industry...',
+          content: info.vision.isNotEmpty
+              ? info.vision
+              : 'To revolutionize the real estate industry...',
         ),
         AppSpacing.hXl,
         _buildSection(
           context,
           title: context.l10n.mission,
           icon: LucideIcons.target,
-          content: info.mission.isNotEmpty ? info.mission : 'Our mission is to empower individuals...',
+          content: info.mission.isNotEmpty
+              ? info.mission
+              : 'Our mission is to empower individuals...',
         ),
         if (info.whyChooseUs.isNotEmpty) ...[
           AppSpacing.hXl,
@@ -76,13 +83,19 @@ class AboutCompanyPage extends ConsumerWidget {
           context,
           title: context.l10n.contactInformation,
           icon: LucideIcons.mail,
-          content: 'Email: ${info.email}\nPhone: ${info.phone}\nAddress: ${info.officeAddress}',
+          content:
+              'Email: ${info.email}\nPhone: ${info.phone}\nAddress: ${info.officeAddress}',
         ),
       ],
     );
   }
 
-  Widget _buildSection(BuildContext context, {required String title, required IconData icon, required String content}) {
+  Widget _buildSection(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    required String content,
+  }) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(

@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { toast } from "react-hot-toast";
-import { Loader2, Info, Phone, FileText, Lock } from "lucide-react";
+import { Loader2, Info, Phone, FileText, Lock, ReceiptText } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -20,6 +20,7 @@ export default function SettingsDashboard() {
   const tabs = [
     { id: "about", label: t('tab_about'), icon: Info },
     { id: "contact", label: t('tab_contact'), icon: Phone },
+    { id: "receipt", label: "Receipt", icon: ReceiptText },
     { id: "legal", label: t('tab_legal'), icon: FileText },
     { id: "security", label: t('tab_security'), icon: Lock },
   ];
@@ -53,10 +54,83 @@ export default function SettingsDashboard() {
       <div className="pt-4">
         {activeTab === "about" && <AboutTab />}
         {activeTab === "contact" && <ContactTab />}
+        {activeTab === "receipt" && <ReceiptTab />}
         {activeTab === "legal" && <LegalTab />}
         {activeTab === "security" && <SecurityTab />}
       </div>
     </div>
+  );
+}
+
+const defaultReceiptSettings = {
+  companyName: "Shubhaytanam Buildtech Pvt Ltd",
+  address: "Bypass Road, Sipahi Tola, Purnia",
+  stateName: "Bihar",
+  stateCode: "10",
+  gstNumber: "",
+  cin: "",
+  panNumber: "",
+  tanNumber: "",
+  email: "info@shubhaytanam.com",
+  taglineEnglish: "SHUBHAYTANAM - YOUR TRUSTED PARTNER IN REAL ESTATE INVESTMENT!",
+  taglineHindi: "शुभ शुरुआत, सुरक्षित भविष्य - एक समझौता, कई फायदे!",
+  contactPhone: "+91 9729659651",
+  website: "www.shubhaytanam.com",
+  authorisedSignatory: "Authorised Signatory",
+};
+
+function ReceiptTab() {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [receiptData, setReceiptData] = useState(defaultReceiptSettings);
+
+  useEffect(() => {
+    async function loadData() {
+      const settings = await getSetting("receiptSettings");
+      if (settings) setReceiptData({ ...defaultReceiptSettings, ...settings });
+      setLoading(false);
+    }
+    loadData();
+  }, []);
+
+  const updateField = (field: keyof typeof receiptData, value: string) => {
+    setReceiptData((previous) => ({ ...previous, [field]: value }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await saveSetting("receiptSettings", receiptData);
+      toast.success("Receipt settings saved");
+    } catch {
+      toast.error("Failed to save receipt settings");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="flex h-32 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-blue-500" /></div>;
+
+  return (
+    <Card>
+      <div className="border-b border-slate-100 p-6">
+        <h3 className="text-lg font-bold text-slate-900">Receipt Voucher Settings</h3>
+        <p className="mt-1 text-sm text-slate-500">These details are used in downloaded payment receipts.</p>
+      </div>
+      <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-2">
+        {(Object.keys(receiptData) as Array<keyof typeof receiptData>).map((field) => (
+          <Input
+            key={field}
+            label={field === "authorisedSignatory" ? "Authorised Signatory" : field.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase())}
+            value={receiptData[field]}
+            onChange={(event) => updateField(field, event.target.value)}
+          />
+        ))}
+        <div className="flex justify-end pt-2 md:col-span-2">
+          <Button onClick={handleSave} isLoading={saving}>Save Changes</Button>
+        </div>
+      </div>
+    </Card>
   );
 }
 
@@ -473,14 +547,14 @@ function SecurityTab() {
     if (!currentPassword) newErrors.currentPassword = t('current_password_required');
     if (!newPassword) newErrors.newPassword = t('new_password_required');
     if (!confirmPassword) newErrors.confirmPassword = t('please_confirm_password');
-    
+
     if (newPassword) {
       const passwordError = validateStrongPassword(newPassword);
       if (passwordError) {
         newErrors.newPassword = passwordError;
       }
     }
-    
+
     if (newPassword && confirmPassword && newPassword !== confirmPassword) {
       newErrors.confirmPassword = t('new_passwords_no_match');
     }
@@ -569,7 +643,7 @@ function SecurityTab() {
                 setErrors(prev => { const next = { ...prev }; delete next.newPassword; return next; });
               }
             }
-            
+
             if (confirmPassword && val !== confirmPassword) {
               setErrors(prev => ({ ...prev, confirmPassword: t('new_passwords_no_match') }));
             } else if (confirmPassword && val === confirmPassword) {
@@ -612,7 +686,7 @@ function SecurityTab() {
             }
           }}
         />
-        
+
         <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
           <p className="text-sm text-blue-800 font-medium mb-1">{t('password_requirements')}</p>
           <ul className="text-xs text-blue-600/80 list-disc list-inside space-y-0.5">

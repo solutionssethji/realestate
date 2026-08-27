@@ -1,3 +1,4 @@
+import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,8 +26,8 @@ class ProfilePage extends HookConsumerWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.myProfile),
+      appBar: PremiumAppBar(
+        title: l10n.myProfile,
         actions: [
           if (user != null)
             state.isLoading
@@ -116,6 +117,13 @@ class ProfilePage extends HookConsumerWidget {
                   onTap: () {
                     // Navigate to site visits
                   },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.card_giftcard),
+                  title: const Text('Referral & Rewards'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/referral'),
                 ),
                 const Divider(),
                 ListTile(

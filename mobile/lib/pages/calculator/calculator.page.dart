@@ -7,7 +7,7 @@ import '../../utils/price_formatter.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 
-class CalculatorPage extends ConsumerWidget {
+class CalculatorPage extends HookConsumerWidget {
   const CalculatorPage({super.key});
 
   @override

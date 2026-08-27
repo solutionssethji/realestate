@@ -4,8 +4,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../utils/l10n_extension.dart';
 import 'emi_tracker.logic.dart';
+import '../../widgets/shimmer_loader.dart';
 
-class EmiTrackerPage extends HookConsumerWidget {
+class EmiTrackerPage extends ConsumerWidget {
   final String plotId;
 
   const EmiTrackerPage({super.key, required this.plotId});
@@ -23,7 +24,7 @@ class EmiTrackerPage extends HookConsumerWidget {
     if (state.isLoading) {
       return Scaffold(
         appBar: PremiumAppBar(title: l10n.emiAndPayments),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const DetailPageSkeleton(),
       );
     }
 

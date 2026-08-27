@@ -143,6 +143,153 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentHistory => 'Payment History';
 
   @override
+  String get documentVault => 'Document Vault';
+
+  @override
+  String get noAdminDocuments => 'No documents uploaded by Admin yet.';
+
+  @override
+  String get legalDocument => 'Legal Document';
+
+  @override
+  String get pdfFile => 'PDF';
+
+  @override
+  String get alerts => 'Alerts';
+
+  @override
+  String get noAlerts => 'No alerts.';
+
+  @override
+  String get notification => 'Notification';
+
+  @override
+  String get myWishlist => 'My Wishlist';
+
+  @override
+  String get wishlistLoadError => 'Error loading wishlist';
+
+  @override
+  String get noFavoriteProjects => 'No favorite projects yet.';
+
+  @override
+  String get referralRewards => 'Referral & Rewards';
+
+  @override
+  String get loginToReferral => 'Please log in to view your referral details.';
+
+  @override
+  String get yourReferralCode => 'Your referral code';
+
+  @override
+  String get referralCodeCopied => 'Referral code copied.';
+
+  @override
+  String get copyCode => 'Copy code';
+
+  @override
+  String get rewardSummary => 'Reward summary';
+
+  @override
+  String get invitesSent => 'Invites sent';
+
+  @override
+  String get rewardsEarned => 'Rewards earned';
+
+  @override
+  String get pendingPayout => 'Pending payout';
+
+  @override
+  String get statusLabel => 'Status';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get howItWorks => 'How it works';
+
+  @override
+  String get shareReferralCode => '1. Share your referral code';
+
+  @override
+  String get shareReferralCodeDescription =>
+      'Send it to friends and family who are looking for a new home.';
+
+  @override
+  String get registerWithReferralCode => '2. They register with your code';
+
+  @override
+  String get registerWithReferralCodeDescription =>
+      'Once the buyer completes registration, the invite is counted.';
+
+  @override
+  String get earnReferralRewards => '3. Earn referral rewards';
+
+  @override
+  String get earnReferralRewardsDescription =>
+      'Reward points are added to your account and reflected in the balance.';
+
+  @override
+  String get downloadReceipt => 'Download receipt';
+
+  @override
+  String get receiptTitle => 'Payment Receipt';
+
+  @override
+  String get receiptVoucher => 'Payment Receipt Voucher';
+
+  @override
+  String receiptNumber(Object number) {
+    return 'Receipt No.: $number';
+  }
+
+  @override
+  String receiptDate(Object date) {
+    return 'Dated: $date';
+  }
+
+  @override
+  String get receiptParticulars => 'Particulars';
+
+  @override
+  String get receiptAmount => 'Amount';
+
+  @override
+  String receiptAccount(Object account) {
+    return 'Account: $account';
+  }
+
+  @override
+  String receiptPaymentMode(Object mode) {
+    return 'Payment Mode: $mode';
+  }
+
+  @override
+  String receiptReference(Object reference) {
+    return 'Reference: $reference';
+  }
+
+  @override
+  String receiptNotes(Object notes) {
+    return 'Notes: $notes';
+  }
+
+  @override
+  String receiptAmountInWords(Object amount) {
+    return 'Amount (in words): $amount';
+  }
+
+  @override
+  String get receiptTotal => 'Total';
+
+  @override
+  String get computerGeneratedReceipt =>
+      'This is a computer-generated receipt.';
+
+  @override
+  String get unableToDownloadReceipt => 'Unable to download receipt';
+
+  @override
   String noPaymentsFound(String phone) {
     return 'No payments found for $phone';
   }
@@ -1209,6 +1356,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetLinkSent => 'Reset link sent! Please check your email inbox.';
+
+  @override
+  String get permissionDenied => 'Permission denied. Please contact support.';
 
   @override
   String get backToLogin => 'Back to Login';

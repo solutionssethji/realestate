@@ -1,12 +1,13 @@
 import 'dart:io';
+import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../services/api_service.dart';
 import '../../services/storage_service.dart';
 import '../../utils/l10n_extension.dart';
 
@@ -98,18 +99,14 @@ class KycPage extends HookConsumerWidget {
           };
         }
 
-        // Update Firestore
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(authUser.uid)
-            .update({
-              'aadharNumber': aadharController.text.trim(),
-              if (aadharUrl != null) 'aadharPhotoUrl': aadharUrl,
-              'panNumber': panController.text.trim(),
-              if (panUrl != null) 'panPhotoUrl': panUrl,
-              if (bankDetails.isNotEmpty) 'bankDetails': bankDetails,
-              'updatedAt': FieldValue.serverTimestamp(),
-            });
+        await ApiService.updateKyc(
+          uid: authUser.uid,
+          aadharNumber: aadharController.text.trim(),
+          aadharPhotoUrl: aadharUrl,
+          panNumber: panController.text.trim(),
+          panPhotoUrl: panUrl,
+          bankDetails: bankDetails,
+        );
 
         // Trigger user refresh if needed (customerProvider stream auto-updates)
 
@@ -133,7 +130,7 @@ class KycPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.kycAndDocuments)),
+      appBar: PremiumAppBar(title: context.l10n.kycAndDocuments),
       body: authUser == null || customerAsync.isLoading
           ? const Center(child: CircularProgressIndicator())
           : user == null

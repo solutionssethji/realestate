@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/premium_app_bar.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'payment.logic.dart';
 import '../../models/payment_intent.dart';
@@ -11,7 +11,7 @@ import '../../theme/spacing.dart';
 import '../../widgets/premium_button.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-class PaymentPage extends ConsumerWidget {
+class PaymentPage extends HookConsumerWidget {
   final double amount;
   final String referenceId;
   final String description;

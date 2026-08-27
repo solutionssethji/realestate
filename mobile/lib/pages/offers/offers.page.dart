@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import 'package:go_router/go_router.dart';
 import '../../widgets/premium_app_bar.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +13,7 @@ import '../../theme/spacing.dart';
 import '../../widgets/shimmer_loader.dart';
 import '../../widgets/empty_state.dart';
 
-class OffersPage extends ConsumerWidget {
+class OffersPage extends HookConsumerWidget {
   const OffersPage({super.key});
 
   @override

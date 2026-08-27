@@ -19,3 +19,17 @@ final customerProvider = StreamProvider<Customer?>((ref) {
       .snapshots()
       .map((doc) => doc.exists ? Customer.fromJson({'id': doc.id, ...doc.data()!}) : null);
 });
+
+final tokenRefreshProvider = StreamProvider<String?>((ref) {
+  return FirebaseAuth.instance.idTokenChanges().asyncMap((user) async {
+    if (user == null) return null;
+    try {
+      // Force refresh token if needed, or just get the current one
+      final token = await user.getIdToken(true);
+      return token;
+    } catch (e) {
+      return null;
+    }
+  });
+});
+

@@ -17,7 +17,9 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
-  const [translations, setTranslations] = useState<Translations>(enTranslations);
+  const englishTranslations = enTranslations as Translations;
+  const hindiTranslations = hiTranslations as Translations;
+  const [translations, setTranslations] = useState<Translations>(englishTranslations);
 
   useEffect(() => {
     // Load saved language from local storage on mount
@@ -28,12 +30,12 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
 
   useEffect(() => {
-    setTranslations(language === 'en' ? enTranslations : hiTranslations);
+    setTranslations(language === 'en' ? englishTranslations : hindiTranslations);
     localStorage.setItem('admin_lang', language);
   }, [language]);
 
   const t = (key: string, params?: Record<string, string>): string => {
-    let str = translations[key] || key;
+    let str = translations[key] || englishTranslations[key] || key;
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
         str = str.replace(`{${k}}`, v);

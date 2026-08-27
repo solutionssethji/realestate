@@ -32,17 +32,11 @@ class ForgotPasswordPage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.forgotPasswordTitle),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              l10n.resetPassword,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
             Text(
               l10n.resetPasswordDesc,
               textAlign: TextAlign.center,
