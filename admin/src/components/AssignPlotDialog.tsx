@@ -1,7 +1,5 @@
 import { useState, useEffect, type FormEvent } from "react";
-import { collection, doc, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import api from "@/lib/api";
+import api, { createBookingIfPlotAvailable } from "@/lib/api";
 import { Modal } from "@/components/ui/Modal";
 import { Search, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -81,43 +79,47 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
 
     setAssigning(true);
     try {
+      const totalArea = [
+        applicationForm.plotArea1,
+        applicationForm.plotArea2,
+        applicationForm.plotArea3,
+        applicationForm.plotArea4,
+      ].reduce((total, area) => total + (Number(area) || 0), 0);
+      const salePricePerSqFt = Number(applicationForm.salePricePerSqFt) || 0;
+      const developmentChargePerSqFt =
+        Number(applicationForm.developmentChargePerSqFt) || 0;
+      const totalAmount =
+        totalArea * (salePricePerSqFt + developmentChargePerSqFt);
+
       const bookingData = {
         customerId: selectedUser.id || "",
         mobileNumber: applicationForm.firstApplicantMobile.trim(),
         projectId: plot.projectId || "",
         plotId: plot.id || "",
-        totalAmount: plot.price || 0,
+        totalAmount,
         paidAmount: Number(applicationForm.initialPayment) || 0,
         applicationForm,
       };
 
-      const bookingResponse = await api.post("/bookings", bookingData);
-      const bookingId = bookingResponse.data.data.id;
       const initialPayment = Number(applicationForm.initialPayment) || 0;
-      if (initialPayment > 0) {
-        const paymentRef = doc(collection(db, "payments"));
-        await setDoc(paymentRef, {
-          id: paymentRef.id,
-          bookingId,
-          customerId: selectedUser.id || "",
-          amount: initialPayment,
-          mode: applicationForm.paymentMode,
-          transactionId: applicationForm.paymentMode === "CASH" ? null : applicationForm.paymentReference.trim(),
-          bankName: applicationForm.bankName.trim(),
-          paymentType: "BOOKING_INITIAL",
-          notes: "Initial payment from booking application",
-          status: "COMPLETED",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        });
-        await api.put(`/bookings/${bookingId}`, { initialPaymentId: paymentRef.id });
-      }
-
-      // Update plot status
-      await api.put(`/plots/${plot.id}`, {
-        status: "BOOKED_SOLD",
-        assignedUserId: selectedUser.id
-      });
+      await createBookingIfPlotAvailable(
+        plot.id,
+        bookingData,
+        initialPayment > 0
+          ? {
+            customerId: selectedUser.id || "",
+            amount: initialPayment,
+            mode: applicationForm.paymentMode,
+            transactionId: applicationForm.paymentMode === "CASH" ? null : applicationForm.paymentReference.trim(),
+            bankName: applicationForm.bankName.trim(),
+            paymentType: "BOOKING_INITIAL",
+            notes: "Initial payment from booking application",
+            status: "COMPLETED",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }
+          : undefined,
+      );
 
       toast.success(`Plot assigned to ${applicationForm.firstApplicantName}`);
       onAssigned(plot.id, selectedUser.id);

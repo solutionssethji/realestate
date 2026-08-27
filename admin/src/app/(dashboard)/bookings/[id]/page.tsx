@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { updateDoc, collection, setDoc, doc } from "firebase/firestore";
+import { updateDoc, collection, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { createPaymentWithVoucher } from "@/lib/paymentVoucher";
 import api from "@/lib/api";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
@@ -173,7 +174,7 @@ export default function BookingDetailsPage() {
     setLoggingPayment(true);
     try {
       const paymentRef = doc(collection(db, "payments"));
-      await setDoc(paymentRef, {
+      await createPaymentWithVoucher(paymentRef, {
         id: paymentRef.id,
         bookingId: booking.id,
         customerId: booking.customerId,
@@ -224,7 +225,7 @@ export default function BookingDetailsPage() {
       const amount = Number(payment.amount || 0);
       // jsPDF's built-in Helvetica font does not contain the INR glyph.
       const amountText = `Rs. ${amount.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      const voucherNumber = payment.voucherNumber || payment.id || "N/A";
+      const voucherNumber = payment.voucherNumber || "N/A";
       const date = payment.receiptDate || formatDateTime(payment.createdAt);
       const account = `${booking.projectName || "Plot Booking"}${booking.plotNumber ? ` - Plot ${booking.plotNumber}` : ""}`;
       const through =
@@ -378,11 +379,25 @@ export default function BookingDetailsPage() {
 
     setUpdatingApplicationForm(true);
     try {
+      const totalArea = [
+        applicationForm.plotArea1,
+        applicationForm.plotArea2,
+        applicationForm.plotArea3,
+        applicationForm.plotArea4,
+      ].reduce((total, area) => total + (Number(area) || 0), 0);
+      const salePricePerSqFt = Number(applicationForm.salePricePerSqFt) || 0;
+      const developmentChargePerSqFt =
+        Number(applicationForm.developmentChargePerSqFt) || 0;
+      const totalAmount =
+        totalArea * (salePricePerSqFt + developmentChargePerSqFt);
+      const initialPaymentAmount = Number(applicationForm.initialPayment) || 0;
+
       await api.put(`/bookings/${booking.id}`, {
         applicationForm,
         mobileNumber: applicationForm.firstApplicantMobile.trim(),
+        totalAmount,
+        paidAmount: initialPaymentAmount,
       });
-      const initialPaymentAmount = Number(applicationForm.initialPayment) || 0;
       const initialPaymentRecord = payments.find(
         (payment) =>
           payment.id === booking.initialPaymentId ||
@@ -402,7 +417,7 @@ export default function BookingDetailsPage() {
         });
       } else if (initialPaymentAmount > 0) {
         const paymentRef = doc(collection(db, "payments"));
-        await setDoc(paymentRef, {
+        await createPaymentWithVoucher(paymentRef, {
           id: paymentRef.id,
           bookingId: booking.id,
           customerId: booking.customerId,

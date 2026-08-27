@@ -13,15 +13,12 @@ class PaymentReceiptService {
     final amount = _number(payment['amount']);
     final currency = payment['currency']?.toString() ?? 'INR';
     final date = _formatDate(payment['createdAt']);
-    final voucherNumber = payment['id']?.toString() ?? 'N/A';
+    final voucherNumber = payment['voucherNumber']?.toString() ?? 'N/A';
     final account = payment['description']?.toString().trim().isNotEmpty == true
         ? payment['description'].toString()
         : 'Plot Booking';
     final mode = payment['mode']?.toString() ?? 'N/A';
-    final reference =
-        payment['transactionId']?.toString() ??
-        payment['orderId']?.toString() ??
-        'N/A';
+    final reference = payment['transactionId']?.toString() ?? 'N/A';
     final notes = payment['notes']?.toString() ?? '';
 
     pdf.addPage(
