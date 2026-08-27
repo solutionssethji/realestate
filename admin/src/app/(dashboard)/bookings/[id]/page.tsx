@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { updateDoc, collection, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { createPaymentWithVoucher } from "@/lib/paymentVoucher";
+import { createPaymentAndUpdateBooking, createPaymentWithVoucher } from "@/lib/paymentVoucher";
 import api from "@/lib/api";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
@@ -162,6 +162,12 @@ export default function BookingDetailsPage() {
   }
 
   const handleLogPayment = async () => {
+    const paidAmount = Number(booking?.paidAmount || 0);
+    const totalAmount = Number(booking?.totalAmount || 0);
+    if (totalAmount > 0 && paidAmount >= totalAmount) {
+      toast.error("The total booking amount has already been paid");
+      return;
+    }
     const amount = parseFloat(paymentAmount);
     if (isNaN(amount) || amount <= 0) {
       toast.error("Please enter a valid amount");
@@ -174,7 +180,8 @@ export default function BookingDetailsPage() {
     setLoggingPayment(true);
     try {
       const paymentRef = doc(collection(db, "payments"));
-      await createPaymentWithVoucher(paymentRef, {
+      const bookingRef = doc(db, "assignPlots", booking.id);
+      await createPaymentAndUpdateBooking(bookingRef, paymentRef, {
         id: paymentRef.id,
         bookingId: booking.id,
         customerId: booking.customerId,
@@ -185,12 +192,8 @@ export default function BookingDetailsPage() {
         status: "COMPLETED",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      });
-      const newPaidAmount = (booking.paidAmount || 0) + amount;
-      await updateDoc(doc(db, "assignPlots", booking.id), {
-        paidAmount: newPaidAmount,
-        updatedAt: new Date().toISOString(),
-      });
+      }, amount);
+      const newPaidAmount = Number(booking.paidAmount || 0) + amount;
       setBooking({ ...booking, paidAmount: newPaidAmount });
       toast.success("Payment logged successfully");
       setIsPaymentModalOpen(false);
@@ -1221,6 +1224,9 @@ export default function BookingDetailsPage() {
   }
 
   const balance = (booking.totalAmount || 0) - (booking.paidAmount || 0);
+  const hasPaidAmount =
+    Number(booking.totalAmount || 0) > 0 &&
+    Number(booking.paidAmount || 0) >= Number(booking.totalAmount || 0);
 
   return (
     <div className="space-y-6 pb-8">
@@ -1327,8 +1333,12 @@ export default function BookingDetailsPage() {
               Payment & EMI Tracking
             </h3>
             <button
-              onClick={() => setIsPaymentModalOpen(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors"
+              onClick={() => {
+                if (!hasPaidAmount) setIsPaymentModalOpen(true);
+              }}
+              disabled={hasPaidAmount}
+              title={hasPaidAmount ? "Payment already recorded" : "Log Payment"}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:bg-slate-300"
             >
               Log Payment
             </button>
@@ -1543,6 +1553,7 @@ export default function BookingDetailsPage() {
             }}
             errors={applicationFormErrors}
             disabled={updatingApplicationForm || uploadingApplicantPhoto}
+            initialPaymentLocked={Number(booking.paidAmount || 0) > 0}
           />
         </form>
       </Modal>

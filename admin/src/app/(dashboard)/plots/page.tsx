@@ -22,6 +22,7 @@ export default function PlotsListPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [projects, setProjects] = useState<any[]>([]);
+  const [assignedUserNames, setAssignedUserNames] = useState<Record<string, string>>({});
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [statusLoading, setStatusLoading] = useState<string | null>(null);
 
@@ -78,6 +79,32 @@ export default function PlotsListPage() {
     }
     loadProjects();
   }, []);
+
+  useEffect(() => {
+    if (user?.role === 'AGENT') return;
+    const assignedUserIds = [...new Set(
+      plots
+        .map((plot: any) => plot.assignedUserId)
+        .filter((userId: any): userId is string => Boolean(userId)),
+    )];
+    if (assignedUserIds.length === 0) return;
+
+    Promise.all(
+      assignedUserIds.map(async (userId) => {
+        try {
+          const response = await api.get(`/users/${userId}`);
+          const customer = response.data?.data;
+          return [userId, customer?.fullName || customer?.name || 'Unknown'] as const;
+        } catch (error) {
+          console.error(`Unable to load assigned user ${userId}`, error);
+          return [userId, 'Unknown'] as const;
+        }
+      }),
+    ).then((entries) => setAssignedUserNames((current) => ({
+      ...current,
+      ...Object.fromEntries(entries),
+    })));
+  }, [plots, user?.role]);
 
   async function handleDelete(id: string, plotNumber: string) {
     setConfirmModal({
@@ -142,7 +169,10 @@ export default function PlotsListPage() {
       toast.error(t('failed_update_plot_visibility'));
     }
   }
-  const handlePlotAssigned = (plotId: string, assignedUserId: string) => {
+  const handlePlotAssigned = (plotId: string, assignedUserId: string, assignedUserName?: string) => {
+    if (assignedUserName) {
+      setAssignedUserNames((current) => ({ ...current, [assignedUserId]: assignedUserName }));
+    }
     setPlots(plots.map((p: any) => p.id === plotId ? { ...p, status: "BOOKED_SOLD", assignedUserId } : p) as any);
   };
 
@@ -231,7 +261,11 @@ export default function PlotsListPage() {
                 <span>{t('assign')}</span>
               </button>
             ) : (
-              <span className="text-xs text-slate-400 font-medium italic">{t('no_actions_available')}</span>
+              <span className="text-xs font-bold text-slate-800">
+                {assignedUserNames[plot.assignedUserId]
+                  ? `${assignedUserNames[plot.assignedUserId]}`
+                  : t('no_actions_available')}
+              </span>
             )
           ) : (
             <>

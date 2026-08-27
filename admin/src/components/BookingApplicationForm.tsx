@@ -175,9 +175,10 @@ interface BookingApplicationFormProps {
     errors?: BookingApplicationFormErrors;
     bookingId?: string;
     onPhotoUploadStateChange?: (uploading: boolean) => void;
+    initialPaymentLocked?: boolean;
 }
 
-export function BookingApplicationForm({ value, onChange, disabled = false, errors = {}, bookingId, onPhotoUploadStateChange }: BookingApplicationFormProps) {
+export function BookingApplicationForm({ value, onChange, disabled = false, errors = {}, bookingId, onPhotoUploadStateChange, initialPaymentLocked = false }: BookingApplicationFormProps) {
     const [cropImage, setCropImage] = useState("");
     const [cropField, setCropField] = useState<"firstApplicantPhoto" | "secondApplicantPhoto" | null>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -247,9 +248,9 @@ export function BookingApplicationForm({ value, onChange, disabled = false, erro
         await uploadApplicantPhoto(selectedField, croppedFile);
     };
     const inputClassName = "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100";
-    const field = (label: string, name: keyof BookingApplicationFormData, type = "text", required = false) => (
+    const field = (label: string, name: keyof BookingApplicationFormData, type = "text", required = false, fieldDisabled = disabled) => (
         <label className="text-sm font-medium text-slate-700">{label}{required && <span className="text-red-500"> *</span>}
-            <input required={required} disabled={disabled} type={type} value={value[name]} onChange={(e) => updateField(name, e.target.value)} className={`${inputClassName} ${errors[name] ? "border-red-500 focus:ring-red-500" : ""}`} aria-invalid={Boolean(errors[name])} aria-describedby={errors[name] ? `${String(name)}-error` : undefined} />
+            <input required={required} disabled={fieldDisabled} type={type} value={value[name]} onChange={(e) => updateField(name, e.target.value)} className={`${inputClassName} ${errors[name] ? "border-red-500 focus:ring-red-500" : ""}`} aria-invalid={Boolean(errors[name])} aria-describedby={errors[name] ? `${String(name)}-error` : undefined} />
             {errors[name] && <span id={`${String(name)}-error`} className="mt-1 block text-xs font-normal text-red-600">{errors[name]}</span>}
         </label>
     );
@@ -347,14 +348,14 @@ export function BookingApplicationForm({ value, onChange, disabled = false, erro
                             </div>
                         </fieldset>
                         <label className="text-sm font-medium text-slate-700">Payment Mode
-                            <select disabled={disabled} value={value.paymentMode} onChange={(e) => updateField("paymentMode", e.target.value)} className={inputClassName}>
+                            <select disabled={disabled || initialPaymentLocked} value={value.paymentMode} onChange={(e) => updateField("paymentMode", e.target.value)} className={inputClassName}>
                                 <option value="CASH">Cash</option><option value="UPI">UPI</option><option value="BANK_TRANSFER">NEFT / RTGS / Bank Transfer</option><option value="CHEQUE">Cheque</option><option value="LOAN">Bank Loan</option>
                             </select>
                         </label>
-                        {field("Booking Money / Initial Payment", "initialPayment", "number", true)}
-                        {field("Booking Money in Words", "initialPaymentInWords", "text", true)}
-                        {field("Cheque / NEFT / RTGS Reference", "paymentReference")}
-                        {field("Payment Date", "paymentDate", "date", true)}
+                        {field("Booking Money / Initial Payment", "initialPayment", "number", true, disabled || initialPaymentLocked)}
+                        {field("Booking Money in Words", "initialPaymentInWords", "text", true, disabled || initialPaymentLocked)}
+                        {field("Cheque / NEFT / RTGS Reference", "paymentReference", "text", false, disabled || initialPaymentLocked)}
+                        {field("Payment Date", "paymentDate", "date", true, disabled || initialPaymentLocked)}
                         {field("Bank / Finance Company", "bankName")}
                         {field("16. Plot Area 1 (sq. ft.)", "plotArea1", "number", true)}
                         {field("Plot Area 2 (sq. ft.)", "plotArea2", "number")}
