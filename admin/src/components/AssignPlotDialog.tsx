@@ -79,24 +79,12 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
 
     setAssigning(true);
     try {
-      const totalArea = [
-        applicationForm.plotArea1,
-        applicationForm.plotArea2,
-        applicationForm.plotArea3,
-        applicationForm.plotArea4,
-      ].reduce((total, area) => total + (Number(area) || 0), 0);
-      const salePricePerSqFt = Number(applicationForm.salePricePerSqFt) || 0;
-      const developmentChargePerSqFt =
-        Number(applicationForm.developmentChargePerSqFt) || 0;
-      const totalAmount =
-        totalArea * (salePricePerSqFt + developmentChargePerSqFt);
-
       const bookingData = {
         customerId: selectedUser.id || "",
         mobileNumber: applicationForm.firstApplicantMobile.trim(),
         projectId: plot.projectId || "",
         plotId: plot.id || "",
-        totalAmount,
+        totalAmount: Number(applicationForm.totalAmount) || 0,
         paidAmount: Number(applicationForm.initialPayment) || 0,
         applicationForm,
       };
@@ -113,7 +101,9 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
             transactionId: applicationForm.paymentMode === "CASH" ? null : applicationForm.paymentReference.trim(),
             bankName: applicationForm.bankName.trim(),
             paymentType: "BOOKING_INITIAL",
-            notes: "Initial payment from booking application",
+            notes:
+              applicationForm.notes.trim() ||
+              "Initial payment from booking application",
             status: "COMPLETED",
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),

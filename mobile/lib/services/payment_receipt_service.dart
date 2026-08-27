@@ -20,6 +20,7 @@ class PaymentReceiptService {
     final mode = payment['mode']?.toString() ?? 'N/A';
     final reference = payment['transactionId']?.toString() ?? 'N/A';
     final notes = payment['notes']?.toString() ?? '';
+    final narration = payment['narration']?.toString() ?? notes;
 
     pdf.addPage(
       pw.Page(
@@ -61,6 +62,7 @@ class PaymentReceiptService {
                   '${l10n.receiptPaymentMode(mode)}\n${l10n.receiptReference(reference)}${notes.isNotEmpty ? '\n${l10n.receiptNotes(notes)}' : ''}',
                   '',
                 ),
+                _row('Narration: ${narration.isEmpty ? ' ' : narration}', ''),
                 _row(
                   l10n.receiptAmountInWords(_amountInWords(amount)),
                   _money(currency, amount),
