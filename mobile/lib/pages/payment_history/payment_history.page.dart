@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import '../../theme/theme.dart';
@@ -10,8 +10,10 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import 'payment_history.logic.dart';
+import '../../widgets/shimmer_loader.dart';
+import '../../services/payment_receipt_service.dart';
 
-class PaymentHistoryPage extends ConsumerWidget {
+class PaymentHistoryPage extends HookConsumerWidget {
   const PaymentHistoryPage({super.key});
 
   @override
@@ -44,13 +46,20 @@ class PaymentHistoryPage extends ConsumerWidget {
 
   Widget _buildBody(BuildContext context, state, String userPhone) {
     if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return ListView.separated(
+        padding: AppSpacing.allMd,
+        itemCount: 4,
+        separatorBuilder: (_, __) => AppSpacing.hSm,
+        itemBuilder: (_, __) => const PaymentCardSkeleton(),
+      );
     }
 
     if (state.isError) {
       return Center(
         child: Text(
-          context.l10n.errorLoadingHistoryVerbose(state.errorMessage ?? 'Error'),
+          context.l10n.errorLoadingHistoryVerbose(
+            state.errorMessage ?? 'Error',
+          ),
           textAlign: TextAlign.center,
           style: const TextStyle(color: AppTheme.error),
         ),
@@ -64,17 +73,13 @@ class PaymentHistoryPage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              LucideIcons.receipt,
-              size: 64,
-              color: AppTheme.border,
-            ),
+            const Icon(LucideIcons.receipt, size: 64, color: AppTheme.border),
             AppSpacing.hLg,
             Text(
               context.l10n.noPaymentsFoundFor(userPhone),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: AppTheme.textSecondary),
             ),
           ],
         ),
@@ -100,7 +105,7 @@ class _PaymentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //     final loc = AppLocalizations.of(context);
+    final loc = AppLocalizations.of(context);
     final status =
         payment['status']?.toString().toUpperCase() ??
         context.l10n.statusUnknown;
@@ -157,11 +162,34 @@ class _PaymentCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(
-                '₹$amount',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '₹$amount',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (status == 'SUCCESS')
+                    IconButton(
+                      icon: const Icon(LucideIcons.download, size: 18),
+                      tooltip: loc.downloadReceipt,
+                      onPressed: () async {
+                        try {
+                          await PaymentReceiptService.download(payment, loc);
+                        } catch (error) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(loc.unableToDownloadReceipt),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                ],
               ),
             ],
           ),

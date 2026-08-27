@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'plot_availability.logic.dart';
@@ -11,8 +11,9 @@ import '../../widgets/plot_card.dart';
 import '../../widgets/empty_state.dart';
 import 'package:customer_app/l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
+import '../../widgets/shimmer_loader.dart';
 
-class PlotAvailabilityPage extends ConsumerWidget {
+class PlotAvailabilityPage extends HookConsumerWidget {
   final String projectId;
 
   const PlotAvailabilityPage({super.key, required this.projectId});
@@ -90,7 +91,17 @@ class PlotAvailabilityPage extends ConsumerWidget {
           // ── Grid ─────────────────────────────────────────────────────────
           Expanded(
             child: state.isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? GridView.builder(
+                    padding: AppSpacing.allMd,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: isDesktop ? 3 : (isTablet ? 2 : 1),
+                      crossAxisSpacing: AppSpacing.md,
+                      mainAxisSpacing: AppSpacing.md,
+                      childAspectRatio: isTablet ? 1.35 : 1.7,
+                    ),
+                    itemCount: 6,
+                    itemBuilder: (_, __) => const PlotCardSkeleton(),
+                  )
                 : state.isError
                 ? Center(
                     child: Column(

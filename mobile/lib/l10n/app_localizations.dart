@@ -362,6 +362,264 @@ abstract class AppLocalizations {
   /// **'Payment History'**
   String get paymentHistory;
 
+  /// No description provided for @documentVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Document Vault'**
+  String get documentVault;
+
+  /// No description provided for @noAdminDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'No documents uploaded by Admin yet.'**
+  String get noAdminDocuments;
+
+  /// No description provided for @legalDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal Document'**
+  String get legalDocument;
+
+  /// No description provided for @pdfFile.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get pdfFile;
+
+  /// No description provided for @alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts'**
+  String get alerts;
+
+  /// No description provided for @noAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'No alerts.'**
+  String get noAlerts;
+
+  /// No description provided for @notification.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification'**
+  String get notification;
+
+  /// No description provided for @myWishlist.
+  ///
+  /// In en, this message translates to:
+  /// **'My Wishlist'**
+  String get myWishlist;
+
+  /// No description provided for @wishlistLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading wishlist'**
+  String get wishlistLoadError;
+
+  /// No description provided for @noFavoriteProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorite projects yet.'**
+  String get noFavoriteProjects;
+
+  /// No description provided for @referralRewards.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral & Rewards'**
+  String get referralRewards;
+
+  /// No description provided for @loginToReferral.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to view your referral details.'**
+  String get loginToReferral;
+
+  /// No description provided for @yourReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Your referral code'**
+  String get yourReferralCode;
+
+  /// No description provided for @referralCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral code copied.'**
+  String get referralCodeCopied;
+
+  /// No description provided for @copyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get copyCode;
+
+  /// No description provided for @rewardSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward summary'**
+  String get rewardSummary;
+
+  /// No description provided for @invitesSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Invites sent'**
+  String get invitesSent;
+
+  /// No description provided for @rewardsEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards earned'**
+  String get rewardsEarned;
+
+  /// No description provided for @pendingPayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending payout'**
+  String get pendingPayout;
+
+  /// No description provided for @statusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get statusLabel;
+
+  /// No description provided for @active.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get active;
+
+  /// No description provided for @howItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get howItWorks;
+
+  /// No description provided for @shareReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Share your referral code'**
+  String get shareReferralCode;
+
+  /// No description provided for @shareReferralCodeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Send it to friends and family who are looking for a new home.'**
+  String get shareReferralCodeDescription;
+
+  /// No description provided for @registerWithReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'2. They register with your code'**
+  String get registerWithReferralCode;
+
+  /// No description provided for @registerWithReferralCodeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Once the buyer completes registration, the invite is counted.'**
+  String get registerWithReferralCodeDescription;
+
+  /// No description provided for @earnReferralRewards.
+  ///
+  /// In en, this message translates to:
+  /// **'3. Earn referral rewards'**
+  String get earnReferralRewards;
+
+  /// No description provided for @earnReferralRewardsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward points are added to your account and reflected in the balance.'**
+  String get earnReferralRewardsDescription;
+
+  /// No description provided for @downloadReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Download receipt'**
+  String get downloadReceipt;
+
+  /// No description provided for @receiptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Receipt'**
+  String get receiptTitle;
+
+  /// No description provided for @receiptVoucher.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Receipt Voucher'**
+  String get receiptVoucher;
+
+  /// No description provided for @receiptNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt No.: {number}'**
+  String receiptNumber(Object number);
+
+  /// No description provided for @receiptDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Dated: {date}'**
+  String receiptDate(Object date);
+
+  /// No description provided for @receiptParticulars.
+  ///
+  /// In en, this message translates to:
+  /// **'Particulars'**
+  String get receiptParticulars;
+
+  /// No description provided for @receiptAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get receiptAmount;
+
+  /// No description provided for @receiptAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account: {account}'**
+  String receiptAccount(Object account);
+
+  /// No description provided for @receiptPaymentMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Mode: {mode}'**
+  String receiptPaymentMode(Object mode);
+
+  /// No description provided for @receiptReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference: {reference}'**
+  String receiptReference(Object reference);
+
+  /// No description provided for @receiptNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes: {notes}'**
+  String receiptNotes(Object notes);
+
+  /// No description provided for @receiptAmountInWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount (in words): {amount}'**
+  String receiptAmountInWords(Object amount);
+
+  /// No description provided for @receiptTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get receiptTotal;
+
+  /// No description provided for @computerGeneratedReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a computer-generated receipt.'**
+  String get computerGeneratedReceipt;
+
+  /// No description provided for @unableToDownloadReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to download receipt'**
+  String get unableToDownloadReceipt;
+
   /// No description provided for @noPaymentsFound.
   ///
   /// In en, this message translates to:

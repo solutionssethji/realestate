@@ -35,20 +35,21 @@ class ApiService {
         final data = doc.data() ?? {};
         final phone = data['directCall']?.toString() ?? '';
         final whatsapp = data['whatsapp']?.toString() ?? '';
+        final email = data['email']?.toString() ?? '';
 
         logApi(
           function: 'getContactSettings()',
-          response: {'directCall': phone, 'whatsapp': whatsapp},
+          response: {'directCall': phone, 'whatsapp': whatsapp, 'email': email},
         );
-        return {'phone': phone, 'whatsapp': whatsapp};
+        return {'phone': phone, 'whatsapp': whatsapp, 'email': email};
       }
-      return {'phone': '', 'whatsapp': ''};
+      return {'phone': '', 'whatsapp': '', 'email': ''};
     } on FirebaseAuthException catch (e) {
       logApi(
         function: 'getContactSettings()',
         error: FirebaseAuthErrorMapper.getMessage(e.code),
       );
-      return {'phone': '', 'whatsapp': ''};
+      return {'phone': '', 'whatsapp': '', 'email': ''};
     }
   }
 
@@ -392,12 +393,19 @@ class ApiService {
   static Future<List<String>> getWishlist(String uid) async {
     logApi(function: 'getWishlist()', request: {'uid': uid});
     try {
-      final snapshot = await _db.collection('users').doc(uid).collection('wishlist').get();
+      final snapshot = await _db
+          .collection('users')
+          .doc(uid)
+          .collection('wishlist')
+          .get();
       final items = snapshot.docs.map((d) => d.id).toList();
       logApi(function: 'getWishlist()', response: '${items.length} items');
       return items;
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getWishlist()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+      logApi(
+        function: 'getWishlist()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       return [];
     } catch (e) {
       logApi(function: 'getWishlist()', error: e.toString());
@@ -405,10 +413,21 @@ class ApiService {
     }
   }
 
-  static Future<void> toggleWishlist(String uid, String projectId, bool isFavorite) async {
-    logApi(function: 'toggleWishlist()', request: {'uid': uid, 'projectId': projectId, 'isFavorite': isFavorite});
+  static Future<void> toggleWishlist(
+    String uid,
+    String projectId,
+    bool isFavorite,
+  ) async {
+    logApi(
+      function: 'toggleWishlist()',
+      request: {'uid': uid, 'projectId': projectId, 'isFavorite': isFavorite},
+    );
     try {
-      final docRef = _db.collection('users').doc(uid).collection('wishlist').doc(projectId);
+      final docRef = _db
+          .collection('users')
+          .doc(uid)
+          .collection('wishlist')
+          .doc(projectId);
       if (isFavorite) {
         await docRef.set({
           'projectId': projectId,
@@ -419,7 +438,10 @@ class ApiService {
       }
       logApi(function: 'toggleWishlist()', response: 'Success');
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'toggleWishlist()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+      logApi(
+        function: 'toggleWishlist()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
       rethrow;
     } catch (e) {
       logApi(function: 'toggleWishlist()', error: e.toString());
@@ -429,10 +451,17 @@ class ApiService {
 
   // ─── Notifications (Alerts Tab) ───────────────────────────────────────────────
 
-  static Future<List<Map<String, dynamic>>> getNotifications(String uid, {DocumentSnapshot? lastDocument, int limit = 20}) async {
+  static Future<List<Map<String, dynamic>>> getNotifications(
+    String uid, {
+    DocumentSnapshot? lastDocument,
+    int limit = 20,
+  }) async {
     logApi(function: 'getNotifications()', request: {'uid': uid});
     try {
-      var query = _db.collection('users').doc(uid).collection('notifications')
+      var query = _db
+          .collection('users')
+          .doc(uid)
+          .collection('notifications')
           .orderBy('createdAt', descending: true)
           .limit(limit);
       if (lastDocument != null) {
@@ -441,17 +470,28 @@ class ApiService {
       final snapshot = await query.get();
       return snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
     } on FirebaseAuthException catch (e) {
-      logApi(function: 'getNotifications()', error: FirebaseAuthErrorMapper.getMessage(e.code));
-      return [];
+      logApi(
+        function: 'getNotifications()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
+      rethrow;
     } catch (e) {
       logApi(function: 'getNotifications()', error: e.toString());
-      return [];
+      rethrow;
     }
   }
 
-  static Future<void> markNotificationRead(String uid, String notificationId) async {
+  static Future<void> markNotificationRead(
+    String uid,
+    String notificationId,
+  ) async {
     try {
-      await _db.collection('users').doc(uid).collection('notifications').doc(notificationId).update({'isRead': true});
+      await _db
+          .collection('users')
+          .doc(uid)
+          .collection('notifications')
+          .doc(notificationId)
+          .update({'isRead': true});
     } catch (e) {
       developer.log('Error marking notification as read: $e');
     }
@@ -462,13 +502,42 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> getUserDocuments(String uid) async {
     logApi(function: 'getUserDocuments()', request: {'uid': uid});
     try {
-      final snapshot = await _db.collection('users').doc(uid).collection('documents')
+      final snapshot = await _db
+          .collection('users')
+          .doc(uid)
+          .collection('documents')
           .orderBy('uploadedAt', descending: true)
           .get();
       return snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
     } catch (e) {
       logApi(function: 'getUserDocuments()', error: e.toString());
-      return [];
+      rethrow;
+    }
+  }
+
+  static Future<void> updateKyc({
+    required String uid,
+    required String aadharNumber,
+    required String panNumber,
+    String? aadharPhotoUrl,
+    String? panPhotoUrl,
+    Map<String, dynamic>? bankDetails,
+  }) async {
+    logApi(function: 'updateKyc()', request: {'uid': uid});
+    try {
+      await _db.collection('users').doc(uid).update({
+        'aadharNumber': aadharNumber,
+        if (aadharPhotoUrl != null) 'aadharPhotoUrl': aadharPhotoUrl,
+        'panNumber': panNumber,
+        if (panPhotoUrl != null) 'panPhotoUrl': panPhotoUrl,
+        if (bankDetails != null && bankDetails.isNotEmpty)
+          'bankDetails': bankDetails,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      logApi(function: 'updateKyc()', response: 'Success');
+    } catch (e) {
+      logApi(function: 'updateKyc()', error: e.toString());
+      rethrow;
     }
   }
 

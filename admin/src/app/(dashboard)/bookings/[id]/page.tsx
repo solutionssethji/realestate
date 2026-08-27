@@ -105,6 +105,7 @@ export default function BookingDetailsPage() {
   const [applicationFormErrors, setApplicationFormErrors] =
     useState<BookingApplicationFormErrors>({});
   const [updatingApplicationForm, setUpdatingApplicationForm] = useState(false);
+  const [uploadingApplicantPhoto, setUploadingApplicantPhoto] = useState(false);
   const [downloadingApplicationForm, setDownloadingApplicationForm] = useState(false);
   const downloadingApplicationFormRef = useRef(false);
 
@@ -381,11 +382,59 @@ export default function BookingDetailsPage() {
         applicationForm,
         mobileNumber: applicationForm.firstApplicantMobile.trim(),
       });
+      const initialPaymentAmount = Number(applicationForm.initialPayment) || 0;
+      const initialPaymentRecord = payments.find(
+        (payment) =>
+          payment.id === booking.initialPaymentId ||
+          payment.paymentType === "BOOKING_INITIAL" ||
+          payment.notes === "Initial payment from booking application",
+      );
+      if (initialPaymentRecord) {
+        await updateDoc(doc(db, "payments", initialPaymentRecord.id), {
+          amount: initialPaymentAmount,
+          mode: applicationForm.paymentMode,
+          transactionId:
+            applicationForm.paymentMode === "CASH"
+              ? null
+              : applicationForm.paymentReference.trim(),
+          bankName: applicationForm.bankName.trim(),
+          updatedAt: new Date().toISOString(),
+        });
+      } else if (initialPaymentAmount > 0) {
+        const paymentRef = doc(collection(db, "payments"));
+        await setDoc(paymentRef, {
+          id: paymentRef.id,
+          bookingId: booking.id,
+          customerId: booking.customerId,
+          amount: initialPaymentAmount,
+          mode: applicationForm.paymentMode,
+          transactionId:
+            applicationForm.paymentMode === "CASH"
+              ? null
+              : applicationForm.paymentReference.trim(),
+          bankName: applicationForm.bankName.trim(),
+          paymentType: "BOOKING_INITIAL",
+          notes: "Initial payment from booking application",
+          status: "COMPLETED",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+        await api.put(`/bookings/${booking.id}`, { initialPaymentId: paymentRef.id });
+      }
+      const otherPaymentsTotal = payments
+        .filter((payment) => payment.id !== initialPaymentRecord?.id)
+        .reduce((total, payment) => total + Number(payment.amount || 0), 0);
+      await updateDoc(doc(db, "assignPlots", booking.id), {
+        paidAmount: otherPaymentsTotal + initialPaymentAmount,
+        updatedAt: new Date().toISOString(),
+      });
       setBooking({
         ...booking,
         applicationForm,
         mobileNumber: applicationForm.firstApplicantMobile.trim(),
+        paidAmount: otherPaymentsTotal + initialPaymentAmount,
       });
+      await loadBooking();
       setIsApplicationFormOpen(false);
       toast.success("Application form updated");
     } catch (error: any) {
@@ -438,6 +487,21 @@ export default function BookingDetailsPage() {
           reader.readAsDataURL(blob);
         });
       };
+      const applicantPhotos = await Promise.all(
+        [form.firstApplicantPhoto, form.secondApplicantPhoto].map(async (photoUrl) => {
+          if (!photoUrl) return "";
+          try {
+            return await loadImage(
+              `/api/site-layout?url=${encodeURIComponent(photoUrl)}`,
+            );
+          } catch (error) {
+            console.warn("Unable to load applicant photo", error);
+            return "";
+          }
+        }),
+      );
+      const getPhotoFormat = (dataUrl: string) =>
+        dataUrl.startsWith("data:image/png") ? "PNG" : "JPEG";
       const registrationDetails = [
         `GST REGISTRATION NUMBER - ${applicationSettings.gstNumber || ""}`,
         `CIN NUMBER - ${applicationSettings.cin || ""}`,
@@ -650,7 +714,41 @@ export default function BookingDetailsPage() {
       let y = 18;
       const value = (text: string) =>
         text.trim() ||
-        "........................................................";
+        ".....................................";
+      const addPhotoBoxes = () => {
+        const boxWidth = 25;
+        const boxHeight = 32;
+        const boxGap = 6;
+        const startX = 210 - margin - boxWidth * 2 - boxGap;
+        const boxY = 16;
+
+        pdf.setDrawColor(67, 24, 33);
+        pdf.setLineWidth(0.4);
+        [0, 1].forEach((index) => {
+          const boxX = startX + index * (boxWidth + boxGap);
+          pdf.rect(boxX, boxY, boxWidth, boxHeight);
+          if (applicantPhotos[index]) {
+            pdf.addImage(
+              applicantPhotos[index],
+              getPhotoFormat(applicantPhotos[index]),
+              boxX + 1,
+              boxY + 1,
+              boxWidth - 2,
+              boxHeight - 2,
+            );
+          }
+          pdf.setFont("times", "normal");
+          pdf.setFontSize(7);
+          if (!applicantPhotos[index]) {
+            pdf.text(
+              index === 0 ? "First Applicant" : "Second Applicant",
+              boxX + boxWidth / 2,
+              boxY + boxHeight / 2,
+              { align: "center", maxWidth: boxWidth - 4 },
+            );
+          }
+        });
+      };
       const addPageIfNeeded = (height = 8) => {
         if (y + height > 280) {
           pdf.addPage();
@@ -830,6 +928,7 @@ export default function BookingDetailsPage() {
         text(title, 11, true);
         y += 2;
       };
+      addPhotoBoxes();
       text("To,", 13, false);
       y += 1;
       text("The Managing Director", 13, false);
@@ -837,12 +936,10 @@ export default function BookingDetailsPage() {
       text(applicationSettings.companyName || "", 13, false);
       y += 1;
       text(
-        `${applicationSettings.address || ""} ${applicationSettings.stateName || ""}`,
+        `${applicationSettings.address || ""} ${applicationSettings.stateName || ""}\n${applicationSettings.stateCode || ""}`,
         13,
         false,
       );
-      y += 1;
-      text(applicationSettings.stateCode || "", 13, false);
       y += 6;
       text("Dear Sir,", 13, false);
       text(
@@ -878,8 +975,12 @@ export default function BookingDetailsPage() {
         "4. Date of Marriage Anniversary:",
         formatPdfDate(form.firstApplicantMarriageDate),
       );
-      field("5. Occupation:", form.firstApplicantOccupation);
-      field("6. Nationality:", form.firstApplicantNationality);
+      fieldRow(
+        "5. Occupation:",
+        form.firstApplicantOccupation,
+        "6. Nationality:",
+        form.firstApplicantNationality,
+      );
       field("7. Present Address (Residence):", form.firstApplicantAddress);
       field(
         "8. Permanent Address(Residence):",
@@ -899,17 +1000,17 @@ export default function BookingDetailsPage() {
         form.firstApplicantPan,
       );
       field(
-        "13. Passport No./Voter Card No./Dri. Lic. No./Aadhar No.:",
+        "14. Passport No./Voter Card No./Dri. Lic. No./Aadhar No.:",
         form.firstApplicantPassportOrId || form.firstApplicantAadhaar,
       );
-      pdf.addPage();
-      y = 18;
       fieldRow(
-        "14. Nominee Name:",
+        "15. Nominee Name:",
         form.firstNomineeName.toUpperCase(),
         "Relationship:",
         form.firstNomineeRelationship.toUpperCase(),
       );
+      y = 18;
+      pdf.addPage();
       section("B. SECOND APPLICANT");
       field(
         "1. Mr./Mrs./Ms.(To be filled in caps):",
@@ -927,9 +1028,11 @@ export default function BookingDetailsPage() {
         "4. Date of Marriage Anniversary:",
         formatPdfDate(form.secondApplicantMarriageDate),
       );
-      field(
+      fieldRow(
         "5. Occupation:",
-        `${form.secondApplicantOccupation}         6. Nationality: ${form.secondApplicantNationality}`,
+        form.secondApplicantOccupation,
+        "6. Nationality:",
+        form.secondApplicantNationality,
       );
       field("7. Present Address(Residence):", form.secondApplicantAddress);
       field(
@@ -967,12 +1070,12 @@ export default function BookingDetailsPage() {
       );
       plotAreaBlock();
       field(
-        "17. Plot sale price Rs.",
-        `${form.salePricePerSqFt ?? ""} per Sq. Ft.:`,
+        "17. Plot sale price Rs. per Sq. Ft.:",
+        form.salePricePerSqFt,
       );
       field(
-        "18. Additional/Development Charge",
-        `${form.developmentChargePerSqFt ?? ""} per Sq. Ft.:`,
+        "18. Additional/Development Charge per Sq. Ft.:",
+        form.developmentChargePerSqFt,
       );
       field("19. Any other remarks:", form.remarks);
       text(
@@ -1401,8 +1504,8 @@ export default function BookingDetailsPage() {
             <Button
               type="submit"
               form="application-form"
-              disabled={updatingApplicationForm || Object.keys(applicationFormErrors).length > 0}
-              isLoading={updatingApplicationForm}
+              disabled={updatingApplicationForm || uploadingApplicantPhoto || Object.keys(applicationFormErrors).length > 0}
+              isLoading={updatingApplicationForm || uploadingApplicantPhoto}
             >
               Update Form
             </Button>
@@ -1412,12 +1515,14 @@ export default function BookingDetailsPage() {
         <form id="application-form" onSubmit={handleUpdateApplicationForm}>
           <BookingApplicationForm
             value={applicationForm}
+            bookingId={booking.id}
+            onPhotoUploadStateChange={setUploadingApplicantPhoto}
             onChange={(nextValue) => {
               setApplicationForm(nextValue);
               setApplicationFormErrors(validateBookingApplicationForm(nextValue));
             }}
             errors={applicationFormErrors}
-            disabled={updatingApplicationForm}
+            disabled={updatingApplicationForm || uploadingApplicantPhoto}
           />
         </form>
       </Modal>

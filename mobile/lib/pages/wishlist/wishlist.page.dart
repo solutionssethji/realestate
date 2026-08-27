@@ -1,12 +1,16 @@
+import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'wishlist.logic.dart';
 import '../../../widgets/property_card.dart';
 import '../../../services/api_service.dart';
 import '../../../models/project.dart';
+import '../../../utils/l10n_extension.dart';
+import '../../theme/spacing.dart';
+import '../../widgets/shimmer_loader.dart';
 
-class WishlistPage extends ConsumerWidget {
+class WishlistPage extends HookConsumerWidget {
   const WishlistPage({super.key});
 
   @override
@@ -14,17 +18,22 @@ class WishlistPage extends ConsumerWidget {
     final wishlistState = ref.watch(wishlistLogicProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Wishlist')),
+      appBar: PremiumAppBar(title: context.l10n.myWishlist),
       body: wishlistState.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? ListView.separated(
+              padding: AppSpacing.allMd,
+              itemCount: 3,
+              separatorBuilder: (_, __) => AppSpacing.hSm,
+              itemBuilder: (_, __) => const ProjectCardSkeleton(),
+            )
           : wishlistState.isError
           ? Center(
               child: Text(
-                wishlistState.errorMessage ?? 'Error loading wishlist',
+                wishlistState.errorMessage ?? context.l10n.wishlistLoadError,
               ),
             )
           : wishlistState.projectIds.isEmpty
-          ? const Center(child: Text('No favorite projects yet.'))
+          ? Center(child: Text(context.l10n.noFavoriteProjects))
           : ListView.builder(
               itemCount: wishlistState.projectIds.length,
               itemBuilder: (context, index) {
@@ -35,7 +44,7 @@ class WishlistPage extends ConsumerWidget {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: Center(child: CircularProgressIndicator()),
+                        child: ProjectCardSkeleton(),
                       );
                     }
                     if (snapshot.hasError ||

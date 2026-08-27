@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/l10n_extension.dart';
 import 'my_properties.logic.dart';
+import '../../widgets/shimmer_loader.dart';
 
 class MyPropertiesPage extends HookConsumerWidget {
   const MyPropertiesPage({super.key});
@@ -42,15 +43,18 @@ class MyPropertiesPage extends HookConsumerWidget {
 
   Widget _buildBody(dynamic state, BuildContext context, dynamic l10n) {
     if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: 3,
+        separatorBuilder: (_, __) => const SizedBox(height: 16),
+        itemBuilder: (_, __) => const PropertyListTileSkeleton(),
+      );
     }
     if (state.errorMessage != null) {
       return Center(child: Text(state.errorMessage!));
     }
     if (state.properties.isEmpty) {
-      return Center(
-        child: Text(l10n.noPropertiesYet),
-      );
+      return Center(child: Text(l10n.noPropertiesYet));
     }
 
     return ListView.builder(

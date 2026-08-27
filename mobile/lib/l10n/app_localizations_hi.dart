@@ -143,6 +143,153 @@ class AppLocalizationsHi extends AppLocalizations {
   String get paymentHistory => 'भुगतान इतिहास';
 
   @override
+  String get documentVault => 'दस्तावेज़ वॉल्ट';
+
+  @override
+  String get noAdminDocuments =>
+      'अभी तक एडमिन ने कोई दस्तावेज़ अपलोड नहीं किया है।';
+
+  @override
+  String get legalDocument => 'कानूनी दस्तावेज़';
+
+  @override
+  String get pdfFile => 'पीडीएफ';
+
+  @override
+  String get alerts => 'सूचनाएं';
+
+  @override
+  String get noAlerts => 'कोई सूचना नहीं।';
+
+  @override
+  String get notification => 'सूचना';
+
+  @override
+  String get myWishlist => 'मेरी पसंद';
+
+  @override
+  String get wishlistLoadError => 'पसंद लोड करने में त्रुटि';
+
+  @override
+  String get noFavoriteProjects => 'अभी कोई पसंदीदा प्रोजेक्ट नहीं है।';
+
+  @override
+  String get referralRewards => 'रेफरल और पुरस्कार';
+
+  @override
+  String get loginToReferral => 'अपनी रेफरल जानकारी देखने के लिए लॉग इन करें।';
+
+  @override
+  String get yourReferralCode => 'आपका रेफरल कोड';
+
+  @override
+  String get referralCodeCopied => 'रेफरल कोड कॉपी हो गया।';
+
+  @override
+  String get copyCode => 'कोड कॉपी करें';
+
+  @override
+  String get rewardSummary => 'पुरस्कार सारांश';
+
+  @override
+  String get invitesSent => 'भेजे गए आमंत्रण';
+
+  @override
+  String get rewardsEarned => 'अर्जित पुरस्कार';
+
+  @override
+  String get pendingPayout => 'लंबित भुगतान';
+
+  @override
+  String get statusLabel => 'स्थिति';
+
+  @override
+  String get active => 'सक्रिय';
+
+  @override
+  String get howItWorks => 'यह कैसे काम करता है';
+
+  @override
+  String get shareReferralCode => '1. अपना रेफरल कोड साझा करें';
+
+  @override
+  String get shareReferralCodeDescription =>
+      'इसे नया घर ढूंढ रहे दोस्तों और परिवार के साथ साझा करें।';
+
+  @override
+  String get registerWithReferralCode => '2. वे आपके कोड से रजिस्टर करें';
+
+  @override
+  String get registerWithReferralCodeDescription =>
+      'खरीदार के रजिस्ट्रेशन पूरा करने पर आमंत्रण गिना जाएगा।';
+
+  @override
+  String get earnReferralRewards => '3. रेफरल पुरस्कार कमाएं';
+
+  @override
+  String get earnReferralRewardsDescription =>
+      'पुरस्कार अंक आपके खाते में जुड़कर बैलेंस में दिखाई देंगे।';
+
+  @override
+  String get downloadReceipt => 'रसीद डाउनलोड करें';
+
+  @override
+  String get receiptTitle => 'भुगतान रसीद';
+
+  @override
+  String get receiptVoucher => 'भुगतान रसीद वाउचर';
+
+  @override
+  String receiptNumber(Object number) {
+    return 'रसीद संख्या: $number';
+  }
+
+  @override
+  String receiptDate(Object date) {
+    return 'दिनांक: $date';
+  }
+
+  @override
+  String get receiptParticulars => 'विवरण';
+
+  @override
+  String get receiptAmount => 'राशि';
+
+  @override
+  String receiptAccount(Object account) {
+    return 'खाता: $account';
+  }
+
+  @override
+  String receiptPaymentMode(Object mode) {
+    return 'भुगतान माध्यम: $mode';
+  }
+
+  @override
+  String receiptReference(Object reference) {
+    return 'संदर्भ: $reference';
+  }
+
+  @override
+  String receiptNotes(Object notes) {
+    return 'टिप्पणी: $notes';
+  }
+
+  @override
+  String receiptAmountInWords(Object amount) {
+    return 'राशि (शब्दों में): $amount';
+  }
+
+  @override
+  String get receiptTotal => 'कुल';
+
+  @override
+  String get computerGeneratedReceipt => 'यह कंप्यूटर द्वारा बनाई गई रसीद है।';
+
+  @override
+  String get unableToDownloadReceipt => 'रसीद डाउनलोड नहीं हो सकी';
+
+  @override
   String noPaymentsFound(String phone) {
     return '$phone के लिए कोई भुगतान नहीं मिला';
   }
@@ -1209,7 +1356,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get resetLinkSent => 'Reset link sent! Please check your email inbox.';
 
   @override
-  String get permissionDenied => 'Permission denied. Please contact support.';
+  String get permissionDenied => 'अनुमति नहीं है। कृपया सहायता से संपर्क करें।';
 
   @override
   String get backToLogin => 'Back to Login';

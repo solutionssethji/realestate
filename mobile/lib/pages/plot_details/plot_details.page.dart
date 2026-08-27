@@ -11,6 +11,7 @@ import '../../theme/spacing.dart';
 import '../../models/plot_status.dart';
 import '../../widgets/premium_button.dart';
 import '../../widgets/status_badge.dart';
+import '../../widgets/shimmer_loader.dart';
 
 class PlotDetailsPage extends ConsumerWidget {
   final String projectId;
@@ -29,7 +30,7 @@ class PlotDetailsPage extends ConsumerWidget {
     final bool isDesktop = ResponsiveBreakpoints.of(context).largerThan(TABLET);
 
     if (state.isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: DetailPageSkeleton());
     }
     if (state.isError || state.plot == null) {
       return Scaffold(

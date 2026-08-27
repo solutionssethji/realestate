@@ -1,8 +1,8 @@
 import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'project_details.logic.dart';
@@ -10,8 +10,9 @@ import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import '../../widgets/premium_button.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../widgets/shimmer_loader.dart';
 
-class ProjectDetailsPage extends ConsumerWidget {
+class ProjectDetailsPage extends HookConsumerWidget {
   final String projectId;
 
   const ProjectDetailsPage({super.key, required this.projectId});
@@ -28,7 +29,7 @@ class ProjectDetailsPage extends ConsumerWidget {
       body: SafeArea(
         top: false,
         child: state.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const DetailPageSkeleton()
             : (state.isError || state.project == null || project == null)
             ? Center(
                 child: Column(

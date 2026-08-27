@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/premium_app_bar.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'projects.logic.dart';
@@ -10,7 +10,7 @@ import '../../widgets/property_card.dart';
 import '../../theme/spacing.dart';
 import '../../widgets/empty_state.dart';
 
-class ProjectsPage extends ConsumerWidget {
+class ProjectsPage extends HookConsumerWidget {
   const ProjectsPage({super.key});
 
   @override

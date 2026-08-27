@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../utils/localized_string.dart';
 import '../../widgets/generic_shimmer_loader.dart';
@@ -7,7 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import 'faq.logic.dart';
 
-class FaqPage extends ConsumerWidget {
+class FaqPage extends HookConsumerWidget {
   const FaqPage({super.key});
 
   @override
@@ -19,9 +19,7 @@ class FaqPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: loc.faq),
-      body: SafeArea(
-        child: _buildBody(context, state),
-      ),
+      body: SafeArea(child: _buildBody(context, state)),
     );
   }
 
@@ -31,25 +29,18 @@ class FaqPage extends ConsumerWidget {
     }
 
     if (state.isError) {
-       return Center(
+      return Center(
         child: Padding(
           padding: const EdgeInsets.all(32.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red.shade400,
-              ),
+              Icon(Icons.error_outline, size: 64, color: Colors.red.shade400),
               const SizedBox(height: 16),
               Text(
                 state.errorMessage ?? 'Error',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
+                style: const TextStyle(fontSize: 16, color: Colors.black54),
               ),
             ],
           ),
@@ -66,19 +57,12 @@ class FaqPage extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.help_outline,
-                size: 64,
-                color: Colors.grey.shade400,
-              ),
+              Icon(Icons.help_outline, size: 64, color: Colors.grey.shade400),
               const SizedBox(height: 16),
               Text(
                 context.l10n.noFaqsAvailable,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
+                style: const TextStyle(fontSize: 16, color: Colors.black54),
               ),
             ],
           ),
@@ -110,9 +94,7 @@ class FaqPage extends ConsumerWidget {
             side: BorderSide(color: Colors.grey.shade200),
           ),
           child: Theme(
-            data: Theme.of(
-              context,
-            ).copyWith(dividerColor: Colors.transparent),
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               title: Text(
                 question,

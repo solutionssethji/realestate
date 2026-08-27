@@ -1,3 +1,4 @@
+import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,8 +26,8 @@ class ProfilePage extends HookConsumerWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.myProfile),
+      appBar: PremiumAppBar(
+        title: l10n.myProfile,
         actions: [
           if (user != null)
             state.isLoading

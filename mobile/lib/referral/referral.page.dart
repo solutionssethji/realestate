@@ -1,35 +1,26 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/premium_app_bar.dart';
+import '../../utils/l10n_extension.dart';
+import 'referral.logic.dart';
 
 class ReferralPage extends HookConsumerWidget {
   const ReferralPage({super.key});
 
-  String _buildReferralCode(User user) {
-    final raw = (user.uid + (user.email ?? 'referral')).replaceAll(
-      RegExp(r'[^A-Za-z0-9]'),
-      '',
-    );
-    final safe = raw.isEmpty ? 'SHUBH' : raw.toUpperCase();
-    final compact = safe.substring(0, safe.length < 8 ? safe.length : 8);
-    return 'SHUBH$compact';
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider);
-    final referralCode = user != null ? _buildReferralCode(user) : 'SHUBH0000';
+    final referralCode = const ReferralLogic().fromUser(user).referralCode;
 
     return Scaffold(
-      appBar: const PremiumAppBar(title: 'Referral & Rewards'),
+      appBar: PremiumAppBar(title: context.l10n.referralRewards),
       body: user == null
-          ? const Center(
+          ? Center(
               child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text('Please log in to view your referral details.'),
+                padding: const EdgeInsets.all(20),
+                child: Text(context.l10n.loginToReferral),
               ),
             )
           : SingleChildScrollView(
@@ -47,9 +38,9 @@ class ReferralPage extends HookConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Your referral code',
-                            style: TextStyle(
+                          Text(
+                            context.l10n.yourReferralCode,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
@@ -86,16 +77,16 @@ class ReferralPage extends HookConsumerWidget {
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
-                                        const SnackBar(
+                                        SnackBar(
                                           content: Text(
-                                            'Referral code copied.',
+                                            context.l10n.referralCodeCopied,
                                           ),
                                         ),
                                       );
                                     }
                                   },
                                   icon: const Icon(Icons.copy_all_rounded),
-                                  label: const Text('Copy code'),
+                                  label: Text(context.l10n.copyCode),
                                 ),
                               ),
                             ],
@@ -105,9 +96,12 @@ class ReferralPage extends HookConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Reward summary',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    context.l10n.rewardSummary,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   GridView(
@@ -120,33 +114,42 @@ class ReferralPage extends HookConsumerWidget {
                           mainAxisSpacing: 12,
                           childAspectRatio: 1.4,
                         ),
-                    children: const [
-                      _StatCard(label: 'Invites sent', value: '03'),
-                      _StatCard(label: 'Rewards earned', value: '₹4,250'),
-                      _StatCard(label: 'Pending payout', value: '₹1,100'),
-                      _StatCard(label: 'Status', value: 'Active'),
+                    children: [
+                      _StatCard(label: context.l10n.invitesSent, value: '03'),
+                      _StatCard(
+                        label: context.l10n.rewardsEarned,
+                        value: '₹4,250',
+                      ),
+                      _StatCard(
+                        label: context.l10n.pendingPayout,
+                        value: '₹1,100',
+                      ),
+                      _StatCard(
+                        label: context.l10n.statusLabel,
+                        value: context.l10n.active,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'How it works',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    context.l10n.howItWorks,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
-                  const _InfoRow(
-                    title: '1. Share your referral code',
-                    subtitle:
-                        'Send it to friends and family who are looking for a new home.',
+                  _InfoRow(
+                    title: context.l10n.shareReferralCode,
+                    subtitle: context.l10n.shareReferralCodeDescription,
                   ),
-                  const _InfoRow(
-                    title: '2. They register with your code',
-                    subtitle:
-                        'Once the buyer completes registration, the invite is counted.',
+                  _InfoRow(
+                    title: context.l10n.registerWithReferralCode,
+                    subtitle: context.l10n.registerWithReferralCodeDescription,
                   ),
-                  const _InfoRow(
-                    title: '3. Earn referral rewards',
-                    subtitle:
-                        'Reward points are added to your account and reflected in the balance.',
+                  _InfoRow(
+                    title: context.l10n.earnReferralRewards,
+                    subtitle: context.l10n.earnReferralRewardsDescription,
                   ),
                 ],
               ),

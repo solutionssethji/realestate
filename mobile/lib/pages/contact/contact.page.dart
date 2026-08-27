@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../widgets/premium_button.dart';
 import '../../utils/l10n_extension.dart';
@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import 'contact.logic.dart';
 
-class ContactUsPage extends ConsumerWidget {
+class ContactUsPage extends HookConsumerWidget {
   const ContactUsPage({super.key});
 
   Future<void> _launchUrl(String urlString) async {
@@ -26,9 +26,7 @@ class ContactUsPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.contactUs),
-      body: SafeArea(
-        child: _buildBody(context, state),
-      ),
+      body: SafeArea(child: _buildBody(context, state)),
     );
   }
 
@@ -39,7 +37,10 @@ class ContactUsPage extends ConsumerWidget {
 
     if (state.isError) {
       return Center(
-        child: Text(state.errorMessage ?? 'Error loading contact info', style: const TextStyle(color: Colors.red)),
+        child: Text(
+          state.errorMessage ?? 'Error loading contact info',
+          style: const TextStyle(color: Colors.red),
+        ),
       );
     }
 
@@ -65,11 +66,7 @@ class ContactUsPage extends ConsumerWidget {
           ),
           child: Column(
             children: [
-              const Icon(
-                LucideIcons.headphones,
-                color: Colors.white,
-                size: 48,
-              ),
+              const Icon(LucideIcons.headphones, color: Colors.white, size: 48),
               AppSpacing.hMd,
               Text(
                 'We are here to help!',
@@ -93,10 +90,7 @@ class ContactUsPage extends ConsumerWidget {
 
         Text(
           context.l10n.contactInformation,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         AppSpacing.hLg,
 

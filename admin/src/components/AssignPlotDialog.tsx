@@ -102,11 +102,15 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
           customerId: selectedUser.id || "",
           amount: initialPayment,
           mode: applicationForm.paymentMode,
+          transactionId: applicationForm.paymentMode === "CASH" ? null : applicationForm.paymentReference.trim(),
+          bankName: applicationForm.bankName.trim(),
+          paymentType: "BOOKING_INITIAL",
           notes: "Initial payment from booking application",
           status: "COMPLETED",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         });
+        await api.put(`/bookings/${bookingId}`, { initialPaymentId: paymentRef.id });
       }
 
       // Update plot status
