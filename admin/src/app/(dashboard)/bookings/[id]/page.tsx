@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { updateDoc, collection, doc } from "firebase/firestore";
+import { updateDoc, collection, doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { createPaymentAndUpdateBooking, createPaymentWithVoucher } from "@/lib/paymentVoucher";
 import api from "@/lib/api";
@@ -11,9 +11,11 @@ import {
   User,
   CreditCard,
   Download,
+  Eye,
   Loader2,
   FileDown,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { formatCurrency, formatDateTime } from "@/lib/formatters";
@@ -95,11 +97,12 @@ export default function BookingDetailsPage() {
   const [paymentAmount, setPaymentAmount] = useState("");
   const [paymentMode, setPaymentMode] = useState("CASH");
   const [transactionId, setTransactionId] = useState("");
+  const [bankName, setBankName] = useState("");
   const [paymentNotes, setPaymentNotes] = useState("");
+  const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
   const [loggingPayment, setLoggingPayment] = useState(false);
-  const [downloadingPaymentId, setDownloadingPaymentId] = useState<
-    string | null
-  >(null);
+  const [downloadingPaymentId, setDownloadingPaymentId] = useState<{ id: string; action: "download" | "view" } | null>(null);
+  const [downloadingAllPayments, setDownloadingAllPayments] = useState<"download" | "view" | null>(null);
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false);
   const [applicationForm, setApplicationForm] =
     useState<BookingApplicationFormData>(emptyBookingApplicationForm);
@@ -107,11 +110,48 @@ export default function BookingDetailsPage() {
     useState<BookingApplicationFormErrors>({});
   const [updatingApplicationForm, setUpdatingApplicationForm] = useState(false);
   const [uploadingApplicantPhoto, setUploadingApplicantPhoto] = useState(false);
-  const [downloadingApplicationForm, setDownloadingApplicationForm] = useState(false);
+  const [downloadingApplicationForm, setDownloadingApplicationForm] = useState<"download" | "view" | null>(null);
   const downloadingApplicationFormRef = useRef(false);
+  const downloadingAllPaymentsRef = useRef(false);
+  const downloadingPaymentRef = useRef(false);
+  const [preloadedReceiptSettings, setPreloadedReceiptSettings] = useState<any>(null);
+  const [preloadedImages, setPreloadedImages] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (params?.id) loadBooking();
+
+    const preloadPdfAssets = async () => {
+      try {
+        const settings = await getSetting("receiptSettings");
+        if (settings) setPreloadedReceiptSettings(settings);
+
+        const fetchImage = async (path: string) => {
+          const response = await fetch(path);
+          if (!response.ok) return undefined;
+          const blob = await response.blob();
+          return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(String(reader.result));
+            reader.readAsDataURL(blob);
+          });
+        };
+
+        const [company, transparent, hands] = await Promise.all([
+          fetchImage("/logo_with_text.png"),
+          fetchImage("/transparent_logo.png"),
+          fetchImage("/hands.jpg"),
+        ]);
+
+        setPreloadedImages({
+          companyLogo: company || "",
+          transparentLogo: transparent || "",
+          handsImage: hands || "",
+        });
+      } catch (err) {
+        console.warn("Failed to preload PDF assets", err);
+      }
+    };
+    preloadPdfAssets();
   }, [params?.id]);
 
   async function loadBooking() {
@@ -160,17 +200,28 @@ export default function BookingDetailsPage() {
       setLoading(false);
     }
   }
-
   const handleLogPayment = async () => {
     const paidAmount = Number(booking?.paidAmount || 0);
     const totalAmount = Number(booking?.totalAmount || 0);
-    if (totalAmount > 0 && paidAmount >= totalAmount) {
-      toast.error("The total booking amount has already been paid");
-      return;
-    }
     const amount = parseFloat(paymentAmount);
+
     if (isNaN(amount) || amount <= 0) {
       toast.error("Please enter a valid amount");
+      return;
+    }
+
+    const pendingAmount = totalAmount - paidAmount;
+    let allowedMaxAmount = pendingAmount;
+
+    if (editingPaymentId) {
+      const oldPayment = payments.find(p => p.id === editingPaymentId);
+      if (oldPayment) {
+        allowedMaxAmount += Number(oldPayment.amount || 0);
+      }
+    }
+
+    if (totalAmount > 0 && amount > allowedMaxAmount) {
+      toast.error(`Amount cannot exceed the allowed balance of Rs. ${allowedMaxAmount.toLocaleString('en-IN')}`);
       return;
     }
     if (paymentMode !== "CASH" && !transactionId.trim()) {
@@ -179,177 +230,676 @@ export default function BookingDetailsPage() {
     }
     setLoggingPayment(true);
     try {
-      const paymentRef = doc(collection(db, "payments"));
-      const bookingRef = doc(db, "assignPlots", booking.id);
-      await createPaymentAndUpdateBooking(bookingRef, paymentRef, {
-        id: paymentRef.id,
-        bookingId: booking.id,
-        customerId: booking.customerId,
-        amount,
-        mode: paymentMode,
-        transactionId: paymentMode !== "CASH" ? transactionId.trim() : null,
-        notes: paymentNotes,
-        status: "COMPLETED",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }, amount);
-      const newPaidAmount = Number(booking.paidAmount || 0) + amount;
-      setBooking({ ...booking, paidAmount: newPaidAmount });
-      toast.success("Payment logged successfully");
+      if (editingPaymentId) {
+        const paymentRef = doc(db, "payments", editingPaymentId);
+        await updateDoc(paymentRef, {
+          amount,
+          mode: paymentMode,
+          transactionId: paymentMode !== "CASH" ? transactionId.trim() : null,
+          bankName: ["BANK_TRANSFER", "CHEQUE", "LOAN"].includes(paymentMode) ? bankName.trim() : null,
+          notes: paymentNotes,
+          updatedAt: new Date().toISOString(),
+        });
+
+        const otherPaymentsTotal = payments
+          .filter((p) => p.id !== editingPaymentId)
+          .reduce((total, p) => total + Number(p.amount || 0), 0);
+
+        const newPaidAmount = otherPaymentsTotal + amount;
+        await updateDoc(doc(db, "assignPlots", booking.id), {
+          paidAmount: newPaidAmount,
+          updatedAt: new Date().toISOString(),
+        });
+        setBooking({ ...booking, paidAmount: newPaidAmount });
+        toast.success("Payment updated successfully");
+      } else {
+        const paymentRef = doc(collection(db, "payments"));
+        const bookingRef = doc(db, "assignPlots", booking.id);
+        await createPaymentAndUpdateBooking(paymentRef, bookingRef, {
+          id: paymentRef.id,
+          bookingId: booking.id,
+          customerId: booking.customerId,
+          amount,
+          mode: paymentMode,
+          transactionId: paymentMode !== "CASH" ? transactionId.trim() : null,
+          bankName: ["BANK_TRANSFER", "CHEQUE", "LOAN"].includes(paymentMode) ? bankName.trim() : null,
+          notes: paymentNotes,
+          status: "COMPLETED",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }, amount);
+        const newPaidAmount = Number(booking.paidAmount || 0) + amount;
+        setBooking({ ...booking, paidAmount: newPaidAmount });
+        toast.success("Payment logged successfully");
+      }
       setIsPaymentModalOpen(false);
       setPaymentAmount("");
       setTransactionId("");
+      setBankName("");
       setPaymentNotes("");
+      setEditingPaymentId(null);
       loadBooking();
     } catch (error) {
       console.error(error);
-      toast.error("Failed to log payment");
+      toast.error("Failed to save payment");
     } finally {
       setLoggingPayment(false);
     }
   };
 
-  const handleDownloadReceipt = async (payment: any) => {
-    setDownloadingPaymentId(payment.id);
+  const handleEditPayment = (payment: any) => {
+    setEditingPaymentId(payment.id);
+    setPaymentAmount(payment.amount?.toString() || "");
+    setPaymentMode(payment.mode || "CASH");
+    setTransactionId(payment.transactionId || "");
+    setBankName(payment.bankName || "");
+    setPaymentNotes(payment.notes || "");
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleDeletePayment = async (paymentId: string, amount: number) => {
+    if (!window.confirm("Are you sure you want to delete this payment? This action cannot be undone and the paid amount will be recalculated.")) {
+      return;
+    }
+
     try {
-      const receiptSettings = await getSetting("receiptSettings");
+      await deleteDoc(doc(db, "payments", paymentId));
+
+      const otherPaymentsTotal = payments
+        .filter((p) => p.id !== paymentId)
+        .reduce((total, p) => total + Number(p.amount || 0), 0);
+
+      await updateDoc(doc(db, "assignPlots", booking.id), {
+        paidAmount: otherPaymentsTotal,
+        updatedAt: new Date().toISOString(),
+      });
+
+      setPayments((prev) => prev.filter((p) => p.id !== paymentId));
+      setBooking((prev: any) => ({ ...prev, paidAmount: otherPaymentsTotal }));
+
+      toast.success("Payment deleted successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete payment");
+    }
+  };
+
+  const handleDownloadReceipt = async (payment: any, action: "download" | "view" = "download") => {
+    if (downloadingPaymentRef.current) return;
+    downloadingPaymentRef.current = true;
+    setDownloadingPaymentId({ id: payment.id, action });
+
+    // Yield to let React render the loading spinner before synchronous PDF generation
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    try {
+      const loadImage = async (path: string) => {
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`Unable to load ${path}`);
+        const blob = await response.blob();
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(String(reader.result));
+          reader.onerror = () => reject(new Error(`Unable to read ${path}`));
+          reader.readAsDataURL(blob);
+        });
+      };
+      let companyLogo = preloadedImages.companyLogo;
+      let transparentLogo = preloadedImages.transparentLogo;
+      if (!companyLogo || !transparentLogo) {
+        const [c, t] = await Promise.all([
+          loadImage("/logo_with_text.png"),
+          loadImage("/transparent_logo.png"),
+        ]);
+        companyLogo = c;
+        transparentLogo = t;
+      }
+
+
+      const receiptSettings = preloadedReceiptSettings || await getSetting("receiptSettings");
       if (!receiptSettings) {
         throw new Error(
           "Receipt settings are not configured in Admin Settings",
         );
       }
-      const receipt = new jsPDF({
+      // ============================================================
+      // PDF INIT (PREMIUM MINIMALIST LAYOUT)
+      // ============================================================
+      const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
+        compress: true,
       });
-      const margin = 14;
-      const pageWidth = receipt.internal.pageSize.getWidth();
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 20;
+
+      // ============================================================
+      // COLORS & STYLES
+      // ============================================================
+      const PRIMARY = "#8C1D2F"; // Rich maroon / crimson for branding
+      const TEXT_MAIN = "#111827"; // Very dark gray for high readability
+      const TEXT_MUTED = "#6B7280"; // Medium gray for labels
+      const BG_LIGHT = "#F9FAFB"; // Off-white for subtle sectioning
+      const BORDER_COLOR = "#E5E7EB"; // Light gray for subtle dividers
+
+      const setFont = (size: number, bold = false, color = TEXT_MAIN) => {
+        pdf.setFont("helvetica", bold ? "bold" : "normal");
+        pdf.setFontSize(size);
+        pdf.setTextColor(color);
+      };
+
+      // ============================================================
+      // DATA EXTRACTION
+      // ============================================================
       const amount = Number(payment.amount || 0);
-      // jsPDF's built-in Helvetica font does not contain the INR glyph.
       const amountText = `Rs. ${amount.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       const voucherNumber = payment.voucherNumber || "N/A";
-      const date = payment.receiptDate || formatDateTime(payment.createdAt);
-      const account = `${booking.projectName || "Plot Booking"}${booking.plotNumber ? ` - Plot ${booking.plotNumber}` : ""}`;
-      const through =
-        payment.bankName ||
-        payment.through ||
-        payment.transactionId ||
-        payment.mode ||
-        "N/A";
-      const narration = payment.narration || payment.notes || "";
-      const wrap = (text: string, x: number, y: number, width: number) =>
-        receipt.text(receipt.splitTextToSize(text, width), x, y, {
-          lineHeightFactor: 1.35,
-        });
+      const receiptDate = payment.receiptDate || formatDateTime(payment.createdAt) || "N/A";
+      const projectName = booking.projectName || "Plot Booking";
+      const plotNumber = booking.plotNumber || "";
+      const accountText = plotNumber ? `${projectName} - Plot ${plotNumber}` : projectName;
 
-      receipt.setTextColor(0, 0, 0);
-      receipt.setFontSize(16);
-      receipt.setFont("helvetica", "bold");
-      receipt.text(receiptSettings.companyName, pageWidth / 2, 28, {
-        align: "center",
-      });
+      const customerName = booking?.customer?.name || booking?.customerName || booking?.applicationForm?.firstApplicantName || "Customer";
+      const customerPhone = booking?.customer?.phone || booking?.customerPhone || booking?.applicationForm?.firstApplicantMobile || "";
 
-      receipt.setFontSize(11);
-      receipt.setFont("helvetica", "normal");
-      receipt.text(receiptSettings.address, pageWidth / 2, 35, {
-        align: "center",
-      });
-      receipt.text(
-        `State Name : ${receiptSettings.stateName}, Code : ${receiptSettings.stateCode}`,
-        pageWidth / 2,
-        41,
-        { align: "center" },
-      );
-      receipt.text(`CIN: ${receiptSettings.cin}`, pageWidth / 2, 47, {
-        align: "center",
-      });
-      receipt.text(`E-Mail : ${receiptSettings.email}`, pageWidth / 2, 53, {
-        align: "center",
-      });
+      const paymentMode = payment.mode || payment.paymentMode || "N/A";
+      const through = payment.bankName || payment.through || "N/A";
+      const transactionId = payment.transactionId || payment.referenceNumber || payment.paymentReference || "N/A";
+      const narration = payment.narration || payment.notes || "N/A";
+      const words = amountInWords(amount);
 
-      receipt.setFontSize(15);
-      receipt.setFont("helvetica", "bold");
-      receipt.text("Receipt Voucher", pageWidth / 2, 66, { align: "center" });
+      // White background for the entire page
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, 0, pageWidth, pageHeight, "F");
 
-      receipt.setFontSize(12);
-      receipt.text(`No. : ${voucherNumber}`, margin, 79);
-      receipt.text(`Dated : ${date}`, pageWidth - margin, 79, {
-        align: "right",
-      });
+      // Large subtle watermark centered
+      try {
+        pdf.saveGraphicsState();
+        pdf.setGState(new GState({ opacity: 0.12 }));
+        pdf.addImage(transparentLogo, "PNG", pageWidth / 2 - 60, pageHeight / 2 - 90, 120, 180);
+        pdf.restoreGraphicsState();
+      } catch (error) {
+        console.warn("Unable to add watermark:", error);
+      }
 
-      const tableTop = 87;
-      const particularsWidth = 127;
-      const amountWidth = pageWidth - margin * 2 - particularsWidth;
-      const rowHeights = [25, 25, 34];
-      receipt.setLineWidth(0.3);
-      receipt.rect(margin, tableTop, particularsWidth, 10);
-      receipt.rect(margin + particularsWidth, tableTop, amountWidth, 10);
-      receipt.setFont("helvetica", "bold");
-      receipt.text("Particulars", margin + 7, tableTop + 7);
-      receipt.text("Amount", pageWidth - margin - 6, tableTop + 7, {
-        align: "right",
-      });
+      // ============================================================
+      // HEADER SECTION (Left: Branding, Right: Title & Meta)
+      // ============================================================
+      let currentY = margin;
 
-      let rowTop = tableTop + 10;
-      const row = (
-        height: number,
-        label: string,
-        value: string,
-        rowAmount = "",
-      ) => {
-        receipt.rect(margin, rowTop, particularsWidth, height);
-        receipt.rect(margin + particularsWidth, rowTop, amountWidth, height);
-        receipt.setFont("helvetica", "bold");
-        receipt.text(label, margin + 7, rowTop + 8);
-        receipt.setFont("helvetica", "normal");
-        wrap(value, margin + 7, rowTop + 18, particularsWidth - 14);
-        if (rowAmount)
-          receipt.text(rowAmount, pageWidth - margin - 6, rowTop + 8, {
-            align: "right",
-          });
-        rowTop += height;
+      // Top accent line
+      pdf.setFillColor(PRIMARY);
+      pdf.rect(0, 0, pageWidth, 4, "F");
+
+      // Left: Logo
+      try {
+        pdf.addImage(companyLogo, "PNG", margin, currentY, 32, 20);
+      } catch (error) {
+        console.warn("Unable to add company logo:", error);
+      }
+
+      // Left: Company Info
+      currentY += 28;
+      setFont(12, true, PRIMARY);
+      pdf.text(receiptSettings.companyName || "Shubhaytanam Buildtech", margin, currentY);
+
+      currentY += 5;
+      setFont(8, false, TEXT_MUTED);
+      pdf.text(receiptSettings.address || "", margin, currentY);
+      currentY += 4;
+      pdf.text(`${receiptSettings.stateName || ""}, ${receiptSettings.stateCode || ""}`, margin, currentY);
+
+      currentY += 4;
+      pdf.text(`GST: ${receiptSettings.gstNumber || "-"}  |  CIN: ${receiptSettings.cin || "-"}`, margin, currentY);
+
+      currentY += 4;
+      pdf.text(`PAN: ${receiptSettings.panNumber || "-"}  |  TAN: ${receiptSettings.tanNumber || "-"}`, margin, currentY);
+
+      currentY += 4;
+      pdf.text(`Email: ${receiptSettings.email || "-"}`, margin, currentY);
+
+      // Right: Receipt Title & Meta
+      let rightY = margin + 12;
+      setFont(18, true,);
+      pdf.text(`RECEIPT: ${String(voucherNumber)}`, pageWidth - margin, rightY, { align: "right" });
+
+      // ============================================================
+      // HIGHLIGHTED AMOUNT BANNER
+      // ============================================================
+      currentY += 12;
+      pdf.setFillColor(BG_LIGHT);
+      pdf.roundedRect(margin, currentY, pageWidth - margin * 2, 24, 2, 2, "F");
+
+      // Add a subtle left border to the banner
+      pdf.setFillColor(PRIMARY);
+      pdf.rect(margin, currentY, 3, 24, "F");
+
+      setFont(9, true, TEXT_MUTED);
+      pdf.text("AMOUNT RECEIVED", margin + 10, currentY + 9);
+
+      setFont(16, true, PRIMARY);
+      pdf.text(amountText, margin + 10, currentY + 18);
+
+      // ============================================================
+      // RECEIVED FROM
+      // ============================================================
+      currentY += 36;
+      setFont(8, true, TEXT_MUTED);
+      pdf.text("RECEIVED WITH THANKS FROM", margin, currentY);
+
+      currentY += 7;
+      setFont(14, true, TEXT_MAIN);
+      pdf.text(customerName, margin, currentY);
+
+      if (customerPhone) {
+        currentY += 5;
+        setFont(9, false, TEXT_MUTED);
+        pdf.text(`+91 ${customerPhone.replace('+91', '').trim()}`, margin, currentY);
+      }
+
+      // ============================================================
+      // PAYMENT DETAILS GRID (Ultra-Clear Tabular Layout)
+      // ============================================================
+      currentY += 12;
+      setFont(11, true, PRIMARY);
+      pdf.text("PAYMENT DETAILS", margin, currentY);
+
+      currentY += 6;
+
+      // Calculate dynamic heights for wrapped text
+      const wordsLines = pdf.splitTextToSize(words, pageWidth - margin * 2 - 60);
+      const narrationLines = pdf.splitTextToSize(narration, pageWidth - margin * 2 - 60).slice(0, 3);
+      const accountLines = pdf.splitTextToSize(accountText, pageWidth - margin * 2 - 60);
+
+      const hRow = 10;
+      const hDate = hRow; // Using hRow for Date
+      const hAccount = Math.max(hRow, accountLines.length * 5 + 5);
+      const hWords = Math.max(hRow, wordsLines.length * 5 + 5);
+      const hNarration = Math.max(hRow, narrationLines.length * 5 + 5);
+
+      const totalH = hDate + hAccount + (hRow * 3) + hWords + hNarration;
+
+      // Draw outer table border
+      pdf.setDrawColor(BORDER_COLOR);
+      pdf.setLineWidth(0.3);
+      pdf.roundedRect(margin, currentY, pageWidth - margin * 2, totalH, 2, 2, "S");
+
+      let tableY = currentY;
+      const drawBorderRow = (label: string, lines: string[], height: number, isLast = false) => {
+        // Fill left column (Label)
+        pdf.setFillColor(BG_LIGHT);
+        pdf.rect(margin, tableY, 50, height, "F");
+
+        // Vertical divider
+        pdf.setDrawColor(BORDER_COLOR);
+        pdf.line(margin + 50, tableY, margin + 50, tableY + height);
+
+        // Bottom divider
+        if (!isLast) {
+          pdf.line(margin, tableY + height, pageWidth - margin, tableY + height);
+        }
+
+        setFont(8.5, true, TEXT_MUTED);
+        pdf.text(label, margin + 4, tableY + 6.5);
+
+        setFont(9, true, TEXT_MAIN);
+        pdf.text(lines, margin + 54, tableY + 6.5);
+
+        tableY += height;
       };
-      row(rowHeights[0], "Account :", account, amountText);
-      row(rowHeights[1], "Through :", through);
-      row(25, "Narration :", narration || " ");
-      row(
-        rowHeights[2],
-        "Amount (in words) :",
-        amountInWords(amount),
-        amountText,
-      );
 
-      receipt.setFontSize(13);
-      receipt.setFont("helvetica", "bold");
-      receipt.text(
-        "Total",
-        pageWidth - margin - amountWidth - 18,
-        rowTop + 10,
-        { align: "right" },
-      );
-      receipt.text(amountText, pageWidth - margin - 6, rowTop + 10, {
-        align: "right",
-      });
-      receipt.setFontSize(11);
-      receipt.text(
-        receiptSettings.authorisedSignatory,
-        pageWidth - margin,
-        250,
-        { align: "right" },
-      );
+      drawBorderRow("Date", [String(receiptDate)], hDate);
+      drawBorderRow("Property / Account", accountLines, hAccount);
+      drawBorderRow("Payment Mode", [String(paymentMode).toUpperCase()], hRow);
+      drawBorderRow("Bank / Through", [String(through)], hRow);
+      drawBorderRow("Reference / Txn ID", [String(transactionId)], hRow);
+      drawBorderRow("Amount in Words", wordsLines, hWords);
+      drawBorderRow("Narration", narrationLines, hNarration, true);
 
-      const safeReceiptId = String(payment.id || "payment").replace(
-        /[^a-z0-9_-]/gi,
-        "-",
-      );
-      receipt.save(`payment-receipt.pdf`);
-      toast.success("Receipt downloaded");
+      currentY = tableY;
+
+      // ============================================================
+      // SIGNATURE
+      // ============================================================
+      const signY = currentY + 45;
+      pdf.setDrawColor(PRIMARY);
+      pdf.setLineWidth(0.4);
+      pdf.line(pageWidth - margin - 50, signY, pageWidth - margin, signY);
+
+      setFont(8.5, true, PRIMARY);
+      pdf.text(receiptSettings.authorisedSignatory || "Authorised Signatory", pageWidth - margin, signY + 6, { align: "right" });
+
+      // ============================================================
+      // FOOTER
+      // ============================================================
+      const footerY = pageHeight - 15;
+      setFont(7.5, false, TEXT_MUTED);
+      if (action === "view") {
+        const pdfUrl = pdf.output("bloburl");
+        window.open(pdfUrl.toString(), "_blank");
+        toast.success("Receipt opened in new tab");
+      } else {
+        pdf.save(`payment-receipt-${voucherNumber}.pdf`);
+        toast.success("Receipt downloaded");
+      }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to download receipt");
+      toast.error("Failed to generate receipt");
     } finally {
       setDownloadingPaymentId(null);
+      downloadingPaymentRef.current = false;
+    }
+  };
+
+  const handleDownloadAllPayments = async (action: "download" | "view" = "download") => {
+    if (downloadingAllPaymentsRef.current) return;
+    downloadingAllPaymentsRef.current = true;
+    setDownloadingAllPayments(action);
+
+    // Yield to let React render the loading spinner before synchronous PDF generation
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    try {
+      const loadImage = async (path: string) => {
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`Unable to load ${path}`);
+        const blob = await response.blob();
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(String(reader.result));
+          reader.onerror = () => reject(new Error(`Unable to read ${path}`));
+          reader.readAsDataURL(blob);
+        });
+      };
+
+      let companyLogo = preloadedImages.companyLogo;
+      let transparentLogo = preloadedImages.transparentLogo;
+      if (!companyLogo || !transparentLogo) {
+        const [c, t] = await Promise.all([
+          loadImage("/logo_with_text.png"),
+          loadImage("/transparent_logo.png"),
+        ]);
+        companyLogo = c;
+        transparentLogo = t;
+      }
+
+      const receiptSettings = preloadedReceiptSettings || await getSetting("receiptSettings");
+      if (!receiptSettings) {
+        throw new Error("Receipt settings are not configured in Admin Settings");
+      }
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 20;
+
+      const PRIMARY = "#8C1D2F";
+      const TEXT_MAIN = "#1E293B";
+      const TEXT_MUTED = "#64748B";
+      const BORDER_COLOR = "#E2E8F0";
+
+      const setFont = (size: number, isBold: boolean, color: string) => {
+        pdf.setFontSize(size);
+        pdf.setFont("helvetica", isBold ? "bold" : "normal");
+        pdf.setTextColor(color);
+      };
+
+      // White background for the entire page
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, 0, pageWidth, pageHeight, "F");
+
+      // Large subtle watermark centered
+      try {
+        pdf.saveGraphicsState();
+        pdf.setGState(new GState({ opacity: 0.12 }));
+        pdf.addImage(transparentLogo, "PNG", pageWidth / 2 - 60, pageHeight / 2 - 90, 120, 180);
+        pdf.restoreGraphicsState();
+      } catch (error) {
+        console.warn("Unable to add watermark:", error);
+      }
+
+      // ============================================================
+      // HEADER SECTION (Left: Branding, Right: Title & Meta)
+      // ============================================================
+      let currentY = margin;
+
+      // Top accent line
+      pdf.setFillColor(PRIMARY);
+      pdf.rect(0, 0, pageWidth, 4, "F");
+
+      // Left: Logo
+      try {
+        pdf.addImage(companyLogo, "PNG", margin, currentY, 32, 20);
+      } catch (error) {
+        console.warn("Unable to add company logo:", error);
+      }
+
+      // Left: Company Info
+      currentY += 28;
+      setFont(12, true, PRIMARY);
+      pdf.text(receiptSettings.companyName || "Shubhaytanam Buildtech", margin, currentY);
+
+      currentY += 5;
+      setFont(8, false, TEXT_MUTED);
+      pdf.text(receiptSettings.address || "", margin, currentY);
+      currentY += 4;
+      pdf.text(`${receiptSettings.stateName || ""}, ${receiptSettings.stateCode || ""}`, margin, currentY);
+
+      currentY += 4;
+      pdf.text(`GST: ${receiptSettings.gstNumber || "-"}  |  CIN: ${receiptSettings.cin || "-"}`, margin, currentY);
+
+      currentY += 4;
+      pdf.text(`PAN: ${receiptSettings.panNumber || "-"}  |  TAN: ${receiptSettings.tanNumber || "-"}`, margin, currentY);
+
+      currentY += 4;
+      pdf.text(`Email: ${receiptSettings.email || "-"}`, margin, currentY);
+
+      // Right: Receipt Title & Meta
+      let rightY = margin + 12;
+      setFont(18, true, TEXT_MAIN);
+      pdf.text("STATEMENT OF ACCOUNT", pageWidth - margin, rightY, { align: "right" });
+
+      setFont(8, false, TEXT_MUTED);
+      pdf.text(`Generated: ${new Date().toLocaleDateString("en-IN")}`, pageWidth - margin, rightY + 6, { align: "right" });
+
+      // ============================================================
+      // HIGHLIGHTED AMOUNT BANNER (SUMMARY)
+      // ============================================================
+      currentY += 12;
+      pdf.setFillColor("#f8fafc"); // BG_LIGHT
+      pdf.roundedRect(margin, currentY, pageWidth - margin * 2, 24, 2, 2, "F");
+
+      // Add a subtle left border to the banner
+      pdf.setFillColor(PRIMARY);
+      pdf.rect(margin, currentY, 3, 24, "F");
+
+      const totalAmt = Number(booking?.totalAmount || 0);
+      const paidAmt = Number(booking?.paidAmount || 0);
+      const bal = totalAmt - paidAmt;
+
+      setFont(9, true, TEXT_MUTED);
+      pdf.text("TOTAL AMOUNT", margin + 10, currentY + 9);
+      pdf.text("PAID AMOUNT", margin + 70, currentY + 9);
+      pdf.text("PENDING BALANCE", margin + 130, currentY + 9);
+
+      setFont(14, true, TEXT_MAIN);
+      pdf.text(`Rs. ${totalAmt.toLocaleString('en-IN')}`, margin + 10, currentY + 18);
+      pdf.setTextColor("#16a34a");
+      pdf.text(`Rs. ${paidAmt.toLocaleString('en-IN')}`, margin + 70, currentY + 18);
+      pdf.setTextColor(bal > 0 ? "#dc2626" : TEXT_MAIN);
+      pdf.text(`Rs. ${bal.toLocaleString('en-IN')}`, margin + 130, currentY + 18);
+
+      // ============================================================
+      // CUSTOMER & ACCOUNT DETAILS
+      // ============================================================
+      currentY += 34;
+
+      setFont(8.5, true, TEXT_MUTED);
+      pdf.text("CUSTOMER DETAILS", margin, currentY);
+      currentY += 6;
+
+      setFont(11, true, TEXT_MAIN);
+      pdf.text(`${booking?.customerName || "N/A"}`, margin, currentY);
+      currentY += 5;
+
+      setFont(9, false, TEXT_MUTED);
+      pdf.text(`+91 ${booking?.mobileNumber || "N/A"}`, margin, currentY);
+      currentY += 6;
+      pdf.text(`Project: ${booking?.projectName || "N/A"} - Plot ${booking?.plotNumber || "N/A"}`, margin, currentY);
+
+      currentY += 12;
+
+      // ============================================================
+      // TRANSACTIONS TABLE
+      // ============================================================
+      setFont(10, true, PRIMARY);
+      pdf.text("TRANSACTION HISTORY", margin, currentY);
+      currentY += 6;
+
+      // Table Header Row
+      const tableHeaderHeight = 10;
+      pdf.setFillColor("#f8fafc");
+      pdf.setDrawColor(BORDER_COLOR);
+
+      // Calculate column widths
+      const availableWidth = pageWidth - margin * 2;
+      const colWidths = [
+        availableWidth * 0.15, // Date
+        availableWidth * 0.15, // Voucher
+        availableWidth * 0.15, // Mode
+        availableWidth * 0.35, // Bank & Txn ID
+        availableWidth * 0.20, // Amount
+      ];
+
+      const cols = [
+        margin,
+        margin + colWidths[0],
+        margin + colWidths[0] + colWidths[1],
+        margin + colWidths[0] + colWidths[1] + colWidths[2],
+        margin + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3],
+        pageWidth - margin // end for right alignment
+      ];
+
+      const drawTableRow = (y: number, data: string[], isHeader = false) => {
+        const height = isHeader ? 10 : 8;
+        if (isHeader) {
+          pdf.setFillColor("#f8fafc");
+          pdf.rect(margin, y, availableWidth, height, "F");
+        }
+
+        // Horizontal lines
+        pdf.setDrawColor(BORDER_COLOR);
+        pdf.line(margin, y, pageWidth - margin, y);
+        pdf.line(margin, y + height, pageWidth - margin, y + height);
+
+        // Vertical lines
+        pdf.line(margin, y, margin, y + height);
+        pdf.line(cols[1], y, cols[1], y + height);
+        pdf.line(cols[2], y, cols[2], y + height);
+        pdf.line(cols[3], y, cols[3], y + height);
+        pdf.line(cols[4], y, cols[4], y + height);
+        pdf.line(pageWidth - margin, y, pageWidth - margin, y + height);
+
+        setFont(8, isHeader, isHeader ? TEXT_MUTED : TEXT_MAIN);
+
+        const yOffset = isHeader ? 6.5 : 5.5;
+        pdf.text(data[0], cols[0] + 2, y + yOffset);
+        pdf.text(data[1], cols[1] + 2, y + yOffset);
+        pdf.text(data[2], cols[2] + 2, y + yOffset);
+        pdf.text(data[3], cols[3] + 2, y + yOffset);
+        pdf.text(data[4], cols[5] - 2, y + yOffset, { align: "right" });
+
+        return height;
+      };
+
+      // Header
+      currentY += drawTableRow(currentY, ["DATE", "VOUCHER", "MODE", "BANK & TXN ID", "AMOUNT (Rs)"], true);
+
+      // Sorted payments (oldest to newest for ledger view)
+      const sortedPayments = [...payments].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+      if (sortedPayments.length === 0) {
+        pdf.setDrawColor(BORDER_COLOR);
+        pdf.rect(margin, currentY, availableWidth, 10, "S");
+        setFont(9, false, TEXT_MUTED);
+        pdf.text("No transactions recorded.", margin + 2, currentY + 6.5);
+        currentY += 10;
+      } else {
+        sortedPayments.forEach((p) => {
+          // Check page overflow
+          if (currentY > pageHeight - margin - 20) {
+            pdf.addPage();
+            // Reset background and watermark for new page
+            pdf.setFillColor(255, 255, 255);
+            pdf.rect(0, 0, pageWidth, pageHeight, "F");
+            if (transparentLogo) {
+              pdf.saveGraphicsState();
+              pdf.setGState(new GState({ opacity: 0.12 }));
+              pdf.addImage(transparentLogo, "PNG", pageWidth / 2 - 60, pageHeight / 2 - 90, 120, 180);
+              pdf.restoreGraphicsState();
+            }
+            currentY = margin;
+            currentY += drawTableRow(currentY, ["DATE", "VOUCHER", "MODE", "BANK & TXN ID", "AMOUNT (Rs)"], true);
+          }
+
+          const dateStr = new Date(p.createdAt).toLocaleDateString("en-IN");
+          const voucherStr = p.voucherNumber ? String(p.voucherNumber) : "-";
+          const modeStr = String(p.mode).toUpperCase();
+
+          let bankStr = p.bankName ? String(p.bankName) : "";
+          let txnStr = p.transactionId ? String(p.transactionId) : "";
+          let combinedBankTxn = [bankStr, txnStr].filter(Boolean).join(" / ");
+          if (combinedBankTxn.length === 0) combinedBankTxn = "-";
+          if (combinedBankTxn.length > 35) combinedBankTxn = combinedBankTxn.substring(0, 33) + "...";
+
+          const amtStr = Number(p.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+          currentY += drawTableRow(currentY, [dateStr, voucherStr, modeStr, combinedBankTxn, `Rs ${amtStr}`]);
+        });
+      }
+
+      // ============================================================
+      // SIGNATURE (Last Page Only)
+      // ============================================================
+      // Check if signature fits, else add page
+      if (currentY + 30 > pageHeight - margin - 15) {
+        pdf.addPage();
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(0, 0, pageWidth, pageHeight, "F");
+        currentY = margin;
+      }
+
+      const signY = currentY + 20;
+      pdf.setDrawColor(PRIMARY);
+      pdf.setLineWidth(0.4);
+      pdf.line(pageWidth - margin - 50, signY, pageWidth - margin, signY);
+
+      setFont(8.5, true, PRIMARY);
+      pdf.text(receiptSettings.authorisedSignatory || "Authorised Signatory", pageWidth - margin, signY + 6, { align: "right" });
+
+      if (action === "view") {
+        const pdfUrl = pdf.output("bloburl");
+        window.open(pdfUrl.toString(), "_blank");
+        toast.success("Ledger opened in new tab");
+      } else {
+        pdf.save(`ledger-${booking?.customerName?.replace(/\s+/g, '-') || 'customer'}.pdf`);
+        toast.success("Ledger downloaded");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate ledger");
+    } finally {
+      setDownloadingAllPayments(null);
+      downloadingAllPaymentsRef.current = false;
     }
   };
 
@@ -460,13 +1010,13 @@ export default function BookingDetailsPage() {
     }
   };
 
-  const handleDownloadTextApplicationForm = async () => {
+  const handleDownloadTextApplicationForm = async (action: "download" | "view" = "download") => {
     if (downloadingApplicationFormRef.current) return;
     downloadingApplicationFormRef.current = true;
-    setDownloadingApplicationForm(true);
+    setDownloadingApplicationForm(action);
     try {
       const form = getApplicationForm();
-      const applicationSettings = await getSetting("receiptSettings");
+      const applicationSettings = preloadedReceiptSettings || await getSetting("receiptSettings");
       if (!applicationSettings) {
         throw new Error("Company details are not configured in Admin Settings");
       }
@@ -563,11 +1113,19 @@ export default function BookingDetailsPage() {
           pdf.text(lines, 8, 8 + index * 4, { lineHeightFactor: 1 });
         });
       };
-      const [companyLogo, transparentLogo, handsImage] = await Promise.all([
-        loadImage("/logo_with_text.png"),
-        loadImage("/transparent_logo.png"),
-        loadImage("/hands.jpg"),
-      ]);
+      let companyLogo = preloadedImages.companyLogo;
+      let transparentLogo = preloadedImages.transparentLogo;
+      let handsImage = preloadedImages.handsImage;
+      if (!companyLogo || !transparentLogo || !handsImage) {
+        const [c, t, h] = await Promise.all([
+          loadImage("/logo_with_text.png"),
+          loadImage("/transparent_logo.png"),
+          loadImage("/hands.jpg"),
+        ]);
+        companyLogo = c;
+        transparentLogo = t;
+        handsImage = h;
+      }
 
       // // Page 1
       // await addBrandHeader();
@@ -1189,9 +1747,14 @@ export default function BookingDetailsPage() {
         }
       }
 
-      pdf.save("booking-application-form.pdf");
-
-      toast.success("Application form downloaded");
+      if (action === "view") {
+        const pdfUrl = pdf.output("bloburl");
+        window.open(pdfUrl.toString(), "_blank");
+        toast.success("Application form opened in new tab");
+      } else {
+        pdf.save("booking-application-form.pdf");
+        toast.success("Application form downloaded");
+      }
     } catch (error) {
       console.error(error);
       toast.error(
@@ -1201,7 +1764,7 @@ export default function BookingDetailsPage() {
       );
     } finally {
       downloadingApplicationFormRef.current = false;
-      setDownloadingApplicationForm(false);
+      setDownloadingApplicationForm(null);
     }
   };
 
@@ -1266,40 +1829,23 @@ export default function BookingDetailsPage() {
         </div>
 
         {/* Customer Info */}
-        <div className="col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-2">
-            <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-              <User className="h-5 w-5 text-slate-400" />
-              Customer Details
-            </h3>
-            <button
-              type="button"
-              onClick={handleOpenApplicationForm}
-              title="Update application form"
-              aria-label="Update application form"
-              className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
-            >
-              <Pencil className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="space-y-4">
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase">
-                Name
-              </p>
-              <p className="text-base font-bold text-slate-900 mt-1">
-                {booking.customerName || "N/A"}
-              </p>
+        <div className="col-span-1 md:col-span-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="h-16 w-16 bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center shrink-0">
+              <User className="h-8 w-8" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase">
-                Mobile Number
-              </p>
-              <p className="text-base font-bold text-slate-900 mt-1">
+              <h2 className="text-2xl font-bold text-slate-900 line-clamp-1">
+                {booking.customerName || "N/A"}
+              </h2>
+              <p className="text-slate-500 font-medium">
                 {booking.mobileNumber || "N/A"}
               </p>
             </div>
-            <div>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t border-slate-100 md:border-t-0">
+            <div className="text-center md:text-right w-full md:w-auto">
               <p className="text-xs font-semibold text-slate-500 uppercase">
                 Booking Date
               </p>
@@ -1307,26 +1853,51 @@ export default function BookingDetailsPage() {
                 {booking.createdAt ? formatDateTime(booking.createdAt) : "N/A"}
               </p>
             </div>
+
+            <div className="hidden md:block w-px h-10 bg-slate-200 mx-2"></div>
+
+            <div className="flex gap-2 w-full md:w-auto justify-center">
+              <button
+                type="button"
+                onClick={() => handleDownloadTextApplicationForm("view")}
+                disabled={downloadingApplicationForm !== null}
+                className="inline-flex min-w-[80px] flex-1 md:flex-none items-center justify-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {downloadingApplicationForm === "view" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+                View
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDownloadTextApplicationForm("download")}
+                disabled={downloadingApplicationForm !== null}
+                className="inline-flex min-w-[110px] flex-1 md:flex-none items-center justify-center gap-2 rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {downloadingApplicationForm === "download" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileDown className="h-4 w-4" />
+                )}
+                Download
+              </button>
+              <button
+                type="button"
+                onClick={handleOpenApplicationForm}
+                title="Update application form"
+                aria-label="Update application form"
+                className="inline-flex shrink-0 items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-slate-600 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={handleDownloadTextApplicationForm}
-            disabled={downloadingApplicationForm}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {downloadingApplicationForm ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <FileDown className="h-4 w-4" />
-            )}
-            {downloadingApplicationForm
-              ? "Generating Booking Form..."
-              : "Download Booking Form"}
-          </button>
         </div>
 
         {/* Financial Info & EMI Tracking */}
-        <div className="col-span-1 md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="col-span-1 md:col-span-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
           <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-2">
             <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
               <CreditCard className="h-5 w-5 text-slate-400" />
@@ -1334,7 +1905,15 @@ export default function BookingDetailsPage() {
             </h3>
             <button
               onClick={() => {
-                if (!hasPaidAmount) setIsPaymentModalOpen(true);
+                if (!hasPaidAmount) {
+                  setEditingPaymentId(null);
+                  setPaymentAmount("");
+                  setPaymentMode("CASH");
+                  setTransactionId("");
+                  setBankName("");
+                  setPaymentNotes("");
+                  setIsPaymentModalOpen(true);
+                }
               }}
               disabled={hasPaidAmount}
               title={hasPaidAmount ? "Payment already recorded" : "Log Payment"}
@@ -1377,9 +1956,41 @@ export default function BookingDetailsPage() {
             </div>
           </div>
 
-          <h4 className="text-sm font-semibold text-slate-900 mb-3">
-            Recent Payments (Ledger)
-          </h4>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+            <h4 className="text-sm font-semibold text-slate-900">
+              Recent Payments (Ledger)
+            </h4>
+            {payments.length > 0 && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleDownloadAllPayments("view")}
+                  disabled={downloadingAllPayments !== null}
+                  className="inline-flex min-w-[80px] items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {downloadingAllPayments === "view" ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Eye className="h-3 w-3" />
+                  )}
+                  View All
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDownloadAllPayments("download")}
+                  disabled={downloadingAllPayments !== null}
+                  className="inline-flex min-w-[110px] items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {downloadingAllPayments === "download" ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <FileDown className="h-3 w-3" />
+                  )}
+                  Download All
+                </button>
+              </div>
+            )}
+          </div>
           {payments.length === 0 ? (
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center text-sm text-slate-500">
               No payments logged yet.
@@ -1419,17 +2030,45 @@ export default function BookingDetailsPage() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleDownloadReceipt(payment)}
-                        disabled={downloadingPaymentId === payment.id}
-                        aria-label={`Download receipt for ${formatCurrency(payment.amount)}`}
+                        onClick={() => handleDownloadReceipt(payment, "view")}
+                        disabled={downloadingPaymentId !== null}
+                        title="View receipt"
+                        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {downloadingPaymentId?.id === payment.id && downloadingPaymentId?.action === "view" ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDownloadReceipt(payment, "download")}
+                        disabled={downloadingPaymentId !== null}
                         title="Download receipt"
                         className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
                       >
-                        {downloadingPaymentId === payment.id ? (
+                        {downloadingPaymentId?.id === payment.id && downloadingPaymentId?.action === "download" ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <Download className="h-4 w-4" />
                         )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleEditPayment(payment)}
+                        title="Edit Payment"
+                        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeletePayment(payment.id, payment.amount)}
+                        title="Delete Payment"
+                        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
@@ -1443,7 +2082,7 @@ export default function BookingDetailsPage() {
       <Modal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
-        title="Log Manual Payment"
+        title={editingPaymentId ? "Edit Payment" : "Log Manual Payment"}
         maxWidth="md"
         footer={
           <div className="flex justify-end gap-3 w-full">
@@ -1454,7 +2093,7 @@ export default function BookingDetailsPage() {
               Cancel
             </Button>
             <Button onClick={handleLogPayment} isLoading={loggingPayment}>
-              Save Payment
+              {editingPaymentId ? "Update Payment" : "Save Payment"}
             </Button>
           </div>
         }
@@ -1489,17 +2128,33 @@ export default function BookingDetailsPage() {
             </select>
           </div>
           {paymentMode !== "CASH" && (
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Transaction ID / UTR
-              </label>
-              <input
-                type="text"
-                value={transactionId}
-                onChange={(e) => setTransactionId(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g. UTR123456789"
-              />
+            <div className="space-y-4">
+              {["BANK_TRANSFER", "CHEQUE", "LOAN"].includes(paymentMode) && (
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Bank Name / Through
+                  </label>
+                  <input
+                    type="text"
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g. HDFC Bank, SBI"
+                  />
+                </div>
+              )}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Transaction ID / UTR / Cheque No.
+                </label>
+                <input
+                  type="text"
+                  value={transactionId}
+                  onChange={(e) => setTransactionId(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g. UTR123456789"
+                />
+              </div>
             </div>
           )}
           <div>
