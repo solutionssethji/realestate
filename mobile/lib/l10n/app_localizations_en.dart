@@ -1345,6 +1345,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordTitle => 'Forgot Password';
 
   @override
+  String get forgotPasswordInvalidEmail =>
+      'This email is invalid or not registered.';
+
+  @override
+  String get forgotPasswordTooManyRequests =>
+      'Too many requests. Please try again later.';
+
+  @override
+  String get forgotPasswordFailed => 'Failed to send reset link.';
+
+  @override
   String get resetPassword => 'Reset Password';
 
   @override

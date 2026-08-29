@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../services/auth_service.dart';
+import '../../../services/api_service.dart';
 import 'login.state.dart';
 
 part 'login.logic.g.dart';
@@ -21,12 +22,12 @@ class LoginLogic extends _$LoginLogic {
 
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      final userCredential = await AuthService.signInWithEmailAndPassword(
+          email: email, password: password);
 
       // Check if email is verified
       if (userCredential.user != null && !userCredential.user!.emailVerified) {
-        await FirebaseAuth.instance.signOut();
+        await AuthService.signOut();
         state = state.copyWith(
           isLoading: false,
           unverifiedUser: userCredential.user,
@@ -36,17 +37,13 @@ class LoginLogic extends _$LoginLogic {
 
       // Check status in Firestore
       if (userCredential.user != null) {
-        final doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .get();
+        final data = await ApiService.getUserProfile(userCredential.user!.uid);
 
-        if (doc.exists) {
-          final data = doc.data();
-          final status = data?['status'];
+        if (data != null) {
+          final status = data['status'];
 
           if (status == 'BLOCKED') {
-            await FirebaseAuth.instance.signOut();
+            await AuthService.signOut();
             state = state.copyWith(
               isLoading: false,
               errorMessage:
@@ -54,7 +51,7 @@ class LoginLogic extends _$LoginLogic {
             );
             return false;
           } else if (status == 'DELETED') {
-            await FirebaseAuth.instance.signOut();
+            await AuthService.signOut();
             state = state.copyWith(
               isLoading: false,
               errorMessage: 'This account has been deleted.',

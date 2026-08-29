@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:customer_app/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
@@ -11,7 +11,9 @@ import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import 'payment_history.logic.dart';
 import '../../widgets/shimmer_loader.dart';
+import '../../widgets/skeleton_list.dart';
 import '../../services/payment_receipt_service.dart';
+import '../../widgets/app_loading_view.dart';
 
 class PaymentHistoryPage extends HookConsumerWidget {
   const PaymentHistoryPage({super.key});
@@ -21,8 +23,7 @@ class PaymentHistoryPage extends HookConsumerWidget {
     final loc = AppLocalizations.of(context);
     final state = ref.watch(paymentHistoryLogicProvider);
     final userPhone =
-        FirebaseAuth.instance.currentUser?.phoneNumber ??
-        context.l10n.yourNumberAlt;
+        AuthService.currentUser?.phoneNumber ?? context.l10n.yourNumberAlt;
 
     return Scaffold(
       appBar: PremiumAppBar(
@@ -32,7 +33,7 @@ class PaymentHistoryPage extends HookConsumerWidget {
             icon: const Icon(LucideIcons.logOut),
             tooltip: context.l10n.signOut,
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
+              await AuthService.signOut();
               if (context.mounted) {
                 context.go('/home');
               }
@@ -40,16 +41,16 @@ class PaymentHistoryPage extends HookConsumerWidget {
           ),
         ],
       ),
-      body: _buildBody(context, state, userPhone),
+      body: _buildBody(context, ref, state, userPhone),
     );
   }
 
-  Widget _buildBody(BuildContext context, state, String userPhone) {
+  Widget _buildBody(BuildContext context, WidgetRef ref, state, String userPhone) {
     if (state.isLoading) {
-      return ListView.separated(
+      return SkeletonList(
         padding: AppSpacing.allMd,
+        spacing: AppSpacing.sm,
         itemCount: 4,
-        separatorBuilder: (_, __) => AppSpacing.hSm,
         itemBuilder: (_, __) => const PaymentCardSkeleton(),
       );
     }
@@ -61,7 +62,9 @@ class PaymentHistoryPage extends HookConsumerWidget {
             state.errorMessage ?? 'Error',
           ),
           textAlign: TextAlign.center,
-          style: const TextStyle(color: AppTheme.error),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.error,
+          ),
         ),
       );
     }
@@ -86,14 +89,47 @@ class PaymentHistoryPage extends HookConsumerWidget {
       );
     }
 
-    return ListView.separated(
-      padding: AppSpacing.allMd,
-      itemCount: payments.length,
-      separatorBuilder: (_, __) => AppSpacing.hSm,
-      itemBuilder: (context, index) {
-        final payment = payments[index];
-        return _PaymentCard(payment: payment);
+    final logic = ref.read(paymentHistoryLogicProvider.notifier);
+
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (!state.isLoading &&
+            !state.isFetchingMore &&
+            scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+          logic.loadMore();
+        }
+        return false;
       },
+      child: RefreshIndicator(
+        onRefresh: () => logic.load(isRefresh: true),
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: AppSpacing.allMd,
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final payment = payments[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                      child: _PaymentCard(payment: payment),
+                    );
+                  },
+                  childCount: payments.length,
+                ),
+              ),
+            ),
+            if (state.isFetchingMore)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24.0),
+                  child: AppLoadingView(size: 24),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

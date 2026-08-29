@@ -349,5 +349,8 @@
 "authErrAuthDomainConfigRequired": "प्रमाणीकरण डोमेन कॉन्फ़िगरेशन आवश्यक है। कृपया सहायता से संपर्क करें।",
 "authErrOperationNotSupported": "यह ऑपरेशन वर्तमान वातावरण में समर्थित नहीं है।",
 "authErrTimeout": "अनुरोध का समय समाप्त हो गया। कृपया पुनः प्रयास करें।",
-"authErrDefault": "प्रमाणीकरण विफल रहा। कृपया पुनः प्रयास करें।"
+"authErrDefault": "प्रमाणीकरण विफल रहा। कृपया पुनः प्रयास करें।",
+"forgotPasswordInvalidEmail": "यह ईमेल अमान्य है या पंजीकृत नहीं है।",
+"forgotPasswordTooManyRequests": "बहुत अधिक अनुरोध किए गए हैं। कृपया बाद में पुनः प्रयास करें।",
+"forgotPasswordFailed": "पासवर्ड रीसेट लिंक भेजने में विफल।"
 }

@@ -1,4 +1,6 @@
 import 'package:customer_app/widgets/premium_app_bar.dart';
+import 'package:customer_app/widgets/app_text_field.dart';
+import 'package:customer_app/widgets/premium_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -98,33 +100,27 @@ class LoginPage extends HookConsumerWidget {
           children: [
             Text(
               l10n.welcomeBack,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-            TextField(
+            AppTextField(
               controller: emailController,
-              decoration: InputDecoration(
-                labelText: l10n.emailLabel,
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
+              label: l10n.emailLabel,
+              prefixIcon: const Icon(Icons.email_outlined),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            TextField(
+            AppTextField(
               controller: passwordController,
+              label: l10n.passwordLabel,
               obscureText: state.isObscure,
-              decoration: InputDecoration(
-                labelText: l10n.passwordLabel,
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    state.isObscure ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () => logic.toggleObscure(),
+              prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  state.isObscure ? Icons.visibility : Icons.visibility_off,
                 ),
+                onPressed: () => logic.toggleObscure(),
               ),
             ),
             Align(
@@ -135,14 +131,10 @@ class LoginPage extends HookConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: state.isLoading ? null : handleLogin,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: state.isLoading
-                  ? const CircularProgressIndicator()
-                  : Text(l10n.loginBtn),
+            PremiumButton(
+              text: l10n.loginBtn,
+              onPressed: handleLogin,
+              isLoading: state.isLoading,
             ),
             const SizedBox(height: 16),
             TextButton(

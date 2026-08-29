@@ -1343,6 +1343,17 @@ class AppLocalizationsHi extends AppLocalizations {
   String get forgotPasswordTitle => 'Forgot Password';
 
   @override
+  String get forgotPasswordInvalidEmail =>
+      'यह ईमेल अमान्य है या पंजीकृत नहीं है।';
+
+  @override
+  String get forgotPasswordTooManyRequests =>
+      'बहुत अधिक अनुरोध किए गए हैं। कृपया बाद में पुनः प्रयास करें।';
+
+  @override
+  String get forgotPasswordFailed => 'पासवर्ड रीसेट लिंक भेजने में विफल।';
+
+  @override
   String get resetPassword => 'Reset Password';
 
   @override

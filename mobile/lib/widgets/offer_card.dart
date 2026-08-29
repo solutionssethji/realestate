@@ -53,7 +53,7 @@ class OfferCard extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black54],
+                          colors: [AppTheme.transparent, AppTheme.black54],
                         ),
                       ),
                     ),
@@ -75,7 +75,7 @@ class OfferCard extends StatelessWidget {
                         'Valid till ${DateFormat('MMM d').format(offer.endDate)}',
                         style: Theme.of(
                           context,
-                        ).textTheme.labelSmall?.copyWith(color: Colors.white),
+                        ).textTheme.labelSmall?.copyWith(color: AppTheme.white),
                       ),
                     ),
                   ),
@@ -94,10 +94,10 @@ class OfferCard extends StatelessWidget {
                         ? offer.projectName!.toUpperCase()
                         : context.l10n.allProjects.toUpperCase(),
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                        ),
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -112,8 +112,8 @@ class OfferCard extends StatelessWidget {
                   Text(
                     offer.description,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.textSecondary,
-                        ),
+                      color: AppTheme.textSecondary,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

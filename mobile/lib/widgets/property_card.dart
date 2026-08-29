@@ -52,7 +52,7 @@ class PropertyCard extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black54],
+                          colors: [AppTheme.transparent, AppTheme.black54],
                         ),
                       ),
                     ),
@@ -72,9 +72,8 @@ class PropertyCard extends StatelessWidget {
                       ),
                       child: Text(
                         project.priceRange,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.labelMedium?.copyWith(color: Colors.white),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(color: AppTheme.white),
                       ),
                     ),
                   ),

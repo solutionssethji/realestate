@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-// import '../theme/theme.dart';
+import '../theme/theme.dart';
 import '../theme/spacing.dart';
 
 /// Shimmer skeleton for a Project/Property card.
@@ -12,15 +12,15 @@ class ProjectCardSkeleton extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Shimmer.fromColors(
-        baseColor: Colors.grey.shade200,
-        highlightColor: Colors.grey.shade100,
+        baseColor: AppTheme.neutral200,
+        highlightColor: AppTheme.neutral100,
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image placeholder
             AspectRatio(
               aspectRatio: 16 / 9,
-              child: ColoredBox(color: Colors.white),
+              child: ColoredBox(color: AppTheme.surface),
             ),
             Padding(
               padding: AppSpacing.allLg,
@@ -58,8 +58,8 @@ class PlotCardSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Shimmer.fromColors(
-        baseColor: Colors.grey.shade200,
-        highlightColor: Colors.grey.shade100,
+        baseColor: AppTheme.neutral200,
+        highlightColor: AppTheme.neutral100,
         child: const Padding(
           padding: AppSpacing.allLg,
           child: Column(
@@ -97,14 +97,14 @@ class OfferCardSkeleton extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Shimmer.fromColors(
-        baseColor: Colors.grey.shade200,
-        highlightColor: Colors.grey.shade100,
+        baseColor: AppTheme.neutral200,
+        highlightColor: AppTheme.neutral100,
         child: const Row(
           children: [
             SizedBox(
               height: 140,
               width: 140,
-              child: ColoredBox(color: Colors.white),
+              child: ColoredBox(color: AppTheme.surface),
             ),
             Expanded(
               child: Padding(
@@ -243,8 +243,8 @@ class DetailPageSkeleton extends StatelessWidget {
     padding: AppSpacing.allMd,
     children: [
       Shimmer.fromColors(
-        baseColor: Colors.grey.shade200,
-        highlightColor: Colors.grey.shade100,
+        baseColor: AppTheme.neutral200,
+        highlightColor: AppTheme.neutral100,
         child: const _ShimmerBox(
           height: 220,
           width: double.infinity,
@@ -284,8 +284,8 @@ Widget _shimmerCard(Widget child) => Card(
   child: Padding(
     padding: AppSpacing.allMd,
     child: Shimmer.fromColors(
-      baseColor: Colors.grey.shade200,
-      highlightColor: Colors.grey.shade100,
+      baseColor: AppTheme.neutral200,
+      highlightColor: AppTheme.neutral100,
       child: child,
     ),
   ),
@@ -306,7 +306,7 @@ class _ShimmerBox extends StatelessWidget {
       height: height,
       width: width,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(radius ?? AppRadius.sm),
       ),
     );

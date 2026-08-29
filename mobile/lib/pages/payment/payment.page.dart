@@ -68,7 +68,7 @@ class PaymentPage extends HookConsumerWidget {
                   border: Border.all(color: AppTheme.border),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
+                      color: AppTheme.black.withValues(alpha: 0.04),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -133,7 +133,10 @@ class PaymentPage extends HookConsumerWidget {
                       Expanded(
                         child: Text(
                           state.errorMessage ?? context.l10n.paymentFailed,
-                          style: const TextStyle(color: AppTheme.error),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                         ),
                       ),
                     ],

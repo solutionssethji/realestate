@@ -2522,6 +2522,24 @@ abstract class AppLocalizations {
   /// **'Forgot Password'**
   String get forgotPasswordTitle;
 
+  /// No description provided for @forgotPasswordInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is invalid or not registered.'**
+  String get forgotPasswordInvalidEmail;
+
+  /// No description provided for @forgotPasswordTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Please try again later.'**
+  String get forgotPasswordTooManyRequests;
+
+  /// No description provided for @forgotPasswordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send reset link.'**
+  String get forgotPasswordFailed;
+
   /// No description provided for @resetPassword.
   ///
   /// In en, this message translates to:

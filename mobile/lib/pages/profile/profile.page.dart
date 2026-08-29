@@ -4,6 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/l10n_extension.dart';
+import '../../widgets/login_required_state.dart';
+import '../../theme/theme.dart';
 import 'profile.logic.dart';
 
 class ProfilePage extends HookConsumerWidget {
@@ -51,18 +53,10 @@ class ProfilePage extends HookConsumerWidget {
         ],
       ),
       body: user == null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(l10n.notLoggedIn),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => context.push('/login'),
-                    child: Text(l10n.loginBtn),
-                  ),
-                ],
-              ),
+          ? LoginRequiredState(
+              message: l10n.notLoggedIn,
+              buttonText: l10n.loginBtn,
+              onLogin: () => context.push('/login'),
             )
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -74,16 +68,15 @@ class ProfilePage extends HookConsumerWidget {
                 const SizedBox(height: 16),
                 Text(
                   user.displayName ?? 'No Name',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   user.email ?? 'No Email',
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppTheme.textSecondary,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),

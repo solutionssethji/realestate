@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/theme.dart';
 import 'package:customer_app/l10n/app_localizations.dart';
 import '../utils/l10n_extension.dart';
 
@@ -27,7 +28,7 @@ class Video360Component extends StatelessWidget {
             image: NetworkImage(placeholderImage),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withValues(alpha: 0.6),
+              AppTheme.black.withValues(alpha: 0.6),
               BlendMode.darken,
             ),
           ),
@@ -36,14 +37,12 @@ class Video360Component extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.threesixty, size: 64, color: Colors.white70),
+              const Icon(Icons.threesixty, size: 64, color: AppTheme.white70),
               const SizedBox(height: 16),
               Text(
                 context.l10n.view360ComingSoon,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: AppTheme.white,
                   letterSpacing: 1.2,
                 ),
               ),
@@ -59,7 +58,7 @@ class Video360Component extends StatelessWidget {
       height: height,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: AppTheme.black,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Stack(
@@ -79,7 +78,7 @@ class Video360Component extends StatelessWidget {
             icon: const Icon(
               Icons.play_circle_fill,
               size: 64,
-              color: Colors.white,
+              color: AppTheme.white,
             ),
             onPressed: () {
               ScaffoldMessenger.of(
@@ -93,12 +92,11 @@ class Video360Component extends StatelessWidget {
             child: Chip(
               label: Text(
                 context.l10n.immersive360,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelMedium?.copyWith(color: AppTheme.white),
               ),
-              backgroundColor: Colors.redAccent,
+              backgroundColor: AppTheme.error,
             ),
           ),
         ],

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../utils/l10n_extension.dart';
 import 'emi_tracker.logic.dart';
 import '../../widgets/shimmer_loader.dart';
+import '../../theme/theme.dart';
 
 class EmiTrackerPage extends ConsumerWidget {
   final String plotId;
@@ -58,10 +59,7 @@ class EmiTrackerPage extends ConsumerWidget {
                         children: [
                           Text(
                             l10n.paymentSummary,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(height: 16),
                           Row(
@@ -69,13 +67,16 @@ class EmiTrackerPage extends ConsumerWidget {
                             children: [
                               Text(
                                 l10n.totalAmount,
-                                style: const TextStyle(color: Colors.grey),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
                               ),
                               Text(
                                 currencyFormat.format(state.totalAmount),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium,
                               ),
                             ],
                           ),
@@ -85,14 +86,21 @@ class EmiTrackerPage extends ConsumerWidget {
                             children: [
                               Text(
                                 l10n.amountPaid,
-                                style: const TextStyle(color: Colors.green),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
                               ),
                               Text(
                                 currencyFormat.format(state.paidAmount),
-                                style: const TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
                               ),
                             ],
                           ),
@@ -102,16 +110,23 @@ class EmiTrackerPage extends ConsumerWidget {
                             children: [
                               Text(
                                 l10n.pendingBalance,
-                                style: const TextStyle(color: Colors.red),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                    ),
                               ),
                               Text(
                                 currencyFormat.format(
                                   state.balance > 0 ? state.balance : 0,
                                 ),
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                    ),
                               ),
                             ],
                           ),
@@ -122,10 +137,7 @@ class EmiTrackerPage extends ConsumerWidget {
                   const SizedBox(height: 24),
                   Text(
                     l10n.paymentHistory,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -163,12 +175,12 @@ class EmiTrackerPage extends ConsumerWidget {
 
                 return ListTile(
                   leading: const CircleAvatar(
-                    backgroundColor: Colors.green,
-                    child: Icon(Icons.check, color: Colors.white),
+                    backgroundColor: AppTheme.success,
+                    child: Icon(Icons.check, color: AppTheme.white),
                   ),
                   title: Text(
                     currencyFormat.format(amount),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,13 +189,15 @@ class EmiTrackerPage extends ConsumerWidget {
                       if (notes.isNotEmpty)
                         Text(
                           context.l10n.paymentRef(notes.toString()),
-                          style: const TextStyle(fontSize: 12),
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                     ],
                   ),
                   trailing: Text(
                     mode,
-                    style: const TextStyle(color: Colors.grey),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 );
               }, childCount: state.payments.length),

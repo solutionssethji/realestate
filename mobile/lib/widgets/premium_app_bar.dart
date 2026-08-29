@@ -29,7 +29,7 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: foregroundColor,
       elevation: elevation,
       centerTitle: centerTitle,
-      shadowColor: Colors.black.withValues(alpha: 0.1),
+      shadowColor: AppTheme.black.withValues(alpha: 0.1),
       title: Text(
         title,
         style: Theme.of(context).textTheme.titleLarge?.copyWith(

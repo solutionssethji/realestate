@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../../../services/auth_service.dart';
 import 'dart:developer' as developer;
 
 class StorageService {
   static final FirebaseStorage _storage = FirebaseStorage.instance;
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   /// Uploads a file to Firebase Storage under the user's KYC directory.
   /// Returns the download URL if successful, or null if failed.
@@ -14,7 +13,7 @@ class StorageService {
     required String documentType, // e.g., 'aadhar_front', 'pan_card'
   }) async {
     try {
-      final user = _auth.currentUser;
+      final user = AuthService.currentUser;
       if (user == null) throw Exception('User not authenticated');
 
       // Create a unique file name using timestamp
@@ -29,15 +28,32 @@ class StorageService {
 
       // Upload file
       final uploadTask = await ref.putFile(file);
-      
+
       // Get download URL
       final downloadUrl = await uploadTask.ref.getDownloadURL();
-      
+
       developer.log('Upload successful. URL: $downloadUrl');
       return downloadUrl;
-      
     } catch (e) {
       developer.log('Error uploading KYC document: $e');
+      return null;
+    }
+  }
+
+  /// Uploads a profile image to Firebase Storage under the user's profile directory.
+  static Future<String?> uploadProfileImage({
+    required String uid,
+    required File file,
+  }) async {
+    try {
+      final ref = _storage.ref().child('users/$uid/profile.jpg');
+      developer.log('Uploading profile image to ${ref.fullPath}');
+      final uploadTask = await ref.putFile(file);
+      final downloadUrl = await uploadTask.ref.getDownloadURL();
+      developer.log('Upload successful. URL: $downloadUrl');
+      return downloadUrl;
+    } catch (e) {
+      developer.log('Error uploading profile image: $e');
       return null;
     }
   }

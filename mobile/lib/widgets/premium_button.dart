@@ -36,7 +36,7 @@ class PremiumButton extends StatelessWidget {
             width: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.white),
             ),
           )
         : Row(
@@ -55,7 +55,7 @@ class PremiumButton extends StatelessWidget {
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: backgroundColor ?? AppTheme.midnightNavy,
-            foregroundColor: foregroundColor ?? Colors.white,
+            foregroundColor: foregroundColor ?? AppTheme.white,
           ),
           child: child,
         );
@@ -73,7 +73,9 @@ class PremiumButton extends StatelessWidget {
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
             foregroundColor: foregroundColor,
-            side: backgroundColor != null ? BorderSide(color: backgroundColor!) : null,
+            side: backgroundColor != null
+                ? BorderSide(color: backgroundColor!)
+                : null,
           ),
           child: child,
         );

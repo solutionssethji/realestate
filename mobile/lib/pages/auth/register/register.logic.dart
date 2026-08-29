@@ -1,10 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../../services/auth_service.dart';
+import '../../../services/api_service.dart';
+import '../../../services/storage_service.dart';
 import 'register.state.dart';
 
 part 'register.logic.g.dart';
@@ -34,8 +35,8 @@ class RegisterLogic extends _$RegisterLogic {
 
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      final userCredential = await AuthService.createUserWithEmailAndPassword(
+          email: email, password: password);
 
       // Create user document in Firestore
       if (userCredential.user != null) {
@@ -43,30 +44,29 @@ class RegisterLogic extends _$RegisterLogic {
 
         if (profileImage != null) {
           try {
-            final storageRef = FirebaseStorage.instance.ref().child(
-              'users/${userCredential.user!.uid}/profile.jpg',
+            final downloadUrl = await StorageService.uploadProfileImage(
+              uid: userCredential.user!.uid,
+              file: File(profileImage.path),
             );
-            await storageRef.putFile(File(profileImage.path));
-            photoURL = await storageRef.getDownloadURL();
+            if (downloadUrl != null) {
+              photoURL = downloadUrl;
+            }
           } catch (e) {
             log("Failed to upload profile image: $e");
           }
         }
 
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set({
-              'id': userCredential.user!.uid,
-              'fullName': name,
-              'mobileNumber': mobile,
-              'email': email,
-              'photoURL': photoURL,
-              'role': 'CUSTOMER',
-              'status': 'ACTIVE',
-              'createdAt': FieldValue.serverTimestamp(),
-              'updatedAt': FieldValue.serverTimestamp(),
-            });
+        await ApiService.createUserProfile(userCredential.user!.uid, {
+          'id': userCredential.user!.uid,
+          'fullName': name,
+          'mobileNumber': mobile,
+          'email': email,
+          'photoURL': photoURL,
+          'role': 'CUSTOMER',
+          'status': 'ACTIVE',
+          'createdAt': DateTime.now().toIso8601String(), // Or omit if handled server side
+          'updatedAt': DateTime.now().toIso8601String(),
+        });
       }
 
       state = state.copyWith(isLoading: false);

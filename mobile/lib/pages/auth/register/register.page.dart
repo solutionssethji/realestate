@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:customer_app/widgets/app_text_field.dart';
 import 'package:customer_app/widgets/premium_app_bar.dart';
+import 'package:customer_app/widgets/premium_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import '../../../utils/l10n_extension.dart';
+import '../../../theme/theme.dart';
 import 'register.logic.dart';
 
 class RegisterPage extends HookConsumerWidget {
@@ -57,7 +60,7 @@ class RegisterPage extends HookConsumerWidget {
           children: [
             Text(
               l10n.joinUs,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -139,7 +142,7 @@ class RegisterPage extends HookConsumerWidget {
                 },
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.grey[200],
+                  backgroundColor: AppTheme.neutral200,
                   backgroundImage: profileImage.value != null
                       ? FileImage(File(profileImage.value!.path))
                       : null,
@@ -147,66 +150,50 @@ class RegisterPage extends HookConsumerWidget {
                       ? const Icon(
                           Icons.add_a_photo,
                           size: 40,
-                          color: Colors.grey,
+                          color: AppTheme.textSecondary,
                         )
                       : null,
                 ),
               ),
             ),
             const SizedBox(height: 24),
-            TextField(
+            AppTextField(
               controller: nameController,
-              decoration: InputDecoration(
-                labelText: l10n.fullName,
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.person_outline),
-              ),
+              label: l10n.fullName,
+              prefixIcon: const Icon(Icons.person_outline),
             ),
             const SizedBox(height: 16),
-            TextField(
+            AppTextField(
               controller: mobileController,
-              decoration: InputDecoration(
-                labelText: l10n.mobileNumber,
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.phone_outlined),
-              ),
+              label: l10n.mobileNumber,
+              prefixIcon: const Icon(Icons.phone_outlined),
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 16),
-            TextField(
+            AppTextField(
               controller: emailController,
-              decoration: InputDecoration(
-                labelText: l10n.emailAddress,
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
+              label: l10n.emailAddress,
+              prefixIcon: const Icon(Icons.email_outlined),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            TextField(
+            AppTextField(
               controller: passwordController,
+              label: l10n.passwordLabel,
               obscureText: state.isObscure,
-              decoration: InputDecoration(
-                labelText: l10n.passwordLabel,
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    state.isObscure ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () => logic.toggleObscure(),
+              prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  state.isObscure ? Icons.visibility : Icons.visibility_off,
                 ),
+                onPressed: () => logic.toggleObscure(),
               ),
             ),
             const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: state.isLoading ? null : handleRegister,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: state.isLoading
-                  ? const CircularProgressIndicator()
-                  : Text(l10n.register),
+            PremiumButton(
+              text: l10n.register,
+              onPressed: handleRegister,
+              isLoading: state.isLoading,
             ),
             const SizedBox(height: 16),
             TextButton(

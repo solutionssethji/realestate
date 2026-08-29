@@ -1,58 +1,71 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:async';
+import 'package:customer_app/services/auth_service.dart';
+import 'package:customer_app/services/api_service.dart';
 import 'my_properties.state.dart';
 
 part 'my_properties.logic.g.dart';
 
 @riverpod
 class MyPropertiesLogic extends _$MyPropertiesLogic {
-  StreamSubscription? _subscription;
-
   @override
   MyPropertiesState build() {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      _listenToProperties(user.uid);
-    } else {
-      state = const MyPropertiesState(
-        isLoading: false,
-        errorMessage: 'User not logged in',
-      );
-    }
-
-    ref.onDispose(() {
-      _subscription?.cancel();
-    });
-
-    return const MyPropertiesState(isLoading: true);
+    Future.microtask(() => load(isRefresh: true));
+    return const MyPropertiesState();
   }
 
-  void _listenToProperties(String uid) {
-    _subscription = FirebaseFirestore.instance
-        .collection('assignPlots')
-        .where('customerId', isEqualTo: uid)
-        .snapshots()
-        .listen(
-          (snapshot) {
-            final properties = snapshot.docs.map((doc) {
-              final data = doc.data();
-              data['id'] = doc.id;
-              return data;
-            }).toList();
-            state = state.copyWith(
-              isLoading: false,
-              properties: properties,
-              errorMessage: null,
-            );
-          },
-          onError: (error) {
-            state = state.copyWith(
-              isLoading: false,
-              errorMessage: 'Failed to load properties',
-            );
-          },
-        );
+  Future<void> load({bool isRefresh = false}) async {
+    final user = AuthService.currentUser;
+    if (user == null) {
+      state = state.copyWith(isLoading: false, isError: true, errorMessage: 'User not logged in');
+      return;
+    }
+
+    if (isRefresh) {
+      state = state.copyWith(
+        isLoading: true,
+        hasMore: true,
+        lastDocument: null,
+        properties: [],
+        isError: false,
+        errorMessage: null,
+      );
+    } else {
+      if (!state.hasMore || state.isFetchingMore || state.isLoading) return;
+      if (state.properties.isNotEmpty) {
+        state = state.copyWith(isFetchingMore: true);
+      } else {
+        state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
+      }
+    }
+
+    try {
+      final response = await ApiService.fetchUserPropertiesPagination(
+        uid: user.uid,
+        lastDocument: state.lastDocument,
+        limit: 15,
+      );
+
+      final combinedProperties = isRefresh ? response.data : [...state.properties, ...response.data];
+      
+      state = state.copyWith(
+        properties: combinedProperties,
+        lastDocument: response.lastDocument,
+        hasMore: response.data.length == 15,
+        isLoading: false,
+        isFetchingMore: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        isFetchingMore: false,
+        isError: true,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (state.isLoading || state.isFetchingMore || !state.hasMore) return;
+    await load();
   }
 }

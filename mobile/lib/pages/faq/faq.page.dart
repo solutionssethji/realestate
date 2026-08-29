@@ -5,6 +5,7 @@ import '../../utils/localized_string.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
+import '../../theme/theme.dart';
 import 'faq.logic.dart';
 
 class FaqPage extends HookConsumerWidget {
@@ -35,12 +36,14 @@ class FaqPage extends HookConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.error_outline, size: 64, color: Colors.red.shade400),
+              const Icon(Icons.error_outline, size: 64, color: AppTheme.error),
               const SizedBox(height: 16),
               Text(
                 state.errorMessage ?? 'Error',
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16, color: Colors.black54),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppTheme.black54),
               ),
             ],
           ),
@@ -57,12 +60,18 @@ class FaqPage extends HookConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.help_outline, size: 64, color: Colors.grey.shade400),
+              const Icon(
+                Icons.help_outline,
+                size: 64,
+                color: AppTheme.neutral400,
+              ),
               const SizedBox(height: 16),
               Text(
                 context.l10n.noFaqsAvailable,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16, color: Colors.black54),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppTheme.black54),
               ),
             ],
           ),
@@ -91,17 +100,16 @@ class FaqPage extends HookConsumerWidget {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: Colors.grey.shade200),
+            side: const BorderSide(color: AppTheme.neutral200),
           ),
           child: Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            data: Theme.of(
+              context,
+            ).copyWith(dividerColor: AppTheme.transparent),
             child: ExpansionTile(
               title: Text(
                 question,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               childrenPadding: const EdgeInsets.only(
                 left: 16,
@@ -113,10 +121,9 @@ class FaqPage extends HookConsumerWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     answer,
-                    style: const TextStyle(
-                      fontSize: 15,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       height: 1.5,
-                      color: Colors.black87,
+                      color: AppTheme.black,
                     ),
                   ),
                 ),

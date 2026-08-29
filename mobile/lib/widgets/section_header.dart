@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/theme.dart';
-// import '../theme/spacing.dart';
 
 /// Reusable section header used across all screens for visual consistency.
 class SectionHeader extends StatelessWidget {
@@ -34,7 +32,9 @@ class SectionHeader extends StatelessWidget {
             onPressed: onAction,
             child: Text(
               actionLabel!,
-              style: const TextStyle(color: AppTheme.midnightNavy),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
       ],
