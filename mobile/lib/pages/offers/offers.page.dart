@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import 'package:go_router/go_router.dart';
 import '../../widgets/premium_app_bar.dart';
@@ -12,13 +11,15 @@ import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import '../../widgets/shimmer_loader.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/error_state.dart';
+import '../../widgets/skeleton_list.dart';
+import '../../widgets/app_loading_view.dart';
 
 class OffersPage extends HookConsumerWidget {
   const OffersPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loc = AppLocalizations.of(context);
     final state = ref.watch(offersLogicProvider);
     final logic = ref.read(offersLogicProvider.notifier);
     final bool isDesktop = ResponsiveBreakpoints.of(context).largerThan(TABLET);
@@ -27,35 +28,14 @@ class OffersPage extends HookConsumerWidget {
       appBar: PremiumAppBar(title: context.l10n.exclusiveOffers),
       body: SafeArea(
         child: state.isLoading
-            ? ListView.separated(
-                padding: AppSpacing.allLg,
+            ? SkeletonList(
                 itemCount: 4,
-                separatorBuilder: (_, __) => AppSpacing.hLg,
                 itemBuilder: (_, __) => const OfferCardSkeleton(),
               )
             : state.isError
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.wifi_off_rounded,
-                      size: 40,
-                      color: AppTheme.textSecondary,
-                    ),
-                    AppSpacing.hSm,
-                    Text(
-                      context.l10n.unableToLoadOffers,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    AppSpacing.hLg,
-                    OutlinedButton.icon(
-                      onPressed: logic.loadOffers,
-                      icon: const Icon(Icons.refresh),
-                      label: Text(loc.tryAgain),
-                    ),
-                  ],
-                ),
+            ? ErrorState(
+                title: context.l10n.unableToLoadOffers,
+                onRetry: logic.loadOffers,
               )
             : state.offers.isEmpty
             ? EmptyState(
@@ -83,7 +63,7 @@ class OffersPage extends HookConsumerWidget {
                         return const Center(
                           child: Padding(
                             padding: EdgeInsets.all(AppSpacing.md),
-                            child: CircularProgressIndicator(),
+                            child: AppLoadingView(size: 24),
                           ),
                         );
                       }

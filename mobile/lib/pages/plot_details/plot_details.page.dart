@@ -71,7 +71,7 @@ class PlotDetailsPage extends ConsumerWidget {
                             Text(
                               context.l10n.plotTitle(plot.plotNumber),
                               style: Theme.of(context).textTheme.displaySmall
-                                  ?.copyWith(color: Colors.white),
+                                  ?.copyWith(color: AppTheme.white),
                             ),
                             AppSpacing.hXs,
                             Text(
@@ -132,7 +132,7 @@ class PlotDetailsPage extends ConsumerWidget {
                 Container(
                   padding: AppSpacing.allLg,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppTheme.surface,
                     borderRadius: AppRadius.circularLg,
                     border: Border.all(color: AppTheme.border),
                   ),

@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:customer_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/premium_app_bar.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,6 +8,7 @@ import '../../widgets/app_text_field.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import '../../widgets/premium_button.dart';
+import '../../widgets/feedback_banner.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 
@@ -83,14 +84,14 @@ class EnquiryPage extends HookConsumerWidget {
 
                   // Feedback banners
                   if (state.isError) ...[
-                    _Banner(
+                    FeedbackBanner(
                       text: state.errorMessage ?? context.l10n.submissionFailed,
                       color: AppTheme.error,
                     ),
                     AppSpacing.hLg,
                   ],
                   if (state.isSuccess) ...[
-                    _Banner(
+                    FeedbackBanner(
                       text: context.l10n.enquirySubmitted,
                       color: AppTheme.success,
                       icon: Icons.check_circle_outline,
@@ -106,13 +107,13 @@ class EnquiryPage extends HookConsumerWidget {
                     onPressed: state.isSuccess || state.isSubmitting
                         ? null
                         : () {
-                            final currentUser =
-                                FirebaseAuth.instance.currentUser;
+                            final currentUser = AuthService.currentUser;
                             if (currentUser == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                      'Please log in to submit an enquiry.'),
+                                    'Please log in to submit an enquiry.',
+                                  ),
                                 ),
                               );
                               return;
@@ -133,35 +134,6 @@ class EnquiryPage extends HookConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _Banner extends StatelessWidget {
-  final String text;
-  final Color color;
-  final IconData? icon;
-
-  const _Banner({required this.text, required this.color, this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: AppSpacing.allMd,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: AppRadius.circularMd,
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon ?? Icons.error_outline, color: color, size: 18),
-          AppSpacing.wSm,
-          Expanded(
-            child: Text(text, style: TextStyle(color: color)),
-          ),
-        ],
       ),
     );
   }

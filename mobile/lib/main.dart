@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:customer_app/services/auth_service.dart';
+import 'package:customer_app/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -16,7 +17,7 @@ import 'constants.dart';
 import 'firebase_options.dart';
 
 Future<void> syncCurrentUserFcmToken() async {
-  final user = FirebaseAuth.instance.currentUser;
+  final user = AuthService.currentUser;
   if (user == null) return;
 
   final settings = await FirebaseMessaging.instance.requestPermission(
@@ -32,13 +33,10 @@ Future<void> syncCurrentUserFcmToken() async {
   final token = await FirebaseMessaging.instance.getToken();
   if (token == null || token.trim().isEmpty) return;
 
-  await FirebaseFirestore.instance.collection('users').doc(user.uid).set(
-    {
-      'fcmTokens': FieldValue.arrayUnion([token]),
-      'updatedAt': FieldValue.serverTimestamp(),
-    },
-    SetOptions(merge: true),
-  );
+  await ApiService.updateUserProfile(user.uid, {
+    'fcmTokens': FieldValue.arrayUnion([token]),
+    'updatedAt': FieldValue.serverTimestamp(),
+  });
 }
 
 @pragma('vm:entry-point')
@@ -62,7 +60,7 @@ void main() async {
   });
 
   FirebaseAnalytics.instance;
-  FirebaseAuth.instance.authStateChanges().listen((user) async {
+  AuthService.authStateChanges().listen((user) async {
     if (user != null) {
       await syncCurrentUserFcmToken();
     }

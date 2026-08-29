@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:customer_app/services/auth_service.dart';
 import 'profile.state.dart';
 
 part 'profile.logic.g.dart';
@@ -14,7 +14,7 @@ class ProfileLogic extends _$ProfileLogic {
   Future<void> logout() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      await FirebaseAuth.instance.signOut();
+      await AuthService.signOut();
       state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(

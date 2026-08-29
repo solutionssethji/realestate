@@ -92,7 +92,7 @@ class ProjectDetailsPage extends HookConsumerWidget {
                                           child: const Text(
                                             'FEATURED',
                                             style: TextStyle(
-                                              color: Colors.white,
+                                              color: AppTheme.white,
                                               fontSize: 10,
                                               fontWeight: FontWeight.bold,
                                               letterSpacing: 1.2,
@@ -206,10 +206,10 @@ class ProjectDetailsPage extends HookConsumerWidget {
       //         child: Container(
       //           padding: AppSpacing.allLg,
       //           decoration: BoxDecoration(
-      //             color: Colors.white,
+      //             color: AppTheme.white,
       //             boxShadow: [
       //               BoxShadow(
-      //                 color: Colors.black.withValues(alpha: 0.06),
+      //                 color: AppTheme.black.withValues(alpha: 0.06),
       //                 blurRadius: 12,
       //                 offset: const Offset(0, -4),
       //               ),
@@ -345,12 +345,12 @@ class _RightActions extends StatelessWidget {
         Container(
           padding: AppSpacing.allLg,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.surface,
             borderRadius: AppRadius.circularLg,
             border: Border.all(color: AppTheme.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: AppTheme.black.withValues(alpha: 0.05),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -442,14 +442,14 @@ class _RightActions extends StatelessWidget {
                   context.l10n.virtual360Tour,
                   style: Theme.of(
                     context,
-                  ).textTheme.titleLarge?.copyWith(color: Colors.white),
+                  ).textTheme.titleLarge?.copyWith(color: AppTheme.white),
                 ),
                 AppSpacing.hXs,
                 Text(
                   context.l10n.walkThroughProperty,
                   style: Theme.of(
                     context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                  ).textTheme.bodyMedium?.copyWith(color: AppTheme.white70),
                 ),
                 AppSpacing.hLg,
                 PremiumButton(

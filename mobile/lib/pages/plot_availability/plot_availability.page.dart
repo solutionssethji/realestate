@@ -9,6 +9,7 @@ import '../../theme/spacing.dart';
 import '../../models/plot_status.dart';
 import '../../widgets/plot_card.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/error_state.dart';
 import 'package:customer_app/l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/shimmer_loader.dart';
@@ -32,7 +33,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
         children: [
           // ── Search + Filters ─────────────────────────────────────────────
           Container(
-            color: Colors.white,
+            color: AppTheme.surface,
             padding: AppSpacing.allLg,
             child: Column(
               children: [
@@ -103,22 +104,9 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                     itemBuilder: (_, __) => const PlotCardSkeleton(),
                   )
                 : state.isError
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          context.l10n.unableToLoadPlots,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        AppSpacing.hLg,
-                        OutlinedButton.icon(
-                          onPressed: () => logic.loadPlots(projectId),
-                          icon: const Icon(Icons.refresh),
-                          label: Text(loc.tryAgain),
-                        ),
-                      ],
-                    ),
+                ? ErrorState(
+                    title: context.l10n.unableToLoadPlots,
+                    onRetry: () => logic.loadPlots(projectId),
                   )
                 : state.filteredPlots.isEmpty
                 ? EmptyState(
@@ -182,14 +170,14 @@ class _StatusChip extends StatelessWidget {
           vertical: AppSpacing.xs,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? color : Colors.transparent,
+          color: isSelected ? color : AppTheme.transparent,
           borderRadius: AppRadius.circularPill,
           border: Border.all(color: isSelected ? color : AppTheme.border),
         ),
         child: Text(
           label,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: isSelected ? Colors.white : AppTheme.textPrimary,
+            color: isSelected ? AppTheme.white : AppTheme.textPrimary,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),

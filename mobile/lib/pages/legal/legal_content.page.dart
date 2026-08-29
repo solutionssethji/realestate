@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import '../../utils/l10n_extension.dart';
+import '../../theme/theme.dart';
 import 'legal_content.logic.dart';
 
 class LegalContentPage extends ConsumerWidget {
@@ -21,9 +22,7 @@ class LegalContentPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: fallbackTitle),
-      body: SafeArea(
-        child: _buildBody(context, state),
-      ),
+      body: SafeArea(child: _buildBody(context, state)),
     );
   }
 
@@ -34,7 +33,12 @@ class LegalContentPage extends ConsumerWidget {
 
     if (state.isError) {
       return Center(
-        child: Text(state.errorMessage ?? 'Error loading content', style: const TextStyle(color: Colors.red)),
+        child: Text(
+          state.errorMessage ?? 'Error loading content',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.error,
+          ),
+        ),
       );
     }
 
@@ -47,19 +51,18 @@ class LegalContentPage extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.article_outlined,
                 size: 64,
-                color: Colors.grey.shade400,
+                color: AppTheme.neutral400,
               ),
               const SizedBox(height: 16),
               Text(
                 context.l10n.fallbackTitleUnavailable(fallbackTitle),
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppTheme.black54),
               ),
             ],
           ),
@@ -74,11 +77,9 @@ class LegalContentPage extends ConsumerWidget {
         children: [
           Text(
             content,
-            style: const TextStyle(
-              fontSize: 15,
-              height: 1.6,
-              color: Colors.black87,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(height: 1.6, color: AppTheme.black),
           ),
         ],
       ),

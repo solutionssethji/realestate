@@ -6,244 +6,210 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import 'offer_details.logic.dart';
+import '../../theme/theme.dart';
 import '../../utils/l10n_extension.dart';
 
 class OfferDetailsPage extends HookConsumerWidget {
   final String offerId;
+
   const OfferDetailsPage({super.key, required this.offerId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(offerDetailsLogicProvider(offerId));
-
     final offer = state.offer;
     final dateFormat = DateFormat('dd MMM yyyy');
+
+    if (state.isLoading) {
+      return Scaffold(
+        appBar: PremiumAppBar(title: context.l10n.offerDetails),
+        body: const Padding(
+          padding: EdgeInsets.all(16),
+          child: ShimmerLoader(count: 3, height: 150),
+        ),
+      );
+    }
+
+    if (state.isError || offer == null) {
+      return Scaffold(
+        appBar: PremiumAppBar(title: context.l10n.offerDetails),
+        body: Center(
+          child: Text(state.errorMessage ?? context.l10n.offerNotFound),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.offerDetails),
       body: SafeArea(
-        child: state.isLoading
-            ? const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: ShimmerLoader(count: 3, height: 150),
-              )
-            : state.isError || state.offer == null || offer == null
-            ? Center(
-                child: Text(state.errorMessage ?? context.l10n.offerNotFound),
-              )
-            : SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.network(
+                offer.image,
+                width: double.infinity,
+                height: 250,
+                fit: BoxFit.cover,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.network(
-                      offer.image,
-                      width: double.infinity,
-                      height: 250,
-                      fit: BoxFit.cover,
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _OfferBadge(
+                          text:
+                              '${context.l10n.validText}: ${dateFormat.format(offer.startDate)} - ${dateFormat.format(offer.endDate)}',
+                          color: Theme.of(context).colorScheme.primary,
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.1),
+                        ),
+                        _OfferBadge(
+                          text: offer.status,
+                          color: offer.status == 'ACTIVE'
+                              ? AppTheme.success
+                              : AppTheme.error,
+                          backgroundColor:
+                              (offer.status == 'ACTIVE'
+                                      ? AppTheme.success
+                                      : AppTheme.error)
+                                  .withValues(alpha: 0.1),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  '${context.l10n.validText}: ${dateFormat.format(offer.startDate)} - ${dateFormat.format(offer.endDate)}',
-                                  style: TextStyle(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: offer.status == 'ACTIVE'
-                                      ? Colors.green.withValues(alpha: 0.1)
-                                      : Colors.red.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  offer.status,
-                                  style: TextStyle(
-                                    color: offer.status == 'ACTIVE'
-                                        ? Colors.green
-                                        : Colors.red,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            offer.title,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          if (offer.discountValue != null &&
-                              offer.discountValue! > 0) ...[
-                            const SizedBox(height: 12),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.amber.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: Colors.amber.withValues(alpha: 0.5),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(
-                                offer.discountType == 'FLAT'
-                                    ? '${context.l10n.flat} ₹${NumberFormat('#,##,###').format(offer.discountValue)} ${context.l10n.off}'
-                                    : '${offer.discountValue!.toInt()}% ${context.l10n.off}',
-                                style: const TextStyle(
-                                  color: Colors.orange,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
-                          ],
-                          if (offer.offerCode != null &&
-                              offer.offerCode!.isNotEmpty) ...[
-                            const SizedBox(height: 12),
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: Colors.blue.withValues(alpha: 0.3),
-                                  width: 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                    const SizedBox(height: 16),
+                    Text(
+                      offer.title,
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    if (offer.discountValue != null &&
+                        offer.discountValue! > 0) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        offer.discountType == 'FLAT'
+                            ? '${context.l10n.flat} ₹${NumberFormat('#,##,###').format(offer.discountValue)} ${context.l10n.off}'
+                            : '${offer.discountValue!.toInt()}% ${context.l10n.off}',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: AppTheme.darkGold,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                    if (offer.offerCode?.isNotEmpty == true) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppTheme.info.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        context.l10n.promoCode,
-                                        style: TextStyle(
-                                          color: Colors.blue[700],
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        offer.offerCode!,
-                                        style: const TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: 20,
+                                  Text(
+                                    context.l10n.promoCode,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium
+                                        ?.copyWith(color: AppTheme.info),
+                                  ),
+                                  Text(
+                                    offer.offerCode!,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          color: AppTheme.info,
                                           fontWeight: FontWeight.w900,
                                         ),
-                                      ),
-                                    ],
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  Icon(Icons.copy, color: Colors.blue[700]),
                                 ],
                               ),
                             ),
+                            const Icon(Icons.copy, color: AppTheme.info),
                           ],
-                          const SizedBox(height: 16),
-                          Text(
-                            context.l10n.aboutTheOffer,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            offer.description,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              height: 1.6,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-
-                          if (offer.projectId != null &&
-                              offer.projectId!.isNotEmpty) ...[
-                            const Divider(height: 10),
-                            Text(
-                              context.l10n.applicableProject,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            if (offer.projectName != null &&
-                                offer.projectName!.isNotEmpty) ...[
-                              const SizedBox(height: 8),
-                              Text(
-                                offer.projectName!,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ],
-                            const SizedBox(height: 16),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  context.push(
-                                    '/home/project/${offer.projectId}',
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                ),
-                                child: Text(context.l10n.viewProjectDetails),
-                              ),
-                            ),
-                          ],
-                        ],
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    Text(
+                      context.l10n.aboutTheOffer,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      offer.description,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        height: 1.6,
+                        color: AppTheme.black,
                       ),
                     ),
+                    if (offer.projectId?.isNotEmpty == true) ...[
+                      const Divider(height: 24),
+                      Text(
+                        context.l10n.applicableProject,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      if (offer.projectName?.isNotEmpty == true)
+                        Text(
+                          offer.projectName!,
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(color: AppTheme.black),
+                        ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () =>
+                              context.push('/home/project/${offer.projectId}'),
+                          child: Text(context.l10n.viewProjectDetails),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OfferBadge extends StatelessWidget {
+  final String text;
+  final Color color;
+  final Color backgroundColor;
+
+  const _OfferBadge({
+    required this.text,
+    required this.color,
+    required this.backgroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(color: color),
       ),
     );
   }

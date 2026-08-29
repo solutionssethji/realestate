@@ -9,6 +9,8 @@ import 'projects.logic.dart';
 import '../../widgets/property_card.dart';
 import '../../theme/spacing.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/error_state.dart';
+import '../../widgets/app_loading_view.dart';
 
 class ProjectsPage extends HookConsumerWidget {
   const ProjectsPage({super.key});
@@ -25,24 +27,11 @@ class ProjectsPage extends HookConsumerWidget {
       appBar: PremiumAppBar(title: loc.allProjects),
       body: SafeArea(
         child: state.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const AppLoadingView()
             : state.isError
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      context.l10n.unableToLoadProjects,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    AppSpacing.hLg,
-                    OutlinedButton.icon(
-                      onPressed: logic.loadProjects,
-                      icon: const Icon(Icons.refresh),
-                      label: Text(loc.tryAgain),
-                    ),
-                  ],
-                ),
+            ? ErrorState(
+                title: context.l10n.unableToLoadProjects,
+                onRetry: logic.loadProjects,
               )
             : state.filteredProjects.isEmpty
             ? EmptyState(
@@ -120,7 +109,7 @@ class ProjectsPage extends HookConsumerWidget {
                         const SliverToBoxAdapter(
                           child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 24.0),
-                            child: Center(child: CircularProgressIndicator()),
+                            child: AppLoadingView(size: 24),
                           ),
                         ),
                     ],

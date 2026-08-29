@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../../services/auth_service.dart';
 
 import 'payment_history_auth.state.dart';
 
@@ -13,7 +14,7 @@ class PaymentHistoryAuthLogic {
       verificationId: verificationId,
       smsCode: smsCode,
     );
-    await FirebaseAuth.instance.signInWithCredential(credential);
+    await AuthService.signInWithCredential(credential);
     return PaymentHistoryAuthState(verificationId: verificationId);
   }
 }

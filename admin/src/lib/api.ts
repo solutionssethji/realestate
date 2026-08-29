@@ -31,9 +31,7 @@ export async function createBookingIfPlotAvailable(
   try {
     const plotRef = doc(db, "plots", plotId);
     const bookingRef = doc(collection(db, "assignPlots"));
-    const paymentRef = paymentData
-      ? doc(collection(db, "payments"))
-      : null;
+    const paymentRef = paymentData ? doc(collection(db, "payments")) : null;
     const counterRef = paymentData
       ? doc(collection(db, "counters"), "payments")
       : null;
@@ -46,7 +44,9 @@ export async function createBookingIfPlotAvailable(
       if (!plotSnapshot.exists()) {
         throw new Error("Plot does not exist.");
       }
-      if (plotSnapshot.data().status !== "AVAILABLE") {
+      const plotData = plotSnapshot.data();
+      const status = plotData.status || "AVAILABLE";
+      if (status.toUpperCase() !== "AVAILABLE") {
         throw new Error("This plot is already assigned to another person.");
       }
 
@@ -165,7 +165,10 @@ async function enrichPaymentData(paymentData: any) {
     );
   }
 
-  if (paymentData.bookingId && (!paymentData.projectName || !paymentData.plotNumber)) {
+  if (
+    paymentData.bookingId &&
+    (!paymentData.projectName || !paymentData.plotNumber)
+  ) {
     fetchPromises.push(
       getDoc(doc(db, "assignPlots", paymentData.bookingId))
         .then(async (snap) => {
@@ -173,19 +176,20 @@ async function enrichPaymentData(paymentData: any) {
             const bData = snap.data();
             paymentData.projectName = bData.projectName;
             paymentData.plotNumber = bData.plotNumber;
-            
+
             if (!paymentData.projectName && bData.projectId) {
               const pSnap = await getDoc(doc(db, "projects", bData.projectId));
               if (pSnap.exists()) {
                 const pData = pSnap.data();
-                paymentData.projectName = pData.name?.en || pData.name || "Unknown";
+                paymentData.projectName =
+                  pData.name?.en || pData.name || "Unknown";
               }
             }
             if (!paymentData.plotNumber && bData.plotId) {
-               const plSnap = await getDoc(doc(db, "plots", bData.plotId));
-               if (plSnap.exists()) {
-                  paymentData.plotNumber = plSnap.data().plotNumber || "Unknown";
-               }
+              const plSnap = await getDoc(doc(db, "plots", bData.plotId));
+              if (plSnap.exists()) {
+                paymentData.plotNumber = plSnap.data().plotNumber || "Unknown";
+              }
             }
           }
         })
@@ -196,7 +200,6 @@ async function enrichPaymentData(paymentData: any) {
   await Promise.all(fetchPromises);
   return paymentData;
 }
-
 
 export interface ApiGetOptions {
   limitCount?: number;

@@ -1,5 +1,5 @@
 import 'package:customer_app/widgets/premium_app_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:customer_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,6 +8,9 @@ import '../../../services/api_service.dart';
 import '../../../utils/l10n_extension.dart';
 import '../../widgets/error_state.dart';
 import '../../widgets/shimmer_loader.dart';
+import '../../widgets/skeleton_list.dart';
+import '../../theme/spacing.dart';
+import '../../theme/theme.dart';
 
 class DocumentLockerPage extends HookConsumerWidget {
   const DocumentLockerPage({super.key});
@@ -21,7 +24,7 @@ class DocumentLockerPage extends HookConsumerWidget {
     Future<void> loadDocuments() async {
       isLoading.value = true;
       errorMessage.value = null;
-      final uid = FirebaseAuth.instance.currentUser?.uid;
+      final uid = AuthService.currentUser?.uid;
       if (uid == null) {
         isLoading.value = false;
         return;
@@ -55,10 +58,9 @@ class DocumentLockerPage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.documentVault),
       body: isLoading.value
-          ? ListView.separated(
-              padding: const EdgeInsets.all(16),
+          ? SkeletonList(
               itemCount: 4,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              spacing: AppSpacing.sm,
               itemBuilder: (_, __) => const DocumentListTileSkeleton(),
             )
           : errorMessage.value != null
@@ -70,7 +72,7 @@ class DocumentLockerPage extends HookConsumerWidget {
               itemBuilder: (context, index) {
                 final document = documents.value[index];
                 return ListTile(
-                  leading: const Icon(Icons.description, color: Colors.blue),
+                  leading: const Icon(Icons.description, color: AppTheme.info),
                   title: Text(document['name'] ?? context.l10n.legalDocument),
                   subtitle: Text(document['type'] ?? context.l10n.pdfFile),
                   trailing: IconButton(

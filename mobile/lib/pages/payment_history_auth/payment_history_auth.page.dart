@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../../services/auth_service.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/spacing.dart';
 import '../../theme/theme.dart';
@@ -29,10 +30,10 @@ class PaymentHistoryAuthPage extends HookConsumerWidget {
       isLoading.value = true;
       errorMessage.value = null;
       try {
-        await FirebaseAuth.instance.verifyPhoneNumber(
+        await AuthService.verifyPhoneNumber(
           phoneNumber: formattedPhone,
           verificationCompleted: (credential) async {
-            await FirebaseAuth.instance.signInWithCredential(credential);
+            await AuthService.signInWithCredential(credential);
             if (!context.mounted) return;
             context.go('/payment-history');
           },
@@ -63,7 +64,7 @@ class PaymentHistoryAuthPage extends HookConsumerWidget {
           verificationId: id,
           smsCode: otp,
         );
-        await FirebaseAuth.instance.signInWithCredential(credential);
+        await AuthService.signInWithCredential(credential);
         if (!context.mounted) return;
         context.go('/payment-history');
       } on FirebaseAuthException catch (e) {
@@ -117,7 +118,9 @@ class PaymentHistoryAuthPage extends HookConsumerWidget {
                   ),
                   child: Text(
                     errorMessage.value!,
-                    style: const TextStyle(color: AppTheme.error),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                 ),
                 AppSpacing.hMd,

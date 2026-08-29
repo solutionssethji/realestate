@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../utils/l10n_extension.dart';
 import 'settings.logic.dart';
+import '../../theme/theme.dart';
 
 class SettingsPage extends HookConsumerWidget {
   const SettingsPage({super.key});
@@ -23,10 +24,7 @@ class SettingsPage extends HookConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            Text(
-              loc.language,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            Text(loc.language, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 16),
             _buildLanguageTile(
               context,
@@ -46,7 +44,7 @@ class SettingsPage extends HookConsumerWidget {
             const SizedBox(height: 32),
             Text(
               context.l10n.aboutCompany,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
             _buildActionTile(
@@ -72,7 +70,7 @@ class SettingsPage extends HookConsumerWidget {
             const SizedBox(height: 32),
             Text(
               context.l10n.legalAndPolicies,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
             _buildActionTile(
@@ -121,10 +119,7 @@ class SettingsPage extends HookConsumerWidget {
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-      ),
+      title: Text(title, style: Theme.of(context).textTheme.titleSmall),
       trailing: const Icon(Icons.chevron_right, size: 20),
       onTap: onTap,
     );
@@ -148,21 +143,20 @@ class SettingsPage extends HookConsumerWidget {
           border: Border.all(
             color: isSelected
                 ? Theme.of(context).colorScheme.primary
-                : Colors.grey.shade300,
+                : AppTheme.neutral300,
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(10),
           color: isSelected
               ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05)
-              : Colors.transparent,
+              : AppTheme.transparent,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               title,
-              style: TextStyle(
-                fontSize: 15,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),

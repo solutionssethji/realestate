@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../utils/l10n_extension.dart';
+import '../theme/theme.dart';
 import 'referral.logic.dart';
 
 class ReferralPage extends HookConsumerWidget {
@@ -40,10 +41,7 @@ class ReferralPage extends HookConsumerWidget {
                         children: [
                           Text(
                             context.l10n.yourReferralCode,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: 16),
                           Container(
@@ -57,11 +55,9 @@ class ReferralPage extends HookConsumerWidget {
                             ),
                             child: SelectableText(
                               referralCode,
-                              style: const TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.2,
-                              ),
+                              maxLines: 1,
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(letterSpacing: 1.2),
                             ),
                           ),
                           const SizedBox(height: 18),
@@ -98,10 +94,7 @@ class ReferralPage extends HookConsumerWidget {
                   const SizedBox(height: 20),
                   Text(
                     context.l10n.rewardSummary,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),
                   GridView(
@@ -133,10 +126,7 @@ class ReferralPage extends HookConsumerWidget {
                   const SizedBox(height: 24),
                   Text(
                     context.l10n.howItWorks,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),
                   _InfoRow(
@@ -175,13 +165,12 @@ class _StatCard extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
             ),
             const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
+            Text(value, style: Theme.of(context).textTheme.headlineSmall),
           ],
         ),
       ),
@@ -202,17 +191,20 @@ class _InfoRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.grey.shade50,
+          color: AppTheme.neutral50,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 6),
             Text(
               subtitle,
-              style: const TextStyle(color: Colors.grey, height: 1.4),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppTheme.textSecondary,
+                height: 1.4,
+              ),
             ),
           ],
         ),

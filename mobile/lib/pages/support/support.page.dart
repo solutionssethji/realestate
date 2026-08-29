@@ -2,8 +2,10 @@ import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../utils/l10n_extension.dart';
+import '../../theme/theme.dart';
 import '../../services/api_service.dart';
 import '../../widgets/error_state.dart';
+import '../../widgets/app_loading_view.dart';
 import 'support.logic.dart';
 
 class SupportPage extends HookConsumerWidget {
@@ -27,7 +29,7 @@ class SupportPage extends HookConsumerWidget {
             );
           }
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoadingView();
           }
 
           final settings = snapshot.data!;
@@ -40,30 +42,30 @@ class SupportPage extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.support_agent, size: 80, color: Colors.blue),
+                const Icon(Icons.support_agent, size: 80, color: AppTheme.info),
                 const SizedBox(height: 16),
                 Text(
                   l10n.howCanWeHelp,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   l10n.supportDesc,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppTheme.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 32),
 
                 // Contact Options
                 _buildContactCard(
+                  context: context,
                   icon: Icons.chat,
                   title: l10n.whatsappSupport,
                   subtitle: l10n.whatsappSubtitle,
-                  color: Colors.green,
+                  color: AppTheme.success,
                   onTap: whatsapp.isEmpty
                       ? null
                       : () => logic.launchSupportUrl('https://wa.me/$whatsapp'),
@@ -71,10 +73,11 @@ class SupportPage extends HookConsumerWidget {
                 const SizedBox(height: 16),
 
                 _buildContactCard(
+                  context: context,
                   icon: Icons.phone,
                   title: l10n.callUs,
                   subtitle: l10n.callUsSubtitle,
-                  color: Colors.blue,
+                  color: AppTheme.info,
                   onTap: phone.isEmpty
                       ? null
                       : () => logic.launchSupportUrl('tel:$phone'),
@@ -82,10 +85,11 @@ class SupportPage extends HookConsumerWidget {
                 const SizedBox(height: 16),
 
                 _buildContactCard(
+                  context: context,
                   icon: Icons.email,
                   title: l10n.emailSupport,
                   subtitle: l10n.emailSupportSubtitle,
-                  color: Colors.orange,
+                  color: AppTheme.darkGold,
                   onTap: email.isEmpty
                       ? null
                       : () => logic.launchSupportUrl(
@@ -96,17 +100,14 @@ class SupportPage extends HookConsumerWidget {
                 const SizedBox(height: 48),
                 Text(
                   l10n.faqTitle,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 16),
 
                 // Mini FAQ section
-                _buildFaqItem(l10n.faq1Question, l10n.faq1Answer),
-                _buildFaqItem(l10n.faq2Question, l10n.faq2Answer),
-                _buildFaqItem(l10n.faq3Question, l10n.faq3Answer),
+                _buildFaqItem(context, l10n.faq1Question, l10n.faq1Answer),
+                _buildFaqItem(context, l10n.faq2Question, l10n.faq2Answer),
+                _buildFaqItem(context, l10n.faq3Question, l10n.faq3Answer),
               ],
             ),
           );
@@ -116,6 +117,7 @@ class SupportPage extends HookConsumerWidget {
   }
 
   Widget _buildContactCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String subtitle,
@@ -145,22 +147,22 @@ class SupportPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
+                    Text(title, style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: const TextStyle(color: Colors.grey, fontSize: 13),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppTheme.textSecondary,
+                      ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: AppTheme.textSecondary,
+              ),
             ],
           ),
         ),
@@ -168,18 +170,17 @@ class SupportPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildFaqItem(String question, String answer) {
+  Widget _buildFaqItem(BuildContext context, String question, String answer) {
     return ExpansionTile(
-      title: Text(
-        question,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-      ),
+      title: Text(question, style: Theme.of(context).textTheme.titleSmall),
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: Text(
             answer,
-            style: const TextStyle(color: Colors.grey, fontSize: 14),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
         ),
       ],

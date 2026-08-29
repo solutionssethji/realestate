@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/theme.dart';
 import 'package:customer_app/l10n/app_localizations.dart';
 
 class SuccessErrorSheet {
@@ -12,13 +13,13 @@ class SuccessErrorSheet {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppTheme.transparent,
       builder: (context) {
         final loc = AppLocalizations.of(context);
         return Container(
           padding: const EdgeInsets.all(24),
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: SafeArea(
@@ -30,31 +31,27 @@ class SuccessErrorSheet {
                   height: 64,
                   decoration: BoxDecoration(
                     color: isSuccess
-                        ? Colors.green.withValues(alpha: 0.1)
-                        : Colors.red.withValues(alpha: 0.1),
+                        ? AppTheme.success.withValues(alpha: 0.1)
+                        : AppTheme.error.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     isSuccess ? Icons.check_circle : Icons.error,
-                    color: isSuccess ? Colors.green : Colors.red,
+                    color: isSuccess ? AppTheme.success : AppTheme.error,
                     size: 32,
                   ),
                 ),
                 const SizedBox(height: 24),
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
                 Text(
                   message,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey.shade600,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppTheme.neutral600,
                     height: 1.5,
                   ),
                   textAlign: TextAlign.center,
@@ -80,7 +77,7 @@ class SuccessErrorSheet {
                         if (onRetry != null) onRetry(); // Retry
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: AppTheme.error,
                       ),
                       child: Text(loc.tryAgain),
                     ),

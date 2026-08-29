@@ -6,6 +6,7 @@ import 'calculator.logic.dart';
 import '../../utils/price_formatter.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
+import '../../theme/theme.dart';
 
 class CalculatorPage extends HookConsumerWidget {
   const CalculatorPage({super.key});
@@ -53,65 +54,60 @@ class CalculatorPage extends HookConsumerWidget {
                   children: [
                     Text(
                       context.l10n.estimatedMonthlyEmi,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge?.copyWith(color: AppTheme.white70),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       PriceFormatter.format(state.estimatedEMI),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.displaySmall?.copyWith(color: AppTheme.white),
                     ),
                     const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              context.l10n.principalAmount,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 12,
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                context.l10n.principalAmount,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: AppTheme.white70),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              PriceFormatter.format(loanAmount),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(height: 4),
+                              Text(
+                                PriceFormatter.format(loanAmount),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(color: AppTheme.white),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              context.l10n.totalInterest,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 12,
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                context.l10n.totalInterest,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: AppTheme.white70),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              PriceFormatter.format(state.totalInterest),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(height: 4),
+                              Text(
+                                PriceFormatter.format(state.totalInterest),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(color: AppTheme.white),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -124,10 +120,7 @@ class CalculatorPage extends HookConsumerWidget {
               // Inputs
               Text(
                 context.l10n.propertyDetails,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
 
@@ -159,10 +152,7 @@ class CalculatorPage extends HookConsumerWidget {
               const Divider(height: 48),
               Text(
                 context.l10n.loanDetails,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
 
@@ -217,17 +207,17 @@ class CalculatorPage extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
-              child: Text(
-                label,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
+              child: Text(label, style: Theme.of(context).textTheme.bodyLarge),
             ),
-            Text(
-              displayValue,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+            Flexible(
+              child: Text(
+                displayValue,
+                textAlign: TextAlign.end,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ),
           ],

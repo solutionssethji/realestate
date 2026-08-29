@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:customer_app/services/auth_service.dart';
+import 'package:customer_app/services/api_service.dart';
 import 'dart:async';
 import 'emi_tracker.state.dart';
 
@@ -24,12 +24,8 @@ class EmiTrackerLogic extends _$EmiTrackerLogic {
 
   Future<void> _loadPlotDetails(String plotId) async {
     try {
-      final doc = await FirebaseFirestore.instance
-          .collection('assignPlots')
-          .doc(plotId)
-          .get();
-      if (doc.exists) {
-        final data = doc.data() as Map<String, dynamic>;
+      final data = await ApiService.getAssignPlotDetails(plotId);
+      if (data != null) {
         state = state.copyWith(
           totalAmount: (data['totalAmount'] ?? 0.0).toDouble(),
           paidAmount: (data['paidAmount'] ?? 0.0).toDouble(),
@@ -43,7 +39,7 @@ class EmiTrackerLogic extends _$EmiTrackerLogic {
   }
 
   void _listenToPayments(String plotId) {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final uid = AuthService.currentUser?.uid;
     if (uid == null) {
       state = state.copyWith(
         isLoading: false,
@@ -52,19 +48,9 @@ class EmiTrackerLogic extends _$EmiTrackerLogic {
       return;
     }
 
-    _paymentsSubscription = FirebaseFirestore.instance
-        .collection('payments')
-        .where('bookingId', isEqualTo: plotId)
-        .where('zId', isEqualTo: uid)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
+    _paymentsSubscription = ApiService.watchPlotPayments(plotId, uid)
         .listen(
-          (snapshot) {
-            final payments = snapshot.docs.map((doc) {
-              final data = doc.data();
-              data['id'] = doc.id;
-              return data;
-            }).toList();
+          (payments) {
             state = state.copyWith(isLoading: false, payments: payments);
           },
           onError: (error) {

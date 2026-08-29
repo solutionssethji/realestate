@@ -1,9 +1,12 @@
 import 'package:customer_app/widgets/premium_app_bar.dart';
+import 'package:customer_app/widgets/app_text_field.dart';
+import 'package:customer_app/widgets/premium_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../utils/l10n_extension.dart';
+import '../../../theme/theme.dart';
 import 'forgot_password.logic.dart';
 
 class ForgotPasswordPage extends HookConsumerWidget {
@@ -40,34 +43,29 @@ class ForgotPasswordPage extends HookConsumerWidget {
             Text(
               l10n.resetPasswordDesc,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
             ),
             const SizedBox(height: 32),
-            TextField(
+            AppTextField(
               controller: emailController,
-              decoration: InputDecoration(
-                labelText: l10n.emailLabel,
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
+              label: l10n.emailLabel,
+              prefixIcon: const Icon(Icons.email_outlined),
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: state.isLoading ? null : handleReset,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: state.isLoading
-                  ? const CircularProgressIndicator()
-                  : Text(l10n.sendResetLink),
+            PremiumButton(
+              text: l10n.sendResetLink,
+              onPressed: handleReset,
+              isLoading: state.isLoading,
             ),
             if (state.isSent) ...[
               const SizedBox(height: 16),
               Text(
                 l10n.resetLinkSent,
-                style: const TextStyle(
-                  color: Colors.green,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.success,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,

@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:customer_app/widgets/premium_app_bar.dart';
+import 'package:customer_app/widgets/premium_button.dart';
+import 'package:customer_app/widgets/app_loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,6 +12,7 @@ import '../../providers/auth_provider.dart';
 import '../../services/api_service.dart';
 import '../../services/storage_service.dart';
 import '../../utils/l10n_extension.dart';
+import '../../theme/theme.dart';
 
 class KycPage extends HookConsumerWidget {
   const KycPage({super.key});
@@ -132,7 +135,7 @@ class KycPage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.kycAndDocuments),
       body: authUser == null || customerAsync.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const AppLoadingView()
           : user == null
           ? Center(child: Text(context.l10n.userNotFound))
           : SingleChildScrollView(
@@ -142,15 +145,13 @@ class KycPage extends HookConsumerWidget {
                 children: [
                   Text(
                     context.l10n.identityDocuments,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 16),
 
                   // Aadhar Section
                   _buildDocumentSection(
+                    context: context,
                     title: context.l10n.aadharCard,
                     controller: aadharController,
                     hintText: context.l10n.enterAadharNumber,
@@ -164,6 +165,7 @@ class KycPage extends HookConsumerWidget {
 
                   // PAN Section
                   _buildDocumentSection(
+                    context: context,
                     title: context.l10n.panCard,
                     controller: panController,
                     hintText: context.l10n.enterPanNumber,
@@ -179,10 +181,7 @@ class KycPage extends HookConsumerWidget {
 
                   Text(
                     context.l10n.bankDetails,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 16),
 
@@ -212,17 +211,10 @@ class KycPage extends HookConsumerWidget {
 
                   const SizedBox(height: 40),
 
-                  SizedBox(
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: isLoading.value ? null : submitKyc,
-                      child: isLoading.value
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              context.l10n.saveDetails,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                    ),
+                  PremiumButton(
+                    text: context.l10n.saveDetails,
+                    onPressed: submitKyc,
+                    isLoading: isLoading.value,
                   ),
                   const SizedBox(height: 20),
                 ],
@@ -232,6 +224,7 @@ class KycPage extends HookConsumerWidget {
   }
 
   Widget _buildDocumentSection({
+    required BuildContext context,
     required String title,
     required TextEditingController controller,
     required String hintText,
@@ -243,7 +236,7 @@ class KycPage extends HookConsumerWidget {
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.grey.shade300),
+        side: const BorderSide(color: AppTheme.neutral300),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
@@ -251,10 +244,7 @@ class KycPage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             TextFormField(
               controller: controller,
@@ -270,7 +260,7 @@ class KycPage extends HookConsumerWidget {
             const SizedBox(height: 16),
             Text(
               l10n.uploadDocumentImage,
-              style: const TextStyle(fontSize: 14),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
             GestureDetector(
@@ -279,9 +269,9 @@ class KycPage extends HookConsumerWidget {
                 height: 120,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: AppTheme.neutral100,
                   border: Border.all(
-                    color: Colors.grey.shade300,
+                    color: AppTheme.neutral300,
                     style: BorderStyle.solid,
                   ),
                   borderRadius: BorderRadius.circular(8),
@@ -302,12 +292,17 @@ class KycPage extends HookConsumerWidget {
                           const Icon(
                             Icons.upload_file,
                             size: 40,
-                            color: Colors.grey,
+                            color: AppTheme.textSecondary,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             l10n.tapToPickImage,
-                            style: const TextStyle(color: Colors.grey),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                           ),
                         ],
                       ),

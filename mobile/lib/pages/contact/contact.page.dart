@@ -39,7 +39,9 @@ class ContactUsPage extends HookConsumerWidget {
       return Center(
         child: Text(
           state.errorMessage ?? 'Error loading contact info',
-          style: const TextStyle(color: Colors.red),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.error,
+          ),
         ),
       );
     }
@@ -66,12 +68,16 @@ class ContactUsPage extends HookConsumerWidget {
           ),
           child: Column(
             children: [
-              const Icon(LucideIcons.headphones, color: Colors.white, size: 48),
+              const Icon(
+                LucideIcons.headphones,
+                color: AppTheme.white,
+                size: 48,
+              ),
               AppSpacing.hMd,
               Text(
                 'We are here to help!',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
+                  color: AppTheme.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -80,7 +86,7 @@ class ContactUsPage extends HookConsumerWidget {
                 'Reach out to us for any queries related to your property search or investments.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: AppTheme.white.withValues(alpha: 0.9),
                 ),
               ),
             ],
@@ -90,7 +96,7 @@ class ContactUsPage extends HookConsumerWidget {
 
         Text(
           context.l10n.contactInformation,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         AppSpacing.hLg,
 
@@ -105,7 +111,7 @@ class ContactUsPage extends HookConsumerWidget {
           icon: LucideIcons.messageCircle,
           style: PremiumButtonStyle.primary,
           backgroundColor: const Color(0xFF25D366),
-          foregroundColor: Colors.white,
+          foregroundColor: AppTheme.white,
           onPressed: () => _launchUrl('https://wa.me/${info.whatsapp}'),
         ),
         AppSpacing.hMd,
@@ -146,12 +152,12 @@ class ContactUsPage extends HookConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: AppTheme.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

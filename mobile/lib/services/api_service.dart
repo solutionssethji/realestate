@@ -12,6 +12,13 @@ import '../models/plot_status.dart';
 import '../models/offer.dart';
 import '../utils/bilingual_helper.dart';
 
+class PaginatedResponse<T> {
+  final List<T> data;
+  final DocumentSnapshot? lastDocument;
+
+  PaginatedResponse({required this.data, this.lastDocument});
+}
+
 /// Central service for all Firebase data operations.
 /// UI → Logic → ApiService → Firebase (Firestore / Functions / Storage)
 ///
@@ -541,6 +548,121 @@ class ApiService {
     }
   }
 
+  // ─── Users ──────────────────────────────────────────────────────────────────
+
+  static Future<Map<String, dynamic>?> getUserProfile(String uid) async {
+    logApi(function: 'getUserProfile()', request: {'uid': uid});
+    try {
+      final doc = await _db.collection('users').doc(uid).get();
+      if (!doc.exists) return null;
+      return doc.data();
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getUserProfile()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+      rethrow;
+    }
+  }
+
+  static Stream<Map<String, dynamic>?> watchUserProfile(String uid) {
+    logApi(function: 'watchUserProfile()', request: {'uid': uid});
+    return _db.collection('users').doc(uid).snapshots().map((doc) => doc.exists ? {'id': doc.id, ...doc.data()!} : null);
+  }
+
+  static Future<void> createUserProfile(String uid, Map<String, dynamic> data) async {
+    logApi(function: 'createUserProfile()', request: {'uid': uid, ...data});
+    try {
+      await _db.collection('users').doc(uid).set(data);
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'createUserProfile()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+      rethrow;
+    }
+  }
+
+  static Future<void> updateUserProfile(String uid, Map<String, dynamic> data) async {
+    logApi(function: 'updateUserProfile()', request: {'uid': uid, ...data});
+    try {
+      await _db.collection('users').doc(uid).set(data, SetOptions(merge: true));
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'updateUserProfile()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getUserByEmail(String email) async {
+    logApi(function: 'getUserByEmail()', request: {'email': email});
+    try {
+      final snapshot = await _db.collection('users').where('email', isEqualTo: email).limit(1).get();
+      if (snapshot.docs.isEmpty) return null;
+      return snapshot.docs.first.data();
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getUserByEmail()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+      rethrow;
+    }
+  }
+
+  // ─── User Specific Data (EMI, Properties) ──────────────────────────────────
+
+  static Future<List<Map<String, dynamic>>> getUserPayments(String uid) async {
+    logApi(function: 'getUserPayments()', request: {'uid': uid});
+    try {
+      final snapshot = await _db.collection('users').doc(uid).collection('payments').orderBy('date', descending: true).get();
+      return snapshot.docs.map((e) => {'id': e.id, ...e.data()}).toList();
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getUserPayments()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+      rethrow;
+    }
+  }
+
+  static Stream<List<Map<String, dynamic>>> watchUserPayments(String uid) {
+    logApi(function: 'watchUserPayments()', request: {'uid': uid});
+    return _db.collection('users').doc(uid).collection('payments').orderBy('date', descending: true).snapshots().map((snapshot) {
+      return snapshot.docs.map((e) => {'id': e.id, ...e.data()}).toList();
+    });
+  }
+
+  static Stream<List<Map<String, dynamic>>> watchUserProperties(String uid) {
+    logApi(function: 'watchUserProperties()', request: {'uid': uid});
+    return _db
+        .collection('assignPlots')
+        .where('customerId', isEqualTo: uid)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    });
+  }
+
+  static Future<Map<String, dynamic>?> getAssignPlotDetails(String plotId) async {
+    logApi(function: 'getAssignPlotDetails()', request: {'plotId': plotId});
+    try {
+      final doc = await _db.collection('assignPlots').doc(plotId).get();
+      if (!doc.exists) return null;
+      return doc.data();
+    } on FirebaseAuthException catch (e) {
+      logApi(function: 'getAssignPlotDetails()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+      rethrow;
+    }
+  }
+
+  static Stream<List<Map<String, dynamic>>> watchPlotPayments(String plotId, String uid) {
+    logApi(function: 'watchPlotPayments()', request: {'plotId': plotId, 'uid': uid});
+    return _db
+        .collection('payments')
+        .where('bookingId', isEqualTo: plotId)
+        .where('zId', isEqualTo: uid)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return data;
+          }).toList();
+        });
+  }
+
   // ─── Private helpers ────────────────────────────────────────────────────────
 
   static Plot _plotFromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
@@ -596,6 +718,100 @@ class ApiService {
         return PlotStatus.available;
     }
   }
+
+  // ─── Pagination Methods ───────────────────────────────────────────────────
+
+  static Future<PaginatedResponse<Map<String, dynamic>>> fetchNotificationsPagination({
+    required int limit,
+    DocumentSnapshot? lastDocument,
+    required String userId,
+  }) async {
+    logApi(function: 'fetchNotificationsPagination()', request: {'userId': userId, 'limit': limit});
+    Query<Map<String, dynamic>> query = _db
+        .collection('users')
+        .doc(userId)
+        .collection('notifications')
+        .orderBy('createdAt', descending: true)
+        .limit(limit);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    final snapshot = await query.get();
+    final data = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+    final newLastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+
+    return PaginatedResponse(data: data, lastDocument: newLastDocument);
+  }
+
+  static Future<PaginatedResponse<Map<String, dynamic>>> fetchWishlistPagination({
+    required int limit,
+    DocumentSnapshot? lastDocument,
+    required String userId,
+  }) async {
+    logApi(function: 'fetchWishlistPagination()', request: {'userId': userId, 'limit': limit});
+    Query<Map<String, dynamic>> query = _db
+        .collection('users')
+        .doc(userId)
+        .collection('wishlist')
+        .limit(limit);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    final snapshot = await query.get();
+    final data = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+    final newLastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+
+    return PaginatedResponse(data: data, lastDocument: newLastDocument);
+  }
+
+  static Future<PaginatedResponse<Map<String, dynamic>>> fetchUserPropertiesPagination({
+    required int limit,
+    DocumentSnapshot? lastDocument,
+    required String uid,
+  }) async {
+    logApi(function: 'fetchUserPropertiesPagination()', request: {'uid': uid, 'limit': limit});
+    Query<Map<String, dynamic>> query = _db
+        .collection('assignPlots')
+        .where('customerId', isEqualTo: uid)
+        .limit(limit);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    final snapshot = await query.get();
+    final data = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+    final newLastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+
+    return PaginatedResponse(data: data, lastDocument: newLastDocument);
+  }
+
+  static Future<PaginatedResponse<Map<String, dynamic>>> fetchUserPaymentsPagination({
+    required int limit,
+    DocumentSnapshot? lastDocument,
+    required String uid,
+  }) async {
+    logApi(function: 'fetchUserPaymentsPagination()', request: {'uid': uid, 'limit': limit});
+    Query<Map<String, dynamic>> query = _db
+        .collection('payments')
+        .where('zId', isEqualTo: uid)
+        .orderBy('createdAt', descending: true)
+        .limit(limit);
+
+    if (lastDocument != null) {
+      query = query.startAfterDocument(lastDocument);
+    }
+
+    final snapshot = await query.get();
+    final data = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
+    final newLastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+
+    return PaginatedResponse(data: data, lastDocument: newLastDocument);
+  }
 }
 
 void logApi({
@@ -643,6 +859,20 @@ void logApi({
 }
 
 class FirebaseAuthErrorMapper {
+  static String getForgotPasswordMessage(String code) {
+    final langCode = BilingualHelper.currentLangCode;
+    final l10n = lookupAppLocalizations(Locale(langCode));
+
+    switch (code) {
+      case 'user-not-found' || 'invalid-email':
+        return l10n.forgotPasswordInvalidEmail;
+      case 'too-many-requests':
+        return l10n.forgotPasswordTooManyRequests;
+      default:
+        return l10n.forgotPasswordFailed;
+    }
+  }
+
   static String getMessage(String code, {bool? isChangePassword}) {
     final langCode = BilingualHelper.currentLangCode;
     final l10n = lookupAppLocalizations(Locale(langCode));

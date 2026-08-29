@@ -33,26 +33,32 @@ class MapComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     // If API Key is missing, show professional fallback
     if (AppConstants.googleMapsApiKey.isEmpty) {
       return Container(
         height: height,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
+          border: Border.all(color: colorScheme.outlineVariant),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.map_outlined, size: 48, color: Colors.grey.shade400),
+            Icon(
+              Icons.map_outlined,
+              size: 48,
+              color: colorScheme.onSurfaceVariant,
+            ),
             const SizedBox(height: 16),
             Text(
               context.l10n.mapConfigUnavailableAlt,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.bold,
+              style: textTheme.titleMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 8),
@@ -61,7 +67,9 @@ class MapComponent extends StatelessWidget {
                 latitude.toString(),
                 longitude.toString(),
               ),
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              style: textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
             OutlinedButton.icon(
@@ -103,11 +111,8 @@ class MapComponent extends StatelessWidget {
               right: 16,
               child: FloatingActionButton.small(
                 onPressed: _openExternalMaps,
-                backgroundColor: Colors.white,
-                child: Icon(
-                  Icons.directions,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                backgroundColor: colorScheme.surface,
+                child: Icon(Icons.directions, color: colorScheme.primary),
               ),
             ),
           ],
