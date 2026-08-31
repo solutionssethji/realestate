@@ -49,7 +49,9 @@ class OffersPage extends HookConsumerWidget {
                   onNotification: (ScrollNotification scrollInfo) {
                     if (scrollInfo.metrics.pixels >=
                         scrollInfo.metrics.maxScrollExtent - 200) {
-                      logic.loadMore();
+                      Future.microtask(() {
+                        logic.loadMore();
+                      });
                     }
                     return false;
                   },

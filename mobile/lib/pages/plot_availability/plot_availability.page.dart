@@ -132,7 +132,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                         return PlotCard(
                           plot: plot,
                           onTap: () => context.push(
-                            '/home/project/$projectId/plots/${plot.id}',
+                            '/project/$projectId/plots/${plot.id}',
                           ),
                         );
                       },

@@ -12,6 +12,7 @@ import '../../providers/auth_provider.dart';
 import '../../services/api_service.dart';
 import '../../services/storage_service.dart';
 import '../../utils/l10n_extension.dart';
+import '../../utils/validators.dart';
 import '../../theme/theme.dart';
 
 class KycPage extends HookConsumerWidget {
@@ -41,6 +42,17 @@ class KycPage extends HookConsumerWidget {
     final aadharImage = useState<File?>(null);
     final panImage = useState<File?>(null);
     final picker = ImagePicker();
+    final formKey = useMemoized(() => GlobalKey<FormState>());
+
+    useValueListenable(aadharController);
+    useValueListenable(panController);
+
+    final hasAadharImg = aadharImage.value != null || (user?.aadharPhotoUrl != null);
+    final hasPanImg = panImage.value != null || (user?.panPhotoUrl != null);
+
+    final isFormFilled = aadharController.text.trim().isNotEmpty &&
+        panController.text.trim().isNotEmpty &&
+        hasAadharImg && hasPanImg;
 
     Future<void> pickImage(ValueNotifier<File?> imageState) async {
       try {
@@ -64,6 +76,7 @@ class KycPage extends HookConsumerWidget {
 
     Future<void> submitKyc() async {
       if (authUser == null) return;
+      if (!formKey.currentState!.validate()) return;
 
       isLoading.value = true;
       try {
@@ -140,9 +153,12 @@ class KycPage extends HookConsumerWidget {
           ? Center(child: Text(context.l10n.userNotFound))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+              child: Form(
+                key: formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                   Text(
                     context.l10n.identityDocuments,
                     style: Theme.of(context).textTheme.titleLarge,
@@ -159,6 +175,7 @@ class KycPage extends HookConsumerWidget {
                     existingUrl: user.aadharPhotoUrl,
                     onPickImage: () => pickImage(aadharImage),
                     l10n: context.l10n,
+                    validator: (v) => AppValidators.aadhaar(context, v),
                   ),
 
                   const SizedBox(height: 24),
@@ -173,6 +190,7 @@ class KycPage extends HookConsumerWidget {
                     existingUrl: user.panPhotoUrl,
                     onPickImage: () => pickImage(panImage),
                     l10n: context.l10n,
+                    validator: (v) => AppValidators.pan(context, v),
                   ),
 
                   const SizedBox(height: 32),
@@ -213,11 +231,12 @@ class KycPage extends HookConsumerWidget {
 
                   PremiumButton(
                     text: context.l10n.saveDetails,
-                    onPressed: submitKyc,
+                    onPressed: isFormFilled ? submitKyc : null,
                     isLoading: isLoading.value,
                   ),
                   const SizedBox(height: 20),
                 ],
+                ),
               ),
             ),
     );
@@ -232,6 +251,7 @@ class KycPage extends HookConsumerWidget {
     required String? existingUrl,
     required VoidCallback onPickImage,
     required dynamic l10n,
+    String? Function(String?)? validator,
   }) {
     return Card(
       elevation: 0,
@@ -248,6 +268,7 @@ class KycPage extends HookConsumerWidget {
             const SizedBox(height: 12),
             TextFormField(
               controller: controller,
+              validator: validator,
               decoration: InputDecoration(
                 hintText: hintText,
                 border: const OutlineInputBorder(),

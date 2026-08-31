@@ -24,25 +24,16 @@ class EnquiryLogic extends _$EnquiryLogic {
       isSuccess: false,
       errorMessage: null,
     );
-    try {
-      await ApiService.submitEnquiry({
-        'customerId': customerId,
-        if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
-        if (plotRequirement != null && plotRequirement.isNotEmpty)
-          'plotRequirement': plotRequirement,
-        if (budget != null && budget.isNotEmpty) 'budget': budget,
-        if (message != null && message.isNotEmpty) 'message': message,
-      });
-      state = state.copyWith(isSubmitting: false, isSuccess: true);
-      return true;
-    } catch (e) {
-      state = state.copyWith(
-        isSubmitting: false,
-        isError: true,
-        errorMessage: e.toString().replaceAll('Exception: ', ''),
-      );
-      return false;
-    }
+    await ApiService.submitEnquiry({
+      'customerId': customerId,
+      if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
+      if (plotRequirement != null && plotRequirement.isNotEmpty)
+        'plotRequirement': plotRequirement,
+      if (budget != null && budget.isNotEmpty) 'budget': budget,
+      if (message != null && message.isNotEmpty) 'message': message,
+    });
+    state = state.copyWith(isSubmitting: false, isSuccess: true);
+    return true;
   }
 
   void reset() {

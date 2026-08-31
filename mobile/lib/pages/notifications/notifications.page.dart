@@ -38,7 +38,9 @@ class NotificationsPage extends HookConsumerWidget {
                     !state.isFetchingMore &&
                     scrollInfo.metrics.pixels ==
                         scrollInfo.metrics.maxScrollExtent) {
-                  logic.loadMore();
+                  Future.microtask(() {
+                    logic.loadMore();
+                  });
                 }
                 return false;
               },

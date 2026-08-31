@@ -2623,6 +2623,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Already have an account? Login'**
   String get alreadyHaveAccount;
+
+  /// No description provided for @valErrEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get valErrEmailRequired;
+
+  /// No description provided for @valErrEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get valErrEmailInvalid;
+
+  /// No description provided for @valErrPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get valErrPasswordRequired;
+
+  /// No description provided for @valErrPasswordLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get valErrPasswordLength;
+
+  /// No description provided for @valErrFullNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name is required'**
+  String get valErrFullNameRequired;
+
+  /// No description provided for @valErrMobileRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number is required'**
+  String get valErrMobileRequired;
+
+  /// No description provided for @valErrMobileInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid mobile number'**
+  String get valErrMobileInvalid;
+
+  /// No description provided for @valErrFullNameInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid name (letters only)'**
+  String get valErrFullNameInvalid;
+
+  /// No description provided for @accountBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been blocked by an administrator.'**
+  String get accountBlocked;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has been deleted.'**
+  String get accountDeleted;
+
+  /// No description provided for @emailVerificationRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Verification Required'**
+  String get emailVerificationRequiredTitle;
+
+  /// No description provided for @emailVerificationRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is not verified yet.\n\nFor security reasons, you must verify your email address before accessing the app.\n\nPlease check your inbox (and spam folder) for a verification link, or click below to receive a new one.'**
+  String get emailVerificationRequiredMessage;
+
+  /// No description provided for @sendVerificationMail.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Verification Mail'**
+  String get sendVerificationMail;
+
+  /// No description provided for @verificationEmailSentSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification email sent successfully!'**
+  String get verificationEmailSentSuccessfully;
+
+  /// No description provided for @registrationSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Successful!'**
+  String get registrationSuccessTitle;
+
+  /// No description provided for @registrationSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We have sent a verification email to your registered email address.\n\nPlease check your inbox and your spam/junk folder. You must verify your email before you can log in to your account.'**
+  String get registrationSuccessMessage;
+
+  /// No description provided for @goToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Login'**
+  String get goToLogin;
 }
 
 class _AppLocalizationsDelegate

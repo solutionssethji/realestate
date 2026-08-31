@@ -1397,4 +1397,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alreadyHaveAccount => 'Already have an account? Login';
+
+  @override
+  String get valErrEmailRequired => 'Email is required';
+
+  @override
+  String get valErrEmailInvalid => 'Please enter a valid email address';
+
+  @override
+  String get valErrPasswordRequired => 'Password is required';
+
+  @override
+  String get valErrPasswordLength => 'Password must be at least 6 characters';
+
+  @override
+  String get valErrFullNameRequired => 'Full name is required';
+
+  @override
+  String get valErrMobileRequired => 'Mobile number is required';
+
+  @override
+  String get valErrMobileInvalid => 'Please enter a valid mobile number';
+
+  @override
+  String get valErrFullNameInvalid =>
+      'Please enter a valid name (letters only)';
+
+  @override
+  String get accountBlocked =>
+      'Your account has been blocked by an administrator.';
+
+  @override
+  String get accountDeleted => 'This account has been deleted.';
+
+  @override
+  String get emailVerificationRequiredTitle => 'Email Verification Required';
+
+  @override
+  String get emailVerificationRequiredMessage =>
+      'Your account is not verified yet.\n\nFor security reasons, you must verify your email address before accessing the app.\n\nPlease check your inbox (and spam folder) for a verification link, or click below to receive a new one.';
+
+  @override
+  String get sendVerificationMail => 'Send Verification Mail';
+
+  @override
+  String get verificationEmailSentSuccessfully =>
+      'Verification email sent successfully!';
+
+  @override
+  String get registrationSuccessTitle => 'Registration Successful!';
+
+  @override
+  String get registrationSuccessMessage =>
+      'We have sent a verification email to your registered email address.\n\nPlease check your inbox and your spam/junk folder. You must verify your email before you can log in to your account.';
+
+  @override
+  String get goToLogin => 'Go to Login';
 }

@@ -23,19 +23,23 @@ class HomeLogic extends _$HomeLogic {
         ApiService.getProjects(limit: 10, isFeatured: true),
         ApiService.getOffers(limit: 7),
         ApiService.getContactSettings(),
-        Future.delayed(const Duration(milliseconds: 800)), // Minimum delay to show shimmer
+        Future.delayed(const Duration(milliseconds: 800)),
       ]);
-      
+
       final projectsTuple = results[0] as (List<Project>, dynamic);
       final offersTuple = results[1] as (List<Offer>, dynamic);
       final contactSettings = results[2] as Map<String, String>;
-      
+
       state = state.copyWith(
         isLoading: false,
         projects: projectsTuple.$1,
         offers: offersTuple.$1,
-        contactPhone: contactSettings['phone']?.isNotEmpty == true ? contactSettings['phone'] : null,
-        contactWhatsapp: contactSettings['whatsapp']?.isNotEmpty == true ? contactSettings['whatsapp'] : null,
+        contactPhone: contactSettings['phone']?.isNotEmpty == true
+            ? contactSettings['phone']
+            : null,
+        contactWhatsapp: contactSettings['whatsapp']?.isNotEmpty == true
+            ? contactSettings['whatsapp']
+            : null,
       );
     } catch (e) {
       state = state.copyWith(

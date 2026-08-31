@@ -30,6 +30,7 @@ class ProfilePage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(
         title: l10n.myProfile,
+        showBackButton: false,
         actions: [
           if (user != null)
             state.isLoading
@@ -91,7 +92,7 @@ class ProfilePage extends HookConsumerWidget {
                   leading: const Icon(Icons.badge),
                   title: Text(l10n.kycAndDocuments),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/kyc'),
+                  onTap: () => context.push('/profile/kyc'),
                 ),
                 const Divider(),
                 ListTile(
@@ -116,14 +117,14 @@ class ProfilePage extends HookConsumerWidget {
                   leading: const Icon(Icons.card_giftcard),
                   title: const Text('Referral & Rewards'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/referral'),
+                  onTap: () => context.push('/profile/referral'),
                 ),
                 const Divider(),
                 ListTile(
                   leading: const Icon(Icons.support_agent),
                   title: Text(l10n.supportCenter),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/support'),
+                  onTap: () => context.push('/profile/support'),
                 ),
                 const Divider(),
                 ListTile(

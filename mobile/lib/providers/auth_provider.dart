@@ -16,8 +16,9 @@ final customerProvider = StreamProvider<Customer?>((ref) {
   final user = ref.watch(currentUserProvider);
   if (user == null) return Stream.value(null);
 
-  return ApiService.watchUserProfile(user.uid)
-      .map((data) => data != null ? Customer.fromJson(data) : null);
+  return ApiService.watchUserProfile(
+    user.uid,
+  ).map((data) => data != null ? Customer.fromJson(data) : null);
 });
 
 final tokenRefreshProvider = StreamProvider<String?>((ref) {
@@ -32,4 +33,3 @@ final tokenRefreshProvider = StreamProvider<String?>((ref) {
     }
   });
 });
-

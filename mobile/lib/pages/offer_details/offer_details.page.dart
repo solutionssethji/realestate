@@ -172,7 +172,7 @@ class OfferDetailsPage extends HookConsumerWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () =>
-                              context.push('/home/project/${offer.projectId}'),
+                              context.push('/project/${offer.projectId}'),
                           child: Text(context.l10n.viewProjectDetails),
                         ),
                       ),

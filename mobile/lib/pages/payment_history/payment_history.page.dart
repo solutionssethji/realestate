@@ -45,7 +45,12 @@ class PaymentHistoryPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, WidgetRef ref, state, String userPhone) {
+  Widget _buildBody(
+    BuildContext context,
+    WidgetRef ref,
+    state,
+    String userPhone,
+  ) {
     if (state.isLoading) {
       return SkeletonList(
         padding: AppSpacing.allMd,
@@ -96,7 +101,9 @@ class PaymentHistoryPage extends HookConsumerWidget {
         if (!state.isLoading &&
             !state.isFetchingMore &&
             scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-          logic.loadMore();
+          Future.microtask(() {
+            logic.loadMore();
+          });
         }
         return false;
       },
@@ -108,16 +115,13 @@ class PaymentHistoryPage extends HookConsumerWidget {
             SliverPadding(
               padding: AppSpacing.allMd,
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final payment = payments[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                      child: _PaymentCard(payment: payment),
-                    );
-                  },
-                  childCount: payments.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final payment = payments[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: _PaymentCard(payment: payment),
+                  );
+                }, childCount: payments.length),
               ),
             ),
             if (state.isFetchingMore)

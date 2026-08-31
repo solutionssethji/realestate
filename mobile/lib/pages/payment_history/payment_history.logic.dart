@@ -16,7 +16,11 @@ class PaymentHistoryLogic extends _$PaymentHistoryLogic {
   Future<void> load({bool isRefresh = false}) async {
     final user = AuthService.currentUser;
     if (user == null) {
-      state = state.copyWith(isLoading: false, isError: true, errorMessage: 'User not logged in');
+      state = state.copyWith(
+        isLoading: false,
+        isError: true,
+        errorMessage: 'User not logged in',
+      );
       return;
     }
 
@@ -34,34 +38,31 @@ class PaymentHistoryLogic extends _$PaymentHistoryLogic {
       if (state.payments.isNotEmpty) {
         state = state.copyWith(isFetchingMore: true);
       } else {
-        state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
+        state = state.copyWith(
+          isLoading: true,
+          isError: false,
+          errorMessage: null,
+        );
       }
     }
 
-    try {
-      final response = await ApiService.fetchUserPaymentsPagination(
-        uid: user.uid,
-        lastDocument: state.lastDocument,
-        limit: 15,
-      );
+    final response = await ApiService.fetchUserPaymentsPagination(
+      uid: user.uid,
+      lastDocument: state.lastDocument,
+      limit: 15,
+    );
 
-      final combinedPayments = isRefresh ? response.data : [...state.payments, ...response.data];
-      
-      state = state.copyWith(
-        payments: combinedPayments,
-        lastDocument: response.lastDocument,
-        hasMore: response.data.length == 15,
-        isLoading: false,
-        isFetchingMore: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isFetchingMore: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    final combinedPayments = isRefresh
+        ? response.data
+        : [...state.payments, ...response.data];
+
+    state = state.copyWith(
+      payments: combinedPayments,
+      lastDocument: response.lastDocument,
+      hasMore: response.data.length == 15,
+      isLoading: false,
+      isFetchingMore: false,
+    );
   }
 
   Future<void> loadMore() async {
@@ -69,4 +70,3 @@ class PaymentHistoryLogic extends _$PaymentHistoryLogic {
     await load();
   }
 }
-

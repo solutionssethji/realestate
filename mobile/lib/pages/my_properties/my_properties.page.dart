@@ -20,7 +20,7 @@ class MyPropertiesPage extends HookConsumerWidget {
     final logic = ref.read(myPropertiesLogicProvider.notifier);
 
     return Scaffold(
-      appBar: PremiumAppBar(title: context.l10n.myProperties),
+      appBar: PremiumAppBar(title: context.l10n.myProperties, showBackButton: false),
       body: state.isLoading
           ? SkeletonList(
               padding: AppSpacing.allMd,
@@ -29,7 +29,10 @@ class MyPropertiesPage extends HookConsumerWidget {
               itemBuilder: (_, __) => const PropertyListTileSkeleton(),
             )
           : state.isError
-          ? ErrorState(message: state.errorMessage, onRetry: () => logic.load(isRefresh: true))
+          ? ErrorState(
+              message: state.errorMessage,
+              onRetry: () => logic.load(isRefresh: true),
+            )
           : state.properties.isEmpty
           ? Center(child: Text(context.l10n.noPropertiesYet))
           : NotificationListener<ScrollNotification>(
@@ -38,7 +41,9 @@ class MyPropertiesPage extends HookConsumerWidget {
                     !state.isFetchingMore &&
                     scrollInfo.metrics.pixels ==
                         scrollInfo.metrics.maxScrollExtent) {
-                  logic.loadMore();
+                  Future.microtask(() {
+                    logic.loadMore();
+                  });
                 }
                 return false;
               },
@@ -50,56 +55,77 @@ class MyPropertiesPage extends HookConsumerWidget {
                     SliverPadding(
                       padding: AppSpacing.allMd,
                       sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final property = state.properties[index];
-                            final plotId = property['id'];
-                            final projectName = property['projectName'] ?? 'Unknown Project';
-                            final plotNumber = property['plotNumber'] ?? 'Unknown Plot';
-                            final status = property['status'] ?? 'Unknown';
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final property = state.properties[index];
+                          final plotId = property['id'];
+                          final projectName =
+                              property['projectName'] ?? 'Unknown Project';
+                          final plotNumber =
+                              property['plotNumber'] ?? 'Unknown Plot';
+                          final status = property['status'] ?? 'Unknown';
 
-                            return Card(
-                              elevation: 2,
-                              margin: const EdgeInsets.only(bottom: 16),
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.all(16),
-                                leading: const Icon(Icons.bookmark, size: 40, color: AppTheme.info),
-                                title: Text(
-                                  projectName,
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 4),
-                                    Text(context.l10n.plotNoLabel(plotNumber.toString())),
-                                    const SizedBox(height: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: status == 'SOLD'
-                                            ? AppTheme.success.withValues(alpha: 0.12)
-                                            : AppTheme.info.withValues(alpha: 0.12),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        status,
-                                        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                          color: status == 'SOLD' ? AppTheme.success : AppTheme.info,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                trailing: const Icon(Icons.arrow_forward_ios),
-                                onTap: () {
-                                  context.push('/my-properties/$plotId/emi-tracker');
-                                },
+                          return Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(16),
+                              leading: const Icon(
+                                Icons.bookmark,
+                                size: 40,
+                                color: AppTheme.info,
                               ),
-                            );
-                          },
-                          childCount: state.properties.length,
-                        ),
+                              title: Text(
+                                projectName,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    context.l10n.plotNoLabel(
+                                      plotNumber.toString(),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: status == 'SOLD'
+                                          ? AppTheme.success.withValues(
+                                              alpha: 0.12,
+                                            )
+                                          : AppTheme.info.withValues(
+                                              alpha: 0.12,
+                                            ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      status,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium
+                                          ?.copyWith(
+                                            color: status == 'SOLD'
+                                                ? AppTheme.success
+                                                : AppTheme.info,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: const Icon(Icons.arrow_forward_ios),
+                              onTap: () {
+                                context.push(
+                                  '/my-properties/$plotId/emi-tracker',
+                                );
+                              },
+                            ),
+                          );
+                        }, childCount: state.properties.length),
                       ),
                     ),
                     if (state.isFetchingMore)

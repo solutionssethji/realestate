@@ -11,6 +11,7 @@ import '../models/plot.dart';
 import '../models/plot_status.dart';
 import '../models/offer.dart';
 import '../utils/bilingual_helper.dart';
+import '../utils/snackbar_utils.dart';
 
 class PaginatedResponse<T> {
   final List<T> data;
@@ -51,11 +52,8 @@ class ApiService {
         return {'phone': phone, 'whatsapp': whatsapp, 'email': email};
       }
       return {'phone': '', 'whatsapp': '', 'email': ''};
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getContactSettings()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getContactSettings()');
       return {'phone': '', 'whatsapp': '', 'email': ''};
     }
   }
@@ -98,11 +96,8 @@ class ApiService {
             .toList(),
         newLastDoc,
       );
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getProjects()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getProjects()');
       rethrow;
     }
   }
@@ -124,11 +119,8 @@ class ApiService {
 
       logApi(function: 'getProject()', response: 'Found');
       return Project.fromJson({'id': doc.id, ...data});
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getProject()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getProject()');
       rethrow;
     }
   }
@@ -150,11 +142,8 @@ class ApiService {
         response: '${snapshot.docs.length} plots retrieved',
       );
       return snapshot.docs.map((doc) => _plotFromDoc(doc)).toList();
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getPlots()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getPlots()');
       rethrow;
     }
   }
@@ -193,11 +182,8 @@ class ApiService {
       }
       logApi(function: 'getPlot()', response: 'Found');
       return _plotFromDoc(doc);
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getPlot()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getPlot()');
       rethrow;
     }
   }
@@ -212,7 +198,7 @@ class ApiService {
     try {
       var query = _db
           .collection('offers')
-          .where('status', isEqualTo: 'ACTIVE')
+          .where('status', whereIn: ['ACTIVE', 'Active', 'active'])
           .limit(limit);
 
       if (lastDocument != null) {
@@ -259,16 +245,15 @@ class ApiService {
             }
           }
         } catch (e) {
+          AppSnackbar.showGlobalError(e.toString());
+
           developer.log('Error fetching project names for offers: $e');
         }
       }
 
       return (offers, newLastDoc);
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getOffers()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getOffers()');
       rethrow;
     }
   }
@@ -303,11 +288,8 @@ class ApiService {
 
       logApi(function: 'getOffer()', response: 'Found');
       return offer;
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getOffer()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getOffer()');
       rethrow;
     }
   }
@@ -332,11 +314,8 @@ class ApiService {
 
       await batch.commit();
       logApi(function: 'submitEnquiry()', response: 'Success');
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'submitEnquiry()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'submitEnquiry()');
       rethrow;
     }
   }
@@ -361,11 +340,8 @@ class ApiService {
 
       await batch.commit();
       logApi(function: 'submitSiteVisit()', response: {'id': siteVisitRef.id});
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'submitSiteVisit()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'submitSiteVisit()');
       rethrow;
     }
   }
@@ -386,11 +362,8 @@ class ApiService {
           .call(data);
       logApi(function: 'submitPayment()', response: result.data);
       return Map<String, dynamic>.from(result.data as Map);
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'submitPayment()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'submitPayment()');
       rethrow;
     }
   }
@@ -408,14 +381,8 @@ class ApiService {
       final items = snapshot.docs.map((d) => d.id).toList();
       logApi(function: 'getWishlist()', response: '${items.length} items');
       return items;
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getWishlist()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
-      return [];
     } catch (e) {
-      logApi(function: 'getWishlist()', error: e.toString());
+      FirebaseAuthErrorMapper().handleException(e, function: 'getWishlist()');
       return [];
     }
   }
@@ -444,14 +411,8 @@ class ApiService {
         await docRef.delete();
       }
       logApi(function: 'toggleWishlist()', response: 'Success');
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'toggleWishlist()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
-      rethrow;
     } catch (e) {
-      logApi(function: 'toggleWishlist()', error: e.toString());
+      FirebaseAuthErrorMapper().handleException(e, function: 'toggleWishlist()');
       rethrow;
     }
   }
@@ -476,14 +437,8 @@ class ApiService {
       }
       final snapshot = await query.get();
       return snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
-    } on FirebaseAuthException catch (e) {
-      logApi(
-        function: 'getNotifications()',
-        error: FirebaseAuthErrorMapper.getMessage(e.code),
-      );
-      rethrow;
     } catch (e) {
-      logApi(function: 'getNotifications()', error: e.toString());
+      FirebaseAuthErrorMapper().handleException(e, function: 'getNotifications()');
       rethrow;
     }
   }
@@ -500,7 +455,7 @@ class ApiService {
           .doc(notificationId)
           .update({'isRead': true});
     } catch (e) {
-      developer.log('Error marking notification as read: $e');
+      FirebaseAuthErrorMapper().handleException(e, function: 'markNotificationRead()');
     }
   }
 
@@ -517,7 +472,7 @@ class ApiService {
           .get();
       return snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
     } catch (e) {
-      logApi(function: 'getUserDocuments()', error: e.toString());
+      FirebaseAuthErrorMapper().handleException(e, function: 'getUserDocuments()');
       rethrow;
     }
   }
@@ -543,7 +498,7 @@ class ApiService {
       });
       logApi(function: 'updateKyc()', response: 'Success');
     } catch (e) {
-      logApi(function: 'updateKyc()', error: e.toString());
+      FirebaseAuthErrorMapper().handleException(e, function: 'updateKyc()');
       rethrow;
     }
   }
@@ -556,33 +511,43 @@ class ApiService {
       final doc = await _db.collection('users').doc(uid).get();
       if (!doc.exists) return null;
       return doc.data();
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'getUserProfile()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getUserProfile()');
       rethrow;
     }
   }
 
   static Stream<Map<String, dynamic>?> watchUserProfile(String uid) {
     logApi(function: 'watchUserProfile()', request: {'uid': uid});
-    return _db.collection('users').doc(uid).snapshots().map((doc) => doc.exists ? {'id': doc.id, ...doc.data()!} : null);
+    return _db
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .map((doc) => doc.exists ? {'id': doc.id, ...doc.data()!} : null);
   }
 
-  static Future<void> createUserProfile(String uid, Map<String, dynamic> data) async {
+  static Future<void> createUserProfile(
+    String uid,
+    Map<String, dynamic> data,
+  ) async {
     logApi(function: 'createUserProfile()', request: {'uid': uid, ...data});
     try {
       await _db.collection('users').doc(uid).set(data);
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'createUserProfile()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'createUserProfile()');
       rethrow;
     }
   }
 
-  static Future<void> updateUserProfile(String uid, Map<String, dynamic> data) async {
+  static Future<void> updateUserProfile(
+    String uid,
+    Map<String, dynamic> data,
+  ) async {
     logApi(function: 'updateUserProfile()', request: {'uid': uid, ...data});
     try {
       await _db.collection('users').doc(uid).set(data, SetOptions(merge: true));
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'updateUserProfile()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'updateUserProfile()');
       rethrow;
     }
   }
@@ -590,11 +555,15 @@ class ApiService {
   static Future<Map<String, dynamic>?> getUserByEmail(String email) async {
     logApi(function: 'getUserByEmail()', request: {'email': email});
     try {
-      final snapshot = await _db.collection('users').where('email', isEqualTo: email).limit(1).get();
+      final snapshot = await _db
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
       if (snapshot.docs.isEmpty) return null;
       return snapshot.docs.first.data();
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'getUserByEmail()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getUserByEmail()');
       rethrow;
     }
   }
@@ -604,19 +573,30 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> getUserPayments(String uid) async {
     logApi(function: 'getUserPayments()', request: {'uid': uid});
     try {
-      final snapshot = await _db.collection('users').doc(uid).collection('payments').orderBy('date', descending: true).get();
+      final snapshot = await _db
+          .collection('users')
+          .doc(uid)
+          .collection('payments')
+          .orderBy('date', descending: true)
+          .get();
       return snapshot.docs.map((e) => {'id': e.id, ...e.data()}).toList();
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'getUserPayments()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getUserPayments()');
       rethrow;
     }
   }
 
   static Stream<List<Map<String, dynamic>>> watchUserPayments(String uid) {
     logApi(function: 'watchUserPayments()', request: {'uid': uid});
-    return _db.collection('users').doc(uid).collection('payments').orderBy('date', descending: true).snapshots().map((snapshot) {
-      return snapshot.docs.map((e) => {'id': e.id, ...e.data()}).toList();
-    });
+    return _db
+        .collection('users')
+        .doc(uid)
+        .collection('payments')
+        .orderBy('date', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((e) => {'id': e.id, ...e.data()}).toList();
+        });
   }
 
   static Stream<List<Map<String, dynamic>>> watchUserProperties(String uid) {
@@ -626,28 +606,36 @@ class ApiService {
         .where('customerId', isEqualTo: uid)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        return data;
-      }).toList();
-    });
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return data;
+          }).toList();
+        });
   }
 
-  static Future<Map<String, dynamic>?> getAssignPlotDetails(String plotId) async {
+  static Future<Map<String, dynamic>?> getAssignPlotDetails(
+    String plotId,
+  ) async {
     logApi(function: 'getAssignPlotDetails()', request: {'plotId': plotId});
     try {
       final doc = await _db.collection('assignPlots').doc(plotId).get();
       if (!doc.exists) return null;
       return doc.data();
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'getAssignPlotDetails()', error: FirebaseAuthErrorMapper.getMessage(e.code));
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getAssignPlotDetails()');
       rethrow;
     }
   }
 
-  static Stream<List<Map<String, dynamic>>> watchPlotPayments(String plotId, String uid) {
-    logApi(function: 'watchPlotPayments()', request: {'plotId': plotId, 'uid': uid});
+  static Stream<List<Map<String, dynamic>>> watchPlotPayments(
+    String plotId,
+    String uid,
+  ) {
+    logApi(
+      function: 'watchPlotPayments()',
+      request: {'plotId': plotId, 'uid': uid},
+    );
     return _db
         .collection('payments')
         .where('bookingId', isEqualTo: plotId)
@@ -676,8 +664,8 @@ class ApiService {
           double.tryParse(p['size']?.toString() ?? '') ??
           0.0,
       dimensions: p['dimensions']?.toString() ?? 'N/A',
-      facing: p['facing']?.toString() ?? 'N/A',
-      roadWidth: p['road']?.toString() ?? 'N/A',
+      facing: BilingualHelper.get(p['facing']),
+      roadWidth: BilingualHelper.get(p['road'] ?? p['roadWidth']),
       status: _parsePlotStatus(p['status']?.toString()),
       price: (p['price'] as num?)?.toDouble() ?? 0.0,
     );
@@ -689,7 +677,7 @@ class ApiService {
       id: doc.id,
       title: BilingualHelper.get(data['title']),
       description: BilingualHelper.get(data['description']),
-      image: data['image']?.toString() ?? '',
+      image: data['offerImage']?.toString() ?? data['image']?.toString() ?? '',
       startDate: data['startDate'] != null
           ? DateTime.tryParse(data['startDate'].toString()) ?? DateTime.now()
           : DateTime.now(),
@@ -721,12 +709,16 @@ class ApiService {
 
   // ─── Pagination Methods ───────────────────────────────────────────────────
 
-  static Future<PaginatedResponse<Map<String, dynamic>>> fetchNotificationsPagination({
+  static Future<PaginatedResponse<Map<String, dynamic>>>
+  fetchNotificationsPagination({
     required int limit,
     DocumentSnapshot? lastDocument,
     required String userId,
   }) async {
-    logApi(function: 'fetchNotificationsPagination()', request: {'userId': userId, 'limit': limit});
+    logApi(
+      function: 'fetchNotificationsPagination()',
+      request: {'userId': userId, 'limit': limit},
+    );
     Query<Map<String, dynamic>> query = _db
         .collection('users')
         .doc(userId)
@@ -739,18 +731,26 @@ class ApiService {
     }
 
     final snapshot = await query.get();
-    final data = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
-    final newLastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+    final data = snapshot.docs
+        .map((doc) => {'id': doc.id, ...doc.data()})
+        .toList();
+    final newLastDocument = snapshot.docs.isNotEmpty
+        ? snapshot.docs.last
+        : null;
 
     return PaginatedResponse(data: data, lastDocument: newLastDocument);
   }
 
-  static Future<PaginatedResponse<Map<String, dynamic>>> fetchWishlistPagination({
+  static Future<PaginatedResponse<Map<String, dynamic>>>
+  fetchWishlistPagination({
     required int limit,
     DocumentSnapshot? lastDocument,
     required String userId,
   }) async {
-    logApi(function: 'fetchWishlistPagination()', request: {'userId': userId, 'limit': limit});
+    logApi(
+      function: 'fetchWishlistPagination()',
+      request: {'userId': userId, 'limit': limit},
+    );
     Query<Map<String, dynamic>> query = _db
         .collection('users')
         .doc(userId)
@@ -762,18 +762,26 @@ class ApiService {
     }
 
     final snapshot = await query.get();
-    final data = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
-    final newLastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+    final data = snapshot.docs
+        .map((doc) => {'id': doc.id, ...doc.data()})
+        .toList();
+    final newLastDocument = snapshot.docs.isNotEmpty
+        ? snapshot.docs.last
+        : null;
 
     return PaginatedResponse(data: data, lastDocument: newLastDocument);
   }
 
-  static Future<PaginatedResponse<Map<String, dynamic>>> fetchUserPropertiesPagination({
+  static Future<PaginatedResponse<Map<String, dynamic>>>
+  fetchUserPropertiesPagination({
     required int limit,
     DocumentSnapshot? lastDocument,
     required String uid,
   }) async {
-    logApi(function: 'fetchUserPropertiesPagination()', request: {'uid': uid, 'limit': limit});
+    logApi(
+      function: 'fetchUserPropertiesPagination()',
+      request: {'uid': uid, 'limit': limit},
+    );
     Query<Map<String, dynamic>> query = _db
         .collection('assignPlots')
         .where('customerId', isEqualTo: uid)
@@ -784,18 +792,26 @@ class ApiService {
     }
 
     final snapshot = await query.get();
-    final data = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
-    final newLastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+    final data = snapshot.docs
+        .map((doc) => {'id': doc.id, ...doc.data()})
+        .toList();
+    final newLastDocument = snapshot.docs.isNotEmpty
+        ? snapshot.docs.last
+        : null;
 
     return PaginatedResponse(data: data, lastDocument: newLastDocument);
   }
 
-  static Future<PaginatedResponse<Map<String, dynamic>>> fetchUserPaymentsPagination({
+  static Future<PaginatedResponse<Map<String, dynamic>>>
+  fetchUserPaymentsPagination({
     required int limit,
     DocumentSnapshot? lastDocument,
     required String uid,
   }) async {
-    logApi(function: 'fetchUserPaymentsPagination()', request: {'uid': uid, 'limit': limit});
+    logApi(
+      function: 'fetchUserPaymentsPagination()',
+      request: {'uid': uid, 'limit': limit},
+    );
     Query<Map<String, dynamic>> query = _db
         .collection('payments')
         .where('zId', isEqualTo: uid)
@@ -807,8 +823,12 @@ class ApiService {
     }
 
     final snapshot = await query.get();
-    final data = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
-    final newLastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+    final data = snapshot.docs
+        .map((doc) => {'id': doc.id, ...doc.data()})
+        .toList();
+    final newLastDocument = snapshot.docs.isNotEmpty
+        ? snapshot.docs.last
+        : null;
 
     return PaginatedResponse(data: data, lastDocument: newLastDocument);
   }
@@ -969,5 +989,24 @@ class FirebaseAuthErrorMapper {
       default:
         return l10n.authErrDefault;
     }
+  }
+
+  void handleException(Object error, {String? function}) {
+    String errorMessage;
+
+    if (error is FirebaseAuthException) {
+      errorMessage = FirebaseAuthErrorMapper.getMessage(error.code);
+    } else if (error is FirebaseException) {
+      errorMessage =
+          error.message ?? 'Something went wrong. Please try again later.';
+    } else {
+      errorMessage = 'Something went wrong. Please try again later.';
+    }
+
+    AppSnackbar.showGlobalError(errorMessage);
+
+    logApi(function: function ?? 'unknown', error: errorMessage);
+
+    debugPrint('Exception: $error');
   }
 }

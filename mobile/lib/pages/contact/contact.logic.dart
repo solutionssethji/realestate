@@ -17,18 +17,7 @@ class ContactLogic extends _$ContactLogic {
   Future<void> loadInfo(String languageCode) async {
     state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
 
-    try {
-      final info = await CmsService.getContactInfo(languageCode);
-      state = state.copyWith(
-        companyInfo: info,
-        isLoading: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    final info = await CmsService.getContactInfo(languageCode);
+    state = state.copyWith(companyInfo: info, isLoading: false);
   }
 }

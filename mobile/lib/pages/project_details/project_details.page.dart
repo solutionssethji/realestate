@@ -222,7 +222,7 @@ class ProjectDetailsPage extends HookConsumerWidget {
       //                   text: context.l10n.viewPlots,
       //                   icon: Icons.grid_view_rounded,
       //                   onPressed: () =>
-      //                       context.push('/home/project/$projectId/plots'),
+      //                       context.push('/project/$projectId/plots'),
       //                 ),
       //               ),
       //               AppSpacing.wMd,
@@ -377,7 +377,7 @@ class _RightActions extends StatelessWidget {
               PremiumButton(
                 text: context.l10n.viewPlotAvailability,
                 icon: Icons.grid_view_rounded,
-                onPressed: () => context.push('/home/project/$projectId/plots'),
+                onPressed: () => context.push('/project/$projectId/plots'),
               ),
               AppSpacing.hMd,
               PremiumButton(

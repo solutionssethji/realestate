@@ -93,12 +93,14 @@ class AppTheme {
         iconTheme: const IconThemeData(color: midnightNavy),
       ),
       cardTheme: CardThemeData(
-        elevation: 0,
+        elevation: 8,
+        shadowColor: AppColors.black.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.circularLg,
-          side: const BorderSide(color: border),
+          side: BorderSide.none,
         ),
         color: surface,
+        surfaceTintColor: surface,
         margin: EdgeInsets.zero,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(

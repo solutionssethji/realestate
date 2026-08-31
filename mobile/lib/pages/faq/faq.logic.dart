@@ -9,11 +9,11 @@ part 'faq.logic.g.dart';
 class FaqLogic extends _$FaqLogic {
   @override
   FaqState build() {
-    // Listen to locale changes to trigger a reload if needed, 
+    // Listen to locale changes to trigger a reload if needed,
     // though CmsService.getFaqs() currently doesn't take a locale parameter
     // it's good practice for when it does.
-    ref.watch(localeControllerProvider); 
-    
+    ref.watch(localeControllerProvider);
+
     Future.microtask(() => loadFaqs());
     return const FaqState();
   }
@@ -21,18 +21,7 @@ class FaqLogic extends _$FaqLogic {
   Future<void> loadFaqs() async {
     state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
 
-    try {
-      final faqs = await CmsService.getFaqs();
-      state = state.copyWith(
-        faqs: faqs,
-        isLoading: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    final faqs = await CmsService.getFaqs();
+    state = state.copyWith(faqs: faqs, isLoading: false);
   }
 }

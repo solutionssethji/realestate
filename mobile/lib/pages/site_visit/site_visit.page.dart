@@ -118,7 +118,7 @@ class SiteVisitPage extends HookConsumerWidget {
                     icon: state.isSuccess
                         ? null
                         : Icons.directions_car_outlined,
-                    onPressed: state.isSuccess || state.isSubmitting
+                    onPressed: state.isSuccess || state.isSubmitting || selectedDate.value == null || selectedTime.value == null
                         ? null
                         : () {
                             final currentUser = AuthService.currentUser;

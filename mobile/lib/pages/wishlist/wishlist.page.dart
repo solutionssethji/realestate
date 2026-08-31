@@ -43,7 +43,9 @@ class WishlistPage extends HookConsumerWidget {
                     !wishlistState.isFetchingMore &&
                     scrollInfo.metrics.pixels ==
                         scrollInfo.metrics.maxScrollExtent) {
-                  logic.loadMore();
+                  Future.microtask(() {
+                    logic.loadMore();
+                  });
                 }
                 return false;
               },
@@ -53,41 +55,40 @@ class WishlistPage extends HookConsumerWidget {
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final projectId = wishlistState.projectIds[index];
-                          return FutureBuilder<Project?>(
-                            future: ApiService.getProject(projectId),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: ProjectCardSkeleton(),
-                                );
-                              }
-                              if (snapshot.hasError ||
-                                  !snapshot.hasData ||
-                                  snapshot.data == null) {
-                                return const SizedBox.shrink();
-                              }
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 8.0,
-                                ),
-                                child: PropertyCard(
-                                  project: snapshot.data!,
-                                  onTap: () {
-                                    context.push('/home/project/${snapshot.data!.id}');
-                                  },
-                                ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final projectId = wishlistState.projectIds[index];
+                        return FutureBuilder<Project?>(
+                          future: ApiService.getProject(projectId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: ProjectCardSkeleton(),
                               );
-                            },
-                          );
-                        },
-                        childCount: wishlistState.projectIds.length,
-                      ),
+                            }
+                            if (snapshot.hasError ||
+                                !snapshot.hasData ||
+                                snapshot.data == null) {
+                              return const SizedBox.shrink();
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 8.0,
+                              ),
+                              child: PropertyCard(
+                                project: snapshot.data!,
+                                onTap: () {
+                                  context.push(
+                                    '/project/${snapshot.data!.id}',
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      }, childCount: wishlistState.projectIds.length),
                     ),
                     if (wishlistState.isFetchingMore)
                       const SliverToBoxAdapter(

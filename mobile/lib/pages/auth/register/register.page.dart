@@ -11,6 +11,7 @@ import 'package:image_cropper/image_cropper.dart';
 import '../../../utils/l10n_extension.dart';
 import '../../../theme/theme.dart';
 import 'register.logic.dart';
+import '../../../utils/validators.dart';
 
 class RegisterPage extends HookConsumerWidget {
   const RegisterPage({super.key});
@@ -22,10 +23,21 @@ class RegisterPage extends HookConsumerWidget {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final profileImage = useState<XFile?>(null);
+    final formKey = useMemoized(() => GlobalKey<FormState>());
     final l10n = context.l10n;
 
     final state = ref.watch(registerLogicProvider);
     final logic = ref.read(registerLogicProvider.notifier);
+
+    // Track field values for enabling the submit button
+    useValueListenable(nameController);
+    useValueListenable(mobileController);
+    useValueListenable(emailController);
+    useValueListenable(passwordController);
+
+    final isFormFilled = nameController.text.trim().isNotEmpty &&
+        mobileController.text.trim().length == 10 &&
+        passwordController.text.trim().length >= 6;
 
     // Listen to state changes to show errors
     ref.listen(registerLogicProvider, (previous, next) {
@@ -38,6 +50,8 @@ class RegisterPage extends HookConsumerWidget {
     });
 
     Future<void> handleRegister() async {
+      if (!formKey.currentState!.validate()) return;
+      
       final success = await logic.register(
         name: nameController.text.trim(),
         mobile: mobileController.text.trim(),
@@ -55,9 +69,12 @@ class RegisterPage extends HookConsumerWidget {
       appBar: PremiumAppBar(title: l10n.createAccount),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        child: Form(
+          key: formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
             Text(
               l10n.joinUs,
               style: Theme.of(context).textTheme.headlineLarge,
@@ -161,6 +178,7 @@ class RegisterPage extends HookConsumerWidget {
               controller: nameController,
               label: l10n.fullName,
               prefixIcon: const Icon(Icons.person_outline),
+              validator: (v) => AppValidators.required(context, v, l10n.fullName),
             ),
             const SizedBox(height: 16),
             AppTextField(
@@ -168,6 +186,7 @@ class RegisterPage extends HookConsumerWidget {
               label: l10n.mobileNumber,
               prefixIcon: const Icon(Icons.phone_outlined),
               keyboardType: TextInputType.phone,
+              validator: (v) => AppValidators.phone(context, v),
             ),
             const SizedBox(height: 16),
             AppTextField(
@@ -175,6 +194,7 @@ class RegisterPage extends HookConsumerWidget {
               label: l10n.emailAddress,
               prefixIcon: const Icon(Icons.email_outlined),
               keyboardType: TextInputType.emailAddress,
+              validator: (v) => AppValidators.email(context, v),
             ),
             const SizedBox(height: 16),
             AppTextField(
@@ -182,6 +202,7 @@ class RegisterPage extends HookConsumerWidget {
               label: l10n.passwordLabel,
               obscureText: state.isObscure,
               prefixIcon: const Icon(Icons.lock_outline),
+              validator: (v) => AppValidators.password(context, v),
               suffixIcon: IconButton(
                 icon: Icon(
                   state.isObscure ? Icons.visibility : Icons.visibility_off,
@@ -192,7 +213,7 @@ class RegisterPage extends HookConsumerWidget {
             const SizedBox(height: 32),
             PremiumButton(
               text: l10n.register,
-              onPressed: handleRegister,
+              onPressed: isFormFilled ? handleRegister : null,
               isLoading: state.isLoading,
             ),
             const SizedBox(height: 16),
@@ -202,6 +223,7 @@ class RegisterPage extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

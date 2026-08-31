@@ -17,21 +17,12 @@ class LegalContentLogic extends _$LegalContentLogic {
   Future<void> loadContent(String documentId, String languageCode) async {
     state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
 
-    try {
-      final data = await CmsService.getPublicContent(languageCode);
-      final contentKey = documentId == 'terms' ? 'termsAndConditions' : 'privacyPolicy';
-      final content = data?[contentKey];
+    final data = await CmsService.getPublicContent(languageCode);
+    final contentKey = documentId == 'terms'
+        ? 'termsAndConditions'
+        : 'privacyPolicy';
+    final content = data?[contentKey];
 
-      state = state.copyWith(
-        content: content,
-        isLoading: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    state = state.copyWith(content: content, isLoading: false);
   }
 }

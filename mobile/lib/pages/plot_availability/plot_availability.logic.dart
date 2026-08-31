@@ -15,20 +15,12 @@ class PlotAvailabilityLogic extends _$PlotAvailabilityLogic {
 
   Future<void> loadPlots(String projectId) async {
     state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
-    try {
-      final plots = await ApiService.getPlots(projectId);
-      state = state.copyWith(
-        isLoading: false,
-        allPlots: plots,
-        filteredPlots: plots,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    final plots = await ApiService.getPlots(projectId);
+    state = state.copyWith(
+      isLoading: false,
+      allPlots: plots,
+      filteredPlots: plots,
+    );
   }
 
   void updateSearch(String query) {

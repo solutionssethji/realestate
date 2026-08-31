@@ -1395,4 +1395,59 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get alreadyHaveAccount => 'Already have an account? Login';
+
+  @override
+  String get valErrEmailRequired => 'ईमेल आवश्यक है';
+
+  @override
+  String get valErrEmailInvalid => 'कृपया एक वैध ईमेल पता दर्ज करें';
+
+  @override
+  String get valErrPasswordRequired => 'पासवर्ड आवश्यक है';
+
+  @override
+  String get valErrPasswordLength => 'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए';
+
+  @override
+  String get valErrFullNameRequired => 'पूरा नाम आवश्यक है';
+
+  @override
+  String get valErrMobileRequired => 'मोबाइल नंबर आवश्यक है';
+
+  @override
+  String get valErrMobileInvalid => 'कृपया एक वैध मोबाइल नंबर दर्ज करें';
+
+  @override
+  String get valErrFullNameInvalid => 'कृपया एक वैध नाम दर्ज करें (केवल अक्षर)';
+
+  @override
+  String get accountBlocked =>
+      'आपका खाता व्यवस्थापक द्वारा ब्लॉक कर दिया गया है।';
+
+  @override
+  String get accountDeleted => 'यह खाता हटा दिया गया है।';
+
+  @override
+  String get emailVerificationRequiredTitle => 'ईमेल सत्यापन आवश्यक है';
+
+  @override
+  String get emailVerificationRequiredMessage =>
+      'आपका खाता अभी तक सत्यापित नहीं है।\n\nसुरक्षा कारणों से, ऐप एक्सेस करने से पहले आपको अपना ईमेल पता सत्यापित करना होगा।\n\nकृपया सत्यापन लिंक के लिए अपना इनबॉक्स (और स्पैम फ़ोल्डर) जांचें, या नया लिंक प्राप्त करने के लिए नीचे क्लिक करें।';
+
+  @override
+  String get sendVerificationMail => 'सत्यापन ईमेल भेजें';
+
+  @override
+  String get verificationEmailSentSuccessfully =>
+      'सत्यापन ईमेल सफलतापूर्वक भेजा गया!';
+
+  @override
+  String get registrationSuccessTitle => 'पंजीकरण सफल रहा!';
+
+  @override
+  String get registrationSuccessMessage =>
+      'हमने आपके पंजीकृत ईमेल पते पर एक सत्यापन ईमेल भेजा है।\n\nकृपया अपना इनबॉक्स और स्पैम/जंक फ़ोल्डर जांचें। अपने खाते में लॉग इन करने से पहले आपको अपना ईमेल सत्यापित करना होगा।';
+
+  @override
+  String get goToLogin => 'लॉगिन पर जाएं';
 }

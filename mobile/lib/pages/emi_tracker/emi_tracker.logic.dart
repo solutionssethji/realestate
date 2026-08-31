@@ -23,17 +23,13 @@ class EmiTrackerLogic extends _$EmiTrackerLogic {
   }
 
   Future<void> _loadPlotDetails(String plotId) async {
-    try {
-      final data = await ApiService.getAssignPlotDetails(plotId);
-      if (data != null) {
-        state = state.copyWith(
-          totalAmount: (data['totalAmount'] ?? 0.0).toDouble(),
-          paidAmount: (data['paidAmount'] ?? 0.0).toDouble(),
-        );
-      } else {
-        state = state.copyWith(errorMessage: 'Failed to load property details');
-      }
-    } catch (e) {
+    final data = await ApiService.getAssignPlotDetails(plotId);
+    if (data != null) {
+      state = state.copyWith(
+        totalAmount: (data['totalAmount'] ?? 0.0).toDouble(),
+        paidAmount: (data['paidAmount'] ?? 0.0).toDouble(),
+      );
+    } else {
       state = state.copyWith(errorMessage: 'Failed to load property details');
     }
   }
@@ -48,17 +44,16 @@ class EmiTrackerLogic extends _$EmiTrackerLogic {
       return;
     }
 
-    _paymentsSubscription = ApiService.watchPlotPayments(plotId, uid)
-        .listen(
-          (payments) {
-            state = state.copyWith(isLoading: false, payments: payments);
-          },
-          onError: (error) {
-            state = state.copyWith(
-              isLoading: false,
-              errorMessage: 'Failed to load payments',
-            );
-          },
+    _paymentsSubscription = ApiService.watchPlotPayments(plotId, uid).listen(
+      (payments) {
+        state = state.copyWith(isLoading: false, payments: payments);
+      },
+      onError: (error) {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: 'Failed to load payments',
         );
+      },
+    );
   }
 }

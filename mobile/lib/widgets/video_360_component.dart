@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/theme.dart';
 import 'package:customer_app/l10n/app_localizations.dart';
 import '../utils/l10n_extension.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'app_cached_image.dart';
 
 class Video360Component extends StatelessWidget {
   final String? videoUrl;
@@ -25,7 +27,7 @@ class Video360Component extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           image: DecorationImage(
-            image: NetworkImage(placeholderImage),
+            image: CachedNetworkImageProvider(placeholderImage),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
               AppTheme.black.withValues(alpha: 0.6),
@@ -67,8 +69,8 @@ class Video360Component extends StatelessWidget {
           // Simulate Player
           Opacity(
             opacity: 0.5,
-            child: Image.network(
-              placeholderImage,
+            child: AppCachedImage(
+              imageUrl: placeholderImage,
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,

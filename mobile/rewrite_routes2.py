@@ -1,4 +1,4 @@
-import 'package:customer_app/pages/auth/forgot_password/forgot_password.page.dart'
+content = """import 'package:customer_app/pages/auth/forgot_password/forgot_password.page.dart'
     show ForgotPasswordPage;
 import 'package:customer_app/pages/auth/login/login.page.dart' show LoginPage;
 import 'package:customer_app/pages/auth/register/register.page.dart'
@@ -143,8 +143,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: ':offerId',
-            builder: (context, state) =>
-                OfferDetailsPage(offerId: state.pathParameters['offerId']!),
+            builder: (context, state) => OfferDetailsPage(
+              offerId: state.pathParameters['offerId']!,
+            ),
           ),
         ],
       ),
@@ -180,7 +181,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/home/payment',
         builder: (context, state) {
           final params = state.uri.queryParameters;
-          final amount = double.tryParse(params['amount'] ?? '0') ?? 0;
+          final amount =
+              double.tryParse(params['amount'] ?? '0') ?? 0;
           final refId = params['refId'] ?? '';
           final desc = params['desc'] ?? '';
           return PaymentPage(
@@ -212,7 +214,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           fallbackTitle: context.l10n.privacyPolicy,
         ),
       ),
-      GoRoute(path: '/home/faq', builder: (context, state) => const FaqPage()),
+      GoRoute(
+        path: '/home/faq',
+        builder: (context, state) => const FaqPage(),
+      ),
 
       // Project Details Routes
       GoRoute(
@@ -222,8 +227,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: 'plots',
-            builder: (context, state) =>
-                PlotAvailabilityPage(projectId: state.pathParameters['id']!),
+            builder: (context, state) => PlotAvailabilityPage(
+              projectId: state.pathParameters['id']!,
+            ),
             routes: [
               GoRoute(
                 path: ':plotId',
@@ -260,3 +266,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+"""
+
+with open('lib/routes/routes.dart', 'w') as f:
+    f.write(content)

@@ -16,7 +16,11 @@ class NotificationsLogic extends _$NotificationsLogic {
   Future<void> load({bool isRefresh = false}) async {
     final uid = AuthService.currentUser?.uid;
     if (uid == null) {
-      state = state.copyWith(isLoading: false, isError: true, errorMessage: 'User not logged in');
+      state = state.copyWith(
+        isLoading: false,
+        isError: true,
+        errorMessage: 'User not logged in',
+      );
       return;
     }
 
@@ -34,34 +38,31 @@ class NotificationsLogic extends _$NotificationsLogic {
       if (state.notifications.isNotEmpty) {
         state = state.copyWith(isFetchingMore: true);
       } else {
-        state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
+        state = state.copyWith(
+          isLoading: true,
+          isError: false,
+          errorMessage: null,
+        );
       }
     }
 
-    try {
-      final response = await ApiService.fetchNotificationsPagination(
-        userId: uid,
-        lastDocument: state.lastDocument,
-        limit: 15,
-      );
+    final response = await ApiService.fetchNotificationsPagination(
+      userId: uid,
+      lastDocument: state.lastDocument,
+      limit: 15,
+    );
 
-      final combinedNotifications = isRefresh ? response.data : [...state.notifications, ...response.data];
-      
-      state = state.copyWith(
-        notifications: combinedNotifications,
-        lastDocument: response.lastDocument,
-        hasMore: response.data.length == 15,
-        isLoading: false,
-        isFetchingMore: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isFetchingMore: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    final combinedNotifications = isRefresh
+        ? response.data
+        : [...state.notifications, ...response.data];
+
+    state = state.copyWith(
+      notifications: combinedNotifications,
+      lastDocument: response.lastDocument,
+      hasMore: response.data.length == 15,
+      isLoading: false,
+      isFetchingMore: false,
+    );
   }
 
   Future<void> loadMore() async {
@@ -72,9 +73,11 @@ class NotificationsLogic extends _$NotificationsLogic {
   Future<void> markRead(Map<String, dynamic> notification) async {
     final userId = AuthService.currentUser?.uid;
     final notificationId = notification['id'];
-    
+
     // Optimistic update
-    final index = state.notifications.indexWhere((n) => n['id'] == notificationId);
+    final index = state.notifications.indexWhere(
+      (n) => n['id'] == notificationId,
+    );
     if (index != -1) {
       final updatedList = List<Map<String, dynamic>>.from(state.notifications);
       updatedList[index] = {...updatedList[index], 'isRead': true};

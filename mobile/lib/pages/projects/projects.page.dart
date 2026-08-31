@@ -24,7 +24,7 @@ class ProjectsPage extends HookConsumerWidget {
     final bool isDesktop = ResponsiveBreakpoints.of(context).largerThan(TABLET);
 
     return Scaffold(
-      appBar: PremiumAppBar(title: loc.allProjects),
+      appBar: PremiumAppBar(title: loc.allProjects, showBackButton: false),
       body: SafeArea(
         child: state.isLoading
             ? const AppLoadingView()
@@ -52,7 +52,9 @@ class ProjectsPage extends HookConsumerWidget {
                       !state.isFetchingMore &&
                       scrollInfo.metrics.pixels ==
                           scrollInfo.metrics.maxScrollExtent) {
-                    logic.loadMore();
+                    Future.microtask(() {
+                      logic.loadMore();
+                    });
                   }
                   return false;
                 },
@@ -80,7 +82,7 @@ class ProjectsPage extends HookConsumerWidget {
                                   return PropertyCard(
                                     project: project,
                                     onTap: () => context.push(
-                                      '/home/project/${project.id}',
+                                      '/project/${project.id}',
                                     ),
                                   );
                                 }, childCount: state.filteredProjects.length),
@@ -98,7 +100,7 @@ class ProjectsPage extends HookConsumerWidget {
                                     child: PropertyCard(
                                       project: project,
                                       onTap: () => context.push(
-                                        '/home/project/${project.id}',
+                                        '/project/${project.id}',
                                       ),
                                     ),
                                   );

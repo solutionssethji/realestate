@@ -1,4 +1,6 @@
+import 'package:customer_app/services/api_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../main.dart';
 
 class AuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -9,32 +11,61 @@ class AuthService {
 
   static Stream<User?> idTokenChanges() => _auth.idTokenChanges();
 
-  static Future<UserCredential> signInWithEmailAndPassword({
+  static Future<UserCredential?> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
-    return await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      return await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'signInWithEmailAndPassword()',
+      );
+      return null;
+    }
   }
 
-  static Future<UserCredential> createUserWithEmailAndPassword({
+  static Future<UserCredential?> createUserWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
-    return await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      return await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'createUserWithEmailAndPassword()',
+      );
+      return null;
+    }
   }
 
   static Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      await appBox.delete('isLoggedIn');
+      await appBox.delete('userData');
+      await _auth.signOut();
+    } catch (e) {
+      // Just swallow signout errors to avoid crash
+    }
   }
 
   static Future<void> sendPasswordResetEmail({required String email}) async {
-    await _auth.sendPasswordResetEmail(email: email);
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'sendPasswordResetEmail()',
+      );
+    }
   }
 
   static Future<void> verifyPhoneNumber({
@@ -44,16 +75,33 @@ class AuthService {
     required PhoneCodeSent codeSent,
     required PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
   }) async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: verificationCompleted,
-      verificationFailed: verificationFailed,
-      codeSent: codeSent,
-      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-    );
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+      );
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'verifyPhoneNumber()',
+      );
+    }
   }
 
-  static Future<UserCredential> signInWithCredential(AuthCredential credential) async {
-    return await _auth.signInWithCredential(credential);
+  static Future<UserCredential?> signInWithCredential(
+    AuthCredential credential,
+  ) async {
+    try {
+      return await _auth.signInWithCredential(credential);
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'signInWithCredential()',
+      );
+      return null;
+    }
   }
 }
