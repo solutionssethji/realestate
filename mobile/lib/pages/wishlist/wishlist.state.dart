@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 part 'wishlist.state.freezed.dart';
 
 @freezed
-class WishlistState with _$WishlistState {
+abstract class WishlistState with _$WishlistState {
   const factory WishlistState({
     @Default(true) bool isLoading,
     @Default(false) bool hasLoaded,

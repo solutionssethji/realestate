@@ -60,7 +60,7 @@ class DocumentLockerPage extends HookConsumerWidget {
           ? SkeletonList(
               itemCount: 4,
               spacing: AppSpacing.sm,
-              itemBuilder: (_, __) => const DocumentListTileSkeleton(),
+              itemBuilder: (_, _) => const DocumentListTileSkeleton(),
             )
           : errorMessage.value != null
           ? ErrorState(message: errorMessage.value, onRetry: loadDocuments)

@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'company_info.freezed.dart';
 
 @freezed
-class CompanyInfo with _$CompanyInfo {
+abstract class CompanyInfo with _$CompanyInfo {
   const factory CompanyInfo({
     required String name,
     required String about,

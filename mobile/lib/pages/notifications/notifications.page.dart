@@ -23,7 +23,7 @@ class NotificationsPage extends HookConsumerWidget {
           ? SkeletonList(
               itemCount: 5,
               spacing: AppSpacing.sm,
-              itemBuilder: (_, __) => const NotificationListTileSkeleton(),
+              itemBuilder: (_, _) => const NotificationListTileSkeleton(),
             )
           : state.isError
           ? ErrorState(

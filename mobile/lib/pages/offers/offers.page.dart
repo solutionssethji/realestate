@@ -31,7 +31,7 @@ class OffersPage extends HookConsumerWidget {
         child: state.isLoading
             ? SkeletonList(
                 itemCount: 4,
-                itemBuilder: (_, __) => const OfferCardSkeleton(),
+                itemBuilder: (_, _) => const OfferCardSkeleton(),
               )
             : state.isError
             ? ErrorState(
@@ -60,7 +60,7 @@ class OffersPage extends HookConsumerWidget {
                     padding: AppSpacing.allLg,
                     itemCount:
                         state.offers.length + (state.isFetchingMore ? 1 : 0),
-                    separatorBuilder: (_, __) => AppSpacing.hLg,
+                    separatorBuilder: (_, _) => AppSpacing.hLg,
                     itemBuilder: (context, index) {
                       if (index == state.offers.length) {
                         return const Center(
@@ -137,8 +137,8 @@ class _OfferImage extends StatelessWidget {
       child: CachedNetworkImage(
         imageUrl: imageUrl,
         fit: BoxFit.cover,
-        placeholder: (_, __) => const ColoredBox(color: AppTheme.border),
-        errorWidget: (_, __, ___) => const ColoredBox(
+        placeholder: (_, _) => const ColoredBox(color: AppTheme.border),
+        errorWidget: (_, _, _) => const ColoredBox(
           color: AppTheme.border,
           child: Icon(
             Icons.image_outlined,

@@ -26,7 +26,7 @@ void main() {
 
     test('Can switch locale to Hindi (hi)', () async {
       final logic = container.read(localeControllerProvider.notifier);
-      container.listen(localeControllerProvider, (_, __) {});
+      container.listen(localeControllerProvider, (_, _) {});
 
       await logic.setLocale('hi');
 

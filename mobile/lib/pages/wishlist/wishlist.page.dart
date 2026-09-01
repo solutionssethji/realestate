@@ -28,7 +28,7 @@ class WishlistPage extends HookConsumerWidget {
               padding: AppSpacing.allMd,
               spacing: AppSpacing.sm,
               itemCount: 3,
-              itemBuilder: (_, __) => const ProjectCardSkeleton(),
+              itemBuilder: (_, _) => const ProjectCardSkeleton(),
             )
           : wishlistState.isError
           ? Center(

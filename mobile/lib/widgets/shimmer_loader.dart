@@ -142,23 +142,28 @@ class DocumentListTileSkeleton extends StatelessWidget {
   const DocumentListTileSkeleton({super.key});
 
   @override
-  Widget build(BuildContext context) => _shimmerCard(
-    const Row(
-      children: [
-        _ShimmerBox(height: 40, width: 40, radius: 8),
-        AppSpacing.wMd,
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _ShimmerBox(height: 14, width: 180),
-              AppSpacing.hSm,
-              _ShimmerBox(height: 11, width: 70),
-            ],
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+    child: Shimmer.fromColors(
+      baseColor: AppTheme.neutral200,
+      highlightColor: AppTheme.neutral100,
+      child: const Row(
+        children: [
+          _ShimmerBox(height: 24, width: 24, radius: 12),
+          AppSpacing.wMd,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ShimmerBox(height: 14, width: 180),
+                AppSpacing.hSm,
+                _ShimmerBox(height: 11, width: 70),
+              ],
+            ),
           ),
-        ),
-        _ShimmerBox(height: 24, width: 24, radius: 12),
-      ],
+          _ShimmerBox(height: 24, width: 24, radius: 12),
+        ],
+      ),
     ),
   );
 }

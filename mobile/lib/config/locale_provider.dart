@@ -11,9 +11,7 @@ class LocaleController extends _$LocaleController {
   Locale build() {
     _loadLocale();
     BilingualHelper.currentLangCode = 'en';
-    return const Locale(
-      'en',
-    ); // Default to English synchronously, updates when async completes
+    return const Locale('en'); // Default to English synchronously, updates when async completes
   }
 
   Future<void> _loadLocale() async {

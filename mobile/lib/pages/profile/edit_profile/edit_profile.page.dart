@@ -24,7 +24,7 @@ class EditProfilePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final customerAsync = ref.watch(customerProvider);
-    final customer = customerAsync.valueOrNull;
+    final customer = customerAsync.value;
 
     final nameController = useTextEditingController(
       text: customer?.fullName ?? '',

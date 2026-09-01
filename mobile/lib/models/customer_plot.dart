@@ -5,7 +5,7 @@ part 'customer_plot.freezed.dart';
 part 'customer_plot.g.dart';
 
 @freezed
-class CustomerPlot with _$CustomerPlot {
+abstract class CustomerPlot with _$CustomerPlot {
   const factory CustomerPlot({
     required String id,
     required String customerId,

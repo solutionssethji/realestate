@@ -1235,13 +1235,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get paymentSummary => 'Payment Summary';
 
   @override
-  String get totalAmount => 'Total Amount';
+  String get totalAmount => 'कुल राशि';
 
   @override
   String get amountPaid => 'Amount Paid';
 
   @override
-  String get pendingBalance => 'Pending Balance';
+  String get pendingBalance => 'शेष राशि';
 
   @override
   String get noPaymentRecords => 'No payment records found.';
@@ -1671,4 +1671,147 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get referralCodeOptional => 'Referral Code (Optional)';
+
+  @override
+  String get bookingDetailsTitle => 'बुकिंग विवरण';
+
+  @override
+  String get noDetailsFound => 'कोई विवरण नहीं मिला';
+
+  @override
+  String get noBookingDetailsMsg =>
+      'हमें इस प्लॉट के लिए बुकिंग का विवरण नहीं मिल सका।';
+
+  @override
+  String get propertyInformation => 'संपत्ति की जानकारी';
+
+  @override
+  String get project => 'प्रोजेक्ट';
+
+  @override
+  String get plotNo => 'प्लॉट नं';
+
+  @override
+  String get plotArea1 => 'प्लॉट क्षेत्र 1';
+
+  @override
+  String get plotArea2 => 'प्लॉट क्षेत्र 2';
+
+  @override
+  String get plotArea3 => 'प्लॉट क्षेत्र 3';
+
+  @override
+  String get plotArea4 => 'प्लॉट क्षेत्र 4';
+
+  @override
+  String get salePriceSqFt => 'बिक्री मूल्य';
+
+  @override
+  String get devChargeSqFt => 'विकास शुल्क';
+
+  @override
+  String get firstApplicantDetails => 'प्रथम आवेदक विवरण';
+
+  @override
+  String get applicantName => 'नाम';
+
+  @override
+  String get swdOf => 'पुत्र/पत्नी/पुत्री';
+
+  @override
+  String get dob => 'जन्म तिथि';
+
+  @override
+  String get occupation => 'पेशा';
+
+  @override
+  String get nationality => 'राष्ट्रीयता';
+
+  @override
+  String get contactAndIdentity => 'संपर्क और पहचान';
+
+  @override
+  String get mobile => 'मोबाइल';
+
+  @override
+  String get pan => 'पैन';
+
+  @override
+  String get aadhaar => 'आधार';
+
+  @override
+  String get address => 'पता';
+
+  @override
+  String get presentAddress => 'वर्तमान पता';
+
+  @override
+  String get permanentAddress => 'स्थायी पता';
+
+  @override
+  String get nominee => 'नामित व्यक्ति';
+
+  @override
+  String get relation => 'संबंध';
+
+  @override
+  String get secondApplicantDetails => 'द्वितीय आवेदक विवरण';
+
+  @override
+  String get paymentTerms => 'भुगतान शर्तें';
+
+  @override
+  String get paymentPlan => 'भुगतान योजना';
+
+  @override
+  String get paymentMode => 'भुगतान का तरीका';
+
+  @override
+  String get bankFinance => 'बैंक/फाइनेंस';
+
+  @override
+  String get applicationDate => 'आवेदन तिथि';
+
+  @override
+  String get bookingDate => 'बुकिंग तिथि';
+
+  @override
+  String get paymentEmiTracking => 'भुगतान और EMI ट्रैकर';
+
+  @override
+  String get recentPaymentsLedger => 'हाल के भुगतान (लेजर)';
+
+  @override
+  String get downloadAll => 'सभी डाउनलोड करें';
+
+  @override
+  String get paidAmount => 'भुगतान राशि';
+
+  @override
+  String get paymentCompleted => 'पूर्ण';
+
+  @override
+  String plotLabel(String number) {
+    return 'प्लॉट $number';
+  }
+
+  @override
+  String get initialPaymentDesc => 'बुकिंग आवेदन से प्रारंभिक भुगतान';
+
+  @override
+  String paymentTxnSuffix(String txnId) {
+    return ' (लेन-देन: $txnId)';
+  }
+
+  @override
+  String get paymentModeCash => 'नकद';
+
+  @override
+  String get naLabel => 'N/A';
+
+  @override
+  String get view => 'देखें';
+
+  @override
+  String get download => 'डाउनलोड';
 }

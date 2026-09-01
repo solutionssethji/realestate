@@ -20,7 +20,7 @@ class SkeletonList extends StatelessWidget {
     return ListView.separated(
       padding: padding,
       itemCount: itemCount,
-      separatorBuilder: (_, __) => SizedBox(height: spacing),
+      separatorBuilder: (_, _) => SizedBox(height: spacing),
       itemBuilder: itemBuilder,
     );
   }

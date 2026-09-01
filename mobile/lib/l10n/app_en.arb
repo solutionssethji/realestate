@@ -726,5 +726,69 @@
   "viewPdf": "View PDF",
   "pdfTooLarge": "PDF must be less than 2MB",
   "fileSelected": "PDF Selected",
-  "referralCodeOptional": "Referral Code (Optional)"
+  "referralCodeOptional": "Referral Code (Optional)",
+  "bookingDetailsTitle": "Booking Details",
+  "noDetailsFound": "No Details Found",
+  "noBookingDetailsMsg": "We could not find booking details for this plot.",
+  "propertyInformation": "Property Information",
+  "project": "Project",
+  "plotNo": "Plot No",
+  "plotArea1": "Plot Area 1",
+  "plotArea2": "Plot Area 2",
+  "plotArea3": "Plot Area 3",
+  "plotArea4": "Plot Area 4",
+  "salePriceSqFt": "Sale Price",
+  "devChargeSqFt": "Dev Charge",
+  "firstApplicantDetails": "First Applicant Details",
+  "applicantName": "Name",
+  "swdOf": "S/W/D of",
+  "dob": "DOB",
+  "occupation": "Occupation",
+  "nationality": "Nationality",
+  "contactAndIdentity": "Contact & Identity",
+  "mobile": "Mobile",
+  "email": "Email",
+  "pan": "PAN",
+  "aadhaar": "Aadhaar",
+  "address": "Address",
+  "presentAddress": "Present Address",
+  "permanentAddress": "Permanent",
+  "nominee": "Nominee",
+  "relation": "Relation",
+  "secondApplicantDetails": "Second Applicant Details",
+  "paymentTerms": "Payment Terms",
+  "paymentPlan": "Payment Plan",
+  "paymentMode": "Payment Mode",
+  "bankFinance": "Bank/Finance",
+  "applicationDate": "Application Date",
+  "bookingDate": "BOOKING DATE",
+  "paymentEmiTracking": "Payment & EMI Tracking",
+  "recentPaymentsLedger": "Recent Payments (Ledger)",
+  "viewAll": "View All",
+  "downloadAll": "Download All",
+  "totalAmount": "TOTAL AMOUNT",
+  "paidAmount": "PAID AMOUNT",
+  "pendingBalance": "PENDING BALANCE",
+  "paymentCompleted": "COMPLETED",
+  "plotLabel": "Plot {number}",
+  "@plotLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "initialPaymentDesc": "Initial payment from booking application",
+  "paymentTxnSuffix": " (Txn: {txnId})",
+  "@paymentTxnSuffix": {
+    "placeholders": {
+      "txnId": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentModeCash": "Cash",
+  "naLabel": "N/A",
+  "view": "View",
+  "download": "Download"
 }

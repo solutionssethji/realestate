@@ -86,7 +86,7 @@ class PaymentHistoryPage extends HookConsumerWidget {
         padding: AppSpacing.allMd,
         spacing: AppSpacing.sm,
         itemCount: 4,
-        itemBuilder: (_, __) => const PaymentCardSkeleton(),
+        itemBuilder: (_, _) => const PaymentCardSkeleton(),
       );
     }
 

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 part 'my_properties.state.freezed.dart';
 
 @freezed
-class MyPropertiesState with _$MyPropertiesState {
+abstract class MyPropertiesState with _$MyPropertiesState {
   const factory MyPropertiesState({
     @Default(true) bool isLoading,
     @Default(false) bool hasLoaded,

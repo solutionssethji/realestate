@@ -4,7 +4,7 @@ import 'plot_status.dart';
 part 'plot.freezed.dart';
 
 @freezed
-class Plot with _$Plot {
+abstract class Plot with _$Plot {
   const factory Plot({
     required String id,
     required String projectId,

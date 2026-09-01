@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:customer_app/pages/my_properties/my_properties.logic.dart';
 import 'package:customer_app/pages/projects/projects.logic.dart';
+import 'package:customer_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -164,7 +165,9 @@ class BottomNavBar extends ConsumerWidget {
                             } else if (tab.index == 2) {
                               ref
                                   .read(myPropertiesLogicProvider.notifier)
-                                  .load();
+                                  .load(isRefresh: true);
+                            } else if (tab.index == 3) {
+                              ref.invalidate(customerProvider);
                             }
                           }
                           navigationShell.goBranch(

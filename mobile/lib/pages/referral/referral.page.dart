@@ -269,7 +269,7 @@ class ReferralPage extends HookConsumerWidget {
                           },
                           loading: () =>
                               const Center(child: CircularProgressIndicator()),
-                          error: (_, __) => const SizedBox.shrink(),
+                          error: (_, _) => const SizedBox.shrink(),
                         ),
                   ],
                 ),

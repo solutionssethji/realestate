@@ -52,7 +52,7 @@ void main() {
 
     test('Successful payment flow', () async {
       final logic = container.read(paymentLogicProvider.notifier);
-      container.listen(paymentLogicProvider, (_, __) {});
+      container.listen(paymentLogicProvider, (_, _) {});
 
       final future = logic.initiatePayment(
         amount: 25000,
@@ -78,7 +78,7 @@ void main() {
 
     test('Failed payment flow (mock value 1234.0)', () async {
       final logic = container.read(paymentLogicProvider.notifier);
-      container.listen(paymentLogicProvider, (_, __) {});
+      container.listen(paymentLogicProvider, (_, _) {});
 
       final future = logic.initiatePayment(
         amount: 1234.0,
@@ -98,7 +98,7 @@ void main() {
 
     test('Cancelled payment flow (mock value 9999.0)', () async {
       final logic = container.read(paymentLogicProvider.notifier);
-      container.listen(paymentLogicProvider, (_, __) {});
+      container.listen(paymentLogicProvider, (_, _) {});
 
       final future = logic.initiatePayment(
         amount: 9999.0,
