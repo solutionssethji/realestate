@@ -11,6 +11,7 @@ class Customer with _$Customer {
     required String fullName,
     required String mobileNumber,
     String? email,
+    String? photoURL,
     String? address,
     String? city,
     String? state,
@@ -21,6 +22,13 @@ class Customer with _$Customer {
     String? panNumber,
     String? panPhotoUrl,
     Map<String, dynamic>? bankDetails,
+    String? referralCode,
+    String? referredBy,
+    // Referral Stats
+    @Default(0) int invitesSent,
+    @Default(0.0) double rewardsEarned,
+    @Default(0.0) double pendingPayout,
+    String? referralStatus,
     @TimestampConverter() DateTime? createdAt,
     @TimestampConverter() DateTime? updatedAt,
   }) = _Customer;

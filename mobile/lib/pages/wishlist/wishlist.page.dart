@@ -11,6 +11,7 @@ import '../../theme/spacing.dart';
 import '../../widgets/shimmer_loader.dart';
 import '../../widgets/skeleton_list.dart';
 import '../../widgets/app_loading_view.dart';
+import '../../routes/app_routes.dart';
 
 class WishlistPage extends HookConsumerWidget {
   const WishlistPage({super.key});
@@ -80,9 +81,7 @@ class WishlistPage extends HookConsumerWidget {
                               child: PropertyCard(
                                 project: snapshot.data!,
                                 onTap: () {
-                                  context.push(
-                                    '/project/${snapshot.data!.id}',
-                                  );
+                                  context.push(AppRoutes.projectDetails(snapshot.data!.id));
                                 },
                               ),
                             );

@@ -12,7 +12,6 @@ part 'register.logic.g.dart';
 class RegisterLogic extends _$RegisterLogic {
   @override
   RegisterState build() {
-    ref.keepAlive();
     return const RegisterState();
   }
 
@@ -25,6 +24,7 @@ class RegisterLogic extends _$RegisterLogic {
     required String mobile,
     required String email,
     required String password,
+    String? referralCode,
     XFile? profileImage,
   }) async {
     if (name.isEmpty || mobile.isEmpty || email.isEmpty || password.isEmpty) {
@@ -33,6 +33,18 @@ class RegisterLogic extends _$RegisterLogic {
     }
 
     state = state.copyWith(isLoading: true, errorMessage: null);
+
+    String? referredByUid;
+    if (referralCode != null && referralCode.isNotEmpty) {
+      final referrer = await ApiService.getUserByReferralCode(referralCode);
+      if (referrer == null) {
+        state = state.copyWith(
+            isLoading: false, errorMessage: 'Invalid referral code');
+        return false;
+      }
+      referredByUid = referrer['id']?.toString();
+    }
+
     final userCredential = await AuthService.createUserWithEmailAndPassword(
       email: email,
       password: password,
@@ -65,6 +77,7 @@ class RegisterLogic extends _$RegisterLogic {
         'photoURL': photoURL,
         'role': 'CUSTOMER',
         'status': 'ACTIVE',
+        if (referredByUid != null) 'referredBy': referredByUid,
         'createdAt': DateTime.now()
             .toIso8601String(), // Or omit if handled server side
         'updatedAt': DateTime.now().toIso8601String(),

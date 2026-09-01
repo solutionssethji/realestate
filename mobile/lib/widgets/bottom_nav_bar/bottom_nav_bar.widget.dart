@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:customer_app/pages/my_properties/my_properties.logic.dart';
+import 'package:customer_app/pages/projects/projects.logic.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +10,7 @@ import '../../theme/theme.dart';
 import '../../utils/l10n_extension.dart';
 import '../../providers/fab_provider.dart';
 import '../../pages/home/home.logic.dart';
+import '../../routes/app_routes.dart';
 
 class BottomNavBar extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
@@ -33,7 +36,7 @@ class BottomNavBar extends ConsumerWidget {
         index: 2,
         icon: Icons.bookmark_outline,
         activeIcon: Icons.bookmark,
-        label: 'Booked',
+        label: context.l10n.booked,
       ),
       (
         index: 3,
@@ -102,9 +105,9 @@ class BottomNavBar extends ConsumerWidget {
                         color: Colors.white,
                       ),
                       backgroundColor: AppTheme.midnightNavy,
-                      label: 'Enquire',
+                      label: context.l10n.enquireNow,
                       labelStyle: const TextStyle(fontWeight: FontWeight.w500),
-                      onTap: () => context.push('/home/enquiry'),
+                      onTap: () => context.push(AppRoutes.enquiry),
                     ),
                   ],
                 ),
@@ -151,6 +154,19 @@ class BottomNavBar extends ConsumerWidget {
                         selected: isSelected,
                         primaryColor: primaryColor,
                         onTap: () {
+                          if (navigationShell.currentIndex != tab.index) {
+                            if (tab.index == 0) {
+                              ref.read(homeLogicProvider.notifier).loadData();
+                            } else if (tab.index == 1) {
+                              ref
+                                  .read(projectsLogicProvider.notifier)
+                                  .loadProjects();
+                            } else if (tab.index == 2) {
+                              ref
+                                  .read(myPropertiesLogicProvider.notifier)
+                                  .load();
+                            }
+                          }
                           navigationShell.goBranch(
                             tab.index,
                             initialLocation:

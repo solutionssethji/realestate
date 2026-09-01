@@ -53,8 +53,49 @@ class ApiService {
       }
       return {'phone': '', 'whatsapp': '', 'email': ''};
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'getContactSettings()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getContactSettings()',
+      );
       return {'phone': '', 'whatsapp': '', 'email': ''};
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getReferralSettings() async {
+    logApi(function: 'getReferralSettings()', request: {});
+    try {
+      final doc = await _db.collection('setting').doc('referral').get();
+      if (doc.exists) {
+        final data = doc.data() ?? {};
+        final stepsList = data['steps'] as List<dynamic>? ?? [];
+        return stepsList.map((e) => e as Map<String, dynamic>).toList();
+      }
+      return [];
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getReferralSettings()',
+      );
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getUserByReferralCode(String code) async {
+    logApi(function: 'getUserByReferralCode()', request: {'code': code});
+    try {
+      final snapshot = await _db
+          .collection('users')
+          .where('referralCode', isEqualTo: code)
+          .limit(1)
+          .get();
+      if (snapshot.docs.isEmpty) return null;
+      return snapshot.docs.first.data();
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getUserByReferralCode()',
+      );
+      return null;
     }
   }
 
@@ -320,6 +361,30 @@ class ApiService {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> getUserEnquiries(String customerId) async {
+    logApi(function: 'getUserEnquiries()', request: {'customerId': customerId});
+    try {
+      final snapshot = await _db
+          .collection('enquiries')
+          .where('customerId', isEqualTo: customerId)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      final enquiries = snapshot.docs.map((doc) => doc.data()).toList();
+      logApi(
+        function: 'getUserEnquiries()',
+        response: 'Fetched ${enquiries.length} enquiries',
+      );
+      return enquiries;
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getUserEnquiries()',
+      );
+      rethrow;
+    }
+  }
+
   // ─── Site Visits ────────────────────────────────────────────────────────────
 
   static Future<void> submitSiteVisit(Map<String, dynamic> data) async {
@@ -341,7 +406,35 @@ class ApiService {
       await batch.commit();
       logApi(function: 'submitSiteVisit()', response: {'id': siteVisitRef.id});
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'submitSiteVisit()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'submitSiteVisit()',
+      );
+      rethrow;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getUserSiteVisits(String customerId) async {
+    logApi(
+        function: 'getUserSiteVisits()', request: {'customerId': customerId});
+    try {
+      final snapshot = await _db
+          .collection('siteVisits')
+          .where('customerId', isEqualTo: customerId)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      final visits = snapshot.docs.map((doc) => doc.data()).toList();
+      logApi(
+        function: 'getUserSiteVisits()',
+        response: 'Fetched ${visits.length} site visits',
+      );
+      return visits;
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getUserSiteVisits()',
+      );
       rethrow;
     }
   }
@@ -412,7 +505,10 @@ class ApiService {
       }
       logApi(function: 'toggleWishlist()', response: 'Success');
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'toggleWishlist()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'toggleWishlist()',
+      );
       rethrow;
     }
   }
@@ -438,7 +534,10 @@ class ApiService {
       final snapshot = await query.get();
       return snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'getNotifications()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getNotifications()',
+      );
       rethrow;
     }
   }
@@ -455,7 +554,10 @@ class ApiService {
           .doc(notificationId)
           .update({'isRead': true});
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'markNotificationRead()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'markNotificationRead()',
+      );
     }
   }
 
@@ -472,7 +574,10 @@ class ApiService {
           .get();
       return snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'getUserDocuments()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getUserDocuments()',
+      );
       rethrow;
     }
   }
@@ -512,7 +617,10 @@ class ApiService {
       if (!doc.exists) return null;
       return doc.data();
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'getUserProfile()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getUserProfile()',
+      );
       rethrow;
     }
   }
@@ -534,7 +642,10 @@ class ApiService {
     try {
       await _db.collection('users').doc(uid).set(data);
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'createUserProfile()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'createUserProfile()',
+      );
       rethrow;
     }
   }
@@ -547,7 +658,10 @@ class ApiService {
     try {
       await _db.collection('users').doc(uid).set(data, SetOptions(merge: true));
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'updateUserProfile()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'updateUserProfile()',
+      );
       rethrow;
     }
   }
@@ -563,7 +677,10 @@ class ApiService {
       if (snapshot.docs.isEmpty) return null;
       return snapshot.docs.first.data();
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'getUserByEmail()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getUserByEmail()',
+      );
       rethrow;
     }
   }
@@ -581,7 +698,10 @@ class ApiService {
           .get();
       return snapshot.docs.map((e) => {'id': e.id, ...e.data()}).toList();
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'getUserPayments()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getUserPayments()',
+      );
       rethrow;
     }
   }
@@ -623,7 +743,10 @@ class ApiService {
       if (!doc.exists) return null;
       return doc.data();
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'getAssignPlotDetails()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getAssignPlotDetails()',
+      );
       rethrow;
     }
   }
@@ -792,9 +915,45 @@ class ApiService {
     }
 
     final snapshot = await query.get();
-    final data = snapshot.docs
-        .map((doc) => {'id': doc.id, ...doc.data()})
-        .toList();
+
+    final List<Map<String, dynamic>> data = await Future.wait(
+      snapshot.docs.map((doc) async {
+        final docData = {'id': doc.id, ...doc.data()};
+
+        if (docData['projectName'] == null && docData['projectId'] != null) {
+          try {
+            final pSnap = await _db
+                .collection('projects')
+                .doc(docData['projectId'] as String)
+                .get();
+            if (pSnap.exists && pSnap.data() != null) {
+              final pData = pSnap.data()!;
+              docData['projectName'] = pData['name'] is Map
+                  ? (pData['name']['en'] ?? pData['name'])
+                  : pData['name'];
+            }
+          } catch (_) {}
+        }
+
+        if (docData['plotId'] != null &&
+            (docData['plotNumber'] == null || docData['status'] == null)) {
+          try {
+            final ptSnap = await _db
+                .collection('plots')
+                .doc(docData['plotId'] as String)
+                .get();
+            if (ptSnap.exists && ptSnap.data() != null) {
+              final ptData = ptSnap.data()!;
+              docData['plotNumber'] ??= ptData['plotNumber'];
+              docData['status'] ??= ptData['status'];
+            }
+          } catch (_) {}
+        }
+
+        return docData;
+      }).toList(),
+    );
+
     final newLastDocument = snapshot.docs.isNotEmpty
         ? snapshot.docs.last
         : null;

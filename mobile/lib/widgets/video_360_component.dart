@@ -4,6 +4,7 @@ import 'package:customer_app/l10n/app_localizations.dart';
 import '../utils/l10n_extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'app_cached_image.dart';
+import '../utils/snackbar_utils.dart';
 
 class Video360Component extends StatelessWidget {
   final String? videoUrl;
@@ -83,9 +84,7 @@ class Video360Component extends StatelessWidget {
               color: AppTheme.white,
             ),
             onPressed: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(loc.starting360)));
+              AppSnackbar.showInfo(context, loc.starting360);
             },
           ),
           Positioned(

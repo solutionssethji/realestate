@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -14,6 +15,7 @@ import '../../utils/l10n_extension.dart';
 import '../../widgets/offer_card.dart';
 import 'package:flutter/rendering.dart';
 import '../../providers/fab_provider.dart';
+import '../../routes/app_routes.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -23,10 +25,15 @@ class HomePage extends HookConsumerWidget {
     final loc = AppLocalizations.of(context);
     final state = ref.watch(homeLogicProvider);
     final logic = ref.read(homeLogicProvider.notifier);
+    useEffect(() {
+      Future.microtask(() {
+        logic.loadData();
+      });
+      return null;
+    }, []);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
@@ -37,10 +44,8 @@ class HomePage extends HookConsumerWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings, color: AppTheme.midnightNavy),
-            onPressed: () {
-              context.push('/home/settings');
-            },
+            icon: const Icon(Icons.notifications, color: AppTheme.midnightNavy),
+            onPressed: () {},
           ),
           const SizedBox(width: 8),
         ],
@@ -78,7 +83,7 @@ class HomePage extends HookConsumerWidget {
                           ? context.l10n.viewAll
                           : null,
                       onAction: state.offers.length > 6
-                          ? () => context.push('/home/offers')
+                          ? () => context.push(AppRoutes.offers)
                           : null,
                     ),
                   ),
@@ -101,7 +106,7 @@ class HomePage extends HookConsumerWidget {
                                   padding: EdgeInsets.symmetric(
                                     horizontal: AppSpacing.sm,
                                   ),
-                                  child: ProjectCardSkeleton(),
+                                  child: OfferCardSkeleton(),
                                 ),
                               ),
                           ],
@@ -132,7 +137,9 @@ class HomePage extends HookConsumerWidget {
                                     offer: state.offers[i],
                                     onTap: () {
                                       final offer = state.offers[i];
-                                      context.push('/home/offers/${offer.id}');
+                                      context.push(
+                                        AppRoutes.offerDetails(offer.id),
+                                      );
                                     },
                                   ),
                                 ),
@@ -153,7 +160,7 @@ class HomePage extends HookConsumerWidget {
                   child: SectionHeader(
                     title: loc.featuredProjects,
                     actionLabel: context.l10n.viewAll,
-                    onAction: () => context.push('/projects'),
+                    onAction: () => context.push(AppRoutes.projects),
                   ),
                 ),
               ),
@@ -205,7 +212,9 @@ class HomePage extends HookConsumerWidget {
                         ),
                         child: PropertyCard(
                           project: project,
-                          onTap: () => context.push('/project/${project.id}'),
+                          onTap: () => context.push(
+                            AppRoutes.projectDetails(project.id),
+                          ),
                         ),
                       );
                     },

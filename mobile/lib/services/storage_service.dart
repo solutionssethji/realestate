@@ -29,8 +29,15 @@ class StorageService {
 
       developer.log('Uploading $documentType to ${ref.fullPath}');
 
+      // Set metadata
+      final metadata = SettableMetadata(
+        contentType: fileExtension.toLowerCase() == 'pdf' 
+            ? 'application/pdf' 
+            : 'image/${fileExtension.toLowerCase()}',
+      );
+
       // Upload file
-      final uploadTask = await ref.putFile(file);
+      final uploadTask = await ref.putFile(file, metadata);
 
       // Get download URL
       final downloadUrl = await uploadTask.ref.getDownloadURL();

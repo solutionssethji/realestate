@@ -1,5 +1,6 @@
 import 'package:customer_app/utils/snackbar_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,7 +17,6 @@ part 'login.logic.g.dart';
 class LoginLogic extends _$LoginLogic {
   @override
   LoginState build() {
-    ref.keepAlive();
     return const LoginState();
   }
 
@@ -99,6 +99,20 @@ class LoginLogic extends _$LoginLogic {
     // Check status in Firestore
     if (userCredential.user != null) {
       final data = await ApiService.getUserProfile(userCredential.user!.uid);
+      final tokenResult = await userCredential.user!.getIdTokenResult(true);
+      if (tokenResult.token != null) {
+        final tokenData = {
+          'token': tokenResult.token,
+          'expirationTime': tokenResult.expirationTime?.toIso8601String(),
+          'authTime': tokenResult.authTime?.toIso8601String(),
+          'issuedAtTime': tokenResult.issuedAtTime?.toIso8601String(),
+          'signInProvider': tokenResult.signInProvider,
+          'claims': tokenResult.claims,
+        };
+        debugPrint('Token Result Data: $tokenData');
+        await appBox.put('authToken', tokenResult.token);
+        await appBox.put('authTokenResult', jsonEncode(tokenData));
+      }
 
       if (data != null) {
         final status = data['status'];
@@ -124,12 +138,22 @@ class LoginLogic extends _$LoginLogic {
         }
 
         // Save user data to local storage
-        await appBox.put('userData', jsonEncode(data));
+        await appBox.put(
+          'userData',
+          jsonEncode(
+            data,
+            toEncodable: (dynamic item) {
+              if (item is Timestamp) {
+                return item.toDate().toIso8601String();
+              }
+              return item;
+            },
+          ),
+        );
       }
     }
 
     state = state.copyWith(isLoading: false);
-    await appBox.put('isLoggedIn', true);
     return true;
   }
 

@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { toast } from "react-hot-toast";
-import { Loader2, Info, Phone, FileText, Lock, ReceiptText } from "lucide-react";
+import { Loader2, Info, Phone, FileText, Lock, ReceiptText, Gift, Plus, Trash2 } from "lucide-react";
 import { useLanguage } from '@/context/LanguageContext';
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -21,7 +21,7 @@ export default function SettingsDashboard() {
     { id: "about", label: t('tab_about'), icon: Info },
     { id: "contact", label: t('tab_contact'), icon: Phone },
     { id: "receipt", label: "Receipt", icon: ReceiptText },
-    { id: "legal", label: t('tab_legal'), icon: FileText },
+    { id: "referral", label: "Referral", icon: Gift },
     { id: "security", label: t('tab_security'), icon: Lock },
   ];
 
@@ -55,7 +55,7 @@ export default function SettingsDashboard() {
         {activeTab === "about" && <AboutTab />}
         {activeTab === "contact" && <ContactTab />}
         {activeTab === "receipt" && <ReceiptTab />}
-        {activeTab === "legal" && <LegalTab />}
+        {activeTab === "referral" && <ReferralTab />}
         {activeTab === "security" && <SecurityTab />}
       </div>
     </div>
@@ -412,126 +412,6 @@ function ContactTab() {
   );
 }
 
-function LegalTab() {
-  const { t } = useLanguage();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [legalData, setLegalData] = useState({
-    privacyPolicy: emptyBilingual(),
-    termsAndConditions: emptyBilingual()
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    async function loadData() {
-      const legal = await getSetting("legalPolicies");
-      if (legal) {
-        setLegalData({
-          privacyPolicy: { ...emptyBilingual(), ...(legal.privacyPolicy || {}) },
-          termsAndConditions: { ...emptyBilingual(), ...(legal.termsAndConditions || {}) }
-        });
-      }
-      setLoading(false);
-    }
-    loadData();
-  }, []);
-
-  const handleNestedChange = (field: keyof typeof legalData, lang: 'en' | 'hi', value: string) => {
-    setLegalData(prev => ({
-      ...prev,
-      [field]: { ...prev[field], [lang]: value }
-    }));
-    const key = `${field}_${lang}`;
-    setErrors(prev => ({ ...prev, [key]: value.trim() ? "" : "Required field" }));
-  };
-
-  const handleNestedBlur = (field: keyof typeof legalData, lang: 'en' | 'hi', value: string) => {
-    const key = `${field}_${lang}`;
-    setErrors(prev => ({ ...prev, [key]: value.trim() ? "" : "Required field" }));
-  };
-
-  const handleSave = async () => {
-    const newErrors: Record<string, string> = {};
-    const fields: (keyof typeof legalData)[] = ["privacyPolicy", "termsAndConditions"];
-    const langs: ("en" | "hi")[] = ["en", "hi"];
-
-    fields.forEach(field => {
-      langs.forEach(lang => {
-        if (!legalData[field][lang].trim()) newErrors[`${field}_${lang}`] = "Required field";
-      });
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      toast.error(t('fill_all_required_both_langs'));
-      return;
-    }
-    setErrors({});
-    setSaving(true);
-    try {
-      await saveSetting("legalPolicies", legalData);
-      toast.success(t('legal_saved'));
-    } catch (error) {
-      toast.error(t('failed_save_data'));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const getTextareaClass = (hasError: boolean) =>
-    `w-full px-4 py-3 rounded-xl border text-sm shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 ${hasError ? 'border-red-300 focus:ring-red-500 bg-red-50/50' : 'border-slate-200 focus:ring-blue-500 focus:border-transparent bg-white'}`;
-
-  if (loading) return <div className="flex h-32 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-blue-500" /></div>;
-
-  return (
-    <Card>
-      <div className="p-6 border-b border-slate-100">
-        <h3 className="text-lg font-bold text-slate-900">{t('legal_policies')}</h3>
-        <p className="text-sm text-slate-500 mt-1">{t('legal_policies_desc')}</p>
-      </div>
-      <div className="p-6 space-y-8">
-
-        {/* ENGLISH SECTION */}
-        <div className="space-y-6">
-          <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('english')}</h4>
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">{t('terms_conditions')} <span className="text-red-500">*</span></label>
-              <textarea value={legalData.termsAndConditions.en} onChange={e => handleNestedChange("termsAndConditions", "en", e.target.value)} onBlur={e => handleNestedBlur("termsAndConditions", "en", e.target.value)} rows={6} className={getTextareaClass(!!errors.termsAndConditions_en)} />
-              {errors.termsAndConditions_en && <p className="text-sm text-red-600 font-medium">{errors.termsAndConditions_en}</p>}
-            </div>
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">{t('privacy_policy')} <span className="text-red-500">*</span></label>
-              <textarea value={legalData.privacyPolicy.en} onChange={e => handleNestedChange("privacyPolicy", "en", e.target.value)} onBlur={e => handleNestedBlur("privacyPolicy", "en", e.target.value)} rows={6} className={getTextareaClass(!!errors.privacyPolicy_en)} />
-              {errors.privacyPolicy_en && <p className="text-sm text-red-600 font-medium">{errors.privacyPolicy_en}</p>}
-            </div>
-          </div>
-        </div>
-
-        {/* HINDI SECTION */}
-        <div className="space-y-6 pt-4 border-t border-slate-100">
-          <h4 className="font-bold text-slate-900 bg-slate-50 px-3 py-1.5 rounded-lg inline-block text-xs uppercase tracking-wider">{t('hindi')}</h4>
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">नियम एवं शर्तें <span className="text-red-500">*</span></label>
-              <textarea value={legalData.termsAndConditions.hi} onChange={e => handleNestedChange("termsAndConditions", "hi", e.target.value)} onBlur={e => handleNestedBlur("termsAndConditions", "hi", e.target.value)} rows={6} className={getTextareaClass(!!errors.termsAndConditions_hi)} />
-              {errors.termsAndConditions_hi && <p className="text-sm text-red-600 font-medium">{errors.termsAndConditions_hi}</p>}
-            </div>
-            <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-slate-700">गोपनीयता नीति <span className="text-red-500">*</span></label>
-              <textarea value={legalData.privacyPolicy.hi} onChange={e => handleNestedChange("privacyPolicy", "hi", e.target.value)} onBlur={e => handleNestedBlur("privacyPolicy", "hi", e.target.value)} rows={6} className={getTextareaClass(!!errors.privacyPolicy_hi)} />
-              {errors.privacyPolicy_hi && <p className="text-sm text-red-600 font-medium">{errors.privacyPolicy_hi}</p>}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-end pt-4">
-          <Button onClick={handleSave} isLoading={saving}>{t('save_changes')}</Button>
-        </div>
-      </div>
-    </Card>
-  );
-}
 
 function SecurityTab() {
   const { t } = useLanguage();
@@ -702,6 +582,150 @@ function SecurityTab() {
           </Button>
         </div>
       </form>
+    </Card>
+  );
+}
+
+function ReferralTab() {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [steps, setSteps] = useState<{ title: { en: string, hi: string }; subtitle: { en: string, hi: string } }[]>([]);
+
+  useEffect(() => {
+    async function loadData() {
+      const data = await getSetting("referral");
+      if (data && data.steps && Array.isArray(data.steps)) {
+        // Ensure legacy string steps are converted to bilingual structure
+        const formattedSteps = data.steps.map((step: any) => ({
+          title: typeof step.title === 'string' ? { en: step.title, hi: "" } : { ...emptyBilingual(), ...(step.title || {}) },
+          subtitle: typeof step.subtitle === 'string' ? { en: step.subtitle, hi: "" } : { ...emptyBilingual(), ...(step.subtitle || {}) },
+        }));
+        setSteps(formattedSteps);
+      } else {
+        setSteps([]);
+      }
+      setLoading(false);
+    }
+    loadData();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      await saveSetting("referral", { steps });
+      toast.success("Referral settings saved successfully");
+    } catch (error) {
+      toast.error("Failed to save referral settings");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const addStep = () => {
+    setSteps([...steps, { title: emptyBilingual(), subtitle: emptyBilingual() }]);
+  };
+
+  const removeStep = (index: number) => {
+    setSteps(steps.filter((_, i) => i !== index));
+  };
+
+  const updateStepBilingual = (index: number, field: "title" | "subtitle", lang: "en" | "hi", value: string) => {
+    const newSteps = [...steps];
+    if (!newSteps[index][field]) {
+      newSteps[index][field] = emptyBilingual();
+    }
+    newSteps[index][field][lang] = value;
+    setSteps(newSteps);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  return (
+    <Card className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-800">Referral How it Works</h2>
+          <p className="text-sm text-slate-500">Configure the steps shown in the mobile app for the referral process.</p>
+        </div>
+        <Button onClick={handleSave} disabled={saving} className="min-w-[120px]">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+          {saving ? "Saving..." : "Save Changes"}
+        </Button>
+      </div>
+
+      <div className="space-y-6">
+        {steps.map((step, index) => (
+          <div key={index} className="p-4 border border-slate-200 rounded-lg relative">
+            <div className="absolute right-4 top-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                onClick={() => removeStep(index)}
+                type="button"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+            <h3 className="font-semibold text-slate-800 mb-4">Step {index + 1}</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* English */}
+              <div className="space-y-4 bg-slate-50 p-4 rounded-lg">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">English</h4>
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1 block">Title</label>
+                  <Input
+                    value={step.title?.en || ""}
+                    onChange={(e) => updateStepBilingual(index, "title", "en", e.target.value)}
+                    placeholder="e.g., Share your code"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1 block">Subtitle</label>
+                  <Input
+                    value={step.subtitle?.en || ""}
+                    onChange={(e) => updateStepBilingual(index, "subtitle", "en", e.target.value)}
+                    placeholder="e.g., Send it to your friends..."
+                  />
+                </div>
+              </div>
+
+              {/* Hindi */}
+              <div className="space-y-4 bg-slate-50 p-4 rounded-lg">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Hindi</h4>
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1 block">शीर्षक</label>
+                  <Input
+                    value={step.title?.hi || ""}
+                    onChange={(e) => updateStepBilingual(index, "title", "hi", e.target.value)}
+                    placeholder="उदा. अपना कोड साझा करें"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-700 mb-1 block">उपशीर्षक</label>
+                  <Input
+                    value={step.subtitle?.hi || ""}
+                    onChange={(e) => updateStepBilingual(index, "subtitle", "hi", e.target.value)}
+                    placeholder="उदा. इसे अपने दोस्तों को भेजें..."
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <Button variant="secondary" className="mt-4 w-full" onClick={addStep} type="button">
+        <Plus className="h-4 w-4 mr-2" />
+        Add Step
+      </Button>
     </Card>
   );
 }

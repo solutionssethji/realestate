@@ -1,4 +1,5 @@
 import 'package:customer_app/widgets/app_text_field.dart';
+import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:customer_app/widgets/premium_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,7 +8,9 @@ import 'package:go_router/go_router.dart';
 import '../../../theme/theme.dart';
 import '../../../utils/l10n_extension.dart';
 import '../../../utils/validators.dart';
+import '../../../utils/snackbar_utils.dart';
 import 'forgot_password.logic.dart';
+import '../../../routes/app_routes.dart';
 
 class ForgotPasswordPage extends HookConsumerWidget {
   const ForgotPasswordPage({super.key});
@@ -26,18 +29,38 @@ class ForgotPasswordPage extends HookConsumerWidget {
     ref.listen(forgotPasswordLogicProvider, (previous, next) {
       if (next.errorMessage != null &&
           next.errorMessage != previous?.errorMessage) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.errorMessage!)));
+        AppSnackbar.showError(context, next.errorMessage!);
+      } else if (next.isSent && previous?.isSent != true) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: Text(l10n.resetLinkSentDialogTitle),
+              content: Text(l10n.resetLinkSentDialogBody),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    context.go(AppRoutes.login);
+                  },
+                  child: Text(l10n.resetLinkSentDialogButton),
+                ),
+              ],
+            );
+          },
+        );
       }
     });
 
     Future<void> handleReset() async {
+      FocusScope.of(context).unfocus();
       if (!formKey.currentState!.validate()) return;
       await logic.sendResetLink(emailController.text.trim());
     }
 
     return Scaffold(
+      appBar: PremiumAppBar(title: l10n.forgotPasswordTitle),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -48,12 +71,6 @@ class ForgotPasswordPage extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  l10n.forgotPasswordTitle,
-                  style: Theme.of(context).textTheme.headlineLarge,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
                 Text(
                   l10n.resetPasswordDesc,
                   textAlign: TextAlign.center,
@@ -89,7 +106,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 ],
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: () => context.go('/login'),
+                  onPressed: () => context.go(AppRoutes.login),
                   child: Text(l10n.backToLogin),
                 ),
               ],

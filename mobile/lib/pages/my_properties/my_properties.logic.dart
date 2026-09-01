@@ -5,7 +5,7 @@ import 'my_properties.state.dart';
 
 part 'my_properties.logic.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class MyPropertiesLogic extends _$MyPropertiesLogic {
   @override
   MyPropertiesState build() {

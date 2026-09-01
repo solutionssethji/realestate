@@ -9,20 +9,19 @@ part 'forgot_password.logic.g.dart';
 class ForgotPasswordLogic extends _$ForgotPasswordLogic {
   @override
   ForgotPasswordState build() {
-    ref.keepAlive();
     return const ForgotPasswordState();
   }
 
   Future<bool> sendResetLink(String email) async {
     final enteredEmail = email.trim();
     final normalizedEmail = enteredEmail.toLowerCase();
-
+    final emailMsg = FirebaseAuthErrorMapper.getForgotPasswordMessage(
+      'invalid-email',
+    );
     if (!_isValidEmail(normalizedEmail)) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: FirebaseAuthErrorMapper.getForgotPasswordMessage(
-          'invalid-email',
-        ),
+        errorMessage: emailMsg,
         isSent: false,
       );
       return false;
@@ -30,27 +29,19 @@ class ForgotPasswordLogic extends _$ForgotPasswordLogic {
 
     state = state.copyWith(isLoading: true, errorMessage: null, isSent: false);
 
-    // 1. Check user in Firestore
-    var user = await ApiService.getUserByEmail(normalizedEmail);
-
-    // Older accounts may have been saved with uppercase email characters.
-    if (user == null && enteredEmail != normalizedEmail) {
-      user = await ApiService.getUserByEmail(enteredEmail);
-    }
-
-    if (user == null) {
+    // Check/send Firebase Auth reset email
+    try {
+      await AuthService.sendPasswordResetEmail(email: normalizedEmail);
+    } catch (e) {
       state = state.copyWith(
         isLoading: false,
         errorMessage: FirebaseAuthErrorMapper.getForgotPasswordMessage(
-          'user-not-found',
+          'default',
         ),
         isSent: false,
       );
       return false;
     }
-
-    // 2. Check/send Firebase Auth reset email
-    await AuthService.sendPasswordResetEmail(email: normalizedEmail);
 
     state = state.copyWith(isLoading: false, isSent: true, errorMessage: null);
 

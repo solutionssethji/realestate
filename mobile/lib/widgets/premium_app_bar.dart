@@ -10,6 +10,7 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? foregroundColor;
   final double elevation;
   final bool centerTitle;
+  final Widget? leading;
 
   const PremiumAppBar({
     super.key,
@@ -20,6 +21,7 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.foregroundColor = AppTheme.textPrimary,
     this.elevation = 0.5,
     this.centerTitle = true,
+    this.leading,
   });
 
   @override
@@ -37,16 +39,17 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: foregroundColor,
         ),
       ),
-      leading: showBackButton
-          ? IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 20,
-                color: foregroundColor,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          : null,
+      leading: leading ??
+          (showBackButton
+              ? IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 20,
+                    color: foregroundColor,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null),
       actions: actions,
     );
   }

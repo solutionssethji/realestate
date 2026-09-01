@@ -14,6 +14,7 @@ import '../../widgets/empty_state.dart';
 import '../../widgets/error_state.dart';
 import '../../widgets/skeleton_list.dart';
 import '../../widgets/app_loading_view.dart';
+import '../../routes/app_routes.dart';
 
 class OffersPage extends HookConsumerWidget {
   const OffersPage({super.key});
@@ -72,7 +73,7 @@ class OffersPage extends HookConsumerWidget {
                       final offer = state.offers[index];
                       return GestureDetector(
                         onTap: () {
-                          context.push('/home/offers/${offer.id}');
+                          context.push(AppRoutes.offerDetails(offer.id));
                         },
                         child: Card(
                           clipBehavior: Clip.antiAlias,

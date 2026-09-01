@@ -88,7 +88,7 @@ class OfferCard extends StatelessWidget {
                               ),
                               AppSpacing.wXs,
                               Text(
-                                'Valid till ${DateFormat('MMM d').format(offer.endDate)}',
+                                context.l10n.validTillText(DateFormat('d MMM yyyy').format(offer.endDate)),
                                 style: Theme.of(context).textTheme.labelSmall
                                     ?.copyWith(
                                       color: AppTheme.white,

@@ -6,12 +6,14 @@ import 'package:customer_app/pages/auth/register/register.page.dart'
 import 'package:customer_app/pages/emi_tracker/emi_tracker.page.dart'
     show EmiTrackerPage;
 import 'package:customer_app/pages/offer_details/offer_details.page.dart';
-import 'package:customer_app/referral/referral.page.dart';
+import 'package:customer_app/pages/referral/referral.page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../main.dart';
 import '../pages/profile/profile.page.dart';
+import '../pages/profile/edit_profile/edit_profile.page.dart';
+import '../pages/auth/change_password/change_password.page.dart';
 import '../pages/kyc/kyc.page.dart';
 import '../pages/my_properties/my_properties.page.dart';
 import '../pages/support/support.page.dart';
@@ -25,15 +27,13 @@ import '../pages/enquiry/enquiry.page.dart';
 import '../pages/site_visit/site_visit.page.dart';
 import '../pages/calculator/calculator.page.dart';
 import '../pages/about/about.page.dart';
-import '../pages/contact/contact.page.dart';
-import '../pages/settings/settings.page.dart';
 import '../pages/payment/payment.page.dart';
 import '../pages/payment_history_auth/payment_history_auth.page.dart';
 import '../pages/payment_history/payment_history.page.dart';
-import '../pages/legal/legal_content.page.dart';
-import '../pages/faq/faq.page.dart';
-import '../utils/l10n_extension.dart';
+import '../pages/my_enquiries/my_enquiries.page.dart';
+import '../pages/my_site_visits/my_site_visits.page.dart';
 import '../widgets/bottom_nav_bar/bottom_nav_bar.widget.dart';
+import 'app_routes.dart';
 
 import '../providers/auth_provider.dart';
 
@@ -55,26 +55,24 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: '/home',
+    initialLocation: AppRoutes.home,
     refreshListenable: notifier,
     redirect: (context, state) {
-      final isAuth = appBox.get('isLoggedIn') == true;
+      final isAuth = appBox.get('authToken') != null;
 
       final isGoingToAuth =
-          state.matchedLocation == '/login' ||
-          state.matchedLocation == '/register' ||
-          state.matchedLocation == '/forgot-password';
+          state.matchedLocation == AppRoutes.login ||
+          state.matchedLocation == AppRoutes.register ||
+          state.matchedLocation == AppRoutes.forgotPassword;
 
-      final isGoingToPublic =
-          state.matchedLocation == '/terms' ||
-          state.matchedLocation == '/privacy';
+      const isGoingToPublic = false;
 
       if (!isAuth && !isGoingToAuth && !isGoingToPublic) {
-        return '/login';
+        return AppRoutes.login;
       }
 
       if (isAuth && isGoingToAuth) {
-        return '/home';
+        return AppRoutes.home;
       }
 
       return null;
@@ -90,7 +88,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/home',
+                path: AppRoutes.home,
                 builder: (context, state) => const HomePage(),
               ),
             ],
@@ -99,7 +97,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/projects',
+                path: AppRoutes.projects,
                 builder: (context, state) => const ProjectsPage(),
               ),
             ],
@@ -108,7 +106,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/my-properties',
+                path: AppRoutes.myProperties,
                 builder: (context, state) => const MyPropertiesPage(),
               ),
             ],
@@ -117,7 +115,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/profile',
+                path: AppRoutes.profile,
                 builder: (context, state) => const ProfilePage(),
               ),
             ],
@@ -126,19 +124,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // Auth Routes
-      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
-        path: '/register',
+        path: AppRoutes.login,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.register,
         builder: (context, state) => const RegisterPage(),
       ),
       GoRoute(
-        path: '/forgot-password',
+        path: AppRoutes.forgotPassword,
         builder: (context, state) => const ForgotPasswordPage(),
       ),
 
       // Other Top-Level Routes (these hide the bottom nav bar naturally)
       GoRoute(
-        path: '/home/offers',
+        path: AppRoutes.offers,
         builder: (context, state) => const OffersPage(),
         routes: [
           GoRoute(
@@ -149,35 +150,35 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
-        path: '/home/enquiry',
+        path: AppRoutes.enquiry,
         builder: (context, state) => EnquiryPage(
           initialProjectId: state.uri.queryParameters['projectId'],
         ),
       ),
       GoRoute(
-        path: '/home/site-visit',
+        path: AppRoutes.siteVisit,
         builder: (context, state) => SiteVisitPage(
           initialProjectId: state.uri.queryParameters['projectId'],
         ),
       ),
       GoRoute(
-        path: '/home/emi-calculator',
+        path: AppRoutes.emiCalculator,
         builder: (context, state) => const CalculatorPage(),
       ),
       GoRoute(
-        path: '/home/about',
+        path: AppRoutes.about,
         builder: (context, state) => const AboutCompanyPage(),
       ),
       GoRoute(
-        path: '/home/contact',
-        builder: (context, state) => const ContactUsPage(),
+        path: AppRoutes.myEnquiries,
+        builder: (context, state) => const MyEnquiriesPage(),
       ),
       GoRoute(
-        path: '/home/settings',
-        builder: (context, state) => const SettingsPage(),
+        path: AppRoutes.mySiteVisits,
+        builder: (context, state) => const MySiteVisitsPage(),
       ),
       GoRoute(
-        path: '/home/payment',
+        path: AppRoutes.payment,
         builder: (context, state) {
           final params = state.uri.queryParameters;
           final amount = double.tryParse(params['amount'] ?? '0') ?? 0;
@@ -191,32 +192,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/home/payment-history-auth',
+        path: AppRoutes.paymentHistoryAuth,
         builder: (context, state) => const PaymentHistoryAuthPage(),
       ),
       GoRoute(
-        path: '/home/payment-history',
+        path: AppRoutes.paymentHistory,
         builder: (context, state) => const PaymentHistoryPage(),
       ),
-      GoRoute(
-        path: '/home/terms',
-        builder: (context, state) => LegalContentPage(
-          documentId: 'terms',
-          fallbackTitle: context.l10n.termsAndConditions,
-        ),
-      ),
-      GoRoute(
-        path: '/home/privacy',
-        builder: (context, state) => LegalContentPage(
-          documentId: 'privacy',
-          fallbackTitle: context.l10n.privacyPolicy,
-        ),
-      ),
-      GoRoute(path: '/home/faq', builder: (context, state) => const FaqPage()),
 
       // Project Details Routes
       GoRoute(
-        path: '/project/:id',
+        path: AppRoutes.projectDetailsBase,
         builder: (context, state) =>
             ProjectDetailsPage(projectId: state.pathParameters['id']!),
         routes: [
@@ -246,15 +232,23 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // Profile Routes
       GoRoute(
-        path: '/profile/kyc',
+        path: AppRoutes.editProfile,
+        builder: (context, state) => const EditProfilePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.changePassword,
+        builder: (context, state) => const ChangePasswordPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.kyc,
         builder: (context, state) => const KycPage(),
       ),
       GoRoute(
-        path: '/profile/support',
+        path: AppRoutes.support,
         builder: (context, state) => const SupportPage(),
       ),
       GoRoute(
-        path: '/profile/referral',
+        path: AppRoutes.referral,
         builder: (context, state) => const ReferralPage(),
       ),
     ],

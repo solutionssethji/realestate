@@ -12,6 +12,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'Shubhaytanam Connect';
 
   @override
+  String get errorLoadingCode => 'Error loading code';
+
+  @override
+  String get shareCode => 'Share Code';
+
+  @override
   String get aboutCompany => 'About Company';
 
   @override
@@ -508,6 +514,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signOut => 'Sign Out';
+
+  @override
+  String get logoutConfirmation => 'Are you sure you want to sign out?';
 
   @override
   String get searchByPlot => 'Search by plot number...';
@@ -1369,6 +1378,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetLinkSent => 'Reset link sent! Please check your email inbox.';
 
   @override
+  String get resetLinkSentDialogTitle => 'Email Sent';
+
+  @override
+  String get resetLinkSentDialogBody =>
+      'A password reset link has been sent to your email.\n\nFor security reasons, this link will expire soon. Please reset your password promptly.\n\nPlease check your inbox (and spam folder) for the reset link, and then proceed to login.';
+
+  @override
+  String get resetLinkSentDialogButton => 'Go to Login';
+
+  @override
+  String get agreeToPrefix => 'I agree to the ';
+
+  @override
+  String get agreeToAnd => ' and ';
+
+  @override
+  String get agreeToSuffix => '';
+
+  @override
   String get permissionDenied => 'Permission denied. Please contact support.';
 
   @override
@@ -1453,4 +1481,196 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get goToLogin => 'Go to Login';
+
+  @override
+  String get unknownProject => 'Unknown Project';
+
+  @override
+  String get unknownPlot => 'Unknown Plot';
+
+  @override
+  String get noPropertiesFound => 'No Properties Found';
+
+  @override
+  String get noEnquiriesYet => 'No Enquiries Yet';
+
+  @override
+  String get noEnquiriesMessage =>
+      'You have not submitted any property enquiries. Once you do, they will appear here.';
+
+  @override
+  String get requirementLabel => 'Requirement:';
+
+  @override
+  String get budgetLabel => 'Budget:';
+
+  @override
+  String get messageLabel => 'Message:';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordChangedSuccessfully => 'Password changed successfully';
+
+  @override
+  String get currentPassword => 'Current Password';
+
+  @override
+  String get currentPasswordRequired => 'Current password is required';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get confirmNewPassword => 'Confirm New Password';
+
+  @override
+  String get updatePassword => 'Update Password';
+
+  @override
+  String get failedToChangePassword => 'Failed to change password';
+
+  @override
+  String get currentPasswordIncorrect => 'Current password is incorrect';
+
+  @override
+  String get invalidResponseFromServer => 'Invalid response from server.';
+
+  @override
+  String get realEstatePlatform => 'Real Estate Platform';
+
+  @override
+  String get userNotLoggedIn => 'User not logged in';
+
+  @override
+  String get noSiteVisitsScheduled => 'No Site Visits Scheduled';
+
+  @override
+  String get noSiteVisitsMessage =>
+      'You have not scheduled any site visits yet. Book a visit to see properties in person!';
+
+  @override
+  String get scheduledDate => 'Scheduled Date:';
+
+  @override
+  String get scheduledTime => 'Scheduled Time:';
+
+  @override
+  String get errorLoadingAboutInfo => 'Error loading about info';
+
+  @override
+  String get noName => 'No Name';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profile updated successfully';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get errorLoadingSupportInfo => 'Error loading support info';
+
+  @override
+  String totalPlots(int count) {
+    return '$count Total Plots';
+  }
+
+  @override
+  String get viewOnGoogleMaps => 'View on Google Maps';
+
+  @override
+  String get loginToBookSiteVisit => 'Please log in to book a site visit.';
+
+  @override
+  String get unableToOpenDocument => 'Unable to open this document.';
+
+  @override
+  String get loginToSubmitEnquiry => 'Please log in to submit an enquiry.';
+
+  @override
+  String get enter6DigitOtp => 'Enter 6-digit OTP';
+
+  @override
+  String get errorLoadingContent => 'Error loading content';
+
+  @override
+  String get failedToLoadPropertyDetails => 'Failed to load property details';
+
+  @override
+  String get failedToLoadPayments => 'Failed to load payments';
+
+  @override
+  String inrPrice(String amount) {
+    return '₹$amount';
+  }
+
+  @override
+  String get validationPanLength => 'Enter a valid 10-character PAN Number';
+
+  @override
+  String get validationIfscRequired => 'IFSC Code is required';
+
+  @override
+  String get validationPasswordLength =>
+      'Password must be at least 6 characters';
+
+  @override
+  String get validationMobileLength => 'Enter a valid 10-digit mobile number';
+
+  @override
+  String validationFieldRequired(String label) {
+    return '$label is required';
+  }
+
+  @override
+  String get validationIfscLength => 'Enter a valid 11-character IFSC Code';
+
+  @override
+  String get validationEmailFormat => 'Enter a valid email address';
+
+  @override
+  String get validationThisField => 'This field';
+
+  @override
+  String get validationPanRequired => 'PAN Number is required';
+
+  @override
+  String get validationAadhaarLength => 'Enter a valid 12-digit Aadhaar Number';
+
+  @override
+  String get validationAccountLength =>
+      'Enter a valid Account Number (9 to 18 digits)';
+
+  @override
+  String get validationAccountRequired => 'Account Number is required';
+
+  @override
+  String get validationAadhaarRequired => 'Aadhaar Number is required';
+
+  @override
+  String validTillText(String date) {
+    return 'Valid till $date';
+  }
+
+  @override
+  String get tapToPickPdf => 'Tap to select PDF';
+
+  @override
+  String get viewPdf => 'View PDF';
+
+  @override
+  String get pdfTooLarge => 'PDF must be less than 2MB';
+
+  @override
+  String get fileSelected => 'PDF Selected';
+
+  @override
+  String get referralCodeOptional => 'Referral Code (Optional)';
 }

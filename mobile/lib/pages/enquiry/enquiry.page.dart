@@ -14,6 +14,7 @@ import '../../widgets/feedback_banner.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import '../../utils/validators.dart';
+import '../../utils/snackbar_utils.dart';
 
 class EnquiryPage extends HookConsumerWidget {
   final String? initialProjectId;
@@ -40,12 +41,7 @@ class EnquiryPage extends HookConsumerWidget {
 
     ref.listen(enquiryLogicProvider, (previous, next) {
       if (next.isSuccess && !(previous?.isSuccess ?? false)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.enquirySubmitted),
-            backgroundColor: AppTheme.success,
-          ),
-        );
+        AppSnackbar.showSuccess(context, context.l10n.enquirySubmitted);
         context.pop();
       }
     });
@@ -139,13 +135,7 @@ class EnquiryPage extends HookConsumerWidget {
                         : () {
                             final currentUser = AuthService.currentUser;
                             if (currentUser == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Please log in to submit an enquiry.',
-                                  ),
-                                ),
-                              );
+                              AppSnackbar.showError(context, context.l10n.loginToSubmitEnquiry);
                               return;
                             }
                             if (formKey.currentState!.validate()) {

@@ -5,7 +5,7 @@ import '../../../services/api_service.dart';
 
 part 'projects.logic.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ProjectsLogic extends _$ProjectsLogic {
   @override
   ProjectsState build() {

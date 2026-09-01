@@ -1,6 +1,8 @@
 {
   "@@locale": "en",
   "appName": "Shubhaytanam Connect",
+  "errorLoadingCode": "Error loading code",
+  "shareCode": "Share Code",
   "aboutCompany": "About Company",
   "ourVision": "Our Vision",
   "ourMission": "Our Mission",
@@ -217,6 +219,7 @@
   "applicableProject": "Applicable Project",
   "unableToLoadOffers": "Unable to load offers.",
   "signOut": "Sign Out",
+  "logoutConfirmation": "Are you sure you want to sign out?",
   "searchByPlot": "Search by plot number...",
   "virtual360Tour": "Virtual 360° Tour",
   "viewProjectDetails": "View Project Details",
@@ -603,6 +606,12 @@
   "resetPasswordDesc": "Enter your email address and we will send you a link to reset your password.",
   "sendResetLink": "Send Reset Link",
   "resetLinkSent": "Reset link sent! Please check your email inbox.",
+  "resetLinkSentDialogTitle": "Email Sent",
+  "resetLinkSentDialogBody": "A password reset link has been sent to your email.\n\nFor security reasons, this link will expire soon. Please reset your password promptly.\n\nPlease check your inbox (and spam folder) for the reset link, and then proceed to login.",
+  "resetLinkSentDialogButton": "Go to Login",
+  "agreeToPrefix": "I agree to the ",
+  "agreeToAnd": " and ",
+  "agreeToSuffix": "",
   "permissionDenied": "Permission denied. Please contact support.",
   "backToLogin": "Back to Login",
   "createAccount": "Create Account",
@@ -629,5 +638,93 @@
   "verificationEmailSentSuccessfully": "Verification email sent successfully!",
   "registrationSuccessTitle": "Registration Successful!",
   "registrationSuccessMessage": "We have sent a verification email to your registered email address.\n\nPlease check your inbox and your spam/junk folder. You must verify your email before you can log in to your account.",
-  "goToLogin": "Go to Login"
+  "goToLogin": "Go to Login",
+  "unknownProject": "Unknown Project",
+  "unknownPlot": "Unknown Plot",
+  "noPropertiesFound": "No Properties Found",
+  "noEnquiriesYet": "No Enquiries Yet",
+  "noEnquiriesMessage": "You have not submitted any property enquiries. Once you do, they will appear here.",
+  "requirementLabel": "Requirement:",
+  "budgetLabel": "Budget:",
+  "messageLabel": "Message:",
+  "changePassword": "Change Password",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordChangedSuccessfully": "Password changed successfully",
+  "currentPassword": "Current Password",
+  "currentPasswordRequired": "Current password is required",
+  "newPassword": "New Password",
+  "confirmNewPassword": "Confirm New Password",
+  "updatePassword": "Update Password",
+  "failedToChangePassword": "Failed to change password",
+  "currentPasswordIncorrect": "Current password is incorrect",
+  "invalidResponseFromServer": "Invalid response from server.",
+  "realEstatePlatform": "Real Estate Platform",
+  "userNotLoggedIn": "User not logged in",
+  "noSiteVisitsScheduled": "No Site Visits Scheduled",
+  "noSiteVisitsMessage": "You have not scheduled any site visits yet. Book a visit to see properties in person!",
+  "scheduledDate": "Scheduled Date:",
+  "scheduledTime": "Scheduled Time:",
+  "errorLoadingAboutInfo": "Error loading about info",
+  "noName": "No Name",
+  "editProfile": "Edit Profile",
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+  "saveChanges": "Save Changes",
+  "errorLoadingSupportInfo": "Error loading support info",
+  "totalPlots": "{count} Total Plots",
+  "@totalPlots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "viewOnGoogleMaps": "View on Google Maps",
+  "loginToBookSiteVisit": "Please log in to book a site visit.",
+  "unableToOpenDocument": "Unable to open this document.",
+  "loginToSubmitEnquiry": "Please log in to submit an enquiry.",
+  "enter6DigitOtp": "Enter 6-digit OTP",
+  "errorLoadingContent": "Error loading content",
+  "failedToLoadPropertyDetails": "Failed to load property details",
+  "failedToLoadPayments": "Failed to load payments",
+  "inrPrice": "₹{amount}",
+  "@inrPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "validationPanLength": "Enter a valid 10-character PAN Number",
+  "validationIfscRequired": "IFSC Code is required",
+  "validationPasswordLength": "Password must be at least 6 characters",
+  "validationMobileLength": "Enter a valid 10-digit mobile number",
+  "validationFieldRequired": "{label} is required",
+  "@validationFieldRequired": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "validationIfscLength": "Enter a valid 11-character IFSC Code",
+  "validationEmailFormat": "Enter a valid email address",
+  "validationThisField": "This field",
+  "validationPanRequired": "PAN Number is required",
+  "validationAadhaarLength": "Enter a valid 12-digit Aadhaar Number",
+  "validationAccountLength": "Enter a valid Account Number (9 to 18 digits)",
+  "validationAccountRequired": "Account Number is required",
+  "validationAadhaarRequired": "Aadhaar Number is required",
+  "validTillText": "Valid till {date}",
+  "@validTillText": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tapToPickPdf": "Tap to select PDF",
+  "viewPdf": "View PDF",
+  "pdfTooLarge": "PDF must be less than 2MB",
+  "fileSelected": "PDF Selected",
+  "referralCodeOptional": "Referral Code (Optional)"
 }

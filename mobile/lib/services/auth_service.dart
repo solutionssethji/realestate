@@ -49,8 +49,8 @@ class AuthService {
 
   static Future<void> signOut() async {
     try {
-      await appBox.delete('isLoggedIn');
       await appBox.delete('userData');
+      await appBox.delete('authToken');
       await _auth.signOut();
     } catch (e) {
       // Just swallow signout errors to avoid crash
@@ -65,6 +65,7 @@ class AuthService {
         e,
         function: 'sendPasswordResetEmail()',
       );
+      rethrow;
     }
   }
 

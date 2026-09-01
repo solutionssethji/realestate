@@ -98,95 +98,95 @@ class PaymentHistoryAuthPage extends HookConsumerWidget {
             child: Form(
               key: formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-              const Icon(
-                LucideIcons.shieldCheck,
-                size: 64,
-                color: AppTheme.midnightNavy,
-              ),
-              AppSpacing.hLg,
-              Text(
-                context.l10n.secureAccess,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              AppSpacing.hSm,
-              Text(
-                isOtpSent
-                    ? context.l10n.enterOtpSent
-                    : context.l10n.enterPhoneForHistory,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
-              ),
-              AppSpacing.hXXl,
-              if (errorMessage.value != null) ...[
-                Container(
-                  padding: AppSpacing.allMd,
-                  decoration: BoxDecoration(
-                    color: AppTheme.error.withValues(alpha: 0.1),
-                    borderRadius: AppRadius.circularSm,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Icon(
+                    LucideIcons.shieldCheck,
+                    size: 64,
+                    color: AppTheme.midnightNavy,
                   ),
-                  child: Text(
-                    errorMessage.value!,
+                  AppSpacing.hLg,
+                  Text(
+                    context.l10n.secureAccess,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  AppSpacing.hSm,
+                  Text(
+                    isOtpSent
+                        ? context.l10n.enterOtpSent
+                        : context.l10n.enterPhoneForHistory,
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
+                      color: AppTheme.textSecondary,
                     ),
                   ),
-                ),
-                AppSpacing.hMd,
-              ],
-              if (!isOtpSent) ...[
-                AppTextField(
-                  controller: phoneController,
-                  label: loc.phoneNumber,
-                  hint: 'e.g. 9876543210',
-                  keyboardType: TextInputType.phone,
-                  validator: (v) => AppValidators.phone(context, v),
-                ),
-                AppSpacing.hLg,
-                PremiumButton(
-                  text: context.l10n.sendOtp,
-                  isLoading: isLoading.value,
-                  onPressed: isPhoneFilled ? sendOtp : null,
-                ),
-              ] else ...[
-                AppTextField(
-                  controller: otpController,
-                  label: loc.sixDigitOtp,
-                  keyboardType: TextInputType.number,
-                  validator: (v) {
-                    if (v == null || v.trim().length != 6) {
-                      return 'Enter 6-digit OTP';
-                    }
-                    return null;
-                  },
-                ),
-                AppSpacing.hLg,
-                PremiumButton(
-                  text: context.l10n.verify,
-                  isLoading: isLoading.value,
-                  onPressed: isOtpFilled ? verifyOtp : null,
-                ),
-                AppSpacing.hMd,
-                TextButton(
-                  onPressed: () {
-                    verificationId.value = null;
-                    otpController.clear();
-                  },
-                  child: Text(loc.changePhoneNumber),
-                ),
-              ],
-            ],
+                  AppSpacing.hXXl,
+                  if (errorMessage.value != null) ...[
+                    Container(
+                      padding: AppSpacing.allMd,
+                      decoration: BoxDecoration(
+                        color: AppTheme.error.withValues(alpha: 0.1),
+                        borderRadius: AppRadius.circularSm,
+                      ),
+                      child: Text(
+                        errorMessage.value!,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ),
+                    AppSpacing.hMd,
+                  ],
+                  if (!isOtpSent) ...[
+                    AppTextField(
+                      controller: phoneController,
+                      label: loc.phoneNumber,
+                      hint: 'e.g. 9876543210',
+                      keyboardType: TextInputType.phone,
+                      validator: (v) => AppValidators.phone(context, v),
+                    ),
+                    AppSpacing.hLg,
+                    PremiumButton(
+                      text: context.l10n.sendOtp,
+                      isLoading: isLoading.value,
+                      onPressed: isPhoneFilled ? sendOtp : null,
+                    ),
+                  ] else ...[
+                    AppTextField(
+                      controller: otpController,
+                      label: loc.sixDigitOtp,
+                      keyboardType: TextInputType.number,
+                      validator: (v) {
+                        if (v == null || v.trim().length != 6) {
+                          return context.l10n.enter6DigitOtp;
+                        }
+                        return null;
+                      },
+                    ),
+                    AppSpacing.hLg,
+                    PremiumButton(
+                      text: context.l10n.verify,
+                      isLoading: isLoading.value,
+                      onPressed: isOtpFilled ? verifyOtp : null,
+                    ),
+                    AppSpacing.hMd,
+                    TextButton(
+                      onPressed: () {
+                        verificationId.value = null;
+                        otpController.clear();
+                      },
+                      child: Text(loc.changePhoneNumber),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
       ),
-      ),
-    ),
-  );
+    );
   }
 }

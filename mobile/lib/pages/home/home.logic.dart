@@ -3,16 +3,12 @@ import 'home.state.dart';
 import '../../../services/api_service.dart';
 import '../../../models/project.dart';
 import '../../../models/offer.dart';
-import '../../../config/locale_provider.dart';
 part 'home.logic.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class HomeLogic extends _$HomeLogic {
   @override
   HomeState build() {
-    // Watch locale so data reloads if language changes
-    ref.watch(localeControllerProvider);
-    Future.microtask(loadData);
     return const HomeState();
   }
 
@@ -23,7 +19,6 @@ class HomeLogic extends _$HomeLogic {
         ApiService.getProjects(limit: 10, isFeatured: true),
         ApiService.getOffers(limit: 7),
         ApiService.getContactSettings(),
-        Future.delayed(const Duration(milliseconds: 800)),
       ]);
 
       final projectsTuple = results[0] as (List<Project>, dynamic);

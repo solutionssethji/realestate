@@ -10,6 +10,7 @@ import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import '../../widgets/premium_button.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../routes/app_routes.dart';
 
 class PaymentPage extends HookConsumerWidget {
   final double amount;
@@ -187,7 +188,7 @@ class PaymentPage extends HookConsumerWidget {
                       AppSpacing.hXXl,
                       PremiumButton(
                         text: loc.backToHome,
-                        onPressed: () => context.go('/home'),
+                        onPressed: () => context.go(AppRoutes.home),
                       ),
                     ],
                   ),

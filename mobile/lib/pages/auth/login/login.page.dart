@@ -6,7 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../utils/l10n_extension.dart';
 import '../../../utils/validators.dart';
+import '../../../utils/snackbar_utils.dart';
 import 'login.logic.dart';
+import '../../../routes/app_routes.dart';
 
 class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
@@ -24,11 +26,20 @@ class LoginPage extends HookConsumerWidget {
     useValueListenable(emailController);
     useValueListenable(passwordController);
 
+    ref.listen(loginLogicProvider, (previous, next) {
+      if (next.errorMessage != null &&
+          next.errorMessage != previous?.errorMessage) {
+        // Need to use AppSnackbar.showGlobalError since dialog might be open
+        AppSnackbar.showGlobalError(next.errorMessage!);
+      }
+    });
+
     final isFormFilled =
         emailController.text.trim().isNotEmpty &&
         passwordController.text.trim().isNotEmpty;
 
     Future<void> handleLogin() async {
+      FocusScope.of(context).unfocus();
       if (!formKey.currentState!.validate()) return;
 
       final success = await logic.login(
@@ -37,7 +48,7 @@ class LoginPage extends HookConsumerWidget {
         context,
       );
       if (success && context.mounted) {
-        context.go('/home');
+        context.go(AppRoutes.home);
       }
     }
 
@@ -45,63 +56,63 @@ class LoginPage extends HookConsumerWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                l10n.welcomeBack,
-                style: Theme.of(context).textTheme.headlineLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              AppTextField(
-                controller: emailController,
-                label: l10n.emailLabel,
-                prefixIcon: const Icon(Icons.email_outlined),
-                keyboardType: TextInputType.emailAddress,
-                validator: (v) =>
-                    AppValidators.required(context, v, l10n.emailLabel),
-              ),
-              const SizedBox(height: 16),
-              AppTextField(
-                controller: passwordController,
-                label: l10n.passwordLabel,
-                obscureText: state.isObscure,
-                prefixIcon: const Icon(Icons.lock_outline),
-                validator: (v) =>
-                    AppValidators.required(context, v, l10n.passwordLabel),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    state.isObscure ? Icons.visibility : Icons.visibility_off,
+          child: Form(
+            key: formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.welcomeBack,
+                  style: Theme.of(context).textTheme.headlineLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                AppTextField(
+                  controller: emailController,
+                  label: l10n.emailLabel,
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (v) =>
+                      AppValidators.required(context, v, l10n.emailLabel),
+                ),
+                const SizedBox(height: 16),
+                AppTextField(
+                  controller: passwordController,
+                  label: l10n.passwordLabel,
+                  obscureText: state.isObscure,
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  validator: (v) =>
+                      AppValidators.required(context, v, l10n.passwordLabel),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      state.isObscure ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () => logic.toggleObscure(),
                   ),
-                  onPressed: () => logic.toggleObscure(),
                 ),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () => context.push('/forgot-password'),
-                  child: Text(l10n.forgotPassword),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => context.push(AppRoutes.forgotPassword),
+                    child: Text(l10n.forgotPassword),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              PremiumButton(
-                text: l10n.loginBtn,
-                onPressed: isFormFilled ? handleLogin : null,
-                isLoading: state.isLoading,
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () => context.push('/register'),
-                child: Text(l10n.dontHaveAccount),
-              ),
-            ],
+                const SizedBox(height: 24),
+                PremiumButton(
+                  text: l10n.loginBtn,
+                  onPressed: isFormFilled ? handleLogin : null,
+                  isLoading: state.isLoading,
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () => context.push(AppRoutes.register),
+                  child: Text(l10n.dontHaveAccount),
+                ),
+              ],
+            ),
           ),
-        ),
         ),
       ),
     );
