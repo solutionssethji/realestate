@@ -80,7 +80,9 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>?> getUserByReferralCode(String code) async {
+  static Future<Map<String, dynamic>?> getUserByReferralCode(
+    String code,
+  ) async {
     logApi(function: 'getUserByReferralCode()', request: {'code': code});
     try {
       final snapshot = await _db
@@ -240,6 +242,10 @@ class ApiService {
       var query = _db
           .collection('offers')
           .where('status', whereIn: ['ACTIVE', 'Active', 'active'])
+          .where(
+            'endDate',
+            isGreaterThan: DateTime.now().toUtc().toIso8601String(),
+          )
           .limit(limit);
 
       if (lastDocument != null) {
@@ -361,7 +367,9 @@ class ApiService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getUserEnquiries(String customerId) async {
+  static Future<List<Map<String, dynamic>>> getUserEnquiries(
+    String customerId,
+  ) async {
     logApi(function: 'getUserEnquiries()', request: {'customerId': customerId});
     try {
       final snapshot = await _db
@@ -414,9 +422,13 @@ class ApiService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getUserSiteVisits(String customerId) async {
+  static Future<List<Map<String, dynamic>>> getUserSiteVisits(
+    String customerId,
+  ) async {
     logApi(
-        function: 'getUserSiteVisits()', request: {'customerId': customerId});
+      function: 'getUserSiteVisits()',
+      request: {'customerId': customerId},
+    );
     try {
       final snapshot = await _db
           .collection('siteVisits')
@@ -594,9 +606,9 @@ class ApiService {
     try {
       await _db.collection('users').doc(uid).update({
         'aadharNumber': aadharNumber,
-        if (aadharPhotoUrl != null) 'aadharPhotoUrl': aadharPhotoUrl,
+        'aadharPhotoUrl': ?aadharPhotoUrl,
         'panNumber': panNumber,
-        if (panPhotoUrl != null) 'panPhotoUrl': panPhotoUrl,
+        'panPhotoUrl': ?panPhotoUrl,
         if (bankDetails != null && bankDetails.isNotEmpty)
           'bankDetails': bankDetails,
         'updatedAt': FieldValue.serverTimestamp(),
@@ -741,7 +753,59 @@ class ApiService {
     try {
       final doc = await _db.collection('assignPlots').doc(plotId).get();
       if (!doc.exists) return null;
-      return doc.data();
+
+      final docData = {'id': doc.id, ...doc.data()!};
+
+      // Populate project name
+      if (docData['projectName'] == null && docData['projectId'] != null) {
+        try {
+          final pSnap = await _db
+              .collection('projects')
+              .doc(docData['projectId'] as String)
+              .get();
+          if (pSnap.exists && pSnap.data() != null) {
+            final pData = pSnap.data()!;
+            docData['projectName'] = pData['name'] is Map
+                ? (pData['name']['en'] ?? pData['name'])
+                : pData['name'];
+          }
+        } catch (_) {}
+      }
+
+      // Populate plot number and status
+      if (docData['plotId'] != null &&
+          (docData['plotNumber'] == null || docData['status'] == null)) {
+        try {
+          final ptSnap = await _db
+              .collection('plots')
+              .doc(docData['plotId'] as String)
+              .get();
+          if (ptSnap.exists && ptSnap.data() != null) {
+            final ptData = ptSnap.data()!;
+            docData['plotNumber'] ??= ptData['plotNumber'];
+            docData['status'] ??= ptData['status'];
+          }
+        } catch (_) {}
+      }
+
+      // Populate applicant name and mobile
+      if (docData['customerId'] != null &&
+          (docData['firstApplicantName'] == null ||
+              docData['firstApplicantMobile'] == null)) {
+        try {
+          final cSnap = await _db
+              .collection('users')
+              .doc(docData['customerId'] as String)
+              .get();
+          if (cSnap.exists && cSnap.data() != null) {
+            final cData = cSnap.data()!;
+            docData['firstApplicantName'] ??= cData['fullName'];
+            docData['firstApplicantMobile'] ??= cData['mobileNumber'];
+          }
+        } catch (_) {}
+      }
+
+      return docData;
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
         e,
@@ -755,23 +819,31 @@ class ApiService {
     String plotId,
     String uid,
   ) {
-    logApi(
-      function: 'watchPlotPayments()',
-      request: {'plotId': plotId, 'uid': uid},
-    );
-    return _db
-        .collection('payments')
-        .where('bookingId', isEqualTo: plotId)
-        .where('zId', isEqualTo: uid)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            final data = doc.data();
-            data['id'] = doc.id;
-            return data;
-          }).toList();
-        });
+    try {
+      logApi(
+        function: 'watchPlotPayments()',
+        request: {'plotId': plotId, 'uid': uid},
+      );
+      return _db
+          .collection('payments')
+          .where('bookingId', isEqualTo: plotId)
+          .where('customerId', isEqualTo: uid)
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map((snapshot) {
+            return snapshot.docs.map((doc) {
+              final data = doc.data();
+              data['id'] = doc.id;
+              return data;
+            }).toList();
+          });
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'watchPlotPayments()',
+      );
+      rethrow;
+    }
   }
 
   // ─── Private helpers ────────────────────────────────────────────────────────

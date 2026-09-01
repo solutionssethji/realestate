@@ -101,7 +101,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                       childAspectRatio: isTablet ? 1.35 : 1.7,
                     ),
                     itemCount: 6,
-                    itemBuilder: (_, __) => const PlotCardSkeleton(),
+                    itemBuilder: (_, _) => const PlotCardSkeleton(),
                   )
                 : state.isError
                 ? ErrorState(

@@ -47,8 +47,7 @@ class AppRoutes {
       '/project/$projectId/plots/$plotId';
 
   // My Properties
-  static String emiTracker(String plotId) =>
-      '/my-properties/$plotId/emi-tracker';
+  static String bookingDetails(String plotId) => '/booking-details/$plotId';
 
   // Profile sub-routes
   static const String kyc = '/kyc';

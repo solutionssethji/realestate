@@ -66,6 +66,14 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>https</string>
+			<string>http</string>
+			<string>mailto</string>
+			<string>tel</string>
+			<string>sms</string>
+		</array>
 		<key>NSUserNotificationUsageDescription</key>
 		<string>Shubhaytanam Connect would like to send you notifications about property updates, offers, and booking confirmations.</string>
 		<key>NSPhotoLibraryUsageDescription</key>

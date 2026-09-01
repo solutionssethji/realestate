@@ -47,7 +47,7 @@ class MyPropertiesPage extends HookConsumerWidget {
                   padding: AppSpacing.allMd,
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
-                      (_, __) => const Padding(
+                      (_, _) => const Padding(
                         padding: EdgeInsets.only(bottom: AppSpacing.sm),
                         child: PropertyListTileSkeleton(),
                       ),
@@ -93,55 +93,150 @@ class MyPropertiesPage extends HookConsumerWidget {
                       final status =
                           property['status'] ?? context.l10n.statusUnknown;
 
-                      return Card(
-                        elevation: 2,
+                      return Container(
                         margin: const EdgeInsets.only(bottom: 16),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(16),
-                          leading: const Icon(
-                            Icons.bookmark,
-                            size: 40,
-                            color: AppTheme.info,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.black.withValues(alpha: 0.05),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                          border: Border.all(
+                            color: AppTheme.midnightNavy.withValues(alpha: 0.1),
                           ),
-                          title: Text(
-                            projectName,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 4),
-                              Text(
-                                context.l10n.plotNoLabel(plotNumber.toString()),
-                              ),
-                              const SizedBox(height: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: status == 'SOLD'
-                                      ? AppTheme.success.withValues(alpha: 0.12)
-                                      : AppTheme.info.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  status,
-                                  style: Theme.of(context).textTheme.labelMedium
-                                      ?.copyWith(
-                                        color: status == 'SOLD'
-                                            ? AppTheme.success
-                                            : AppTheme.info,
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () {
+                              context.push(AppRoutes.bookingDetails(plotId));
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.midnightNavy
+                                              .withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.real_estate_agent_rounded,
+                                          color: AppTheme.midnightNavy,
+                                          size: 28,
+                                        ),
                                       ),
-                                ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              projectName,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        AppTheme.midnightNavy,
+                                                  ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              context.l10n.plotNoLabel(
+                                                plotNumber.toString(),
+                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    color:
+                                                        AppTheme.textSecondary,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: status == 'SOLD'
+                                              ? AppTheme.success.withValues(
+                                                  alpha: 0.1,
+                                                )
+                                              : AppTheme.info.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          status,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelSmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: status == 'SOLD'
+                                                    ? AppTheme.success
+                                                    : AppTheme.info,
+                                                letterSpacing: 0.5,
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Divider(
+                                    height: 1,
+                                    color: AppTheme.border,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'View Payment Details',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium
+                                            ?.copyWith(
+                                              color: AppTheme.midnightNavy,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                      const Icon(
+                                        Icons.arrow_forward_rounded,
+                                        size: 16,
+                                        color: AppTheme.midnightNavy,
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () {
-                            context.push(AppRoutes.emiTracker(plotId));
-                          },
                         ),
                       );
                     }, childCount: state.properties.length),
@@ -155,7 +250,7 @@ class MyPropertiesPage extends HookConsumerWidget {
                   ),
                 ),
               // Applied to all cases
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              const SliverToBoxAdapter(child: SizedBox(height: 120)),
             ],
           ),
         ),

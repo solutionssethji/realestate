@@ -1237,13 +1237,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paymentSummary => 'Payment Summary';
 
   @override
-  String get totalAmount => 'Total Amount';
+  String get totalAmount => 'TOTAL AMOUNT';
 
   @override
   String get amountPaid => 'Amount Paid';
 
   @override
-  String get pendingBalance => 'Pending Balance';
+  String get pendingBalance => 'PENDING BALANCE';
 
   @override
   String get noPaymentRecords => 'No payment records found.';
@@ -1673,4 +1673,147 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get referralCodeOptional => 'Referral Code (Optional)';
+
+  @override
+  String get bookingDetailsTitle => 'Booking Details';
+
+  @override
+  String get noDetailsFound => 'No Details Found';
+
+  @override
+  String get noBookingDetailsMsg =>
+      'We could not find booking details for this plot.';
+
+  @override
+  String get propertyInformation => 'Property Information';
+
+  @override
+  String get project => 'Project';
+
+  @override
+  String get plotNo => 'Plot No';
+
+  @override
+  String get plotArea1 => 'Plot Area 1';
+
+  @override
+  String get plotArea2 => 'Plot Area 2';
+
+  @override
+  String get plotArea3 => 'Plot Area 3';
+
+  @override
+  String get plotArea4 => 'Plot Area 4';
+
+  @override
+  String get salePriceSqFt => 'Sale Price';
+
+  @override
+  String get devChargeSqFt => 'Dev Charge';
+
+  @override
+  String get firstApplicantDetails => 'First Applicant Details';
+
+  @override
+  String get applicantName => 'Name';
+
+  @override
+  String get swdOf => 'S/W/D of';
+
+  @override
+  String get dob => 'DOB';
+
+  @override
+  String get occupation => 'Occupation';
+
+  @override
+  String get nationality => 'Nationality';
+
+  @override
+  String get contactAndIdentity => 'Contact & Identity';
+
+  @override
+  String get mobile => 'Mobile';
+
+  @override
+  String get pan => 'PAN';
+
+  @override
+  String get aadhaar => 'Aadhaar';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get presentAddress => 'Present Address';
+
+  @override
+  String get permanentAddress => 'Permanent';
+
+  @override
+  String get nominee => 'Nominee';
+
+  @override
+  String get relation => 'Relation';
+
+  @override
+  String get secondApplicantDetails => 'Second Applicant Details';
+
+  @override
+  String get paymentTerms => 'Payment Terms';
+
+  @override
+  String get paymentPlan => 'Payment Plan';
+
+  @override
+  String get paymentMode => 'Payment Mode';
+
+  @override
+  String get bankFinance => 'Bank/Finance';
+
+  @override
+  String get applicationDate => 'Application Date';
+
+  @override
+  String get bookingDate => 'BOOKING DATE';
+
+  @override
+  String get paymentEmiTracking => 'Payment & EMI Tracking';
+
+  @override
+  String get recentPaymentsLedger => 'Recent Payments (Ledger)';
+
+  @override
+  String get downloadAll => 'Download All';
+
+  @override
+  String get paidAmount => 'PAID AMOUNT';
+
+  @override
+  String get paymentCompleted => 'COMPLETED';
+
+  @override
+  String plotLabel(String number) {
+    return 'Plot $number';
+  }
+
+  @override
+  String get initialPaymentDesc => 'Initial payment from booking application';
+
+  @override
+  String paymentTxnSuffix(String txnId) {
+    return ' (Txn: $txnId)';
+  }
+
+  @override
+  String get paymentModeCash => 'Cash';
+
+  @override
+  String get naLabel => 'N/A';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get download => 'Download';
 }

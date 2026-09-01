@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 part 'payment_history.state.freezed.dart';
 
 @freezed
-class PaymentHistoryState with _$PaymentHistoryState {
+abstract class PaymentHistoryState with _$PaymentHistoryState {
   const factory PaymentHistoryState({
     @Default(true) bool isLoading,
     @Default(false) bool hasLoaded,

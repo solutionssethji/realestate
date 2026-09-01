@@ -39,7 +39,9 @@ class RegisterLogic extends _$RegisterLogic {
       final referrer = await ApiService.getUserByReferralCode(referralCode);
       if (referrer == null) {
         state = state.copyWith(
-            isLoading: false, errorMessage: 'Invalid referral code');
+          isLoading: false,
+          errorMessage: 'Invalid referral code',
+        );
         return false;
       }
       referredByUid = referrer['id']?.toString();
@@ -77,7 +79,7 @@ class RegisterLogic extends _$RegisterLogic {
         'photoURL': photoURL,
         'role': 'CUSTOMER',
         'status': 'ACTIVE',
-        if (referredByUid != null) 'referredBy': referredByUid,
+        'referredBy': ?referredByUid,
         'createdAt': DateTime.now()
             .toIso8601String(), // Or omit if handled server side
         'updatedAt': DateTime.now().toIso8601String(),

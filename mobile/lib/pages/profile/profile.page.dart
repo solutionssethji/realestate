@@ -22,7 +22,7 @@ class ProfilePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider);
     final customerAsync = ref.watch(customerProvider);
-    final customer = customerAsync.valueOrNull;
+    final customer = customerAsync.value;
     final state = ref.watch(profileLogicProvider);
     final logic = ref.read(profileLogicProvider.notifier);
     final locale = ref.watch(localeControllerProvider);

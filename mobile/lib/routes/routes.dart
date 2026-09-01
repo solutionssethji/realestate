@@ -3,8 +3,8 @@ import 'package:customer_app/pages/auth/forgot_password/forgot_password.page.dar
 import 'package:customer_app/pages/auth/login/login.page.dart' show LoginPage;
 import 'package:customer_app/pages/auth/register/register.page.dart'
     show RegisterPage;
-import 'package:customer_app/pages/emi_tracker/emi_tracker.page.dart'
-    show EmiTrackerPage;
+import '../pages/booking_details/booking_details.page.dart'
+    show BookingDetailsPage;
 import 'package:customer_app/pages/offer_details/offer_details.page.dart';
 import 'package:customer_app/pages/referral/referral.page.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +40,7 @@ import '../providers/auth_provider.dart';
 class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
   RouterNotifier(this._ref) {
-    _ref.listen(currentUserProvider, (_, __) => notifyListeners());
+    _ref.listen(currentUserProvider, (_, _) => notifyListeners());
   }
 }
 
@@ -225,9 +225,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // My Properties Routes
       GoRoute(
-        path: '/my-properties/:plotId/emi-tracker',
+        path: '/booking-details/:plotId',
         builder: (context, state) =>
-            EmiTrackerPage(plotId: state.pathParameters['plotId']!),
+            BookingDetailsPage(plotId: state.pathParameters['plotId']!),
       ),
 
       // Profile Routes

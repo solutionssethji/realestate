@@ -27,8 +27,8 @@ class ShimmerLoader extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: count,
-        separatorBuilder: (_, __) => SizedBox(height: spacing),
-        itemBuilder: (_, __) => Container(
+        separatorBuilder: (_, _) => SizedBox(height: spacing),
+        itemBuilder: (_, _) => Container(
           height: height,
           width: width,
           decoration: BoxDecoration(

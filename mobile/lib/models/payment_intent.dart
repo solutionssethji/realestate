@@ -5,7 +5,7 @@ part 'payment_intent.freezed.dart';
 enum PaymentStatus { pending, processing, success, failed, cancelled }
 
 @freezed
-class PaymentIntent with _$PaymentIntent {
+abstract class PaymentIntent with _$PaymentIntent {
   const factory PaymentIntent({
     required String id,
     required double amount,

@@ -2327,7 +2327,7 @@ abstract class AppLocalizations {
   /// No description provided for @totalAmount.
   ///
   /// In en, this message translates to:
-  /// **'Total Amount'**
+  /// **'TOTAL AMOUNT'**
   String get totalAmount;
 
   /// No description provided for @amountPaid.
@@ -2339,7 +2339,7 @@ abstract class AppLocalizations {
   /// No description provided for @pendingBalance.
   ///
   /// In en, this message translates to:
-  /// **'Pending Balance'**
+  /// **'PENDING BALANCE'**
   String get pendingBalance;
 
   /// No description provided for @noPaymentRecords.
@@ -3139,6 +3139,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Referral Code (Optional)'**
   String get referralCodeOptional;
+
+  /// No description provided for @bookingDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking Details'**
+  String get bookingDetailsTitle;
+
+  /// No description provided for @noDetailsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Details Found'**
+  String get noDetailsFound;
+
+  /// No description provided for @noBookingDetailsMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not find booking details for this plot.'**
+  String get noBookingDetailsMsg;
+
+  /// No description provided for @propertyInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Property Information'**
+  String get propertyInformation;
+
+  /// No description provided for @project.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get project;
+
+  /// No description provided for @plotNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot No'**
+  String get plotNo;
+
+  /// No description provided for @plotArea1.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot Area 1'**
+  String get plotArea1;
+
+  /// No description provided for @plotArea2.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot Area 2'**
+  String get plotArea2;
+
+  /// No description provided for @plotArea3.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot Area 3'**
+  String get plotArea3;
+
+  /// No description provided for @plotArea4.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot Area 4'**
+  String get plotArea4;
+
+  /// No description provided for @salePriceSqFt.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale Price'**
+  String get salePriceSqFt;
+
+  /// No description provided for @devChargeSqFt.
+  ///
+  /// In en, this message translates to:
+  /// **'Dev Charge'**
+  String get devChargeSqFt;
+
+  /// No description provided for @firstApplicantDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'First Applicant Details'**
+  String get firstApplicantDetails;
+
+  /// No description provided for @applicantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get applicantName;
+
+  /// No description provided for @swdOf.
+  ///
+  /// In en, this message translates to:
+  /// **'S/W/D of'**
+  String get swdOf;
+
+  /// No description provided for @dob.
+  ///
+  /// In en, this message translates to:
+  /// **'DOB'**
+  String get dob;
+
+  /// No description provided for @occupation.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupation'**
+  String get occupation;
+
+  /// No description provided for @nationality.
+  ///
+  /// In en, this message translates to:
+  /// **'Nationality'**
+  String get nationality;
+
+  /// No description provided for @contactAndIdentity.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact & Identity'**
+  String get contactAndIdentity;
+
+  /// No description provided for @mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile'**
+  String get mobile;
+
+  /// No description provided for @pan.
+  ///
+  /// In en, this message translates to:
+  /// **'PAN'**
+  String get pan;
+
+  /// No description provided for @aadhaar.
+  ///
+  /// In en, this message translates to:
+  /// **'Aadhaar'**
+  String get aadhaar;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @presentAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Present Address'**
+  String get presentAddress;
+
+  /// No description provided for @permanentAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanent'**
+  String get permanentAddress;
+
+  /// No description provided for @nominee.
+  ///
+  /// In en, this message translates to:
+  /// **'Nominee'**
+  String get nominee;
+
+  /// No description provided for @relation.
+  ///
+  /// In en, this message translates to:
+  /// **'Relation'**
+  String get relation;
+
+  /// No description provided for @secondApplicantDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Second Applicant Details'**
+  String get secondApplicantDetails;
+
+  /// No description provided for @paymentTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Terms'**
+  String get paymentTerms;
+
+  /// No description provided for @paymentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Plan'**
+  String get paymentPlan;
+
+  /// No description provided for @paymentMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Mode'**
+  String get paymentMode;
+
+  /// No description provided for @bankFinance.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank/Finance'**
+  String get bankFinance;
+
+  /// No description provided for @applicationDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Application Date'**
+  String get applicationDate;
+
+  /// No description provided for @bookingDate.
+  ///
+  /// In en, this message translates to:
+  /// **'BOOKING DATE'**
+  String get bookingDate;
+
+  /// No description provided for @paymentEmiTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment & EMI Tracking'**
+  String get paymentEmiTracking;
+
+  /// No description provided for @recentPaymentsLedger.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Payments (Ledger)'**
+  String get recentPaymentsLedger;
+
+  /// No description provided for @downloadAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Download All'**
+  String get downloadAll;
+
+  /// No description provided for @paidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'PAID AMOUNT'**
+  String get paidAmount;
+
+  /// No description provided for @paymentCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'COMPLETED'**
+  String get paymentCompleted;
+
+  /// No description provided for @plotLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot {number}'**
+  String plotLabel(String number);
+
+  /// No description provided for @initialPaymentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial payment from booking application'**
+  String get initialPaymentDesc;
+
+  /// No description provided for @paymentTxnSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' (Txn: {txnId})'**
+  String paymentTxnSuffix(String txnId);
+
+  /// No description provided for @paymentModeCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get paymentModeCash;
+
+  /// No description provided for @naLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'N/A'**
+  String get naLabel;
+
+  /// No description provided for @view.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get view;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
 }
 
 class _AppLocalizationsDelegate

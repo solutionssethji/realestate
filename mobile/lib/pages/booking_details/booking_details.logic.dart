@@ -2,39 +2,44 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/services/api_service.dart';
 import 'dart:async';
-import 'emi_tracker.state.dart';
+import 'booking_details.state.dart';
 
-part 'emi_tracker.logic.g.dart';
+part 'booking_details.logic.g.dart';
 
 @riverpod
-class EmiTrackerLogic extends _$EmiTrackerLogic {
+class BookingDetailsLogic extends _$BookingDetailsLogic {
   StreamSubscription? _paymentsSubscription;
 
   @override
-  EmiTrackerState build(String plotId) {
-    _loadPlotDetails(plotId);
-    _listenToPayments(plotId);
+  BookingDetailsState build(String plotId) {
+    loadPlotDetails(plotId);
+    listenToPayments(plotId);
 
     ref.onDispose(() {
       _paymentsSubscription?.cancel();
     });
 
-    return const EmiTrackerState(isLoading: true);
+    return const BookingDetailsState(isLoading: true);
   }
 
-  Future<void> _loadPlotDetails(String plotId) async {
+  Future<void> loadPlotDetails(String plotId) async {
     final data = await ApiService.getAssignPlotDetails(plotId);
     if (data != null) {
       state = state.copyWith(
+        isLoading: false, // ← shimmer band karo jab data aa jaye
+        bookingData: data,
         totalAmount: (data['totalAmount'] ?? 0.0).toDouble(),
         paidAmount: (data['paidAmount'] ?? 0.0).toDouble(),
       );
     } else {
-      state = state.copyWith(errorMessage: 'Failed to load property details');
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to load property details',
+      );
     }
   }
 
-  void _listenToPayments(String plotId) {
+  void listenToPayments(String plotId) {
     final uid = AuthService.currentUser?.uid;
     if (uid == null) {
       state = state.copyWith(
@@ -46,13 +51,11 @@ class EmiTrackerLogic extends _$EmiTrackerLogic {
 
     _paymentsSubscription = ApiService.watchPlotPayments(plotId, uid).listen(
       (payments) {
-        state = state.copyWith(isLoading: false, payments: payments);
+        // Only update payments — don't touch isLoading here
+        state = state.copyWith(payments: payments);
       },
       onError: (error) {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: 'Failed to load payments',
-        );
+        state = state.copyWith(errorMessage: 'Failed to load payments');
       },
     );
   }

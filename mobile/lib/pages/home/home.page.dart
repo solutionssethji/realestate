@@ -54,11 +54,11 @@ class HomePage extends HookConsumerWidget {
         onNotification: (notification) {
           if (notification.direction == ScrollDirection.forward) {
             if (!ref.read(fabVisibleProvider)) {
-              ref.read(fabVisibleProvider.notifier).state = true;
+              ref.read(fabVisibleProvider.notifier).setVisible(true);
             }
           } else if (notification.direction == ScrollDirection.reverse) {
             if (ref.read(fabVisibleProvider)) {
-              ref.read(fabVisibleProvider.notifier).state = false;
+              ref.read(fabVisibleProvider.notifier).setVisible(false);
             }
           }
           return false;

@@ -52,7 +52,7 @@ void main() {
 
     test('Initial state loads plots for p1', () async {
       final logicProvider = plotAvailabilityLogicProvider('p1');
-      container.listen(logicProvider, (_, __) {});
+      container.listen(logicProvider, (_, _) {});
       final state = container.read(logicProvider);
 
       expect(state.isLoading, true);
@@ -70,7 +70,7 @@ void main() {
 
     test('Filter by status updates filteredPlots', () async {
       final logicProvider = plotAvailabilityLogicProvider('p1');
-      container.listen(logicProvider, (_, __) {});
+      container.listen(logicProvider, (_, _) {});
 
       // Wait for mock data load
       await Future.delayed(const Duration(milliseconds: 600));
@@ -94,7 +94,7 @@ void main() {
 
     test('Search query updates filteredPlots', () async {
       final logicProvider = plotAvailabilityLogicProvider('p1');
-      container.listen(logicProvider, (_, __) {});
+      container.listen(logicProvider, (_, _) {});
 
       // Wait for mock data load
       await Future.delayed(const Duration(milliseconds: 600));
