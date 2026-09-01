@@ -52,5 +52,5 @@ __exportStar(require("./payments"), exports);
 __exportStar(require("./plots"), exports);
 __exportStar(require("./notifications"), exports);
 __exportStar(require("./transactions"), exports);
-__exportStar(require("./offers"), exports);
+// offers module removed - expiry now handled client-side via endDate filter
 //# sourceMappingURL=index.js.map

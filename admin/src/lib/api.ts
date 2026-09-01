@@ -45,8 +45,7 @@ export async function createBookingIfPlotAvailable(
         throw new Error("Plot does not exist.");
       }
       const plotData = plotSnapshot.data();
-      const status = plotData.status || "AVAILABLE";
-      if (status.toUpperCase() !== "AVAILABLE") {
+      if (plotData.assignedUserId && plotData.assignedUserId.trim() !== "") {
         throw new Error("This plot is already assigned to another person.");
       }
 

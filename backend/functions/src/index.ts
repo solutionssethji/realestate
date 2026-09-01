@@ -18,4 +18,4 @@ export * from './payments';
 export * from './plots';
 export * from './notifications';
 export * from './transactions';
-export * from './offers';
+// offers module removed - expiry now handled client-side via endDate filter
