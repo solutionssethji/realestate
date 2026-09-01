@@ -11,6 +11,8 @@ import '../../theme/spacing.dart';
 import '../../widgets/premium_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../widgets/shimmer_loader.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import '../../routes/app_routes.dart';
 
 class ProjectDetailsPage extends HookConsumerWidget {
   final String projectId;
@@ -26,178 +28,202 @@ class ProjectDetailsPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.projects),
-      body: SafeArea(
-        top: false,
-        child: state.isLoading
-            ? const DetailPageSkeleton()
-            : (state.isError || state.project == null || project == null)
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      context.l10n.unableToLoadProject,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    AppSpacing.hLg,
-                    OutlinedButton.icon(
-                      onPressed: () => ref
-                          .read(projectDetailsLogicProvider(projectId).notifier)
-                          .loadProject(projectId),
-                      icon: const Icon(Icons.refresh),
-                      label: Text(loc.tryAgain),
-                    ),
-                  ],
-                ),
-              )
-            : CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Image.network(
-                      project.coverImage,
-                      width: double.infinity,
-                      height: 250,
-                      fit: BoxFit.cover,
-                    ),
+      body: VisibilityDetector(
+        key: Key('project-details-$projectId'),
+        onVisibilityChanged: (info) {
+          if (info.visibleFraction == 1.0) {
+            ref
+                .read(projectDetailsLogicProvider(projectId).notifier)
+                .loadProject(projectId);
+          }
+        },
+        child: SafeArea(
+          top: false,
+          child: state.isLoading
+              ? const DetailPageSkeleton()
+              : (state.isError || state.project == null || project == null)
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        context.l10n.unableToLoadProject,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      AppSpacing.hLg,
+                      OutlinedButton.icon(
+                        onPressed: () => ref
+                            .read(
+                              projectDetailsLogicProvider(projectId).notifier,
+                            )
+                            .loadProject(projectId),
+                        icon: const Icon(Icons.refresh),
+                        label: Text(loc.tryAgain),
+                      ),
+                    ],
                   ),
-                  // ── Body Content ────────────────────────────────────────────────────
-                  SliverToBoxAdapter(
-                    child: Center(
-                      child: Container(
-                        constraints: const BoxConstraints(maxWidth: 1200),
-                        padding: AppSpacing.allLg,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: AppSpacing.xl,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      if (project.isFeatured) ...[
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppTheme.midnightNavy,
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: const Text(
-                                            'FEATURED',
-                                            style: TextStyle(
-                                              color: AppTheme.white,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 1.2,
-                                            ),
-                                          ),
-                                        ),
-                                        AppSpacing.wSm,
-                                      ],
-                                      if (project.developmentStatus.isNotEmpty)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppTheme.softGold,
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            project.developmentStatus,
-                                            style: const TextStyle(
-                                              color: AppTheme.midnightNavy,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                  if (project.isFeatured ||
-                                      project.developmentStatus.isNotEmpty)
-                                    AppSpacing.hSm,
-                                  Text(
-                                    project.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium
-                                        ?.copyWith(
-                                          color: AppTheme.textPrimary,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  AppSpacing.hXs,
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.location_on,
-                                        color: AppTheme.textSecondary,
-                                        size: 16,
-                                      ),
-                                      AppSpacing.wXs,
-                                      Expanded(
-                                        child: Text(
-                                          project.location,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge
-                                              ?.copyWith(
-                                                color: AppTheme.textSecondary,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  if (project.plotCount > 0) ...[
-                                    AppSpacing.hSm,
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.grid_view_rounded,
-                                          color: AppTheme.midnightNavy,
-                                          size: 16,
-                                        ),
-                                        AppSpacing.wXs,
-                                        Text(
-                                          '${project.plotCount} Total Plots',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: AppTheme.midnightNavy,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                            _LeftContent(project: project),
-                            AppSpacing.hXXl,
-                            _RightActions(
-                              projectId: projectId,
-                              project: project,
-                            ),
-                          ],
+                )
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    await ref
+                        .read(projectDetailsLogicProvider(projectId).notifier)
+                        .loadProject(projectId);
+                  },
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: Image.network(
+                          project.coverImage,
+                          width: double.infinity,
+                          height: 250,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
+                      // ── Body Content ────────────────────────────────────────────────────
+                      SliverToBoxAdapter(
+                        child: Center(
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 1200),
+                            padding: AppSpacing.allLg,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: AppSpacing.xl,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          if (project.isFeatured) ...[
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 4,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: AppTheme.midnightNavy,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: const Text(
+                                                'FEATURED',
+                                                style: TextStyle(
+                                                  color: AppTheme.white,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 1.2,
+                                                ),
+                                              ),
+                                            ),
+                                            AppSpacing.wSm,
+                                          ],
+                                          if (project
+                                              .developmentStatus
+                                              .isNotEmpty)
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 4,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: AppTheme.softGold,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                project.developmentStatus,
+                                                style: const TextStyle(
+                                                  color: AppTheme.midnightNavy,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      if (project.isFeatured ||
+                                          project.developmentStatus.isNotEmpty)
+                                        AppSpacing.hSm,
+                                      Text(
+                                        project.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium
+                                            ?.copyWith(
+                                              color: AppTheme.textPrimary,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                      AppSpacing.hXs,
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.location_on,
+                                            color: AppTheme.textSecondary,
+                                            size: 16,
+                                          ),
+                                          AppSpacing.wXs,
+                                          Expanded(
+                                            child: Text(
+                                              project.location,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge
+                                                  ?.copyWith(
+                                                    color:
+                                                        AppTheme.textSecondary,
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      if (project.plotCount > 0) ...[
+                                        AppSpacing.hSm,
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.grid_view_rounded,
+                                              color: AppTheme.midnightNavy,
+                                              size: 16,
+                                            ),
+                                            AppSpacing.wXs,
+                                            Text(
+                                              context.l10n.totalPlots(project.plotCount),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium
+                                                  ?.copyWith(
+                                                    color:
+                                                        AppTheme.midnightNavy,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                                _LeftContent(project: project),
+                                AppSpacing.hXXl,
+                                _RightActions(
+                                  projectId: projectId,
+                                  project: project,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+        ),
       ),
       // // Mobile sticky bottom bar
       // bottomNavigationBar: isDesktop
@@ -222,7 +248,7 @@ class ProjectDetailsPage extends HookConsumerWidget {
       //                   text: context.l10n.viewPlots,
       //                   icon: Icons.grid_view_rounded,
       //                   onPressed: () =>
-      //                       context.push('/home/project/$projectId/plots'),
+      //                       context.push(AppRoutes.plotAvailability(projectId)),
       //                 ),
       //               ),
       //               AppSpacing.wMd,
@@ -232,7 +258,7 @@ class ProjectDetailsPage extends HookConsumerWidget {
       //                   style: PremiumButtonStyle.secondary,
       //                   icon: Icons.directions_car_outlined,
       //                   onPressed: () => context.push(
-      //                     '/home/site-visit?projectId=$projectId',
+      //                     AppRoutes.siteVisitWithProject(projectId),
       //                   ),
       //                 ),
       //               ),
@@ -377,7 +403,8 @@ class _RightActions extends StatelessWidget {
               PremiumButton(
                 text: context.l10n.viewPlotAvailability,
                 icon: Icons.grid_view_rounded,
-                onPressed: () => context.push('/home/project/$projectId/plots'),
+                onPressed: () =>
+                    context.push(AppRoutes.plotAvailability(projectId)),
               ),
               AppSpacing.hMd,
               PremiumButton(
@@ -385,12 +412,12 @@ class _RightActions extends StatelessWidget {
                 style: PremiumButtonStyle.outline,
                 icon: Icons.directions_car_outlined,
                 onPressed: () =>
-                    context.push('/home/site-visit?projectId=$projectId'),
+                    context.push(AppRoutes.siteVisitWithProject(projectId)),
               ),
               AppSpacing.hMd,
               if (project.googleMap.isNotEmpty) ...[
                 PremiumButton(
-                  text: 'View on Google Maps',
+                  text: context.l10n.viewOnGoogleMaps,
                   style: PremiumButtonStyle.outline,
                   icon: Icons.map_outlined,
                   onPressed: () async {
@@ -409,7 +436,7 @@ class _RightActions extends StatelessWidget {
                 text: loc.enquireNow,
                 style: PremiumButtonStyle.ghost,
                 onPressed: () =>
-                    context.push('/home/enquiry?projectId=$projectId'),
+                    context.push(AppRoutes.enquiryWithProject(projectId)),
               ),
             ],
           ),

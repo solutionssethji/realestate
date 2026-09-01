@@ -5,13 +5,16 @@ import 'package:customer_app/widgets/app_loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../services/api_service.dart';
 import '../../services/storage_service.dart';
 import '../../utils/l10n_extension.dart';
+import '../../utils/validators.dart';
+import '../../utils/snackbar_utils.dart';
 import '../../theme/theme.dart';
 
 class KycPage extends HookConsumerWidget {
@@ -40,23 +43,44 @@ class KycPage extends HookConsumerWidget {
     // Selected images
     final aadharImage = useState<File?>(null);
     final panImage = useState<File?>(null);
-    final picker = ImagePicker();
 
-    Future<void> pickImage(ValueNotifier<File?> imageState) async {
+    final formKey = useMemoized(() => GlobalKey<FormState>());
+
+    useValueListenable(aadharController);
+    useValueListenable(panController);
+
+    final hasAadharImg =
+        aadharImage.value != null || (user?.aadharPhotoUrl != null);
+    final hasPanImg = panImage.value != null || (user?.panPhotoUrl != null);
+
+    final isFormFilled =
+        aadharController.text.trim().isNotEmpty &&
+        panController.text.trim().isNotEmpty &&
+        hasAadharImg &&
+        hasPanImg;
+
+    Future<void> pickDocument(ValueNotifier<File?> fileState) async {
       try {
-        final XFile? pickedFile = await picker.pickImage(
-          source: ImageSource.gallery,
-          imageQuality: 70,
+        final result = await FilePicker.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf'],
         );
-        if (pickedFile != null) {
-          imageState.value = File(pickedFile.path);
+        if (result.isNotEmpty && result.single.path != null) {
+          final file = File(result.single.path!);
+          final sizeInMb = file.lengthSync() / (1024 * 1024);
+          if (sizeInMb > 2.0) {
+            if (context.mounted) {
+              AppSnackbar.showError(context, context.l10n.pdfTooLarge);
+            }
+            return;
+          }
+          fileState.value = file;
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(context.l10n.failedToPickImage(e.toString())),
-            ),
+          AppSnackbar.showError(
+            context,
+            context.l10n.failedToPickImage(e.toString()),
           );
         }
       }
@@ -64,6 +88,7 @@ class KycPage extends HookConsumerWidget {
 
     Future<void> submitKyc() async {
       if (authUser == null) return;
+      if (!formKey.currentState!.validate()) return;
 
       isLoading.value = true;
       try {
@@ -114,17 +139,14 @@ class KycPage extends HookConsumerWidget {
         // Trigger user refresh if needed (customerProvider stream auto-updates)
 
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.kycUpdatedSuccessfully)),
-          );
+          AppSnackbar.showSuccess(context, context.l10n.kycUpdatedSuccessfully);
           context.pop();
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(context.l10n.failedToUpdateKyc(e.toString())),
-            ),
+          AppSnackbar.showError(
+            context,
+            context.l10n.failedToUpdateKyc(e.toString()),
           );
         }
       } finally {
@@ -134,92 +156,111 @@ class KycPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.kycAndDocuments),
-      body: authUser == null || customerAsync.isLoading
-          ? const AppLoadingView()
-          : user == null
-          ? Center(child: Text(context.l10n.userNotFound))
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    context.l10n.identityDocuments,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 16),
+      body: SafeArea(
+        child: authUser == null || customerAsync.isLoading
+            ? const AppLoadingView()
+            : user == null
+            ? Center(child: Text(context.l10n.userNotFound))
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        context.l10n.identityDocuments,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 16),
 
-                  // Aadhar Section
-                  _buildDocumentSection(
-                    context: context,
-                    title: context.l10n.aadharCard,
-                    controller: aadharController,
-                    hintText: context.l10n.enterAadharNumber,
-                    imageState: aadharImage,
-                    existingUrl: user.aadharPhotoUrl,
-                    onPickImage: () => pickImage(aadharImage),
-                    l10n: context.l10n,
-                  ),
+                      // Aadhar Section
+                      _buildDocumentSection(
+                        context: context,
+                        title: context.l10n.aadharCard,
+                        controller: aadharController,
+                        hintText: context.l10n.enterAadharNumber,
+                        imageState: aadharImage,
+                        existingUrl: user.aadharPhotoUrl,
+                        onPickImage: () => pickDocument(aadharImage),
+                        l10n: context.l10n,
+                        validator: (v) => AppValidators.aadhaar(context, v),
+                      ),
 
-                  const SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
-                  // PAN Section
-                  _buildDocumentSection(
-                    context: context,
-                    title: context.l10n.panCard,
-                    controller: panController,
-                    hintText: context.l10n.enterPanNumber,
-                    imageState: panImage,
-                    existingUrl: user.panPhotoUrl,
-                    onPickImage: () => pickImage(panImage),
-                    l10n: context.l10n,
-                  ),
+                      // PAN Section
+                      _buildDocumentSection(
+                        context: context,
+                        title: context.l10n.panCard,
+                        controller: panController,
+                        hintText: context.l10n.enterPanNumber,
+                        imageState: panImage,
+                        existingUrl: user.panPhotoUrl,
+                        onPickImage: () => pickDocument(panImage),
+                        l10n: context.l10n,
+                        validator: (v) => AppValidators.pan(context, v),
+                      ),
 
-                  const SizedBox(height: 32),
-                  const Divider(),
-                  const SizedBox(height: 16),
+                      const SizedBox(height: 32),
+                      const Divider(),
+                      const SizedBox(height: 16),
 
-                  Text(
-                    context.l10n.bankDetails,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 16),
+                      Text(
+                        context.l10n.bankDetails,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 16),
 
-                  TextFormField(
-                    controller: bankNameController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.bankName,
-                      border: const OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: accountController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.accountNumber,
-                      border: const OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: ifscController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.ifscCode,
-                      border: const OutlineInputBorder(),
-                    ),
-                  ),
+                      TextFormField(
+                        controller: bankNameController,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.bankName,
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (v) => AppValidators.required(
+                          context,
+                          v,
+                          context.l10n.bankName,
+                        ),
+                        textCapitalization: TextCapitalization.words,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: accountController,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.accountNumber,
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (v) =>
+                            AppValidators.accountNumber(context, v),
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: ifscController,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.ifscCode,
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (v) => AppValidators.ifscCode(context, v),
+                        textCapitalization: TextCapitalization.characters,
+                      ),
 
-                  const SizedBox(height: 40),
+                      const SizedBox(height: 40),
 
-                  PremiumButton(
-                    text: context.l10n.saveDetails,
-                    onPressed: submitKyc,
-                    isLoading: isLoading.value,
+                      PremiumButton(
+                        text: context.l10n.saveDetails,
+                        onPressed: isFormFilled ? submitKyc : null,
+                        isLoading: isLoading.value,
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                ],
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -232,6 +273,7 @@ class KycPage extends HookConsumerWidget {
     required String? existingUrl,
     required VoidCallback onPickImage,
     required dynamic l10n,
+    String? Function(String?)? validator,
   }) {
     return Card(
       elevation: 0,
@@ -248,6 +290,7 @@ class KycPage extends HookConsumerWidget {
             const SizedBox(height: 12),
             TextFormField(
               controller: controller,
+              validator: validator,
               decoration: InputDecoration(
                 hintText: hintText,
                 border: const OutlineInputBorder(),
@@ -263,49 +306,104 @@ class KycPage extends HookConsumerWidget {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
-            GestureDetector(
-              onTap: onPickImage,
-              child: Container(
-                height: 120,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppTheme.neutral100,
-                  border: Border.all(
-                    color: AppTheme.neutral300,
-                    style: BorderStyle.solid,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: imageState.value != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.file(imageState.value!, fit: BoxFit.cover),
-                      )
-                    : existingUrl != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(existingUrl, fit: BoxFit.cover),
-                      )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.upload_file,
-                            size: 40,
-                            color: AppTheme.textSecondary,
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: onPickImage,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppTheme.neutral100,
+                          border: Border.all(
+                            color: AppTheme.midnightNavy,
+                            style: BorderStyle.solid,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            l10n.tapToPickImage,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
-                                ),
-                          ),
-                        ],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              imageState.value != null || existingUrl != null
+                                  ? Icons.check_circle
+                                  : Icons.upload_file,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    imageState.value != null
+                                        ? imageState.value!.path.split('/').last
+                                        : existingUrl != null
+                                        ? l10n.fileSelected
+                                        : l10n.tapToPickPdf,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  if (imageState.value != null ||
+                                      existingUrl != null)
+                                    Text(
+                                      'Tap to change',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withValues(alpha: 0.7),
+                                          ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            if (imageState.value != null || existingUrl != null)
+                              Icon(
+                                Icons.edit,
+                                size: 18,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                          ],
+                        ),
                       ),
+                    ),
+                  ),
+                  if (existingUrl != null) ...[
+                    const SizedBox(width: 12),
+                    PremiumButton(
+                      text: l10n.viewPdf,
+                      style: PremiumButtonStyle.outline,
+                      isFullWidth: false,
+                      onPressed: () async {
+                        final uri = Uri.parse(existingUrl);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(
+                            uri,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ],
               ),
             ),
           ],

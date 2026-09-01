@@ -94,34 +94,41 @@ class OfferCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: AppRadius.circularLg,
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.black.withValues(alpha: 0.1),
+            blurRadius: 5,
+          ),
+        ],
+      ),
       clipBehavior: Clip.antiAlias,
       child: Shimmer.fromColors(
         baseColor: AppTheme.neutral200,
         highlightColor: AppTheme.neutral100,
-        child: const Row(
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 140,
-              width: 140,
+            AspectRatio(
+              aspectRatio: 21 / 9,
               child: ColoredBox(color: AppTheme.surface),
             ),
-            Expanded(
-              child: Padding(
-                padding: AppSpacing.allLg,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _ShimmerBox(height: 12, width: 80),
-                    AppSpacing.hSm,
-                    _ShimmerBox(height: 18, width: double.infinity),
-                    AppSpacing.hXs,
-                    _ShimmerBox(height: 18, width: 180),
-                    AppSpacing.hMd,
-                    _ShimmerBox(height: 12, width: 120),
-                  ],
-                ),
+            Padding(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _ShimmerBox(height: 20, width: 100),
+                  AppSpacing.hSm,
+                  _ShimmerBox(height: 22, width: double.infinity),
+                  AppSpacing.hXs,
+                  _ShimmerBox(height: 16, width: 220),
+                  AppSpacing.hXs,
+                  _ShimmerBox(height: 16, width: 160),
+                ],
               ),
             ),
           ],

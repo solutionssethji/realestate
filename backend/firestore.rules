@@ -18,18 +18,20 @@ service cloud.firestore {
     }
     
     match /offers/{offerId} {
-      allow read: if resource == null || resource.data.status == 'ACTIVE' || isAdmin();
+      allow read: if true;
       allow write: if isAdmin();
     }
     
     // CUSTOMER WRITES (Enquiries & Site Visits)
     match /enquiries/{enquiryId} {
       allow create: if true; 
+      allow read: if request.auth != null && request.auth.uid == resource.data.customerId;
       allow read, update, delete: if isAdmin();
     }
     
     match /siteVisits/{siteVisitId} {
       allow create: if true; 
+      allow read: if request.auth != null && request.auth.uid == resource.data.customerId;
       allow read, update, delete: if isAdmin(); 
     }
     
@@ -44,7 +46,7 @@ service cloud.firestore {
     }
     
     // USERS (Customers of the mobile app)
-    match /users/{userId} {
+    match /users/{userId}/{document=**} {
       allow read: if request.auth != null && request.auth.uid == userId;
       allow write: if request.auth != null && request.auth.uid == userId;
       allow read, write: if isAdmin();

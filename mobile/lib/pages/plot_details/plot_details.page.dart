@@ -12,6 +12,7 @@ import '../../models/plot_status.dart';
 import '../../widgets/premium_button.dart';
 import '../../widgets/status_badge.dart';
 import '../../widgets/shimmer_loader.dart';
+import '../../routes/app_routes.dart';
 
 class PlotDetailsPage extends ConsumerWidget {
   final String projectId;
@@ -148,7 +149,7 @@ class PlotDetailsPage extends ConsumerWidget {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(
-                            '₹${plot.price.toStringAsFixed(0)}',
+                            context.l10n.inrPrice(plot.price.toStringAsFixed(0)),
                             style: Theme.of(context).textTheme.displaySmall
                                 ?.copyWith(color: AppTheme.midnightNavy),
                           ),
@@ -172,10 +173,7 @@ class PlotDetailsPage extends ConsumerWidget {
                             : PremiumButtonStyle.ghost,
                         onPressed: isAvailable
                             ? () => context.push(
-                                '/home/payment'
-                                '?refId=${plot.id}'
-                                '&desc=Plot+${plot.plotNumber}'
-                                '&amount=${(plot.price * 0.1).toStringAsFixed(0)}',
+                                '${AppRoutes.payment}?refId=${plot.id}&desc=Plot+${plot.plotNumber}&amount=${(plot.price * 0.1).toStringAsFixed(0)}',
                               )
                             : null,
                       ),

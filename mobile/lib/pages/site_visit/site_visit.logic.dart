@@ -23,22 +23,13 @@ class SiteVisitLogic extends _$SiteVisitLogic {
       isSuccess: false,
       errorMessage: null,
     );
-    try {
-      await ApiService.submitSiteVisit({
-        'customerId': customerId,
-        'projectId': projectId,
-        'preferredDate': date.toIso8601String(),
-        'preferredTime': time,
-      });
-      state = state.copyWith(isSubmitting: false, isSuccess: true);
-      return true;
-    } catch (e) {
-      state = state.copyWith(
-        isSubmitting: false,
-        isError: true,
-        errorMessage: e.toString().replaceAll('Exception: ', ''),
-      );
-      return false;
-    }
+    await ApiService.submitSiteVisit({
+      'customerId': customerId,
+      'projectId': projectId,
+      'preferredDate': date.toIso8601String(),
+      'preferredTime': time,
+    });
+    state = state.copyWith(isSubmitting: false, isSuccess: true);
+    return true;
   }
 }

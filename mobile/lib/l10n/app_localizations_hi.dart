@@ -12,6 +12,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get appName => 'एलिज़ियम रियल एस्टेट';
 
   @override
+  String get errorLoadingCode => 'कोड लोड करने में त्रुटि';
+
+  @override
+  String get shareCode => 'कोड साझा करें';
+
+  @override
   String get aboutCompany => 'कंपनी के बारे में';
 
   @override
@@ -510,6 +516,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get signOut => 'साइन आउट';
 
   @override
+  String get logoutConfirmation => 'क्या आप वाकई साइन आउट करना चाहते हैं?';
+
+  @override
   String get searchByPlot => 'प्लॉट नंबर से खोजें...';
 
   @override
@@ -668,7 +677,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुनः प्रयास करें।';
 
   @override
-  String get somethingWentWrong => 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।';
+  String get somethingWentWrong => 'Something went wrong. Please try again.';
 
   @override
   String get notAuthorizedPayment =>
@@ -1204,7 +1213,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tapToPickImage => 'Tap to pick image';
 
   @override
-  String get userNotFound => 'User not found';
+  String get userNotFound => 'User not found. Please log in again.';
 
   @override
   String failedToPickImage(String error) {
@@ -1364,7 +1373,27 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sendResetLink => 'Send Reset Link';
 
   @override
-  String get resetLinkSent => 'Reset link sent! Please check your email inbox.';
+  String get resetLinkSent =>
+      'रीसेट लिंक भेज दिया गया है! कृपया अपना ईमेल इनबॉक्स देखें।';
+
+  @override
+  String get resetLinkSentDialogTitle => 'ईमेल भेजा गया';
+
+  @override
+  String get resetLinkSentDialogBody =>
+      'आपके ईमेल पर पासवर्ड रीसेट लिंक भेज दिया गया है।\n\nसुरक्षा कारणों से, यह लिंक जल्द ही समाप्त हो जाएगा। कृपया अपना पासवर्ड तुरंत रीसेट करें।\n\nकृपया रीसेट लिंक के लिए अपना इनबॉक्स (और स्पैम फ़ोल्डर) जांचें, और फिर लॉगिन पर आगे बढ़ें।';
+
+  @override
+  String get resetLinkSentDialogButton => 'लॉगिन पर जाएँ';
+
+  @override
+  String get agreeToPrefix => 'मैं ';
+
+  @override
+  String get agreeToAnd => ' और ';
+
+  @override
+  String get agreeToSuffix => ' से सहमत हूँ।';
 
   @override
   String get permissionDenied => 'अनुमति नहीं है। कृपया सहायता से संपर्क करें।';
@@ -1395,4 +1424,251 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get alreadyHaveAccount => 'Already have an account? Login';
+
+  @override
+  String get valErrEmailRequired => 'ईमेल आवश्यक है';
+
+  @override
+  String get valErrEmailInvalid => 'कृपया एक वैध ईमेल पता दर्ज करें';
+
+  @override
+  String get valErrPasswordRequired => 'पासवर्ड आवश्यक है';
+
+  @override
+  String get valErrPasswordLength => 'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए';
+
+  @override
+  String get valErrFullNameRequired => 'पूरा नाम आवश्यक है';
+
+  @override
+  String get valErrMobileRequired => 'मोबाइल नंबर आवश्यक है';
+
+  @override
+  String get valErrMobileInvalid => 'कृपया एक वैध मोबाइल नंबर दर्ज करें';
+
+  @override
+  String get valErrFullNameInvalid => 'कृपया एक वैध नाम दर्ज करें (केवल अक्षर)';
+
+  @override
+  String get accountBlocked =>
+      'आपका खाता व्यवस्थापक द्वारा ब्लॉक कर दिया गया है।';
+
+  @override
+  String get accountDeleted => 'यह खाता हटा दिया गया है।';
+
+  @override
+  String get emailVerificationRequiredTitle => 'ईमेल सत्यापन आवश्यक है';
+
+  @override
+  String get emailVerificationRequiredMessage =>
+      'आपका खाता अभी तक सत्यापित नहीं है।\n\nसुरक्षा कारणों से, ऐप एक्सेस करने से पहले आपको अपना ईमेल पता सत्यापित करना होगा।\n\nकृपया सत्यापन लिंक के लिए अपना इनबॉक्स (और स्पैम फ़ोल्डर) जांचें, या नया लिंक प्राप्त करने के लिए नीचे क्लिक करें।';
+
+  @override
+  String get sendVerificationMail => 'सत्यापन ईमेल भेजें';
+
+  @override
+  String get verificationEmailSentSuccessfully =>
+      'सत्यापन ईमेल सफलतापूर्वक भेजा गया!';
+
+  @override
+  String get registrationSuccessTitle => 'पंजीकरण सफल रहा!';
+
+  @override
+  String get registrationSuccessMessage =>
+      'हमने आपके पंजीकृत ईमेल पते पर एक सत्यापन ईमेल भेजा है।\n\nकृपया अपना इनबॉक्स और स्पैम/जंक फ़ोल्डर जांचें। अपने खाते में लॉग इन करने से पहले आपको अपना ईमेल सत्यापित करना होगा।';
+
+  @override
+  String get goToLogin => 'लॉगिन पर जाएं';
+
+  @override
+  String get unknownProject => 'अज्ञात प्रोजेक्ट';
+
+  @override
+  String get unknownPlot => 'अज्ञात प्लॉट';
+
+  @override
+  String get noPropertiesFound => 'कोई प्रॉपर्टी नहीं मिली';
+
+  @override
+  String get noEnquiriesYet => 'No Enquiries Yet';
+
+  @override
+  String get noEnquiriesMessage =>
+      'You have not submitted any property enquiries. Once you do, they will appear here.';
+
+  @override
+  String get requirementLabel => 'Requirement:';
+
+  @override
+  String get budgetLabel => 'Budget:';
+
+  @override
+  String get messageLabel => 'Message:';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordChangedSuccessfully => 'Password changed successfully';
+
+  @override
+  String get currentPassword => 'Current Password';
+
+  @override
+  String get currentPasswordRequired => 'Current password is required';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get confirmNewPassword => 'Confirm New Password';
+
+  @override
+  String get updatePassword => 'Update Password';
+
+  @override
+  String get failedToChangePassword => 'Failed to change password';
+
+  @override
+  String get currentPasswordIncorrect => 'Current password is incorrect';
+
+  @override
+  String get invalidResponseFromServer => 'Invalid response from server.';
+
+  @override
+  String get realEstatePlatform => 'Real Estate Platform';
+
+  @override
+  String get userNotLoggedIn => 'User not logged in';
+
+  @override
+  String get noSiteVisitsScheduled => 'No Site Visits Scheduled';
+
+  @override
+  String get noSiteVisitsMessage =>
+      'You have not scheduled any site visits yet. Book a visit to see properties in person!';
+
+  @override
+  String get scheduledDate => 'Scheduled Date:';
+
+  @override
+  String get scheduledTime => 'Scheduled Time:';
+
+  @override
+  String get errorLoadingAboutInfo => 'Error loading about info';
+
+  @override
+  String get noName => 'No Name';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profile updated successfully';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get errorLoadingSupportInfo => 'Error loading support info';
+
+  @override
+  String totalPlots(int count) {
+    return '$count Total Plots';
+  }
+
+  @override
+  String get viewOnGoogleMaps => 'View on Google Maps';
+
+  @override
+  String get loginToBookSiteVisit => 'Please log in to book a site visit.';
+
+  @override
+  String get unableToOpenDocument => 'Unable to open this document.';
+
+  @override
+  String get loginToSubmitEnquiry => 'Please log in to submit an enquiry.';
+
+  @override
+  String get enter6DigitOtp => 'Enter 6-digit OTP';
+
+  @override
+  String get errorLoadingContent => 'Error loading content';
+
+  @override
+  String get failedToLoadPropertyDetails => 'Failed to load property details';
+
+  @override
+  String get failedToLoadPayments => 'Failed to load payments';
+
+  @override
+  String inrPrice(String amount) {
+    return '₹$amount';
+  }
+
+  @override
+  String get validationPanLength => 'Enter a valid 10-character PAN Number';
+
+  @override
+  String get validationIfscRequired => 'IFSC Code is required';
+
+  @override
+  String get validationPasswordLength =>
+      'Password must be at least 6 characters';
+
+  @override
+  String get validationMobileLength => 'Enter a valid 10-digit mobile number';
+
+  @override
+  String validationFieldRequired(String label) {
+    return '$label is required';
+  }
+
+  @override
+  String get validationIfscLength => 'Enter a valid 11-character IFSC Code';
+
+  @override
+  String get validationEmailFormat => 'Enter a valid email address';
+
+  @override
+  String get validationThisField => 'This field';
+
+  @override
+  String get validationPanRequired => 'PAN Number is required';
+
+  @override
+  String get validationAadhaarLength => 'Enter a valid 12-digit Aadhaar Number';
+
+  @override
+  String get validationAccountLength =>
+      'Enter a valid Account Number (9 to 18 digits)';
+
+  @override
+  String get validationAccountRequired => 'Account Number is required';
+
+  @override
+  String get validationAadhaarRequired => 'Aadhaar Number is required';
+
+  @override
+  String validTillText(String date) {
+    return 'Valid till $date';
+  }
+
+  @override
+  String get tapToPickPdf => 'Tap to select PDF';
+
+  @override
+  String get viewPdf => 'View PDF';
+
+  @override
+  String get pdfTooLarge => 'PDF must be less than 2MB';
+
+  @override
+  String get fileSelected => 'PDF Selected';
+
+  @override
+  String get referralCodeOptional => 'Referral Code (Optional)';
 }

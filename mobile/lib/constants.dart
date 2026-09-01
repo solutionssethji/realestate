@@ -35,6 +35,11 @@ class AppConstants {
   static const String contactEmail = 'contact@elysium.com';
   static const String officeAddress =
       '101, Elysium Tower, Viman Nagar, Pune, Maharashtra 411014';
+      
+  // ── External Links ─────────────────────────────────────────────────────────
+  static const String privacyPolicyUrl = 'https://www.example.com/privacy-policy';
+  static const String termsConditionsUrl = 'https://www.example.com/terms';
+  static const String faqsUrl = 'https://www.example.com/faqs';
 
   // ── Environment Setup ──────────────────────────────────────────────────────
 

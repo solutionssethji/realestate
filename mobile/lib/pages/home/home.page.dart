@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart' show HookConsumerWidget;
 import 'home.logic.dart';
 import '../../widgets/property_card.dart';
 import '../../widgets/shimmer_loader.dart';
 import '../../widgets/section_header.dart';
-import '../../widgets/premium_button.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import 'package:customer_app/l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../widgets/offer_card.dart';
+import 'package:flutter/rendering.dart';
+import '../../providers/fab_provider.dart';
+import '../../routes/app_routes.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -22,10 +25,15 @@ class HomePage extends HookConsumerWidget {
     final loc = AppLocalizations.of(context);
     final state = ref.watch(homeLogicProvider);
     final logic = ref.read(homeLogicProvider.notifier);
+    useEffect(() {
+      Future.microtask(() {
+        logic.loadData();
+      });
+      return null;
+    }, []);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
@@ -36,106 +44,111 @@ class HomePage extends HookConsumerWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings, color: AppTheme.midnightNavy),
-            onPressed: () {
-              context.push('/home/settings');
-            },
+            icon: const Icon(Icons.notifications, color: AppTheme.midnightNavy),
+            onPressed: () {},
           ),
           const SizedBox(width: 8),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: logic.loadData,
-        child: CustomScrollView(
-          slivers: [
-            // ── Featured Projects ──────────────────────────────────────────
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.lg,
-                  0,
-                  AppSpacing.lg,
-                  AppSpacing.md,
+      body: NotificationListener<UserScrollNotification>(
+        onNotification: (notification) {
+          if (notification.direction == ScrollDirection.forward) {
+            if (!ref.read(fabVisibleProvider)) {
+              ref.read(fabVisibleProvider.notifier).state = true;
+            }
+          } else if (notification.direction == ScrollDirection.reverse) {
+            if (ref.read(fabVisibleProvider)) {
+              ref.read(fabVisibleProvider.notifier).state = false;
+            }
+          }
+          return false;
+        },
+        child: RefreshIndicator(
+          onRefresh: logic.loadData,
+          child: CustomScrollView(
+            slivers: [
+              // ── Latest Offers ──────────────────────────────────────────────
+              if (state.isLoading || state.offers.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                      AppSpacing.lg,
+                      AppSpacing.md,
+                    ),
+                    child: SectionHeader(
+                      title: loc.offers,
+                      actionLabel: state.offers.length > 6
+                          ? context.l10n.viewAll
+                          : null,
+                      onAction: state.offers.length > 6
+                          ? () => context.push(AppRoutes.offers)
+                          : null,
+                    ),
+                  ),
                 ),
-                child: SectionHeader(
-                  title: loc.featuredProjects,
-                  actionLabel: context.l10n.viewAll,
-                  onAction: () => context.push('/home/projects'),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: state.isLoading
-                  ? SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      padding: AppSpacing.horizontalLg,
-                      child: Row(
-                        children: [
-                          for (var i = 0; i < 3; i++) ...[
-                            const SizedBox(
-                              width: 280,
-                              child: ProjectCardSkeleton(),
-                            ),
-                            if (i != 2) AppSpacing.wLg,
-                          ],
-                        ],
-                      ),
-                    )
-                  : state.isError
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.wifi_off_rounded,
-                            color: AppTheme.textSecondary,
-                            size: 40,
+              if (state.isLoading || state.offers.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: state.isLoading
+                      ? CarouselSlider(
+                          options: CarouselOptions(
+                            height: 280,
+                            viewportFraction: 0.9,
+                            enableInfiniteScroll: false,
+                            padEnds: true,
                           ),
-                          AppSpacing.hSm,
-                          Text(context.l10n.unableToLoadProjects),
-                          TextButton(
-                            onPressed: logic.loadData,
-                            child: Text(context.l10n.commonRetry),
-                          ),
-                        ],
-                      ),
-                    )
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      padding: AppSpacing.horizontalLg,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (
-                            var i = 0;
-                            i <
-                                (state.projects.length > 10
-                                    ? 10
-                                    : state.projects.length);
-                            i++
-                          ) ...[
-                            SizedBox(
-                              width: 280,
-                              child: PropertyCard(
-                                project: state.projects[i],
-                                onTap: () => context.push(
-                                  '/home/project/${state.projects[i].id}',
+                          items: [
+                            for (var i = 0; i < 3; i++)
+                              const Align(
+                                alignment: Alignment.topCenter,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.sm,
+                                  ),
+                                  child: OfferCardSkeleton(),
                                 ),
                               ),
-                            ),
-                            if (i !=
-                                (state.projects.length > 10
-                                    ? 9
-                                    : state.projects.length - 1))
-                              AppSpacing.wLg,
                           ],
-                        ],
-                      ),
-                    ),
-            ),
+                        )
+                      : CarouselSlider(
+                          options: CarouselOptions(
+                            height: 280,
+                            viewportFraction: 0.9,
+                            enableInfiniteScroll: false,
+                            padEnds: true,
+                          ),
+                          items: [
+                            for (
+                              var i = 0;
+                              i <
+                                  (state.offers.length > 6
+                                      ? 6
+                                      : state.offers.length);
+                              i++
+                            )
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.sm,
+                                  ),
+                                  child: OfferCard(
+                                    offer: state.offers[i],
+                                    onTap: () {
+                                      final offer = state.offers[i];
+                                      context.push(
+                                        AppRoutes.offerDetails(offer.id),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                ),
 
-            // ── Latest Offers ──────────────────────────────────────────────
-            if (state.isLoading || state.offers.isNotEmpty)
+              // ── Featured Projects (Vertical List) ─────────────────────────
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
@@ -145,128 +158,78 @@ class HomePage extends HookConsumerWidget {
                     AppSpacing.md,
                   ),
                   child: SectionHeader(
-                    title: loc.offers,
-                    actionLabel: state.offers.length > 6
-                        ? context.l10n.viewAll
-                        : null,
-                    onAction: state.offers.length > 6
-                        ? () => context.push('/home/offers')
-                        : null,
+                    title: loc.featuredProjects,
+                    actionLabel: context.l10n.viewAll,
+                    onAction: () => context.push(AppRoutes.projects),
                   ),
                 ),
               ),
-            if (state.isLoading || state.offers.isNotEmpty)
-              SliverToBoxAdapter(
-                child: state.isLoading
-                    ? SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: AppSpacing.horizontalLg,
-                        child: Row(
-                          children: [
-                            for (var i = 0; i < 3; i++) ...[
-                              const SizedBox(
-                                width: 280,
-                                child: ProjectCardSkeleton(),
-                              ),
-                              if (i != 2) AppSpacing.wLg,
-                            ],
-                          ],
-                        ),
-                      )
-                    : SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: AppSpacing.horizontalLg,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            for (
-                              var i = 0;
-                              i <
-                                  (state.offers.length > 6
-                                      ? 6
-                                      : state.offers.length);
-                              i++
-                            ) ...[
-                              SizedBox(
-                                width: 280,
-                                child: OfferCard(
-                                  offer: state.offers[i],
-                                  onTap: () {
-                                    final offer = state.offers[i];
-                                    context.push('/home/offers/${offer.id}');
-                                  },
-                                ),
-                              ),
-                              if (i !=
-                                  (state.offers.length > 6
-                                      ? 5
-                                      : state.offers.length - 1))
-                                AppSpacing.wLg,
-                            ],
-                          ],
-                        ),
+              if (state.isLoading)
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => const Padding(
+                      padding: EdgeInsets.only(
+                        bottom: AppSpacing.lg,
+                        left: AppSpacing.lg,
+                        right: AppSpacing.lg,
                       ),
-              ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: PremiumButton(
-                  text: context.l10n.enquireNow,
-                  icon: Icons.support_agent_rounded,
-                  onPressed: () => context.push('/home/enquiry'),
-                  isFullWidth: true,
+                      child: ProjectCardSkeleton(),
+                    ),
+                    childCount: 3,
+                  ),
+                )
+              else if (state.isError)
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.wifi_off_rounded,
+                          color: AppTheme.textSecondary,
+                          size: 40,
+                        ),
+                        AppSpacing.hSm,
+                        Text(context.l10n.unableToLoadProjects),
+                        TextButton(
+                          onPressed: logic.loadData,
+                          child: Text(context.l10n.commonRetry),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final project = state.projects[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppSpacing.lg,
+                          left: AppSpacing.lg,
+                          right: AppSpacing.lg,
+                        ),
+                        child: PropertyCard(
+                          project: project,
+                          onTap: () => context.push(
+                            AppRoutes.projectDetails(project.id),
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: state.projects.length > 10
+                        ? 10
+                        : state.projects.length,
+                  ),
                 ),
-              ),
-              AppSpacing.wSm,
-              IconButton.filled(
-                style: IconButton.styleFrom(
-                  backgroundColor: AppTheme.midnightNavy,
-                  padding: const EdgeInsets.all(12),
-                ),
-                onPressed: () async {
-                  final phone = state.contactPhone;
-                  if (phone == null || phone.isEmpty) return;
-                  final uri = Uri.parse('tel:$phone');
-                  if (await canLaunchUrl(uri)) await launchUrl(uri);
-                },
-                icon: const Icon(Icons.phone),
-              ),
-              AppSpacing.wSm,
-              IconButton.filled(
-                style: IconButton.styleFrom(
-                  backgroundColor: const Color(0xFF25D366),
-                  padding: const EdgeInsets.all(12),
-                ),
-                onPressed: () async {
-                  final whatsapp = state.contactWhatsapp;
-                  if (whatsapp == null || whatsapp.isEmpty) return;
-                  final Uri uri = Uri.parse('https://wa.me/$whatsapp');
-                  if (await canLaunchUrl(uri)) await launchUrl(uri);
-                },
-                icon: const Icon(Icons.chat),
-              ),
+
+              const SliverToBoxAdapter(child: SizedBox(height: 100)),
             ],
           ),
         ),
       ),
+      extendBody: true,
     );
   }
 }

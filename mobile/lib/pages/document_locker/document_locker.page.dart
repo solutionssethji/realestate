@@ -11,6 +11,7 @@ import '../../widgets/shimmer_loader.dart';
 import '../../widgets/skeleton_list.dart';
 import '../../theme/spacing.dart';
 import '../../theme/theme.dart';
+import '../../utils/snackbar_utils.dart';
 
 class DocumentLockerPage extends HookConsumerWidget {
   const DocumentLockerPage({super.key});
@@ -43,9 +44,7 @@ class DocumentLockerPage extends HookConsumerWidget {
       if (uri == null ||
           !await launchUrl(uri, mode: LaunchMode.externalApplication)) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Unable to open this document.')),
-          );
+          AppSnackbar.showError(context, context.l10n.unableToOpenDocument);
         }
       }
     }

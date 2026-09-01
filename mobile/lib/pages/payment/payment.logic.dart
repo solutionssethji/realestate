@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -31,41 +30,33 @@ class PaymentLogic extends _$PaymentLogic {
     final paymentId = state.currentIntent?.id;
     if (paymentId == null) return;
 
-    try {
-      // Server-side verification via Cloud Function
-      final result = await FirebaseFunctions.instance
-          .httpsCallable('verifyPayment')
-          .call({
-            'paymentId': paymentId,
-            'razorpay_order_id': response.orderId,
-            'razorpay_payment_id': response.paymentId,
-            'razorpay_signature': response.signature,
-            'status': 'SUCCESS',
-          });
+    // Server-side verification via Cloud Function
+    final result = await FirebaseFunctions.instance
+        .httpsCallable('verifyPayment')
+        .call({
+          'paymentId': paymentId,
+          'razorpay_order_id': response.orderId,
+          'razorpay_payment_id': response.paymentId,
+          'razorpay_signature': response.signature,
+          'status': 'SUCCESS',
+        });
 
-      final finalStatus = result.data['status'];
+    final finalStatus = result.data['status'];
 
-      if (finalStatus == 'SUCCESS') {
-        state = state.copyWith(
-          isLoading: false,
+    if (finalStatus == 'SUCCESS') {
+      state = state.copyWith(
+        isLoading: false,
+        status: PaymentStatus.success,
+        currentIntent: state.currentIntent?.copyWith(
           status: PaymentStatus.success,
-          currentIntent: state.currentIntent?.copyWith(
-            status: PaymentStatus.success,
-            transactionId: response.paymentId,
-          ),
-        );
-      } else {
-        state = state.copyWith(
-          isLoading: false,
-          status: PaymentStatus.failed,
-          errorMessage: 'Payment signature verification failed.',
-        );
-      }
-    } catch (e) {
+          transactionId: response.paymentId,
+        ),
+      );
+    } else {
       state = state.copyWith(
         isLoading: false,
         status: PaymentStatus.failed,
-        errorMessage: 'Verification failed. Please contact support.',
+        errorMessage: 'Payment signature verification failed.',
       );
     }
   }
@@ -118,73 +109,42 @@ class PaymentLogic extends _$PaymentLogic {
       ),
     );
 
-    try {
-      // Call initiatePayment Cloud Function
-      final result = await ApiService.submitPayment({
-        'referenceId': referenceId,
-        'amount': amount,
-        'currency': 'INR',
-        'description': description,
-      });
+    // Call initiatePayment Cloud Function
+    final result = await ApiService.submitPayment({
+      'referenceId': referenceId,
+      'amount': amount,
+      'currency': 'INR',
+      'description': description,
+    });
 
-      final orderId = result['orderId']?.toString();
-      final paymentId = result['paymentId']?.toString();
+    final orderId = result['orderId']?.toString();
+    final paymentId = result['paymentId']?.toString();
 
-      if (orderId == null || paymentId == null) {
-        throw Exception('Invalid response from server.');
-      }
-
-      state = state.copyWith(
-        currentIntent: state.currentIntent?.copyWith(id: paymentId),
-      );
-
-      // Launch Razorpay checkout
-      var options = {
-        'key': AppConstants.paymentPublicKey.isNotEmpty
-            ? AppConstants.paymentPublicKey
-            : 'rzp_test_mock',
-        'amount': (amount * 100).toInt(),
-        'name': 'Real Estate Platform',
-        'order_id': orderId,
-        'description': description,
-        'prefill': {
-          'contact': '', // To be filled from user profile if available
-          'email': '',
-        },
-      };
-
-      _razorpay.open(options);
-    } on FirebaseException catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        status: PaymentStatus.failed,
-        errorMessage: _friendlyError(e),
-        currentIntent: state.currentIntent?.copyWith(
-          status: PaymentStatus.failed,
-        ),
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        status: PaymentStatus.failed,
-        errorMessage: 'Something went wrong. Please try again.',
-        currentIntent: state.currentIntent?.copyWith(
-          status: PaymentStatus.failed,
-        ),
-      );
+    if (orderId == null || paymentId == null) {
+      throw Exception('Invalid response from server.');
     }
+
+    state = state.copyWith(
+      currentIntent: state.currentIntent?.copyWith(id: paymentId),
+    );
+
+    // Launch Razorpay checkout
+    var options = {
+      'key': AppConstants.paymentPublicKey.isNotEmpty
+          ? AppConstants.paymentPublicKey
+          : 'rzp_test_mock',
+      'amount': (amount * 100).toInt(),
+      'name': 'Real Estate Platform',
+      'order_id': orderId,
+      'description': description,
+      'prefill': {
+        'contact': '', // To be filled from user profile if available
+        'email': '',
+      },
+    };
+
+    _razorpay.open(options);
   }
 
   void reset() => state = const PaymentState();
-
-  String _friendlyError(FirebaseException e) {
-    switch (e.code) {
-      case 'permission-denied':
-        return 'You are not authorized to complete this payment.';
-      case 'unavailable':
-        return 'Service is temporarily unavailable. Please try again.';
-      default:
-        return 'Payment failed. Please try again.';
-    }
-  }
 }

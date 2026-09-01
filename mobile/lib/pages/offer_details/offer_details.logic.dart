@@ -14,18 +14,10 @@ class OfferDetailsLogic extends _$OfferDetailsLogic {
 
   Future<void> loadOffer(String offerId) async {
     state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
-    try {
-      final offer = await ApiService.getOffer(offerId);
-      if (offer == null) {
-        throw Exception('Offer not found');
-      }
-      state = state.copyWith(isLoading: false, offer: offer);
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
+    final offer = await ApiService.getOffer(offerId);
+    if (offer == null) {
+      throw Exception('Offer not found');
     }
+    state = state.copyWith(isLoading: false, offer: offer);
   }
 }

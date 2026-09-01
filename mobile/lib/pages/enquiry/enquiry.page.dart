@@ -1,5 +1,7 @@
 import 'package:customer_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import '../../widgets/premium_app_bar.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,6 +13,8 @@ import '../../widgets/premium_button.dart';
 import '../../widgets/feedback_banner.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
+import '../../utils/validators.dart';
+import '../../utils/snackbar_utils.dart';
 
 class EnquiryPage extends HookConsumerWidget {
   final String? initialProjectId;
@@ -28,6 +32,20 @@ class EnquiryPage extends HookConsumerWidget {
     final budgetCtrl = useTextEditingController();
     final messageCtrl = useTextEditingController();
 
+    useValueListenable(requirementCtrl);
+    useValueListenable(budgetCtrl);
+
+    final isFormFilled =
+        requirementCtrl.text.trim().isNotEmpty &&
+        budgetCtrl.text.trim().isNotEmpty;
+
+    ref.listen(enquiryLogicProvider, (previous, next) {
+      if (next.isSuccess && !(previous?.isSuccess ?? false)) {
+        AppSnackbar.showSuccess(context, context.l10n.enquirySubmitted);
+        context.pop();
+      }
+    });
+
     return Scaffold(
       appBar: PremiumAppBar(title: loc.enquireNow),
       body: SingleChildScrollView(
@@ -37,6 +55,7 @@ class EnquiryPage extends HookConsumerWidget {
             constraints: const BoxConstraints(maxWidth: 600),
             child: Form(
               key: formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -61,6 +80,8 @@ class EnquiryPage extends HookConsumerWidget {
                     label: loc.plotRequirement,
                     prefixIcon: const Icon(Icons.landscape_outlined),
                     textInputAction: TextInputAction.next,
+                    validator: (v) =>
+                        AppValidators.required(context, v, loc.plotRequirement),
                   ),
                   AppSpacing.hLg,
 
@@ -70,6 +91,10 @@ class EnquiryPage extends HookConsumerWidget {
                     label: loc.budget,
                     prefixIcon: const Icon(Icons.currency_rupee_outlined),
                     textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: (v) =>
+                        AppValidators.required(context, v, loc.budget),
                   ),
                   AppSpacing.hLg,
 
@@ -104,21 +129,17 @@ class EnquiryPage extends HookConsumerWidget {
                         ? context.l10n.submitted
                         : context.l10n.submitEnquiry,
                     isLoading: state.isSubmitting,
-                    onPressed: state.isSuccess || state.isSubmitting
+                    onPressed:
+                        state.isSuccess || state.isSubmitting || !isFormFilled
                         ? null
                         : () {
                             final currentUser = AuthService.currentUser;
                             if (currentUser == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Please log in to submit an enquiry.',
-                                  ),
-                                ),
-                              );
+                              AppSnackbar.showError(context, context.l10n.loginToSubmitEnquiry);
                               return;
                             }
                             if (formKey.currentState!.validate()) {
+                              FocusScope.of(context).unfocus();
                               logic.submitEnquiry(
                                 customerId: currentUser.uid,
                                 plotRequirement: requirementCtrl.text.trim(),

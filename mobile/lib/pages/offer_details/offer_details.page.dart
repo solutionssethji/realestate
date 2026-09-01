@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'offer_details.logic.dart';
 import '../../theme/theme.dart';
 import '../../utils/l10n_extension.dart';
+import '../../routes/app_routes.dart';
 
 class OfferDetailsPage extends HookConsumerWidget {
   final String offerId;
@@ -172,7 +173,7 @@ class OfferDetailsPage extends HookConsumerWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () =>
-                              context.push('/home/project/${offer.projectId}'),
+                              context.push(AppRoutes.projectDetails(offer.projectId ?? "")),
                           child: Text(context.l10n.viewProjectDetails),
                         ),
                       ),

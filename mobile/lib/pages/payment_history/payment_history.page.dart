@@ -9,11 +9,14 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
+import '../../utils/snackbar_utils.dart';
 import 'payment_history.logic.dart';
 import '../../widgets/shimmer_loader.dart';
 import '../../widgets/skeleton_list.dart';
 import '../../services/payment_receipt_service.dart';
 import '../../widgets/app_loading_view.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import '../../routes/app_routes.dart';
 
 class PaymentHistoryPage extends HookConsumerWidget {
   const PaymentHistoryPage({super.key});
@@ -33,19 +36,51 @@ class PaymentHistoryPage extends HookConsumerWidget {
             icon: const Icon(LucideIcons.logOut),
             tooltip: context.l10n.signOut,
             onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text(loc.signOut),
+                  content: Text(loc.logoutConfirmation),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: Text(loc.cancel),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: Text(loc.signOut),
+                    ),
+                  ],
+                ),
+              );
+              if (confirm != true) return;
+
               await AuthService.signOut();
               if (context.mounted) {
-                context.go('/home');
+                context.go(AppRoutes.home);
               }
             },
           ),
         ],
       ),
-      body: _buildBody(context, ref, state, userPhone),
+      body: VisibilityDetector(
+        key: const Key('payment-history-page'),
+        onVisibilityChanged: (info) {
+          if (info.visibleFraction == 1.0) {
+            ref.read(paymentHistoryLogicProvider.notifier).load();
+          }
+        },
+        child: _buildBody(context, ref, state, userPhone),
+      ),
     );
   }
 
-  Widget _buildBody(BuildContext context, WidgetRef ref, state, String userPhone) {
+  Widget _buildBody(
+    BuildContext context,
+    WidgetRef ref,
+    state,
+    String userPhone,
+  ) {
     if (state.isLoading) {
       return SkeletonList(
         padding: AppSpacing.allMd,
@@ -96,7 +131,9 @@ class PaymentHistoryPage extends HookConsumerWidget {
         if (!state.isLoading &&
             !state.isFetchingMore &&
             scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-          logic.loadMore();
+          Future.microtask(() {
+            logic.loadMore();
+          });
         }
         return false;
       },
@@ -108,16 +145,13 @@ class PaymentHistoryPage extends HookConsumerWidget {
             SliverPadding(
               padding: AppSpacing.allMd,
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final payment = payments[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                      child: _PaymentCard(payment: payment),
-                    );
-                  },
-                  childCount: payments.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final payment = payments[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: _PaymentCard(payment: payment),
+                  );
+                }, childCount: payments.length),
               ),
             ),
             if (state.isFetchingMore)
@@ -216,11 +250,7 @@ class _PaymentCard extends StatelessWidget {
                           await PaymentReceiptService.download(payment, loc);
                         } catch (error) {
                           if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(loc.unableToDownloadReceipt),
-                              ),
-                            );
+                            AppSnackbar.showError(context, loc.unableToDownloadReceipt);
                           }
                         }
                       },

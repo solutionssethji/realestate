@@ -16,4 +16,3 @@ class MyPropertiesState with _$MyPropertiesState {
     DocumentSnapshot? lastDocument,
   }) = _MyPropertiesState;
 }
-

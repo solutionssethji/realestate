@@ -104,6 +104,18 @@ abstract class AppLocalizations {
   /// **'Shubhaytanam Connect'**
   String get appName;
 
+  /// No description provided for @errorLoadingCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading code'**
+  String get errorLoadingCode;
+
+  /// No description provided for @shareCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Code'**
+  String get shareCode;
+
   /// No description provided for @aboutCompany.
   ///
   /// In en, this message translates to:
@@ -1021,6 +1033,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign Out'**
   String get signOut;
+
+  /// No description provided for @logoutConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get logoutConfirmation;
 
   /// No description provided for @searchByPlot.
   ///
@@ -2564,6 +2582,42 @@ abstract class AppLocalizations {
   /// **'Reset link sent! Please check your email inbox.'**
   String get resetLinkSent;
 
+  /// No description provided for @resetLinkSentDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Sent'**
+  String get resetLinkSentDialogTitle;
+
+  /// No description provided for @resetLinkSentDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A password reset link has been sent to your email.\n\nFor security reasons, this link will expire soon. Please reset your password promptly.\n\nPlease check your inbox (and spam folder) for the reset link, and then proceed to login.'**
+  String get resetLinkSentDialogBody;
+
+  /// No description provided for @resetLinkSentDialogButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Login'**
+  String get resetLinkSentDialogButton;
+
+  /// No description provided for @agreeToPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the '**
+  String get agreeToPrefix;
+
+  /// No description provided for @agreeToAnd.
+  ///
+  /// In en, this message translates to:
+  /// **' and '**
+  String get agreeToAnd;
+
+  /// No description provided for @agreeToSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **''**
+  String get agreeToSuffix;
+
   /// No description provided for @permissionDenied.
   ///
   /// In en, this message translates to:
@@ -2623,6 +2677,468 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Already have an account? Login'**
   String get alreadyHaveAccount;
+
+  /// No description provided for @valErrEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get valErrEmailRequired;
+
+  /// No description provided for @valErrEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get valErrEmailInvalid;
+
+  /// No description provided for @valErrPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get valErrPasswordRequired;
+
+  /// No description provided for @valErrPasswordLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get valErrPasswordLength;
+
+  /// No description provided for @valErrFullNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name is required'**
+  String get valErrFullNameRequired;
+
+  /// No description provided for @valErrMobileRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile number is required'**
+  String get valErrMobileRequired;
+
+  /// No description provided for @valErrMobileInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid mobile number'**
+  String get valErrMobileInvalid;
+
+  /// No description provided for @valErrFullNameInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid name (letters only)'**
+  String get valErrFullNameInvalid;
+
+  /// No description provided for @accountBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been blocked by an administrator.'**
+  String get accountBlocked;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has been deleted.'**
+  String get accountDeleted;
+
+  /// No description provided for @emailVerificationRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Verification Required'**
+  String get emailVerificationRequiredTitle;
+
+  /// No description provided for @emailVerificationRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is not verified yet.\n\nFor security reasons, you must verify your email address before accessing the app.\n\nPlease check your inbox (and spam folder) for a verification link, or click below to receive a new one.'**
+  String get emailVerificationRequiredMessage;
+
+  /// No description provided for @sendVerificationMail.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Verification Mail'**
+  String get sendVerificationMail;
+
+  /// No description provided for @verificationEmailSentSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification email sent successfully!'**
+  String get verificationEmailSentSuccessfully;
+
+  /// No description provided for @registrationSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration Successful!'**
+  String get registrationSuccessTitle;
+
+  /// No description provided for @registrationSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We have sent a verification email to your registered email address.\n\nPlease check your inbox and your spam/junk folder. You must verify your email before you can log in to your account.'**
+  String get registrationSuccessMessage;
+
+  /// No description provided for @goToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Login'**
+  String get goToLogin;
+
+  /// No description provided for @unknownProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Project'**
+  String get unknownProject;
+
+  /// No description provided for @unknownPlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Plot'**
+  String get unknownPlot;
+
+  /// No description provided for @noPropertiesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No Properties Found'**
+  String get noPropertiesFound;
+
+  /// No description provided for @noEnquiriesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Enquiries Yet'**
+  String get noEnquiriesYet;
+
+  /// No description provided for @noEnquiriesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not submitted any property enquiries. Once you do, they will appear here.'**
+  String get noEnquiriesMessage;
+
+  /// No description provided for @requirementLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirement:'**
+  String get requirementLabel;
+
+  /// No description provided for @budgetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget:'**
+  String get budgetLabel;
+
+  /// No description provided for @messageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message:'**
+  String get messageLabel;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @passwordChangedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed successfully'**
+  String get passwordChangedSuccessfully;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Password'**
+  String get currentPassword;
+
+  /// No description provided for @currentPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is required'**
+  String get currentPasswordRequired;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPassword;
+
+  /// No description provided for @confirmNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm New Password'**
+  String get confirmNewPassword;
+
+  /// No description provided for @updatePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Password'**
+  String get updatePassword;
+
+  /// No description provided for @failedToChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to change password'**
+  String get failedToChangePassword;
+
+  /// No description provided for @currentPasswordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is incorrect'**
+  String get currentPasswordIncorrect;
+
+  /// No description provided for @invalidResponseFromServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid response from server.'**
+  String get invalidResponseFromServer;
+
+  /// No description provided for @realEstatePlatform.
+  ///
+  /// In en, this message translates to:
+  /// **'Real Estate Platform'**
+  String get realEstatePlatform;
+
+  /// No description provided for @userNotLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'User not logged in'**
+  String get userNotLoggedIn;
+
+  /// No description provided for @noSiteVisitsScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'No Site Visits Scheduled'**
+  String get noSiteVisitsScheduled;
+
+  /// No description provided for @noSiteVisitsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not scheduled any site visits yet. Book a visit to see properties in person!'**
+  String get noSiteVisitsMessage;
+
+  /// No description provided for @scheduledDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled Date:'**
+  String get scheduledDate;
+
+  /// No description provided for @scheduledTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled Time:'**
+  String get scheduledTime;
+
+  /// No description provided for @errorLoadingAboutInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading about info'**
+  String get errorLoadingAboutInfo;
+
+  /// No description provided for @noName.
+  ///
+  /// In en, this message translates to:
+  /// **'No Name'**
+  String get noName;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfile;
+
+  /// No description provided for @profileUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdatedSuccessfully;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @errorLoadingSupportInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading support info'**
+  String get errorLoadingSupportInfo;
+
+  /// No description provided for @totalPlots.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Total Plots'**
+  String totalPlots(int count);
+
+  /// No description provided for @viewOnGoogleMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'View on Google Maps'**
+  String get viewOnGoogleMaps;
+
+  /// No description provided for @loginToBookSiteVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to book a site visit.'**
+  String get loginToBookSiteVisit;
+
+  /// No description provided for @unableToOpenDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open this document.'**
+  String get unableToOpenDocument;
+
+  /// No description provided for @loginToSubmitEnquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to submit an enquiry.'**
+  String get loginToSubmitEnquiry;
+
+  /// No description provided for @enter6DigitOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 6-digit OTP'**
+  String get enter6DigitOtp;
+
+  /// No description provided for @errorLoadingContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading content'**
+  String get errorLoadingContent;
+
+  /// No description provided for @failedToLoadPropertyDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load property details'**
+  String get failedToLoadPropertyDetails;
+
+  /// No description provided for @failedToLoadPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load payments'**
+  String get failedToLoadPayments;
+
+  /// No description provided for @inrPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'₹{amount}'**
+  String inrPrice(String amount);
+
+  /// No description provided for @validationPanLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid 10-character PAN Number'**
+  String get validationPanLength;
+
+  /// No description provided for @validationIfscRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'IFSC Code is required'**
+  String get validationIfscRequired;
+
+  /// No description provided for @validationPasswordLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get validationPasswordLength;
+
+  /// No description provided for @validationMobileLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid 10-digit mobile number'**
+  String get validationMobileLength;
+
+  /// No description provided for @validationFieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} is required'**
+  String validationFieldRequired(String label);
+
+  /// No description provided for @validationIfscLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid 11-character IFSC Code'**
+  String get validationIfscLength;
+
+  /// No description provided for @validationEmailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address'**
+  String get validationEmailFormat;
+
+  /// No description provided for @validationThisField.
+  ///
+  /// In en, this message translates to:
+  /// **'This field'**
+  String get validationThisField;
+
+  /// No description provided for @validationPanRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'PAN Number is required'**
+  String get validationPanRequired;
+
+  /// No description provided for @validationAadhaarLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid 12-digit Aadhaar Number'**
+  String get validationAadhaarLength;
+
+  /// No description provided for @validationAccountLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid Account Number (9 to 18 digits)'**
+  String get validationAccountLength;
+
+  /// No description provided for @validationAccountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Number is required'**
+  String get validationAccountRequired;
+
+  /// No description provided for @validationAadhaarRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Aadhaar Number is required'**
+  String get validationAadhaarRequired;
+
+  /// No description provided for @validTillText.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid till {date}'**
+  String validTillText(String date);
+
+  /// No description provided for @tapToPickPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to select PDF'**
+  String get tapToPickPdf;
+
+  /// No description provided for @viewPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'View PDF'**
+  String get viewPdf;
+
+  /// No description provided for @pdfTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF must be less than 2MB'**
+  String get pdfTooLarge;
+
+  /// No description provided for @fileSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF Selected'**
+  String get fileSelected;
+
+  /// No description provided for @referralCodeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Code (Optional)'**
+  String get referralCodeOptional;
 }
 
 class _AppLocalizationsDelegate

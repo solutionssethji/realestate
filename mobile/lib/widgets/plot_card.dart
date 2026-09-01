@@ -49,7 +49,7 @@ class PlotCard extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                '₹${plot.price.toStringAsFixed(0)}',
+                context.l10n.inrPrice(plot.price.toStringAsFixed(0)),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: AppTheme.midnightNavy,
                 ),

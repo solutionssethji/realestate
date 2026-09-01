@@ -16,7 +16,11 @@ class WishlistLogic extends _$WishlistLogic {
   Future<void> load({bool isRefresh = false}) async {
     final uid = AuthService.currentUser?.uid;
     if (uid == null) {
-      state = state.copyWith(isLoading: false, isError: true, errorMessage: 'User not logged in');
+      state = state.copyWith(
+        isLoading: false,
+        isError: true,
+        errorMessage: 'User not logged in',
+      );
       return;
     }
 
@@ -34,35 +38,30 @@ class WishlistLogic extends _$WishlistLogic {
       if (state.projectIds.isNotEmpty) {
         state = state.copyWith(isFetchingMore: true);
       } else {
-        state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
+        state = state.copyWith(
+          isLoading: true,
+          isError: false,
+          errorMessage: null,
+        );
       }
     }
 
-    try {
-      final response = await ApiService.fetchWishlistPagination(
-        userId: uid,
-        lastDocument: state.lastDocument,
-        limit: 15,
-      );
+    final response = await ApiService.fetchWishlistPagination(
+      userId: uid,
+      lastDocument: state.lastDocument,
+      limit: 15,
+    );
 
-      final newIds = response.data.map((e) => e['id'] as String).toList();
-      final combinedIds = isRefresh ? newIds : [...state.projectIds, ...newIds];
-      
-      state = state.copyWith(
-        projectIds: combinedIds.toSet().toList(), // Ensure uniqueness
-        lastDocument: response.lastDocument,
-        hasMore: response.data.length == 15,
-        isLoading: false,
-        isFetchingMore: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isFetchingMore: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    final newIds = response.data.map((e) => e['id'] as String).toList();
+    final combinedIds = isRefresh ? newIds : [...state.projectIds, ...newIds];
+
+    state = state.copyWith(
+      projectIds: combinedIds.toSet().toList(), // Ensure uniqueness
+      lastDocument: response.lastDocument,
+      hasMore: response.data.length == 15,
+      isLoading: false,
+      isFetchingMore: false,
+    );
   }
 
   Future<void> loadMore() async {
@@ -86,15 +85,6 @@ class WishlistLogic extends _$WishlistLogic {
     }
     state = state.copyWith(projectIds: newList);
 
-    try {
-      await ApiService.toggleWishlist(uid, projectId, isFavorite);
-    } catch (e) {
-      // Revert on error
-      state = state.copyWith(
-        projectIds: isCurrentlyFavorite
-            ? [...state.projectIds, projectId]
-            : state.projectIds.where((id) => id != projectId).toList(),
-      );
-    }
+    await ApiService.toggleWishlist(uid, projectId, isFavorite);
   }
 }

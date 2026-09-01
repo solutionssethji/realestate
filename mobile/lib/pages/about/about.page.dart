@@ -29,7 +29,7 @@ class AboutCompanyPage extends HookConsumerWidget {
     if (state.isError) {
       return Center(
         child: Text(
-          state.errorMessage ?? 'Error loading about info',
+          state.errorMessage ?? context.l10n.errorLoadingAboutInfo,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Theme.of(context).colorScheme.error,
           ),

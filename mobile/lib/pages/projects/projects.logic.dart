@@ -5,7 +5,7 @@ import '../../../services/api_service.dart';
 
 part 'projects.logic.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ProjectsLogic extends _$ProjectsLogic {
   @override
   ProjectsState build() {
@@ -29,34 +29,31 @@ class ProjectsLogic extends _$ProjectsLogic {
       if (state.allProjects.isNotEmpty) {
         state = state.copyWith(isFetchingMore: true);
       } else {
-        state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
+        state = state.copyWith(
+          isLoading: true,
+          isError: false,
+          errorMessage: null,
+        );
       }
     }
 
-    try {
-      final (newProjects, newLastDoc) = await ApiService.getProjects(
-        lastDocument: state.lastDocument,
-        limit: 10,
-      );
+    final (newProjects, newLastDoc) = await ApiService.getProjects(
+      lastDocument: state.lastDocument,
+      limit: 10,
+    );
 
-      final combinedProjects = isRefresh ? newProjects : [...state.allProjects, ...newProjects];
-      
-      state = state.copyWith(
-        allProjects: combinedProjects,
-        filteredProjects: _filter(combinedProjects, state.searchQuery),
-        lastDocument: newLastDoc,
-        hasMore: newProjects.length == 10,
-        isLoading: false,
-        isFetchingMore: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isFetchingMore: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    final combinedProjects = isRefresh
+        ? newProjects
+        : [...state.allProjects, ...newProjects];
+
+    state = state.copyWith(
+      allProjects: combinedProjects,
+      filteredProjects: _filter(combinedProjects, state.searchQuery),
+      lastDocument: newLastDoc,
+      hasMore: newProjects.length == 10,
+      isLoading: false,
+      isFetchingMore: false,
+    );
   }
 
   Future<void> loadMore() async {

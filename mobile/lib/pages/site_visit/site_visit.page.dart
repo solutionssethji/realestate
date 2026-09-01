@@ -11,6 +11,7 @@ import '../../widgets/premium_button.dart';
 import '../../widgets/feedback_banner.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
+import '../../utils/snackbar_utils.dart';
 
 class SiteVisitPage extends HookConsumerWidget {
   final String? initialProjectId;
@@ -118,27 +119,21 @@ class SiteVisitPage extends HookConsumerWidget {
                     icon: state.isSuccess
                         ? null
                         : Icons.directions_car_outlined,
-                    onPressed: state.isSuccess || state.isSubmitting
+                    onPressed:
+                        state.isSuccess ||
+                            state.isSubmitting ||
+                            selectedDate.value == null ||
+                            selectedTime.value == null
                         ? null
                         : () {
                             final currentUser = AuthService.currentUser;
                             if (currentUser == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Please log in to book a site visit.',
-                                  ),
-                                ),
-                              );
+                              AppSnackbar.showError(context, context.l10n.loginToBookSiteVisit);
                               return;
                             }
                             if (selectedDate.value == null ||
                                 selectedTime.value == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(loc.pleaseSelectDateAndTime),
-                                ),
-                              );
+                              AppSnackbar.showError(context, loc.pleaseSelectDateAndTime);
                               return;
                             }
                             if (formKey.currentState!.validate()) {

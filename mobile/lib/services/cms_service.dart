@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer_app/services/api_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../models/company_info.dart';
 
 /// Centralized service to fetch CMS and settings from Firebase.
@@ -56,11 +55,11 @@ class CmsService {
 
       logApi(function: 'getContactInfo()', response: response.toString());
       return response;
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'getContactInfo()', error: e.toString());
-      rethrow;
     } catch (e) {
-      logApi(function: 'getContactInfo()', error: e.toString());
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getContactInfo()',
+      );
       rethrow;
     }
   }
@@ -90,9 +89,11 @@ class CmsService {
       };
       logApi(function: 'getCurrencyConfig()', response: defaultResponse);
       return defaultResponse;
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'getCurrencyConfig()', error: e.toString());
     } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getCurrencyConfig()',
+      );
       logApi(function: 'getCurrencyConfig()', error: e.toString());
     }
     return {'code': 'INR', 'symbol': '₹', 'name': 'Indian Rupee'};
@@ -117,11 +118,12 @@ class CmsService {
       }
       logApi(function: 'getPublicContent()', response: null);
       return null;
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'getPublicContent()', error: e.toString());
-      rethrow;
     } catch (e) {
-      logApi(function: 'getPublicContent()', error: e.toString());
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getPublicContent()',
+      );
+
       rethrow;
     }
   }
@@ -137,11 +139,9 @@ class CmsService {
       final response = qs.docs.map((e) => e.data()).toList();
       logApi(function: 'getFaqs()', response: response);
       return response;
-    } on FirebaseAuthException catch (e) {
-      logApi(function: 'getFaqs()', error: e.toString());
-      rethrow;
     } catch (e) {
-      logApi(function: 'getFaqs()', error: e.toString());
+      FirebaseAuthErrorMapper().handleException(e, function: 'getFaqs()');
+
       rethrow;
     }
   }

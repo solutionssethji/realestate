@@ -36,7 +36,7 @@ const getNavItems = (role?: string, t?: (key: string) => string) => {
     { name: translate("transactions", "Transactions"), href: "/transactions", icon: CreditCard },
     { name: translate("users", "Users"), href: "/users", icon: Users },
     { name: translate("notifications", "Notifications"), href: "/notifications", icon: Bell },
-    { name: translate("faq", "FAQs"), href: "/faq", icon: HelpCircle },
+
     { name: translate("settings", "Settings"), href: "/settings", icon: Settings },
     { name: translate("profile", "Profile"), href: "/profile", icon: UserIcon },
   ];

@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/api_service.dart';
 import 'forgot_password.state.dart';
@@ -18,13 +15,13 @@ class ForgotPasswordLogic extends _$ForgotPasswordLogic {
   Future<bool> sendResetLink(String email) async {
     final enteredEmail = email.trim();
     final normalizedEmail = enteredEmail.toLowerCase();
-
+    final emailMsg = FirebaseAuthErrorMapper.getForgotPasswordMessage(
+      'invalid-email',
+    );
     if (!_isValidEmail(normalizedEmail)) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: FirebaseAuthErrorMapper.getForgotPasswordMessage(
-          'invalid-email',
-        ),
+        errorMessage: emailMsg,
         isSent: false,
       );
       return false;
@@ -32,58 +29,23 @@ class ForgotPasswordLogic extends _$ForgotPasswordLogic {
 
     state = state.copyWith(isLoading: true, errorMessage: null, isSent: false);
 
+    // Check/send Firebase Auth reset email
     try {
-      // 1. Check user in Firestore
-      var user = await ApiService.getUserByEmail(normalizedEmail);
-
-      // Older accounts may have been saved with uppercase email characters.
-      if (user == null && enteredEmail != normalizedEmail) {
-        user = await ApiService.getUserByEmail(enteredEmail);
-      }
-
-      if (user == null) {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: FirebaseAuthErrorMapper.getForgotPasswordMessage(
-            'user-not-found',
-          ),
-          isSent: false,
-        );
-        return false;
-      }
-
-      // 2. Check/send Firebase Auth reset email
-      await AuthService.sendPasswordResetEmail(
-        email: normalizedEmail,
-      );
-
-      state = state.copyWith(
-        isLoading: false,
-        isSent: true,
-        errorMessage: null,
-      );
-
-      return true;
-    } on FirebaseAuthException catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isSent: false,
-        errorMessage: FirebaseAuthErrorMapper.getForgotPasswordMessage(e.code),
-      );
-
-      return false;
+      await AuthService.sendPasswordResetEmail(email: normalizedEmail);
     } catch (e) {
-      log('e=====> $e');
       state = state.copyWith(
         isLoading: false,
-        isSent: false,
         errorMessage: FirebaseAuthErrorMapper.getForgotPasswordMessage(
-          'invalid-email',
+          'default',
         ),
+        isSent: false,
       );
-
       return false;
     }
+
+    state = state.copyWith(isLoading: false, isSent: true, errorMessage: null);
+
+    return true;
   }
 
   bool _isValidEmail(String email) {

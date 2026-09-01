@@ -27,31 +27,26 @@ class OffersLogic extends _$OffersLogic {
       if (state.offers.isNotEmpty) {
         state = state.copyWith(isFetchingMore: true);
       } else {
-        state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
+        state = state.copyWith(
+          isLoading: true,
+          isError: false,
+          errorMessage: null,
+        );
       }
     }
 
-    try {
-      final (newOffers, newLastDoc) = await ApiService.getOffers(
-        lastDocument: state.lastDocument,
-        limit: 10,
-      );
+    final (newOffers, newLastDoc) = await ApiService.getOffers(
+      lastDocument: state.lastDocument,
+      limit: 10,
+    );
 
-      state = state.copyWith(
-        offers: isRefresh ? newOffers : [...state.offers, ...newOffers],
-        lastDocument: newLastDoc,
-        hasMore: newOffers.length == 10,
-        isLoading: false,
-        isFetchingMore: false,
-      );
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        isFetchingMore: false,
-        isError: true,
-        errorMessage: e.toString(),
-      );
-    }
+    state = state.copyWith(
+      offers: isRefresh ? newOffers : [...state.offers, ...newOffers],
+      lastDocument: newLastDoc,
+      hasMore: newOffers.length == 10,
+      isLoading: false,
+      isFetchingMore: false,
+    );
   }
 
   Future<void> loadMore() async {

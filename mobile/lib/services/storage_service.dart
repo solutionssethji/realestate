@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:customer_app/services/api_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../../../services/auth_service.dart';
 import 'dart:developer' as developer;
+import '../utils/snackbar_utils.dart';
 
 class StorageService {
   static final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -26,16 +29,32 @@ class StorageService {
 
       developer.log('Uploading $documentType to ${ref.fullPath}');
 
+      // Set metadata
+      final metadata = SettableMetadata(
+        contentType: fileExtension.toLowerCase() == 'pdf' 
+            ? 'application/pdf' 
+            : 'image/${fileExtension.toLowerCase()}',
+      );
+
       // Upload file
-      final uploadTask = await ref.putFile(file);
+      final uploadTask = await ref.putFile(file, metadata);
 
       // Get download URL
       final downloadUrl = await uploadTask.ref.getDownloadURL();
 
       developer.log('Upload successful. URL: $downloadUrl');
       return downloadUrl;
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      AppSnackbar.showGlobalError(e.toString());
+
       developer.log('Error uploading KYC document: $e');
+      logApi(
+        function: 'uploadKycDocument()',
+        error: FirebaseAuthErrorMapper.getMessage(e.code),
+      );
+      return null;
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'uploadKycDocument()');
       return null;
     }
   }
@@ -53,7 +72,7 @@ class StorageService {
       developer.log('Upload successful. URL: $downloadUrl');
       return downloadUrl;
     } catch (e) {
-      developer.log('Error uploading profile image: $e');
+      FirebaseAuthErrorMapper().handleException(e, function: 'uploadProfileImage()');
       return null;
     }
   }

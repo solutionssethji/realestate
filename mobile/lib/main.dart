@@ -15,28 +15,45 @@ import 'theme/theme.dart';
 import 'routes/routes.dart';
 import 'constants.dart';
 import 'firebase_options.dart';
+import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+
+late Box appBox;
+
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
+bool _isSyncingFcmToken = false;
 
 Future<void> syncCurrentUserFcmToken() async {
-  final user = AuthService.currentUser;
-  if (user == null) return;
+  if (_isSyncingFcmToken) return;
+  _isSyncingFcmToken = true;
 
-  final settings = await FirebaseMessaging.instance.requestPermission(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  try {
+    final user = AuthService.currentUser;
+    if (user == null) return;
 
-  if (settings.authorizationStatus == AuthorizationStatus.denied) {
-    return;
+    final settings = await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.denied) {
+      return;
+    }
+
+    final token = await FirebaseMessaging.instance.getToken();
+    if (token == null || token.trim().isEmpty) return;
+
+    await ApiService.updateUserProfile(user.uid, {
+      'fcmTokens': FieldValue.arrayUnion([token]),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  } catch (e) {
+    debugPrint('Error syncing FCM token: $e');
+  } finally {
+    _isSyncingFcmToken = false;
   }
-
-  final token = await FirebaseMessaging.instance.getToken();
-  if (token == null || token.trim().isEmpty) return;
-
-  await ApiService.updateUserProfile(user.uid, {
-    'fcmTokens': FieldValue.arrayUnion([token]),
-    'updatedAt': FieldValue.serverTimestamp(),
-  });
 }
 
 @pragma('vm:entry-point')
@@ -49,6 +66,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Hive.initFlutter();
+  appBox = await Hive.openBox('appBox');
 
   if (!kIsWeb) {
     // Crashlytics removed
@@ -61,7 +80,7 @@ void main() async {
 
   FirebaseAnalytics.instance;
   AuthService.authStateChanges().listen((user) async {
-    if (user != null) {
+    if (user != null && user.emailVerified) {
       await syncCurrentUserFcmToken();
     }
   });
@@ -80,6 +99,7 @@ class RealEstateApp extends HookConsumerWidget {
     return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       routerConfig: router,
       theme: AppTheme.lightTheme,
       locale: locale,

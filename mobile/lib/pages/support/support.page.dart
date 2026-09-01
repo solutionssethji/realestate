@@ -1,11 +1,11 @@
 import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../../routes/app_routes.dart';
 import '../../utils/l10n_extension.dart';
 import '../../theme/theme.dart';
-import '../../services/api_service.dart';
-import '../../widgets/error_state.dart';
-import '../../widgets/app_loading_view.dart';
+import '../../widgets/generic_shimmer_loader.dart';
 import 'support.logic.dart';
 
 class SupportPage extends HookConsumerWidget {
@@ -13,105 +13,118 @@ class SupportPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(supportLogicProvider);
+    final state = ref.watch(supportLogicProvider);
     final logic = ref.read(supportLogicProvider.notifier);
     final l10n = context.l10n;
 
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.supportCenter),
-      body: FutureBuilder<Map<String, String>>(
-        future: ApiService.getContactSettings(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return ErrorState(
-              message: snapshot.error.toString(),
-              onRetry: () => ref.invalidate(supportLogicProvider),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const AppLoadingView();
-          }
+      body: SafeArea(child: _buildBody(context, logic, state, l10n)),
+    );
+  }
 
-          final settings = snapshot.data!;
-          final whatsapp = settings['whatsapp'] ?? '';
-          final phone = settings['phone'] ?? '';
-          final email = settings['email'] ?? '';
+  Widget _buildBody(BuildContext context, SupportLogic logic, state, l10n) {
+    if (state.isLoading) {
+      return const ShimmerLoader();
+    }
+    if (state.isError) {
+      return Center(
+        child: Text(state.errorMessage ?? context.l10n.errorLoadingSupportInfo),
+      );
+    }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Icon(Icons.support_agent, size: 80, color: AppTheme.info),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.howCanWeHelp,
-                  style: Theme.of(context).textTheme.headlineMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.supportDesc,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondary,
+    final info = state.companyInfo;
+    if (info == null) {
+      return Center(child: Text(l10n.aboutUnavailable));
+    }
+
+    final whatsapp = info.whatsapp;
+    final phone = info.phone;
+    final email = info.email;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Icon(Icons.support_agent, size: 80, color: AppTheme.info),
+          const SizedBox(height: 16),
+          Text(
+            l10n.howCanWeHelp,
+            style: Theme.of(context).textTheme.headlineMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.supportDesc,
+            textAlign: TextAlign.center,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
+          ),
+          const SizedBox(height: 32),
+
+          // About Company
+          _buildContactCard(
+            context: context,
+            icon: Icons.info_outline,
+            title: l10n.aboutCompany,
+            subtitle: l10n.companyProfile,
+            color: AppTheme.midnightNavy,
+            onTap: () => context.push(AppRoutes.about),
+          ),
+          const SizedBox(height: 16),
+
+          // Contact Options
+          _buildContactCard(
+            context: context,
+            icon: Icons.chat,
+            title: l10n.whatsappSupport,
+            subtitle: l10n.whatsappSubtitle,
+            color: AppTheme.success,
+            onTap: whatsapp.isEmpty
+                ? null
+                : () => logic.launchSupportUrl('https://wa.me/$whatsapp'),
+          ),
+          const SizedBox(height: 16),
+
+          _buildContactCard(
+            context: context,
+            icon: Icons.phone,
+            title: l10n.callUs,
+            subtitle: l10n.callUsSubtitle,
+            color: AppTheme.info,
+            onTap: phone.isEmpty
+                ? null
+                : () => logic.launchSupportUrl('tel:$phone'),
+          ),
+          const SizedBox(height: 16),
+
+          _buildContactCard(
+            context: context,
+            icon: Icons.email,
+            title: l10n.emailSupport,
+            subtitle: l10n.emailSupportSubtitle,
+            color: AppTheme.darkGold,
+            onTap: email.isEmpty
+                ? null
+                : () => logic.launchSupportUrl(
+                    'mailto:$email?subject=App%20Support',
                   ),
-                ),
-                const SizedBox(height: 32),
+          ),
+          const SizedBox(height: 16),
 
-                // Contact Options
-                _buildContactCard(
-                  context: context,
-                  icon: Icons.chat,
-                  title: l10n.whatsappSupport,
-                  subtitle: l10n.whatsappSubtitle,
-                  color: AppTheme.success,
-                  onTap: whatsapp.isEmpty
-                      ? null
-                      : () => logic.launchSupportUrl('https://wa.me/$whatsapp'),
-                ),
-                const SizedBox(height: 16),
-
-                _buildContactCard(
-                  context: context,
-                  icon: Icons.phone,
-                  title: l10n.callUs,
-                  subtitle: l10n.callUsSubtitle,
-                  color: AppTheme.info,
-                  onTap: phone.isEmpty
-                      ? null
-                      : () => logic.launchSupportUrl('tel:$phone'),
-                ),
-                const SizedBox(height: 16),
-
-                _buildContactCard(
-                  context: context,
-                  icon: Icons.email,
-                  title: l10n.emailSupport,
-                  subtitle: l10n.emailSupportSubtitle,
-                  color: AppTheme.darkGold,
-                  onTap: email.isEmpty
-                      ? null
-                      : () => logic.launchSupportUrl(
-                          'mailto:$email?subject=App%20Support',
-                        ),
-                ),
-
-                const SizedBox(height: 48),
-                Text(
-                  l10n.faqTitle,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 16),
-
-                // Mini FAQ section
-                _buildFaqItem(context, l10n.faq1Question, l10n.faq1Answer),
-                _buildFaqItem(context, l10n.faq2Question, l10n.faq2Answer),
-                _buildFaqItem(context, l10n.faq3Question, l10n.faq3Answer),
-              ],
-            ),
-          );
-        },
+          _buildContactCard(
+            context: context,
+            icon: Icons.location_on,
+            title: l10n.officeLocation,
+            subtitle: info.officeAddress,
+            color: AppTheme.midnightNavy,
+            onTap: info.googleMapsUrl.isEmpty
+                ? null
+                : () => logic.launchSupportUrl(info.googleMapsUrl),
+          ),
+        ],
       ),
     );
   }
@@ -167,23 +180,6 @@ class SupportPage extends HookConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildFaqItem(BuildContext context, String question, String answer) {
-    return ExpansionTile(
-      title: Text(question, style: Theme.of(context).textTheme.titleSmall),
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Text(
-            answer,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
-          ),
-        ),
-      ],
     );
   }
 }
