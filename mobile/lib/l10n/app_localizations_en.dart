@@ -21,12 +21,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutCompany => 'About Company';
 
   @override
-  String get ourVision => 'Our Vision';
-
-  @override
-  String get ourMission => 'Our Mission';
-
-  @override
   String get whyChooseUs => 'Why Choose Us';
 
   @override
@@ -45,13 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get aboutUs => 'About Us';
-
-  @override
   String get featuredProjects => 'Featured Projects';
-
-  @override
-  String get wantToSeeInPerson => 'Want to see it in person?';
 
   @override
   String get bookSiteVisit => 'Book a Site Visit';
@@ -215,82 +203,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get howItWorks => 'How it works';
 
   @override
-  String get shareReferralCode => '1. Share your referral code';
-
-  @override
-  String get shareReferralCodeDescription =>
-      'Send it to friends and family who are looking for a new home.';
-
-  @override
-  String get registerWithReferralCode => '2. They register with your code';
-
-  @override
-  String get registerWithReferralCodeDescription =>
-      'Once the buyer completes registration, the invite is counted.';
-
-  @override
-  String get earnReferralRewards => '3. Earn referral rewards';
-
-  @override
-  String get earnReferralRewardsDescription =>
-      'Reward points are added to your account and reflected in the balance.';
-
-  @override
   String get downloadReceipt => 'Download receipt';
 
   @override
-  String get receiptTitle => 'Payment Receipt';
-
-  @override
-  String get receiptVoucher => 'Payment Receipt Voucher';
-
-  @override
-  String receiptNumber(Object number) {
-    return 'Receipt No.: $number';
+  String voucherNumber(Object number) {
+    return 'Voucher No.: $number';
   }
-
-  @override
-  String receiptDate(Object date) {
-    return 'Dated: $date';
-  }
-
-  @override
-  String get receiptParticulars => 'Particulars';
-
-  @override
-  String get receiptAmount => 'Amount';
-
-  @override
-  String receiptAccount(Object account) {
-    return 'Account: $account';
-  }
-
-  @override
-  String receiptPaymentMode(Object mode) {
-    return 'Payment Mode: $mode';
-  }
-
-  @override
-  String receiptReference(Object reference) {
-    return 'Reference: $reference';
-  }
-
-  @override
-  String receiptNotes(Object notes) {
-    return 'Notes: $notes';
-  }
-
-  @override
-  String receiptAmountInWords(Object amount) {
-    return 'Amount (in words): $amount';
-  }
-
-  @override
-  String get receiptTotal => 'Total';
-
-  @override
-  String get computerGeneratedReceipt =>
-      'This is a computer-generated receipt.';
 
   @override
   String get unableToDownloadReceipt => 'Unable to download receipt';
@@ -318,13 +236,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noProjectsFound => 'No Projects Found';
 
   @override
-  String get tenYearsOfTrust => 'Years of Trust';
-
-  @override
-  String get deliveringExcellence =>
-      'Delivering excellence and transparent land investments.';
-
-  @override
   String get unableToLoadProject => 'Unable to load project.';
 
   @override
@@ -340,16 +251,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startingFrom => 'Starting from';
 
   @override
-  String get virtualTour => 'Virtual 360° Tour';
-
-  @override
   String get walkThroughProperty => 'Walk through the property from anywhere.';
 
   @override
   String get scheduleTour => 'Schedule a Tour';
-
-  @override
-  String get yourDetails => 'Your Details';
 
   @override
   String get fullName => 'Full Name';
@@ -364,9 +269,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get getInTouch => 'Get in Touch';
 
   @override
-  String get messageBudgetReqs => 'Message / Budget / Requirements';
-
-  @override
   String get plotRequirement => 'Plot Requirement';
 
   @override
@@ -378,11 +280,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String unableToLoadPlot(String error) {
     return 'Unable to load plot: $error';
-  }
-
-  @override
-  String plotPrefix(String number) {
-    return 'Plot $number';
   }
 
   @override
@@ -428,16 +325,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPlotsFound => 'No Plots Found';
 
   @override
-  String plotsCount(int count) {
-    return '$count Plots';
-  }
-
-  @override
-  String sqft(String size) {
-    return '$size sq.ft';
-  }
-
-  @override
   String facingLabel(String facing) {
     return '$facing Facing';
   }
@@ -458,14 +345,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openExternalMaps => 'Open External Maps';
 
   @override
-  String amountPrefix(String amount) {
-    return '₹$amount';
-  }
-
-  @override
-  String get corporateOffice => 'Corporate Office';
-
-  @override
   String get callUs => 'Call Us';
 
   @override
@@ -473,12 +352,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get email => 'Email';
-
-  @override
-  String get nameIsRequired => 'Name is required';
-
-  @override
-  String get enterValidMobileNumber => 'Enter a valid mobile number';
 
   @override
   String get submissionFailed => 'Submission failed. Please retry.';
@@ -528,30 +401,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewProjectDetails => 'View Project Details';
 
   @override
-  String get whyInvestWithUs => 'Why Invest With Us?';
-
-  @override
   String get secureAccess => 'Secure Access';
 
   @override
-  String get yearsOfTrust => 'Years of Trust';
-
-  @override
-  String get reinventingRealEstate => 'Re-inventing Real Estate';
-
-  @override
-  String get ourTeamIsAvailable =>
-      'Our team is available to assist with any queries or property viewings.';
-
-  @override
-  String get viewPastTransactions => 'View your past transactions';
-
-  @override
   String get account => 'Account';
-
-  @override
-  String get exclusivePlots =>
-      'Exclusive plots and luxury villas in prime locations.';
 
   @override
   String get aboutTheOffer => 'About the Offer';
@@ -568,40 +421,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonRetry => 'Retry';
 
   @override
-  String get findPremiumProperty => 'Find Your Premium\\nDream Property';
-
-  @override
   String get specialOffer => 'Special Offer';
 
   @override
   String get sslEncrypted => '256-bit SSL Encrypted';
 
   @override
-  String get expertsContactYou =>
-      'Our property experts will contact you within 24 hours.';
-
-  @override
   String get mapConfigUnavailable => 'Map Configuration is not available.';
 
   @override
   String get view360ComingSoon => '360° View Coming Soon';
-
-  @override
-  String get luxuryRealEstate => 'LUXURY REAL ESTATE';
-
-  @override
-  String get exclusivePlotsDesc =>
-      'Exclusive plots and luxury villas in prime locations.';
-
-  @override
-  String get secureInvestment => 'Secure Investment';
-
-  @override
-  String get strategicLocations =>
-      'Strategic locations ensuring excellent appreciation.';
-
-  @override
-  String get plotFinder => 'Plot Finder';
 
   @override
   String get quickActions => 'Quick Actions';
@@ -617,9 +446,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Check back soon — new offers are added regularly.';
 
   @override
-  String get noProjectsAvailable => 'No projects are available at the moment.';
-
-  @override
   String get clearSearch => 'Clear Search';
 
   @override
@@ -630,13 +456,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get siteVisit => 'Site Visit';
-
-  @override
-  String get sold => 'Sold';
-
-  @override
-  String get noPlotsAvailableFilter =>
-      'No plots available with the selected filter.';
 
   @override
   String get enquireAboutPlot => 'Enquire About This Plot';
@@ -661,28 +480,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your booking is confirmed. A confirmation will be sent to you shortly.';
 
   @override
-  String get paymentFailedCancelled => 'Payment failed or cancelled.';
-
-  @override
-  String get paymentFailedRetry => 'Payment failed. Please try again.';
-
-  @override
-  String get paymentSignatureError => 'Payment signature verification failed.';
-
-  @override
-  String get verificationFailedContact =>
-      'Verification failed. Please contact support.';
-
-  @override
-  String get serviceUnavailable =>
-      'Service is temporarily unavailable. Please try again.';
-
-  @override
   String get somethingWentWrong => 'Something went wrong. Please try again.';
-
-  @override
-  String get notAuthorizedPayment =>
-      'You are not authorized to complete this payment.';
 
   @override
   String get paymentFailed => 'Payment failed.';
@@ -703,29 +501,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourNumber => 'your number';
 
   @override
-  String get nameRequired => 'Name is required';
-
-  @override
-  String get enterValidMobile => 'Enter a valid mobile number';
-
-  @override
-  String get enterValidNumber => 'Enter a valid number';
-
-  @override
   String get selectPreferredDate => 'Select Preferred Date';
 
   @override
   String get bookingConfirmedCall =>
       'Booking confirmed! We\'ll call you to verify.';
-
-  @override
-  String get noFaqsAvailable => 'No FAQs available at the moment.';
-
-  @override
-  String get questionUnavailable => 'Question unavailable';
-
-  @override
-  String get answerUnavailable => 'Answer unavailable';
 
   @override
   String get termsAndConditions => 'Terms & Conditions';
@@ -734,75 +514,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy Policy';
 
   @override
-  String get statusAvailable => 'Available';
-
-  @override
-  String get statusHold => 'Hold';
-
-  @override
-  String get statusBookedSold => 'Booked/Sold';
-
-  @override
-  String get statusPending => 'Pending';
-
-  @override
-  String get statusSuccess => 'Success';
-
-  @override
-  String get statusFailed => 'Failed';
-
-  @override
-  String get statusCancelled => 'Cancelled';
-
-  @override
-  String get statusConfirmed => 'Confirmed';
-
-  @override
-  String get statusCompleted => 'Completed';
-
-  @override
-  String get clearTitlesApproved => '100% Clear Titles & RERA Approved';
-
-  @override
-  String get clearTitlesProcess =>
-      '100% clear titles and transparent legal processes.';
-
-  @override
-  String get premierCompany => 'A premier property development company.';
-
-  @override
-  String get dedicatedManagers =>
-      'Dedicated managers for seamless end-to-end assistance.';
-
-  @override
-  String get endToEndSupport => 'End-to-End Documentation Support';
-
-  @override
-  String get expertSupport => 'Expert Support';
-
-  @override
-  String get highRoi => 'High ROI';
-
-  @override
-  String get premiumInfra => 'Premium Infrastructure & Amenities';
-
-  @override
-  String get strategicHighRoi => 'Strategic Locations with High ROI';
-
-  @override
-  String get transparentPricing => 'Transparent Pricing with No Hidden Costs';
-
-  @override
-  String get exploreProjects => 'Explore Projects';
-
-  @override
-  String get availableCaps => 'Available';
-
-  @override
   String get bookedSold => 'Booked / Sold';
-
-  @override
-  String get onHoldCaps => 'On Hold';
 
   @override
   String get clearSearchFilters => 'Clear Search';
@@ -835,18 +547,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get anErrorOccurred => 'An error occurred. Please try again.';
-
-  @override
-  String get invalidResponse => 'Invalid response from server.';
-
-  @override
-  String get plotNotFound => 'Plot not found';
-
-  @override
-  String get projectNotFound => 'Project not found';
-
-  @override
-  String get somethingWentWrongTitle => 'Something went wrong';
 
   @override
   String validTill(String date) {
@@ -921,14 +621,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get yourDetailsAlt => 'Your Details';
-
-  @override
-  String fallbackTitleUnavailable(String title) {
-    return '$title is currently unavailable.';
-  }
-
-  @override
   String get somethingWentWrongAlt => 'Something went wrong';
 
   @override
@@ -938,77 +630,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String locationLatLng(String lat, String lng) {
     return 'Location: $lat, $lng';
   }
-
-  @override
-  String get errSignatureFailed => 'Payment signature verification failed.';
-
-  @override
-  String get errVerificationFailed =>
-      'Verification failed. Please contact support.';
-
-  @override
-  String get errPaymentFailedCancelled => 'Payment failed or cancelled.';
-
-  @override
-  String get errWalletsNotSupported =>
-      'External wallets are not supported at this time.';
-
-  @override
-  String get errInvalidResponse => 'Invalid response from server.';
-
-  @override
-  String get errSomethingWentWrong => 'Something went wrong. Please try again.';
-
-  @override
-  String get errNotAuthorized =>
-      'You are not authorized to complete this payment.';
-
-  @override
-  String get errServiceUnavailable =>
-      'Service is temporarily unavailable. Please try again.';
-
-  @override
-  String get errPaymentFailed => 'Payment failed. Please try again.';
-
-  @override
-  String get errPlotNotFound => 'Plot not found';
-
-  @override
-  String get errProjectNotFound => 'Project not found';
-
-  @override
-  String get statusAvailableCaps => 'AVAILABLE';
-
-  @override
-  String get statusHoldCaps => 'HOLD';
-
-  @override
-  String get statusBookedCaps => 'BOOKED';
-
-  @override
-  String get cmsUnicRealEstate => 'Unic Real Estate';
-
-  @override
-  String get cmsPremierCompany => 'A premier property development company.';
-
-  @override
-  String get cmsMostTrusted => 'To be the most trusted name in real estate.';
-
-  @override
-  String get cmsDeliverClearTitle =>
-      'To deliver clear-title, legally vetted plots.';
-
-  @override
-  String get cms100ClearTitle => '100% Clear Titles & RERA Approved';
-
-  @override
-  String get cmsStrategicLocations => 'Strategic Locations with High ROI';
-
-  @override
-  String get cmsIndianRupee => 'Indian Rupee';
-
-  @override
-  String get legalAndPolicies => 'Legal & Policies';
 
   @override
   String get companyProfile => 'Company Profile';
@@ -1036,15 +657,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plotPrice => 'Plot Price';
-
-  @override
-  String get calculateEmi => 'Calculate EMI';
-
-  @override
-  String get approximateEmi => 'Approximate EMI';
-
-  @override
-  String get totalPayment => 'Total Payment';
 
   @override
   String get offerDetails => 'Offer Details';
@@ -1212,9 +824,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadDocumentImage => 'Upload Document Image:';
 
   @override
-  String get tapToPickImage => 'Tap to pick image';
-
-  @override
   String get userNotFound => 'User not found';
 
   @override
@@ -1231,27 +840,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get emiAndPayments => 'EMI & Payments';
-
-  @override
-  String get paymentSummary => 'Payment Summary';
-
-  @override
   String get totalAmount => 'TOTAL AMOUNT';
-
-  @override
-  String get amountPaid => 'Amount Paid';
 
   @override
   String get pendingBalance => 'PENDING BALANCE';
 
   @override
   String get noPaymentRecords => 'No payment records found.';
-
-  @override
-  String paymentRef(String ref) {
-    return 'Ref: $ref';
-  }
 
   @override
   String get supportCenter => 'Support Center';
@@ -1279,30 +874,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailSupportSubtitle => 'support@realestate.com';
 
   @override
-  String get faqTitle => 'Frequently Asked Questions';
-
-  @override
-  String get faq1Question => 'How do I book a plot?';
-
-  @override
-  String get faq1Answer =>
-      'You can browse available plots in any active project and click \"Enquire\" or \"Book\". An agent will contact you shortly.';
-
-  @override
-  String get faq2Question => 'Where can I see my EMI status?';
-
-  @override
-  String get faq2Answer =>
-      'Go to Profile > My Properties, and select your booked plot to see your complete EMI tracker and payment history.';
-
-  @override
-  String get faq3Question => 'Can I change my registered email?';
-
-  @override
-  String get faq3Answer =>
-      'For security reasons, your registered email cannot be changed from the app. Please contact support.';
-
-  @override
   String get myProfile => 'My Profile';
 
   @override
@@ -1321,19 +892,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginBtn => 'Login';
 
   @override
-  String get pleaseLoginToViewProperties =>
-      'Please login to view your properties.';
-
-  @override
   String get noPropertiesYet => 'You have no booked or purchased plots yet.';
 
   @override
   String plotNoLabel(String number) {
     return 'Plot No: $number';
   }
-
-  @override
-  String get loginPageTitle => 'Login';
 
   @override
   String get welcomeBack => 'Welcome Back';
@@ -1397,9 +961,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get agreeToSuffix => '';
 
   @override
-  String get permissionDenied => 'Permission denied. Please contact support.';
-
-  @override
   String get backToLogin => 'Back to Login';
 
   @override
@@ -1425,31 +986,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get alreadyHaveAccount => 'Already have an account? Login';
-
-  @override
-  String get valErrEmailRequired => 'Email is required';
-
-  @override
-  String get valErrEmailInvalid => 'Please enter a valid email address';
-
-  @override
-  String get valErrPasswordRequired => 'Password is required';
-
-  @override
-  String get valErrPasswordLength => 'Password must be at least 6 characters';
-
-  @override
-  String get valErrFullNameRequired => 'Full name is required';
-
-  @override
-  String get valErrMobileRequired => 'Mobile number is required';
-
-  @override
-  String get valErrMobileInvalid => 'Please enter a valid mobile number';
-
-  @override
-  String get valErrFullNameInvalid =>
-      'Please enter a valid name (letters only)';
 
   @override
   String get accountBlocked =>
@@ -1478,9 +1014,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get registrationSuccessMessage =>
       'We have sent a verification email to your registered email address.\n\nPlease check your inbox and your spam/junk folder. You must verify your email before you can log in to your account.';
-
-  @override
-  String get goToLogin => 'Go to Login';
 
   @override
   String get unknownProject => 'Unknown Project';
@@ -1532,21 +1065,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updatePassword => 'Update Password';
 
   @override
-  String get failedToChangePassword => 'Failed to change password';
-
-  @override
-  String get currentPasswordIncorrect => 'Current password is incorrect';
-
-  @override
-  String get invalidResponseFromServer => 'Invalid response from server.';
-
-  @override
-  String get realEstatePlatform => 'Real Estate Platform';
-
-  @override
-  String get userNotLoggedIn => 'User not logged in';
-
-  @override
   String get noSiteVisitsScheduled => 'No Site Visits Scheduled';
 
   @override
@@ -1596,15 +1114,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enter6DigitOtp => 'Enter 6-digit OTP';
-
-  @override
-  String get errorLoadingContent => 'Error loading content';
-
-  @override
-  String get failedToLoadPropertyDetails => 'Failed to load property details';
-
-  @override
-  String get failedToLoadPayments => 'Failed to load payments';
 
   @override
   String inrPrice(String amount) {
@@ -1685,52 +1194,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'We could not find booking details for this plot.';
 
   @override
-  String get propertyInformation => 'Property Information';
-
-  @override
   String get project => 'Project';
 
   @override
   String get plotNo => 'Plot No';
-
-  @override
-  String get plotArea1 => 'Plot Area 1';
-
-  @override
-  String get plotArea2 => 'Plot Area 2';
-
-  @override
-  String get plotArea3 => 'Plot Area 3';
-
-  @override
-  String get plotArea4 => 'Plot Area 4';
-
-  @override
-  String get salePriceSqFt => 'Sale Price';
-
-  @override
-  String get devChargeSqFt => 'Dev Charge';
-
-  @override
-  String get firstApplicantDetails => 'First Applicant Details';
-
-  @override
-  String get applicantName => 'Name';
-
-  @override
-  String get swdOf => 'S/W/D of';
-
-  @override
-  String get dob => 'DOB';
-
-  @override
-  String get occupation => 'Occupation';
-
-  @override
-  String get nationality => 'Nationality';
-
-  @override
-  String get contactAndIdentity => 'Contact & Identity';
 
   @override
   String get mobile => 'Mobile';
@@ -1745,34 +1212,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get address => 'Address';
 
   @override
-  String get presentAddress => 'Present Address';
-
-  @override
-  String get permanentAddress => 'Permanent';
-
-  @override
-  String get nominee => 'Nominee';
-
-  @override
-  String get relation => 'Relation';
-
-  @override
-  String get secondApplicantDetails => 'Second Applicant Details';
-
-  @override
-  String get paymentTerms => 'Payment Terms';
-
-  @override
-  String get paymentPlan => 'Payment Plan';
-
-  @override
   String get paymentMode => 'Payment Mode';
-
-  @override
-  String get bankFinance => 'Bank/Finance';
-
-  @override
-  String get applicationDate => 'Application Date';
 
   @override
   String get bookingDate => 'BOOKING DATE';
@@ -1799,11 +1239,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get initialPaymentDesc => 'Initial payment from booking application';
-
-  @override
-  String paymentTxnSuffix(String txnId) {
-    return ' (Txn: $txnId)';
-  }
 
   @override
   String get paymentModeCash => 'Cash';

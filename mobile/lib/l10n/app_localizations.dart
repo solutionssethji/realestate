@@ -122,18 +122,6 @@ abstract class AppLocalizations {
   /// **'About Company'**
   String get aboutCompany;
 
-  /// No description provided for @ourVision.
-  ///
-  /// In en, this message translates to:
-  /// **'Our Vision'**
-  String get ourVision;
-
-  /// No description provided for @ourMission.
-  ///
-  /// In en, this message translates to:
-  /// **'Our Mission'**
-  String get ourMission;
-
   /// No description provided for @whyChooseUs.
   ///
   /// In en, this message translates to:
@@ -170,23 +158,11 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profile;
 
-  /// No description provided for @aboutUs.
-  ///
-  /// In en, this message translates to:
-  /// **'About Us'**
-  String get aboutUs;
-
   /// No description provided for @featuredProjects.
   ///
   /// In en, this message translates to:
   /// **'Featured Projects'**
   String get featuredProjects;
-
-  /// No description provided for @wantToSeeInPerson.
-  ///
-  /// In en, this message translates to:
-  /// **'Want to see it in person?'**
-  String get wantToSeeInPerson;
 
   /// No description provided for @bookSiteVisit.
   ///
@@ -506,125 +482,17 @@ abstract class AppLocalizations {
   /// **'How it works'**
   String get howItWorks;
 
-  /// No description provided for @shareReferralCode.
-  ///
-  /// In en, this message translates to:
-  /// **'1. Share your referral code'**
-  String get shareReferralCode;
-
-  /// No description provided for @shareReferralCodeDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Send it to friends and family who are looking for a new home.'**
-  String get shareReferralCodeDescription;
-
-  /// No description provided for @registerWithReferralCode.
-  ///
-  /// In en, this message translates to:
-  /// **'2. They register with your code'**
-  String get registerWithReferralCode;
-
-  /// No description provided for @registerWithReferralCodeDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Once the buyer completes registration, the invite is counted.'**
-  String get registerWithReferralCodeDescription;
-
-  /// No description provided for @earnReferralRewards.
-  ///
-  /// In en, this message translates to:
-  /// **'3. Earn referral rewards'**
-  String get earnReferralRewards;
-
-  /// No description provided for @earnReferralRewardsDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Reward points are added to your account and reflected in the balance.'**
-  String get earnReferralRewardsDescription;
-
   /// No description provided for @downloadReceipt.
   ///
   /// In en, this message translates to:
   /// **'Download receipt'**
   String get downloadReceipt;
 
-  /// No description provided for @receiptTitle.
+  /// No description provided for @voucherNumber.
   ///
   /// In en, this message translates to:
-  /// **'Payment Receipt'**
-  String get receiptTitle;
-
-  /// No description provided for @receiptVoucher.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment Receipt Voucher'**
-  String get receiptVoucher;
-
-  /// No description provided for @receiptNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Receipt No.: {number}'**
-  String receiptNumber(Object number);
-
-  /// No description provided for @receiptDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Dated: {date}'**
-  String receiptDate(Object date);
-
-  /// No description provided for @receiptParticulars.
-  ///
-  /// In en, this message translates to:
-  /// **'Particulars'**
-  String get receiptParticulars;
-
-  /// No description provided for @receiptAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount'**
-  String get receiptAmount;
-
-  /// No description provided for @receiptAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Account: {account}'**
-  String receiptAccount(Object account);
-
-  /// No description provided for @receiptPaymentMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment Mode: {mode}'**
-  String receiptPaymentMode(Object mode);
-
-  /// No description provided for @receiptReference.
-  ///
-  /// In en, this message translates to:
-  /// **'Reference: {reference}'**
-  String receiptReference(Object reference);
-
-  /// No description provided for @receiptNotes.
-  ///
-  /// In en, this message translates to:
-  /// **'Notes: {notes}'**
-  String receiptNotes(Object notes);
-
-  /// No description provided for @receiptAmountInWords.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount (in words): {amount}'**
-  String receiptAmountInWords(Object amount);
-
-  /// No description provided for @receiptTotal.
-  ///
-  /// In en, this message translates to:
-  /// **'Total'**
-  String get receiptTotal;
-
-  /// No description provided for @computerGeneratedReceipt.
-  ///
-  /// In en, this message translates to:
-  /// **'This is a computer-generated receipt.'**
-  String get computerGeneratedReceipt;
+  /// **'Voucher No.: {number}'**
+  String voucherNumber(Object number);
 
   /// No description provided for @unableToDownloadReceipt.
   ///
@@ -668,18 +536,6 @@ abstract class AppLocalizations {
   /// **'No Projects Found'**
   String get noProjectsFound;
 
-  /// No description provided for @tenYearsOfTrust.
-  ///
-  /// In en, this message translates to:
-  /// **'Years of Trust'**
-  String get tenYearsOfTrust;
-
-  /// No description provided for @deliveringExcellence.
-  ///
-  /// In en, this message translates to:
-  /// **'Delivering excellence and transparent land investments.'**
-  String get deliveringExcellence;
-
   /// No description provided for @unableToLoadProject.
   ///
   /// In en, this message translates to:
@@ -710,12 +566,6 @@ abstract class AppLocalizations {
   /// **'Starting from'**
   String get startingFrom;
 
-  /// No description provided for @virtualTour.
-  ///
-  /// In en, this message translates to:
-  /// **'Virtual 360° Tour'**
-  String get virtualTour;
-
   /// No description provided for @walkThroughProperty.
   ///
   /// In en, this message translates to:
@@ -727,12 +577,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Schedule a Tour'**
   String get scheduleTour;
-
-  /// No description provided for @yourDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Details'**
-  String get yourDetails;
 
   /// No description provided for @fullName.
   ///
@@ -758,12 +602,6 @@ abstract class AppLocalizations {
   /// **'Get in Touch'**
   String get getInTouch;
 
-  /// No description provided for @messageBudgetReqs.
-  ///
-  /// In en, this message translates to:
-  /// **'Message / Budget / Requirements'**
-  String get messageBudgetReqs;
-
   /// No description provided for @plotRequirement.
   ///
   /// In en, this message translates to:
@@ -787,12 +625,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to load plot: {error}'**
   String unableToLoadPlot(String error);
-
-  /// No description provided for @plotPrefix.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot {number}'**
-  String plotPrefix(String number);
 
   /// No description provided for @residentialPlot.
   ///
@@ -878,18 +710,6 @@ abstract class AppLocalizations {
   /// **'No Plots Found'**
   String get noPlotsFound;
 
-  /// No description provided for @plotsCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} Plots'**
-  String plotsCount(int count);
-
-  /// No description provided for @sqft.
-  ///
-  /// In en, this message translates to:
-  /// **'{size} sq.ft'**
-  String sqft(String size);
-
   /// No description provided for @facingLabel.
   ///
   /// In en, this message translates to:
@@ -926,18 +746,6 @@ abstract class AppLocalizations {
   /// **'Open External Maps'**
   String get openExternalMaps;
 
-  /// No description provided for @amountPrefix.
-  ///
-  /// In en, this message translates to:
-  /// **'₹{amount}'**
-  String amountPrefix(String amount);
-
-  /// No description provided for @corporateOffice.
-  ///
-  /// In en, this message translates to:
-  /// **'Corporate Office'**
-  String get corporateOffice;
-
   /// No description provided for @callUs.
   ///
   /// In en, this message translates to:
@@ -955,18 +763,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Email'**
   String get email;
-
-  /// No description provided for @nameIsRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Name is required'**
-  String get nameIsRequired;
-
-  /// No description provided for @enterValidMobileNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a valid mobile number'**
-  String get enterValidMobileNumber;
 
   /// No description provided for @submissionFailed.
   ///
@@ -1058,53 +854,17 @@ abstract class AppLocalizations {
   /// **'View Project Details'**
   String get viewProjectDetails;
 
-  /// No description provided for @whyInvestWithUs.
-  ///
-  /// In en, this message translates to:
-  /// **'Why Invest With Us?'**
-  String get whyInvestWithUs;
-
   /// No description provided for @secureAccess.
   ///
   /// In en, this message translates to:
   /// **'Secure Access'**
   String get secureAccess;
 
-  /// No description provided for @yearsOfTrust.
-  ///
-  /// In en, this message translates to:
-  /// **'Years of Trust'**
-  String get yearsOfTrust;
-
-  /// No description provided for @reinventingRealEstate.
-  ///
-  /// In en, this message translates to:
-  /// **'Re-inventing Real Estate'**
-  String get reinventingRealEstate;
-
-  /// No description provided for @ourTeamIsAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Our team is available to assist with any queries or property viewings.'**
-  String get ourTeamIsAvailable;
-
-  /// No description provided for @viewPastTransactions.
-  ///
-  /// In en, this message translates to:
-  /// **'View your past transactions'**
-  String get viewPastTransactions;
-
   /// No description provided for @account.
   ///
   /// In en, this message translates to:
   /// **'Account'**
   String get account;
-
-  /// No description provided for @exclusivePlots.
-  ///
-  /// In en, this message translates to:
-  /// **'Exclusive plots and luxury villas in prime locations.'**
-  String get exclusivePlots;
 
   /// No description provided for @aboutTheOffer.
   ///
@@ -1130,12 +890,6 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get commonRetry;
 
-  /// No description provided for @findPremiumProperty.
-  ///
-  /// In en, this message translates to:
-  /// **'Find Your Premium\\nDream Property'**
-  String get findPremiumProperty;
-
   /// No description provided for @specialOffer.
   ///
   /// In en, this message translates to:
@@ -1148,12 +902,6 @@ abstract class AppLocalizations {
   /// **'256-bit SSL Encrypted'**
   String get sslEncrypted;
 
-  /// No description provided for @expertsContactYou.
-  ///
-  /// In en, this message translates to:
-  /// **'Our property experts will contact you within 24 hours.'**
-  String get expertsContactYou;
-
   /// No description provided for @mapConfigUnavailable.
   ///
   /// In en, this message translates to:
@@ -1165,36 +913,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'360° View Coming Soon'**
   String get view360ComingSoon;
-
-  /// No description provided for @luxuryRealEstate.
-  ///
-  /// In en, this message translates to:
-  /// **'LUXURY REAL ESTATE'**
-  String get luxuryRealEstate;
-
-  /// No description provided for @exclusivePlotsDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Exclusive plots and luxury villas in prime locations.'**
-  String get exclusivePlotsDesc;
-
-  /// No description provided for @secureInvestment.
-  ///
-  /// In en, this message translates to:
-  /// **'Secure Investment'**
-  String get secureInvestment;
-
-  /// No description provided for @strategicLocations.
-  ///
-  /// In en, this message translates to:
-  /// **'Strategic locations ensuring excellent appreciation.'**
-  String get strategicLocations;
-
-  /// No description provided for @plotFinder.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot Finder'**
-  String get plotFinder;
 
   /// No description provided for @quickActions.
   ///
@@ -1220,12 +938,6 @@ abstract class AppLocalizations {
   /// **'Check back soon — new offers are added regularly.'**
   String get checkBackSoon;
 
-  /// No description provided for @noProjectsAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'No projects are available at the moment.'**
-  String get noProjectsAvailable;
-
   /// No description provided for @clearSearch.
   ///
   /// In en, this message translates to:
@@ -1249,18 +961,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Site Visit'**
   String get siteVisit;
-
-  /// No description provided for @sold.
-  ///
-  /// In en, this message translates to:
-  /// **'Sold'**
-  String get sold;
-
-  /// No description provided for @noPlotsAvailableFilter.
-  ///
-  /// In en, this message translates to:
-  /// **'No plots available with the selected filter.'**
-  String get noPlotsAvailableFilter;
 
   /// No description provided for @enquireAboutPlot.
   ///
@@ -1304,47 +1004,11 @@ abstract class AppLocalizations {
   /// **'Your booking is confirmed. A confirmation will be sent to you shortly.'**
   String get bookingConfirmedMsg;
 
-  /// No description provided for @paymentFailedCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment failed or cancelled.'**
-  String get paymentFailedCancelled;
-
-  /// No description provided for @paymentFailedRetry.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment failed. Please try again.'**
-  String get paymentFailedRetry;
-
-  /// No description provided for @paymentSignatureError.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment signature verification failed.'**
-  String get paymentSignatureError;
-
-  /// No description provided for @verificationFailedContact.
-  ///
-  /// In en, this message translates to:
-  /// **'Verification failed. Please contact support.'**
-  String get verificationFailedContact;
-
-  /// No description provided for @serviceUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Service is temporarily unavailable. Please try again.'**
-  String get serviceUnavailable;
-
   /// No description provided for @somethingWentWrong.
   ///
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get somethingWentWrong;
-
-  /// No description provided for @notAuthorizedPayment.
-  ///
-  /// In en, this message translates to:
-  /// **'You are not authorized to complete this payment.'**
-  String get notAuthorizedPayment;
 
   /// No description provided for @paymentFailed.
   ///
@@ -1382,24 +1046,6 @@ abstract class AppLocalizations {
   /// **'your number'**
   String get yourNumber;
 
-  /// No description provided for @nameRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Name is required'**
-  String get nameRequired;
-
-  /// No description provided for @enterValidMobile.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a valid mobile number'**
-  String get enterValidMobile;
-
-  /// No description provided for @enterValidNumber.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a valid number'**
-  String get enterValidNumber;
-
   /// No description provided for @selectPreferredDate.
   ///
   /// In en, this message translates to:
@@ -1411,24 +1057,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Booking confirmed! We\'ll call you to verify.'**
   String get bookingConfirmedCall;
-
-  /// No description provided for @noFaqsAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'No FAQs available at the moment.'**
-  String get noFaqsAvailable;
-
-  /// No description provided for @questionUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Question unavailable'**
-  String get questionUnavailable;
-
-  /// No description provided for @answerUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Answer unavailable'**
-  String get answerUnavailable;
 
   /// No description provided for @termsAndConditions.
   ///
@@ -1442,143 +1070,11 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get privacyPolicy;
 
-  /// No description provided for @statusAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Available'**
-  String get statusAvailable;
-
-  /// No description provided for @statusHold.
-  ///
-  /// In en, this message translates to:
-  /// **'Hold'**
-  String get statusHold;
-
-  /// No description provided for @statusBookedSold.
-  ///
-  /// In en, this message translates to:
-  /// **'Booked/Sold'**
-  String get statusBookedSold;
-
-  /// No description provided for @statusPending.
-  ///
-  /// In en, this message translates to:
-  /// **'Pending'**
-  String get statusPending;
-
-  /// No description provided for @statusSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Success'**
-  String get statusSuccess;
-
-  /// No description provided for @statusFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed'**
-  String get statusFailed;
-
-  /// No description provided for @statusCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelled'**
-  String get statusCancelled;
-
-  /// No description provided for @statusConfirmed.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirmed'**
-  String get statusConfirmed;
-
-  /// No description provided for @statusCompleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Completed'**
-  String get statusCompleted;
-
-  /// No description provided for @clearTitlesApproved.
-  ///
-  /// In en, this message translates to:
-  /// **'100% Clear Titles & RERA Approved'**
-  String get clearTitlesApproved;
-
-  /// No description provided for @clearTitlesProcess.
-  ///
-  /// In en, this message translates to:
-  /// **'100% clear titles and transparent legal processes.'**
-  String get clearTitlesProcess;
-
-  /// No description provided for @premierCompany.
-  ///
-  /// In en, this message translates to:
-  /// **'A premier property development company.'**
-  String get premierCompany;
-
-  /// No description provided for @dedicatedManagers.
-  ///
-  /// In en, this message translates to:
-  /// **'Dedicated managers for seamless end-to-end assistance.'**
-  String get dedicatedManagers;
-
-  /// No description provided for @endToEndSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'End-to-End Documentation Support'**
-  String get endToEndSupport;
-
-  /// No description provided for @expertSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Expert Support'**
-  String get expertSupport;
-
-  /// No description provided for @highRoi.
-  ///
-  /// In en, this message translates to:
-  /// **'High ROI'**
-  String get highRoi;
-
-  /// No description provided for @premiumInfra.
-  ///
-  /// In en, this message translates to:
-  /// **'Premium Infrastructure & Amenities'**
-  String get premiumInfra;
-
-  /// No description provided for @strategicHighRoi.
-  ///
-  /// In en, this message translates to:
-  /// **'Strategic Locations with High ROI'**
-  String get strategicHighRoi;
-
-  /// No description provided for @transparentPricing.
-  ///
-  /// In en, this message translates to:
-  /// **'Transparent Pricing with No Hidden Costs'**
-  String get transparentPricing;
-
-  /// No description provided for @exploreProjects.
-  ///
-  /// In en, this message translates to:
-  /// **'Explore Projects'**
-  String get exploreProjects;
-
-  /// No description provided for @availableCaps.
-  ///
-  /// In en, this message translates to:
-  /// **'Available'**
-  String get availableCaps;
-
   /// No description provided for @bookedSold.
   ///
   /// In en, this message translates to:
   /// **'Booked / Sold'**
   String get bookedSold;
-
-  /// No description provided for @onHoldCaps.
-  ///
-  /// In en, this message translates to:
-  /// **'On Hold'**
-  String get onHoldCaps;
 
   /// No description provided for @clearSearchFilters.
   ///
@@ -1639,30 +1135,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred. Please try again.'**
   String get anErrorOccurred;
-
-  /// No description provided for @invalidResponse.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid response from server.'**
-  String get invalidResponse;
-
-  /// No description provided for @plotNotFound.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot not found'**
-  String get plotNotFound;
-
-  /// No description provided for @projectNotFound.
-  ///
-  /// In en, this message translates to:
-  /// **'Project not found'**
-  String get projectNotFound;
-
-  /// No description provided for @somethingWentWrongTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Something went wrong'**
-  String get somethingWentWrongTitle;
 
   /// No description provided for @validTill.
   ///
@@ -1760,18 +1232,6 @@ abstract class AppLocalizations {
   /// **'{count} Plots'**
   String projectPlotsCount(String count);
 
-  /// No description provided for @yourDetailsAlt.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Details'**
-  String get yourDetailsAlt;
-
-  /// No description provided for @fallbackTitleUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'{title} is currently unavailable.'**
-  String fallbackTitleUnavailable(String title);
-
   /// No description provided for @somethingWentWrongAlt.
   ///
   /// In en, this message translates to:
@@ -1789,138 +1249,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Location: {lat}, {lng}'**
   String locationLatLng(String lat, String lng);
-
-  /// No description provided for @errSignatureFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment signature verification failed.'**
-  String get errSignatureFailed;
-
-  /// No description provided for @errVerificationFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Verification failed. Please contact support.'**
-  String get errVerificationFailed;
-
-  /// No description provided for @errPaymentFailedCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment failed or cancelled.'**
-  String get errPaymentFailedCancelled;
-
-  /// No description provided for @errWalletsNotSupported.
-  ///
-  /// In en, this message translates to:
-  /// **'External wallets are not supported at this time.'**
-  String get errWalletsNotSupported;
-
-  /// No description provided for @errInvalidResponse.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid response from server.'**
-  String get errInvalidResponse;
-
-  /// No description provided for @errSomethingWentWrong.
-  ///
-  /// In en, this message translates to:
-  /// **'Something went wrong. Please try again.'**
-  String get errSomethingWentWrong;
-
-  /// No description provided for @errNotAuthorized.
-  ///
-  /// In en, this message translates to:
-  /// **'You are not authorized to complete this payment.'**
-  String get errNotAuthorized;
-
-  /// No description provided for @errServiceUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Service is temporarily unavailable. Please try again.'**
-  String get errServiceUnavailable;
-
-  /// No description provided for @errPaymentFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment failed. Please try again.'**
-  String get errPaymentFailed;
-
-  /// No description provided for @errPlotNotFound.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot not found'**
-  String get errPlotNotFound;
-
-  /// No description provided for @errProjectNotFound.
-  ///
-  /// In en, this message translates to:
-  /// **'Project not found'**
-  String get errProjectNotFound;
-
-  /// No description provided for @statusAvailableCaps.
-  ///
-  /// In en, this message translates to:
-  /// **'AVAILABLE'**
-  String get statusAvailableCaps;
-
-  /// No description provided for @statusHoldCaps.
-  ///
-  /// In en, this message translates to:
-  /// **'HOLD'**
-  String get statusHoldCaps;
-
-  /// No description provided for @statusBookedCaps.
-  ///
-  /// In en, this message translates to:
-  /// **'BOOKED'**
-  String get statusBookedCaps;
-
-  /// No description provided for @cmsUnicRealEstate.
-  ///
-  /// In en, this message translates to:
-  /// **'Unic Real Estate'**
-  String get cmsUnicRealEstate;
-
-  /// No description provided for @cmsPremierCompany.
-  ///
-  /// In en, this message translates to:
-  /// **'A premier property development company.'**
-  String get cmsPremierCompany;
-
-  /// No description provided for @cmsMostTrusted.
-  ///
-  /// In en, this message translates to:
-  /// **'To be the most trusted name in real estate.'**
-  String get cmsMostTrusted;
-
-  /// No description provided for @cmsDeliverClearTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'To deliver clear-title, legally vetted plots.'**
-  String get cmsDeliverClearTitle;
-
-  /// No description provided for @cms100ClearTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'100% Clear Titles & RERA Approved'**
-  String get cms100ClearTitle;
-
-  /// No description provided for @cmsStrategicLocations.
-  ///
-  /// In en, this message translates to:
-  /// **'Strategic Locations with High ROI'**
-  String get cmsStrategicLocations;
-
-  /// No description provided for @cmsIndianRupee.
-  ///
-  /// In en, this message translates to:
-  /// **'Indian Rupee'**
-  String get cmsIndianRupee;
-
-  /// No description provided for @legalAndPolicies.
-  ///
-  /// In en, this message translates to:
-  /// **'Legal & Policies'**
-  String get legalAndPolicies;
 
   /// No description provided for @companyProfile.
   ///
@@ -1975,24 +1303,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plot Price'**
   String get plotPrice;
-
-  /// No description provided for @calculateEmi.
-  ///
-  /// In en, this message translates to:
-  /// **'Calculate EMI'**
-  String get calculateEmi;
-
-  /// No description provided for @approximateEmi.
-  ///
-  /// In en, this message translates to:
-  /// **'Approximate EMI'**
-  String get approximateEmi;
-
-  /// No description provided for @totalPayment.
-  ///
-  /// In en, this message translates to:
-  /// **'Total Payment'**
-  String get totalPayment;
 
   /// No description provided for @offerDetails.
   ///
@@ -2282,12 +1592,6 @@ abstract class AppLocalizations {
   /// **'Upload Document Image:'**
   String get uploadDocumentImage;
 
-  /// No description provided for @tapToPickImage.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap to pick image'**
-  String get tapToPickImage;
-
   /// No description provided for @userNotFound.
   ///
   /// In en, this message translates to:
@@ -2312,29 +1616,11 @@ abstract class AppLocalizations {
   /// **'Failed to update KYC: {error}'**
   String failedToUpdateKyc(String error);
 
-  /// No description provided for @emiAndPayments.
-  ///
-  /// In en, this message translates to:
-  /// **'EMI & Payments'**
-  String get emiAndPayments;
-
-  /// No description provided for @paymentSummary.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment Summary'**
-  String get paymentSummary;
-
   /// No description provided for @totalAmount.
   ///
   /// In en, this message translates to:
   /// **'TOTAL AMOUNT'**
   String get totalAmount;
-
-  /// No description provided for @amountPaid.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount Paid'**
-  String get amountPaid;
 
   /// No description provided for @pendingBalance.
   ///
@@ -2347,12 +1633,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No payment records found.'**
   String get noPaymentRecords;
-
-  /// No description provided for @paymentRef.
-  ///
-  /// In en, this message translates to:
-  /// **'Ref: {ref}'**
-  String paymentRef(String ref);
 
   /// No description provided for @supportCenter.
   ///
@@ -2402,48 +1682,6 @@ abstract class AppLocalizations {
   /// **'support@realestate.com'**
   String get emailSupportSubtitle;
 
-  /// No description provided for @faqTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Frequently Asked Questions'**
-  String get faqTitle;
-
-  /// No description provided for @faq1Question.
-  ///
-  /// In en, this message translates to:
-  /// **'How do I book a plot?'**
-  String get faq1Question;
-
-  /// No description provided for @faq1Answer.
-  ///
-  /// In en, this message translates to:
-  /// **'You can browse available plots in any active project and click \"Enquire\" or \"Book\". An agent will contact you shortly.'**
-  String get faq1Answer;
-
-  /// No description provided for @faq2Question.
-  ///
-  /// In en, this message translates to:
-  /// **'Where can I see my EMI status?'**
-  String get faq2Question;
-
-  /// No description provided for @faq2Answer.
-  ///
-  /// In en, this message translates to:
-  /// **'Go to Profile > My Properties, and select your booked plot to see your complete EMI tracker and payment history.'**
-  String get faq2Answer;
-
-  /// No description provided for @faq3Question.
-  ///
-  /// In en, this message translates to:
-  /// **'Can I change my registered email?'**
-  String get faq3Question;
-
-  /// No description provided for @faq3Answer.
-  ///
-  /// In en, this message translates to:
-  /// **'For security reasons, your registered email cannot be changed from the app. Please contact support.'**
-  String get faq3Answer;
-
   /// No description provided for @myProfile.
   ///
   /// In en, this message translates to:
@@ -2480,12 +1718,6 @@ abstract class AppLocalizations {
   /// **'Login'**
   String get loginBtn;
 
-  /// No description provided for @pleaseLoginToViewProperties.
-  ///
-  /// In en, this message translates to:
-  /// **'Please login to view your properties.'**
-  String get pleaseLoginToViewProperties;
-
   /// No description provided for @noPropertiesYet.
   ///
   /// In en, this message translates to:
@@ -2497,12 +1729,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plot No: {number}'**
   String plotNoLabel(String number);
-
-  /// No description provided for @loginPageTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Login'**
-  String get loginPageTitle;
 
   /// No description provided for @welcomeBack.
   ///
@@ -2618,12 +1844,6 @@ abstract class AppLocalizations {
   /// **''**
   String get agreeToSuffix;
 
-  /// No description provided for @permissionDenied.
-  ///
-  /// In en, this message translates to:
-  /// **'Permission denied. Please contact support.'**
-  String get permissionDenied;
-
   /// No description provided for @backToLogin.
   ///
   /// In en, this message translates to:
@@ -2678,54 +1898,6 @@ abstract class AppLocalizations {
   /// **'Already have an account? Login'**
   String get alreadyHaveAccount;
 
-  /// No description provided for @valErrEmailRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Email is required'**
-  String get valErrEmailRequired;
-
-  /// No description provided for @valErrEmailInvalid.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter a valid email address'**
-  String get valErrEmailInvalid;
-
-  /// No description provided for @valErrPasswordRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Password is required'**
-  String get valErrPasswordRequired;
-
-  /// No description provided for @valErrPasswordLength.
-  ///
-  /// In en, this message translates to:
-  /// **'Password must be at least 6 characters'**
-  String get valErrPasswordLength;
-
-  /// No description provided for @valErrFullNameRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Full name is required'**
-  String get valErrFullNameRequired;
-
-  /// No description provided for @valErrMobileRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Mobile number is required'**
-  String get valErrMobileRequired;
-
-  /// No description provided for @valErrMobileInvalid.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter a valid mobile number'**
-  String get valErrMobileInvalid;
-
-  /// No description provided for @valErrFullNameInvalid.
-  ///
-  /// In en, this message translates to:
-  /// **'Please enter a valid name (letters only)'**
-  String get valErrFullNameInvalid;
-
   /// No description provided for @accountBlocked.
   ///
   /// In en, this message translates to:
@@ -2773,12 +1945,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We have sent a verification email to your registered email address.\n\nPlease check your inbox and your spam/junk folder. You must verify your email before you can log in to your account.'**
   String get registrationSuccessMessage;
-
-  /// No description provided for @goToLogin.
-  ///
-  /// In en, this message translates to:
-  /// **'Go to Login'**
-  String get goToLogin;
 
   /// No description provided for @unknownProject.
   ///
@@ -2876,36 +2042,6 @@ abstract class AppLocalizations {
   /// **'Update Password'**
   String get updatePassword;
 
-  /// No description provided for @failedToChangePassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to change password'**
-  String get failedToChangePassword;
-
-  /// No description provided for @currentPasswordIncorrect.
-  ///
-  /// In en, this message translates to:
-  /// **'Current password is incorrect'**
-  String get currentPasswordIncorrect;
-
-  /// No description provided for @invalidResponseFromServer.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid response from server.'**
-  String get invalidResponseFromServer;
-
-  /// No description provided for @realEstatePlatform.
-  ///
-  /// In en, this message translates to:
-  /// **'Real Estate Platform'**
-  String get realEstatePlatform;
-
-  /// No description provided for @userNotLoggedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'User not logged in'**
-  String get userNotLoggedIn;
-
   /// No description provided for @noSiteVisitsScheduled.
   ///
   /// In en, this message translates to:
@@ -3001,24 +2137,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter 6-digit OTP'**
   String get enter6DigitOtp;
-
-  /// No description provided for @errorLoadingContent.
-  ///
-  /// In en, this message translates to:
-  /// **'Error loading content'**
-  String get errorLoadingContent;
-
-  /// No description provided for @failedToLoadPropertyDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to load property details'**
-  String get failedToLoadPropertyDetails;
-
-  /// No description provided for @failedToLoadPayments.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to load payments'**
-  String get failedToLoadPayments;
 
   /// No description provided for @inrPrice.
   ///
@@ -3158,12 +2276,6 @@ abstract class AppLocalizations {
   /// **'We could not find booking details for this plot.'**
   String get noBookingDetailsMsg;
 
-  /// No description provided for @propertyInformation.
-  ///
-  /// In en, this message translates to:
-  /// **'Property Information'**
-  String get propertyInformation;
-
   /// No description provided for @project.
   ///
   /// In en, this message translates to:
@@ -3175,84 +2287,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plot No'**
   String get plotNo;
-
-  /// No description provided for @plotArea1.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot Area 1'**
-  String get plotArea1;
-
-  /// No description provided for @plotArea2.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot Area 2'**
-  String get plotArea2;
-
-  /// No description provided for @plotArea3.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot Area 3'**
-  String get plotArea3;
-
-  /// No description provided for @plotArea4.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot Area 4'**
-  String get plotArea4;
-
-  /// No description provided for @salePriceSqFt.
-  ///
-  /// In en, this message translates to:
-  /// **'Sale Price'**
-  String get salePriceSqFt;
-
-  /// No description provided for @devChargeSqFt.
-  ///
-  /// In en, this message translates to:
-  /// **'Dev Charge'**
-  String get devChargeSqFt;
-
-  /// No description provided for @firstApplicantDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'First Applicant Details'**
-  String get firstApplicantDetails;
-
-  /// No description provided for @applicantName.
-  ///
-  /// In en, this message translates to:
-  /// **'Name'**
-  String get applicantName;
-
-  /// No description provided for @swdOf.
-  ///
-  /// In en, this message translates to:
-  /// **'S/W/D of'**
-  String get swdOf;
-
-  /// No description provided for @dob.
-  ///
-  /// In en, this message translates to:
-  /// **'DOB'**
-  String get dob;
-
-  /// No description provided for @occupation.
-  ///
-  /// In en, this message translates to:
-  /// **'Occupation'**
-  String get occupation;
-
-  /// No description provided for @nationality.
-  ///
-  /// In en, this message translates to:
-  /// **'Nationality'**
-  String get nationality;
-
-  /// No description provided for @contactAndIdentity.
-  ///
-  /// In en, this message translates to:
-  /// **'Contact & Identity'**
-  String get contactAndIdentity;
 
   /// No description provided for @mobile.
   ///
@@ -3278,65 +2312,11 @@ abstract class AppLocalizations {
   /// **'Address'**
   String get address;
 
-  /// No description provided for @presentAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'Present Address'**
-  String get presentAddress;
-
-  /// No description provided for @permanentAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'Permanent'**
-  String get permanentAddress;
-
-  /// No description provided for @nominee.
-  ///
-  /// In en, this message translates to:
-  /// **'Nominee'**
-  String get nominee;
-
-  /// No description provided for @relation.
-  ///
-  /// In en, this message translates to:
-  /// **'Relation'**
-  String get relation;
-
-  /// No description provided for @secondApplicantDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Second Applicant Details'**
-  String get secondApplicantDetails;
-
-  /// No description provided for @paymentTerms.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment Terms'**
-  String get paymentTerms;
-
-  /// No description provided for @paymentPlan.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment Plan'**
-  String get paymentPlan;
-
   /// No description provided for @paymentMode.
   ///
   /// In en, this message translates to:
   /// **'Payment Mode'**
   String get paymentMode;
-
-  /// No description provided for @bankFinance.
-  ///
-  /// In en, this message translates to:
-  /// **'Bank/Finance'**
-  String get bankFinance;
-
-  /// No description provided for @applicationDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Application Date'**
-  String get applicationDate;
 
   /// No description provided for @bookingDate.
   ///
@@ -3385,12 +2365,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Initial payment from booking application'**
   String get initialPaymentDesc;
-
-  /// No description provided for @paymentTxnSuffix.
-  ///
-  /// In en, this message translates to:
-  /// **' (Txn: {txnId})'**
-  String paymentTxnSuffix(String txnId);
 
   /// No description provided for @paymentModeCash.
   ///

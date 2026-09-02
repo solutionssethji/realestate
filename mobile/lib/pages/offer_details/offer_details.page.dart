@@ -1,3 +1,4 @@
+import 'package:customer_app/widgets/app_cached_image.dart';
 import 'package:customer_app/widgets/generic_shimmer_loader.dart';
 import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +25,28 @@ class OfferDetailsPage extends HookConsumerWidget {
     if (state.isLoading) {
       return Scaffold(
         appBar: PremiumAppBar(title: context.l10n.offerDetails),
-        body: const Padding(
-          padding: EdgeInsets.all(16),
-          child: ShimmerLoader(count: 3, height: 150),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const ShimmerLoader(count: 1, height: 250, borderRadius: 0),
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    ShimmerLoader(count: 1, height: 30, width: 200),
+                    SizedBox(height: 16),
+                    ShimmerLoader(count: 1, height: 40, width: double.infinity),
+                    SizedBox(height: 16),
+                    ShimmerLoader(count: 1, height: 80, width: double.infinity),
+                    SizedBox(height: 16),
+                    ShimmerLoader(count: 3, height: 20, width: double.infinity, spacing: 8),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -47,8 +67,8 @@ class OfferDetailsPage extends HookConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(
-                offer.image,
+              AppCachedImage(
+                imageUrl: offer.image,
                 width: double.infinity,
                 height: 250,
                 fit: BoxFit.cover,

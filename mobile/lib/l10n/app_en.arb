@@ -4,17 +4,13 @@
   "errorLoadingCode": "Error loading code",
   "shareCode": "Share Code",
   "aboutCompany": "About Company",
-  "ourVision": "Our Vision",
-  "ourMission": "Our Mission",
   "whyChooseUs": "Why Choose Us",
   "aboutUnavailable": "About information is currently unavailable.",
   "home": "Home",
   "projects": "Projects",
   "offers": "Offers",
   "profile": "Profile",
-  "aboutUs": "About Us",
   "featuredProjects": "Featured Projects",
-  "wantToSeeInPerson": "Want to see it in person?",
   "bookSiteVisit": "Book a Site Visit",
   "viewPlots": "View Available Plots",
   "enquireNow": "Enquire Now",
@@ -68,26 +64,8 @@
   "statusLabel": "Status",
   "active": "Active",
   "howItWorks": "How it works",
-  "shareReferralCode": "1. Share your referral code",
-  "shareReferralCodeDescription": "Send it to friends and family who are looking for a new home.",
-  "registerWithReferralCode": "2. They register with your code",
-  "registerWithReferralCodeDescription": "Once the buyer completes registration, the invite is counted.",
-  "earnReferralRewards": "3. Earn referral rewards",
-  "earnReferralRewardsDescription": "Reward points are added to your account and reflected in the balance.",
   "downloadReceipt": "Download receipt",
-  "receiptTitle": "Payment Receipt",
-  "receiptVoucher": "Payment Receipt Voucher",
-  "receiptNumber": "Receipt No.: {number}",
-  "receiptDate": "Dated: {date}",
-  "receiptParticulars": "Particulars",
-  "receiptAmount": "Amount",
-  "receiptAccount": "Account: {account}",
-  "receiptPaymentMode": "Payment Mode: {mode}",
-  "receiptReference": "Reference: {reference}",
-  "receiptNotes": "Notes: {notes}",
-  "receiptAmountInWords": "Amount (in words): {amount}",
-  "receiptTotal": "Total",
-  "computerGeneratedReceipt": "This is a computer-generated receipt.",
+  "voucherNumber": "Voucher No.: {number}",
   "unableToDownloadReceipt": "Unable to download receipt",
   "noPaymentsFound": "No payments found for {phone}",
   "@noPaymentsFound": {
@@ -109,22 +87,17 @@
   "unableToLoadProjects": "Unable to load projects.",
   "tryAgain": "Try Again",
   "noProjectsFound": "No Projects Found",
-  "tenYearsOfTrust": "Years of Trust",
-  "deliveringExcellence": "Delivering excellence and transparent land investments.",
   "unableToLoadProject": "Unable to load project.",
   "aboutTheProject": "About the Project",
   "gallery": "Gallery",
   "amenities": "Amenities",
   "startingFrom": "Starting from",
-  "virtualTour": "Virtual 360° Tour",
   "walkThroughProperty": "Walk through the property from anywhere.",
   "scheduleTour": "Schedule a Tour",
-  "yourDetails": "Your Details",
   "fullName": "Full Name",
   "mobileNumber": "Mobile Number",
   "pleaseSelectDateAndTime": "Please select date and time",
   "getInTouch": "Get in Touch",
-  "messageBudgetReqs": "Message / Budget / Requirements",
   "plotRequirement": "Plot Requirement",
   "budget": "Budget",
   "message": "Message",
@@ -132,14 +105,6 @@
   "@unableToLoadPlot": {
     "placeholders": {
       "error": {
-        "type": "String"
-      }
-    }
-  },
-  "plotPrefix": "Plot {number}",
-  "@plotPrefix": {
-    "placeholders": {
-      "number": {
         "type": "String"
       }
     }
@@ -158,22 +123,6 @@
   "booked": "Booked",
   "unableToLoadPlots": "Unable to load plots.",
   "noPlotsFound": "No Plots Found",
-  "plotsCount": "{count} Plots",
-  "@plotsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "sqft": "{size} sq.ft",
-  "@sqft": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
   "facingLabel": "{facing} Facing",
   "@facingLabel": {
     "placeholders": {
@@ -194,20 +143,9 @@
       }
     }
   },
-  "amountPrefix": "₹{amount}",
-  "@amountPrefix": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "corporateOffice": "Corporate Office",
   "callUs": "Call Us",
   "whatsapp": "WhatsApp",
   "email": "Email",
-  "nameIsRequired": "Name is required",
-  "enterValidMobileNumber": "Enter a valid mobile number",
   "submissionFailed": "Submission failed. Please retry.",
   "enquirySubmitted": "Enquiry submitted! We'll contact you shortly.",
   "submitEnquiry": "Submit Enquiry",
@@ -223,40 +161,24 @@
   "searchByPlot": "Search by plot number...",
   "virtual360Tour": "Virtual 360° Tour",
   "viewProjectDetails": "View Project Details",
-  "whyInvestWithUs": "Why Invest With Us?",
   "secureAccess": "Secure Access",
-  "yearsOfTrust": "Years of Trust",
-  "reinventingRealEstate": "Re-inventing Real Estate",
-  "ourTeamIsAvailable": "Our team is available to assist with any queries or property viewings.",
-  "viewPastTransactions": "View your past transactions",
   "account": "Account",
-  "exclusivePlots": "Exclusive plots and luxury villas in prime locations.",
   "aboutTheOffer": "About the Offer",
   "termsAndCancellation": "By proceeding you agree to our Terms of Service and Cancellation Policy.",
   "pickDateAndTime": "Pick a date and time. Our executive will confirm your visit.",
   "commonRetry": "Retry",
-  "findPremiumProperty": "Find Your Premium\\nDream Property",
   "specialOffer": "Special Offer",
   "sslEncrypted": "256-bit SSL Encrypted",
-  "expertsContactYou": "Our property experts will contact you within 24 hours.",
   "mapConfigUnavailable": "Map Configuration is not available.",
   "view360ComingSoon": "360° View Coming Soon",
-  "luxuryRealEstate": "LUXURY REAL ESTATE",
-  "exclusivePlotsDesc": "Exclusive plots and luxury villas in prime locations.",
-  "secureInvestment": "Secure Investment",
-  "strategicLocations": "Strategic locations ensuring excellent appreciation.",
-  "plotFinder": "Plot Finder",
   "quickActions": "Quick Actions",
   "viewAll": "View All",
   "noActiveOffers": "No Active Offers",
   "checkBackSoon": "Check back soon — new offers are added regularly.",
-  "noProjectsAvailable": "No projects are available at the moment.",
   "clearSearch": "Clear Search",
   "viewPlotAvailability": "View Plot Availability",
   "launch360Tour": "Launch 360° Tour",
   "siteVisit": "Site Visit",
-  "sold": "Sold",
-  "noPlotsAvailableFilter": "No plots available with the selected filter.",
   "enquireAboutPlot": "Enquire About This Plot",
   "proceedToPayment": "Proceed to Payment",
   "plotNotAvailable": "Plot Not Available",
@@ -264,52 +186,18 @@
   "plotBookedSold": "booked/sold",
   "exclusiveOffers": "Exclusive Offers",
   "bookingConfirmedMsg": "Your booking is confirmed. A confirmation will be sent to you shortly.",
-  "paymentFailedCancelled": "Payment failed or cancelled.",
-  "paymentFailedRetry": "Payment failed. Please try again.",
-  "paymentSignatureError": "Payment signature verification failed.",
-  "verificationFailedContact": "Verification failed. Please contact support.",
-  "serviceUnavailable": "Service is temporarily unavailable. Please try again.",
   "somethingWentWrong": "Something went wrong. Please try again.",
-  "notAuthorizedPayment": "You are not authorized to complete this payment.",
   "paymentFailed": "Payment failed.",
   "unknownDate": "Unknown date",
   "sendOtp": "Send OTP",
   "verify": "Verify",
   "verificationFailed": "Verification failed",
   "yourNumber": "your number",
-  "nameRequired": "Name is required",
-  "enterValidMobile": "Enter a valid mobile number",
-  "enterValidNumber": "Enter a valid number",
   "selectPreferredDate": "Select Preferred Date",
   "bookingConfirmedCall": "Booking confirmed! We'll call you to verify.",
-  "noFaqsAvailable": "No FAQs available at the moment.",
-  "questionUnavailable": "Question unavailable",
-  "answerUnavailable": "Answer unavailable",
   "termsAndConditions": "Terms & Conditions",
   "privacyPolicy": "Privacy Policy",
-  "statusAvailable": "Available",
-  "statusHold": "Hold",
-  "statusBookedSold": "Booked/Sold",
-  "statusPending": "Pending",
-  "statusSuccess": "Success",
-  "statusFailed": "Failed",
-  "statusCancelled": "Cancelled",
-  "statusConfirmed": "Confirmed",
-  "statusCompleted": "Completed",
-  "clearTitlesApproved": "100% Clear Titles & RERA Approved",
-  "clearTitlesProcess": "100% clear titles and transparent legal processes.",
-  "premierCompany": "A premier property development company.",
-  "dedicatedManagers": "Dedicated managers for seamless end-to-end assistance.",
-  "endToEndSupport": "End-to-End Documentation Support",
-  "expertSupport": "Expert Support",
-  "highRoi": "High ROI",
-  "premiumInfra": "Premium Infrastructure & Amenities",
-  "strategicHighRoi": "Strategic Locations with High ROI",
-  "transparentPricing": "Transparent Pricing with No Hidden Costs",
-  "exploreProjects": "Explore Projects",
-  "availableCaps": "Available",
   "bookedSold": "Booked / Sold",
-  "onHoldCaps": "On Hold",
   "clearSearchFilters": "Clear Search",
   "legalAndSupport": "Legal & Support",
   "payment": "Payment",
@@ -320,10 +208,6 @@
   "langEnglish": "English",
   "langHindi": "हिन्दी ",
   "anErrorOccurred": "An error occurred. Please try again.",
-  "invalidResponse": "Invalid response from server.",
-  "plotNotFound": "Plot not found",
-  "projectNotFound": "Project not found",
-  "somethingWentWrongTitle": "Something went wrong",
   "validTill": "Valid till {date}",
   "@validTill": {
     "placeholders": {
@@ -424,15 +308,6 @@
       }
     }
   },
-  "yourDetailsAlt": "Your Details",
-  "fallbackTitleUnavailable": "{title} is currently unavailable.",
-  "@fallbackTitleUnavailable": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
   "somethingWentWrongAlt": "Something went wrong",
   "mapConfigUnavailableAlt": "Map Configuration is not available.",
   "locationLatLng": "Location: {lat}, {lng}",
@@ -446,28 +321,6 @@
       }
     }
   },
-  "errSignatureFailed": "Payment signature verification failed.",
-  "errVerificationFailed": "Verification failed. Please contact support.",
-  "errPaymentFailedCancelled": "Payment failed or cancelled.",
-  "errWalletsNotSupported": "External wallets are not supported at this time.",
-  "errInvalidResponse": "Invalid response from server.",
-  "errSomethingWentWrong": "Something went wrong. Please try again.",
-  "errNotAuthorized": "You are not authorized to complete this payment.",
-  "errServiceUnavailable": "Service is temporarily unavailable. Please try again.",
-  "errPaymentFailed": "Payment failed. Please try again.",
-  "errPlotNotFound": "Plot not found",
-  "errProjectNotFound": "Project not found",
-  "statusAvailableCaps": "AVAILABLE",
-  "statusHoldCaps": "HOLD",
-  "statusBookedCaps": "BOOKED",
-  "cmsUnicRealEstate": "Unic Real Estate",
-  "cmsPremierCompany": "A premier property development company.",
-  "cmsMostTrusted": "To be the most trusted name in real estate.",
-  "cmsDeliverClearTitle": "To deliver clear-title, legally vetted plots.",
-  "cms100ClearTitle": "100% Clear Titles & RERA Approved",
-  "cmsStrategicLocations": "Strategic Locations with High ROI",
-  "cmsIndianRupee": "Indian Rupee",
-  "legalAndPolicies": "Legal & Policies",
   "companyProfile": "Company Profile",
   "vision": "Vision",
   "mission": "Mission",
@@ -477,9 +330,6 @@
   "officeLocation": "Office Location",
   "contactNumber": "Contact Number",
   "plotPrice": "Plot Price",
-  "calculateEmi": "Calculate EMI",
-  "approximateEmi": "Approximate EMI",
-  "totalPayment": "Total Payment",
   "offerDetails": "Offer Details",
   "offerNotFound": "Offer not found",
   "promoCode": "PROMO CODE",
@@ -528,7 +378,6 @@
   "ifscCode": "IFSC Code",
   "saveDetails": "Save Details",
   "uploadDocumentImage": "Upload Document Image:",
-  "tapToPickImage": "Tap to pick image",
   "userNotFound": "User not found",
   "failedToPickImage": "Failed to pick image: {error}",
   "@failedToPickImage": {
@@ -547,20 +396,9 @@
       }
     }
   },
-  "emiAndPayments": "EMI & Payments",
-  "paymentSummary": "Payment Summary",
-  "totalAmount": "Total Amount",
-  "amountPaid": "Amount Paid",
-  "pendingBalance": "Pending Balance",
+  "totalAmount": "TOTAL AMOUNT",
+  "pendingBalance": "PENDING BALANCE",
   "noPaymentRecords": "No payment records found.",
-  "paymentRef": "Ref: {ref}",
-  "@paymentRef": {
-    "placeholders": {
-      "ref": {
-        "type": "String"
-      }
-    }
-  },
   "supportCenter": "Support Center",
   "howCanWeHelp": "How can we help you?",
   "supportDesc": "Our team is available to assist you with any questions about properties, payments, or your account.",
@@ -569,20 +407,12 @@
   "callUsSubtitle": "Mon-Sat, 10 AM to 6 PM",
   "emailSupport": "Email Support",
   "emailSupportSubtitle": "support@realestate.com",
-  "faqTitle": "Frequently Asked Questions",
-  "faq1Question": "How do I book a plot?",
-  "faq1Answer": "You can browse available plots in any active project and click \"Enquire\" or \"Book\". An agent will contact you shortly.",
-  "faq2Question": "Where can I see my EMI status?",
-  "faq2Answer": "Go to Profile > My Properties, and select your booked plot to see your complete EMI tracker and payment history.",
-  "faq3Question": "Can I change my registered email?",
-  "faq3Answer": "For security reasons, your registered email cannot be changed from the app. Please contact support.",
   "myProfile": "My Profile",
   "notLoggedIn": "You are not logged in.",
   "myProperties": "My Properties",
   "myEnquiries": "My Enquiries",
   "mySiteVisits": "My Site Visits",
   "loginBtn": "Login",
-  "pleaseLoginToViewProperties": "Please login to view your properties.",
   "noPropertiesYet": "You have no booked or purchased plots yet.",
   "plotNoLabel": "Plot No: {number}",
   "@plotNoLabel": {
@@ -592,7 +422,6 @@
       }
     }
   },
-  "loginPageTitle": "Login",
   "welcomeBack": "Welcome Back",
   "emailLabel": "Email",
   "passwordLabel": "Password",
@@ -612,7 +441,6 @@
   "agreeToPrefix": "I agree to the ",
   "agreeToAnd": " and ",
   "agreeToSuffix": "",
-  "permissionDenied": "Permission denied. Please contact support.",
   "backToLogin": "Back to Login",
   "createAccount": "Create Account",
   "joinUs": "Join Us",
@@ -622,14 +450,6 @@
   "emailAddress": "Email Address",
   "register": "Register",
   "alreadyHaveAccount": "Already have an account? Login",
-  "valErrEmailRequired": "Email is required",
-  "valErrEmailInvalid": "Please enter a valid email address",
-  "valErrPasswordRequired": "Password is required",
-  "valErrPasswordLength": "Password must be at least 6 characters",
-  "valErrFullNameRequired": "Full name is required",
-  "valErrMobileRequired": "Mobile number is required",
-  "valErrMobileInvalid": "Please enter a valid mobile number",
-  "valErrFullNameInvalid": "Please enter a valid name (letters only)",
   "accountBlocked": "Your account has been blocked by an administrator.",
   "accountDeleted": "This account has been deleted.",
   "emailVerificationRequiredTitle": "Email Verification Required",
@@ -638,7 +458,6 @@
   "verificationEmailSentSuccessfully": "Verification email sent successfully!",
   "registrationSuccessTitle": "Registration Successful!",
   "registrationSuccessMessage": "We have sent a verification email to your registered email address.\n\nPlease check your inbox and your spam/junk folder. You must verify your email before you can log in to your account.",
-  "goToLogin": "Go to Login",
   "unknownProject": "Unknown Project",
   "unknownPlot": "Unknown Plot",
   "noPropertiesFound": "No Properties Found",
@@ -655,11 +474,6 @@
   "newPassword": "New Password",
   "confirmNewPassword": "Confirm New Password",
   "updatePassword": "Update Password",
-  "failedToChangePassword": "Failed to change password",
-  "currentPasswordIncorrect": "Current password is incorrect",
-  "invalidResponseFromServer": "Invalid response from server.",
-  "realEstatePlatform": "Real Estate Platform",
-  "userNotLoggedIn": "User not logged in",
   "noSiteVisitsScheduled": "No Site Visits Scheduled",
   "noSiteVisitsMessage": "You have not scheduled any site visits yet. Book a visit to see properties in person!",
   "scheduledDate": "Scheduled Date:",
@@ -683,9 +497,6 @@
   "unableToOpenDocument": "Unable to open this document.",
   "loginToSubmitEnquiry": "Please log in to submit an enquiry.",
   "enter6DigitOtp": "Enter 6-digit OTP",
-  "errorLoadingContent": "Error loading content",
-  "failedToLoadPropertyDetails": "Failed to load property details",
-  "failedToLoadPayments": "Failed to load payments",
   "inrPrice": "₹{amount}",
   "@inrPrice": {
     "placeholders": {
@@ -730,45 +541,18 @@
   "bookingDetailsTitle": "Booking Details",
   "noDetailsFound": "No Details Found",
   "noBookingDetailsMsg": "We could not find booking details for this plot.",
-  "propertyInformation": "Property Information",
   "project": "Project",
   "plotNo": "Plot No",
-  "plotArea1": "Plot Area 1",
-  "plotArea2": "Plot Area 2",
-  "plotArea3": "Plot Area 3",
-  "plotArea4": "Plot Area 4",
-  "salePriceSqFt": "Sale Price",
-  "devChargeSqFt": "Dev Charge",
-  "firstApplicantDetails": "First Applicant Details",
-  "applicantName": "Name",
-  "swdOf": "S/W/D of",
-  "dob": "DOB",
-  "occupation": "Occupation",
-  "nationality": "Nationality",
-  "contactAndIdentity": "Contact & Identity",
   "mobile": "Mobile",
-  "email": "Email",
   "pan": "PAN",
   "aadhaar": "Aadhaar",
   "address": "Address",
-  "presentAddress": "Present Address",
-  "permanentAddress": "Permanent",
-  "nominee": "Nominee",
-  "relation": "Relation",
-  "secondApplicantDetails": "Second Applicant Details",
-  "paymentTerms": "Payment Terms",
-  "paymentPlan": "Payment Plan",
   "paymentMode": "Payment Mode",
-  "bankFinance": "Bank/Finance",
-  "applicationDate": "Application Date",
   "bookingDate": "BOOKING DATE",
   "paymentEmiTracking": "Payment & EMI Tracking",
   "recentPaymentsLedger": "Recent Payments (Ledger)",
-  "viewAll": "View All",
   "downloadAll": "Download All",
-  "totalAmount": "TOTAL AMOUNT",
   "paidAmount": "PAID AMOUNT",
-  "pendingBalance": "PENDING BALANCE",
   "paymentCompleted": "COMPLETED",
   "plotLabel": "Plot {number}",
   "@plotLabel": {
@@ -779,14 +563,6 @@
     }
   },
   "initialPaymentDesc": "Initial payment from booking application",
-  "paymentTxnSuffix": " (Txn: {txnId})",
-  "@paymentTxnSuffix": {
-    "placeholders": {
-      "txnId": {
-        "type": "String"
-      }
-    }
-  },
   "paymentModeCash": "Cash",
   "naLabel": "N/A",
   "view": "View",

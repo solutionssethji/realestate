@@ -242,10 +242,6 @@ class ApiService {
       var query = _db
           .collection('offers')
           .where('status', whereIn: ['ACTIVE', 'Active', 'active'])
-          .where(
-            'endDate',
-            isGreaterThan: DateTime.now().toUtc().toIso8601String(),
-          )
           .limit(limit);
 
       if (lastDocument != null) {
@@ -261,7 +257,26 @@ class ApiService {
         response: '${docs.length} offers retrieved',
       );
 
-      var offers = docs.map((doc) => _offerFromDoc(doc)).toList();
+      final now = DateTime.now().toUtc();
+      var offers = <Offer>[];
+      final batch = _db.batch();
+      bool hasExpired = false;
+
+      for (var doc in docs) {
+        final offer = _offerFromDoc(doc);
+        if (offer.endDate.isBefore(now)) {
+          batch.update(doc.reference, {'status': 'EXPIRED'});
+          hasExpired = true;
+        } else {
+          offers.add(offer);
+        }
+      }
+
+      if (hasExpired) {
+        batch.commit().catchError((e) {
+          developer.log('Failed to expire offers (possibly permissions): $e');
+        });
+      }
 
       // Enrich with project names
       final projectIds = offers

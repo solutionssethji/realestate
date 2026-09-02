@@ -21,12 +21,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get aboutCompany => 'कंपनी के बारे में';
 
   @override
-  String get ourVision => 'हमारा नज़रिया';
-
-  @override
-  String get ourMission => 'हमारा लक्ष्य';
-
-  @override
   String get whyChooseUs => 'हमें क्यों चुनें?';
 
   @override
@@ -45,13 +39,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get profile => 'प्रोफ़ाइल';
 
   @override
-  String get aboutUs => 'हमारे बारे में';
-
-  @override
   String get featuredProjects => 'विशेष प्रोजेक्ट्स';
-
-  @override
-  String get wantToSeeInPerson => 'क्या आप इसे खुद देखना चाहते हैं?';
 
   @override
   String get bookSiteVisit => 'साइट विज़िट बुक करें';
@@ -216,81 +204,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get howItWorks => 'यह कैसे काम करता है';
 
   @override
-  String get shareReferralCode => '1. अपना रेफरल कोड साझा करें';
-
-  @override
-  String get shareReferralCodeDescription =>
-      'इसे नया घर ढूंढ रहे दोस्तों और परिवार के साथ साझा करें।';
-
-  @override
-  String get registerWithReferralCode => '2. वे आपके कोड से रजिस्टर करें';
-
-  @override
-  String get registerWithReferralCodeDescription =>
-      'खरीदार के रजिस्ट्रेशन पूरा करने पर आमंत्रण गिना जाएगा।';
-
-  @override
-  String get earnReferralRewards => '3. रेफरल पुरस्कार कमाएं';
-
-  @override
-  String get earnReferralRewardsDescription =>
-      'पुरस्कार अंक आपके खाते में जुड़कर बैलेंस में दिखाई देंगे।';
-
-  @override
   String get downloadReceipt => 'रसीद डाउनलोड करें';
 
   @override
-  String get receiptTitle => 'भुगतान रसीद';
-
-  @override
-  String get receiptVoucher => 'भुगतान रसीद वाउचर';
-
-  @override
-  String receiptNumber(Object number) {
+  String voucherNumber(Object number) {
     return 'रसीद संख्या: $number';
   }
-
-  @override
-  String receiptDate(Object date) {
-    return 'दिनांक: $date';
-  }
-
-  @override
-  String get receiptParticulars => 'विवरण';
-
-  @override
-  String get receiptAmount => 'राशि';
-
-  @override
-  String receiptAccount(Object account) {
-    return 'खाता: $account';
-  }
-
-  @override
-  String receiptPaymentMode(Object mode) {
-    return 'भुगतान माध्यम: $mode';
-  }
-
-  @override
-  String receiptReference(Object reference) {
-    return 'संदर्भ: $reference';
-  }
-
-  @override
-  String receiptNotes(Object notes) {
-    return 'टिप्पणी: $notes';
-  }
-
-  @override
-  String receiptAmountInWords(Object amount) {
-    return 'राशि (शब्दों में): $amount';
-  }
-
-  @override
-  String get receiptTotal => 'कुल';
-
-  @override
-  String get computerGeneratedReceipt => 'यह कंप्यूटर द्वारा बनाई गई रसीद है।';
 
   @override
   String get unableToDownloadReceipt => 'रसीद डाउनलोड नहीं हो सकी';
@@ -318,13 +237,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get noProjectsFound => 'कोई प्रोजेक्ट नहीं मिला';
 
   @override
-  String get tenYearsOfTrust => 'वर्षों का विश्वास';
-
-  @override
-  String get deliveringExcellence =>
-      'उत्कृष्टता और पारदर्शी भूमि निवेश प्रदान करना।';
-
-  @override
   String get unableToLoadProject => 'प्रोजेक्ट लोड करने में असमर्थ।';
 
   @override
@@ -340,16 +252,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get startingFrom => 'शुरुआती कीमत';
 
   @override
-  String get virtualTour => 'वर्चुअल 360° टूर';
-
-  @override
   String get walkThroughProperty => 'कहीं से भी संपत्ति को देखें।';
 
   @override
   String get scheduleTour => 'एक टूर निर्धारित करें';
-
-  @override
-  String get yourDetails => 'आपका विवरण';
 
   @override
   String get fullName => 'पूरा नाम';
@@ -364,9 +270,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get getInTouch => 'संपर्क करें';
 
   @override
-  String get messageBudgetReqs => 'संदेश / बजट / आवश्यकताएँ';
-
-  @override
   String get plotRequirement => 'प्लॉट की आवश्यकता';
 
   @override
@@ -378,11 +281,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String unableToLoadPlot(String error) {
     return 'प्लॉट लोड करने में असमर्थ: $error';
-  }
-
-  @override
-  String plotPrefix(String number) {
-    return 'प्लॉट $number';
   }
 
   @override
@@ -428,16 +326,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get noPlotsFound => 'कोई प्लॉट नहीं मिला';
 
   @override
-  String plotsCount(int count) {
-    return '$count प्लॉट्स';
-  }
-
-  @override
-  String sqft(String size) {
-    return '$size वर्ग फुट';
-  }
-
-  @override
   String facingLabel(String facing) {
     return '$facing दिशा';
   }
@@ -458,14 +346,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get openExternalMaps => 'बाहरी मैप्स खोलें';
 
   @override
-  String amountPrefix(String amount) {
-    return '₹$amount';
-  }
-
-  @override
-  String get corporateOffice => 'कॉर्पोरेट कार्यालय';
-
-  @override
   String get callUs => 'हमें कॉल करें';
 
   @override
@@ -473,12 +353,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get email => 'ईमेल';
-
-  @override
-  String get nameIsRequired => 'नाम आवश्यक है';
-
-  @override
-  String get enterValidMobileNumber => 'एक मान्य मोबाइल नंबर दर्ज करें';
 
   @override
   String get submissionFailed => 'सबमिशन विफल रहा। कृपया पुनः प्रयास करें।';
@@ -528,29 +402,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get viewProjectDetails => 'प्रोजेक्ट विवरण देखें';
 
   @override
-  String get whyInvestWithUs => 'हमारे साथ निवेश क्यों करें?';
-
-  @override
   String get secureAccess => 'सुरक्षित पहुंच';
 
   @override
-  String get yearsOfTrust => 'वर्षों का भरोसा';
-
-  @override
-  String get reinventingRealEstate => 'रियल एस्टेट को फिर से खोजना';
-
-  @override
-  String get ourTeamIsAvailable =>
-      'हमारी टीम किसी भी प्रश्न या संपत्ति देखने में सहायता के लिए उपलब्ध है।';
-
-  @override
-  String get viewPastTransactions => 'अपने पिछले लेनदेन देखें';
-
-  @override
   String get account => 'खाता';
-
-  @override
-  String get exclusivePlots => 'प्रमुख स्थानों में विशेष भूखंड और लक्जरी विला।';
 
   @override
   String get aboutTheOffer => 'प्रस्ताव के बारे में';
@@ -567,40 +422,16 @@ class AppLocalizationsHi extends AppLocalizations {
   String get commonRetry => 'पुनः प्रयास करें';
 
   @override
-  String get findPremiumProperty => 'अपना प्रीमियम\\nसपनों का घर खोजें';
-
-  @override
   String get specialOffer => 'विशेष ऑफर';
 
   @override
   String get sslEncrypted => '256-बिट एसएसएल एन्क्रिप्टेड';
 
   @override
-  String get expertsContactYou =>
-      'हमारे संपत्ति विशेषज्ञ 24 घंटे के भीतर आपसे संपर्क करेंगे।';
-
-  @override
   String get mapConfigUnavailable => 'मानचित्र कॉन्फ़िगरेशन उपलब्ध नहीं है।';
 
   @override
   String get view360ComingSoon => '360° दृश्य जल्द आ रहा है';
-
-  @override
-  String get luxuryRealEstate => 'लक्ज़री रियल एस्टेट';
-
-  @override
-  String get exclusivePlotsDesc =>
-      'प्रमुख स्थानों में विशेष भूखंड और लक्जरी विला।';
-
-  @override
-  String get secureInvestment => 'सुरक्षित निवेश';
-
-  @override
-  String get strategicLocations =>
-      'उत्कृष्ट प्रशंसा सुनिश्चित करने वाले रणनीतिक स्थान।';
-
-  @override
-  String get plotFinder => 'भूखंड खोजें';
 
   @override
   String get quickActions => 'त्वरित कार्य';
@@ -616,9 +447,6 @@ class AppLocalizationsHi extends AppLocalizations {
       'जल्द ही वापस जांचें — नए ऑफ़र नियमित रूप से जोड़े जाते हैं।';
 
   @override
-  String get noProjectsAvailable => 'इस समय कोई प्रोजेक्ट उपलब्ध नहीं है।';
-
-  @override
   String get clearSearch => 'खोज साफ़ करें';
 
   @override
@@ -629,13 +457,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get siteVisit => 'साइट विज़िट';
-
-  @override
-  String get sold => 'बिक गया';
-
-  @override
-  String get noPlotsAvailableFilter =>
-      'चयनित फ़िल्टर के साथ कोई भूखंड उपलब्ध नहीं है।';
 
   @override
   String get enquireAboutPlot => 'इस भूखंड के बारे में पूछताछ करें';
@@ -660,28 +481,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'आपकी बुकिंग की पुष्टि हो गई है। जल्द ही आपको एक पुष्टि भेजी जाएगी।';
 
   @override
-  String get paymentFailedCancelled => 'भुगतान विफल या रद्द हो गया।';
-
-  @override
-  String get paymentFailedRetry => 'भुगतान विफल। कृपया पुनः प्रयास करें।';
-
-  @override
-  String get paymentSignatureError => 'भुगतान हस्ताक्षर सत्यापन विफल।';
-
-  @override
-  String get verificationFailedContact =>
-      'सत्यापन विफल। कृपया सहायता से संपर्क करें।';
-
-  @override
-  String get serviceUnavailable =>
-      'सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुनः प्रयास करें।';
-
-  @override
   String get somethingWentWrong => 'Something went wrong. Please try again.';
-
-  @override
-  String get notAuthorizedPayment =>
-      'आप इस भुगतान को पूरा करने के लिए अधिकृत नहीं हैं।';
 
   @override
   String get paymentFailed => 'भुगतान विफल।';
@@ -702,29 +502,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get yourNumber => 'आपका नंबर';
 
   @override
-  String get nameRequired => 'नाम आवश्यक है';
-
-  @override
-  String get enterValidMobile => 'एक वैध मोबाइल नंबर दर्ज करें';
-
-  @override
-  String get enterValidNumber => 'एक वैध नंबर दर्ज करें';
-
-  @override
   String get selectPreferredDate => 'पसंदीदा तारीख चुनें';
 
   @override
   String get bookingConfirmedCall =>
       'बुकिंग पुष्टि! हम सत्यापित करने के लिए आपको कॉल करेंगे।';
-
-  @override
-  String get noFaqsAvailable => 'इस समय कोई FAQ उपलब्ध नहीं है।';
-
-  @override
-  String get questionUnavailable => 'प्रश्न अनुपलब्ध';
-
-  @override
-  String get answerUnavailable => 'उत्तर अनुपलब्ध';
 
   @override
   String get termsAndConditions => 'नियम और शर्तें';
@@ -733,75 +515,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get privacyPolicy => 'गोपनीयता नीति';
 
   @override
-  String get statusAvailable => 'उपलब्ध';
-
-  @override
-  String get statusHold => 'होल्ड';
-
-  @override
-  String get statusBookedSold => 'बुक/बिक चुका';
-
-  @override
-  String get statusPending => 'लंबित';
-
-  @override
-  String get statusSuccess => 'सफल';
-
-  @override
-  String get statusFailed => 'विफल';
-
-  @override
-  String get statusCancelled => 'रद्द';
-
-  @override
-  String get statusConfirmed => 'पुष्टि';
-
-  @override
-  String get statusCompleted => 'पूर्ण';
-
-  @override
-  String get clearTitlesApproved => '100% स्पष्ट शीर्षक और रेरा स्वीकृत';
-
-  @override
-  String get clearTitlesProcess =>
-      '100% स्पष्ट शीर्षक और पारदर्शी कानूनी प्रक्रियाएं।';
-
-  @override
-  String get premierCompany => 'एक प्रमुख संपत्ति विकास कंपनी।';
-
-  @override
-  String get dedicatedManagers =>
-      'निर्बाध एंड-टू-एंड सहायता के लिए समर्पित प्रबंधक।';
-
-  @override
-  String get endToEndSupport => 'एंड-टू-एंड दस्तावेज़ीकरण समर्थन';
-
-  @override
-  String get expertSupport => 'विशेषज्ञ सहायता';
-
-  @override
-  String get highRoi => 'उच्च निवेश वापसी (ROI)';
-
-  @override
-  String get premiumInfra => 'प्रीमियम बुनियादी ढांचा और सुविधाएं';
-
-  @override
-  String get strategicHighRoi => 'उच्च ROI के साथ रणनीतिक स्थान';
-
-  @override
-  String get transparentPricing => 'बिना छिपी लागत के पारदर्शी मूल्य निर्धारण';
-
-  @override
-  String get exploreProjects => 'परियोजनाओं का अन्वेषण करें';
-
-  @override
-  String get availableCaps => 'उपलब्ध';
-
-  @override
   String get bookedSold => 'बुक किया गया / बेचा गया';
-
-  @override
-  String get onHoldCaps => 'होल्ड पर';
 
   @override
   String get clearSearchFilters => 'खोज साफ़ करें';
@@ -834,18 +548,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get anErrorOccurred => 'एक त्रुटि हुई। कृपया पुनः प्रयास करें।';
-
-  @override
-  String get invalidResponse => 'सर्वर से अमान्य प्रतिक्रिया।';
-
-  @override
-  String get plotNotFound => 'भूखंड नहीं मिला';
-
-  @override
-  String get projectNotFound => 'परियोजना नहीं मिली';
-
-  @override
-  String get somethingWentWrongTitle => 'कुछ गलत हो गया';
 
   @override
   String validTill(String date) {
@@ -920,14 +622,6 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get yourDetailsAlt => 'आपका विवरण';
-
-  @override
-  String fallbackTitleUnavailable(String title) {
-    return '$title वर्तमान में अनुपलब्ध है।';
-  }
-
-  @override
   String get somethingWentWrongAlt => 'कुछ गलत हो गया';
 
   @override
@@ -937,77 +631,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String locationLatLng(String lat, String lng) {
     return 'स्थान: $lat, $lng';
   }
-
-  @override
-  String get errSignatureFailed => 'भुगतान हस्ताक्षर सत्यापन विफल रहा।';
-
-  @override
-  String get errVerificationFailed =>
-      'सत्यापन विफल रहा। कृपया सहायता से संपर्क करें।';
-
-  @override
-  String get errPaymentFailedCancelled => 'भुगतान विफल या रद्द हो गया।';
-
-  @override
-  String get errWalletsNotSupported =>
-      'बाहरी वॉलेट वर्तमान में समर्थित नहीं हैं।';
-
-  @override
-  String get errInvalidResponse => 'सर्वर से अमान्य प्रतिक्रिया।';
-
-  @override
-  String get errSomethingWentWrong => 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।';
-
-  @override
-  String get errNotAuthorized =>
-      'आप इस भुगतान को पूरा करने के लिए अधिकृत नहीं हैं।';
-
-  @override
-  String get errServiceUnavailable =>
-      'सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुनः प्रयास करें।';
-
-  @override
-  String get errPaymentFailed => 'भुगतान विफल रहा। कृपया पुनः प्रयास करें।';
-
-  @override
-  String get errPlotNotFound => 'प्लॉट नहीं मिला';
-
-  @override
-  String get errProjectNotFound => 'प्रोजेक्ट नहीं मिला';
-
-  @override
-  String get statusAvailableCaps => 'उपलब्ध';
-
-  @override
-  String get statusHoldCaps => 'होल्ड';
-
-  @override
-  String get statusBookedCaps => 'बुक';
-
-  @override
-  String get cmsUnicRealEstate => 'यूनिक रियल एस्टेट';
-
-  @override
-  String get cmsPremierCompany => 'एक प्रमुख संपत्ति विकास कंपनी।';
-
-  @override
-  String get cmsMostTrusted => 'रियल एस्टेट में सबसे भरोसेमंद नाम बनना।';
-
-  @override
-  String get cmsDeliverClearTitle =>
-      'स्पष्ट शीर्षक, कानूनी रूप से जांची गई संपत्ति प्रदान करना।';
-
-  @override
-  String get cms100ClearTitle => '100% स्पष्ट शीर्षक और RERA स्वीकृत';
-
-  @override
-  String get cmsStrategicLocations => 'उच्च ROI के साथ रणनीतिक स्थान';
-
-  @override
-  String get cmsIndianRupee => 'भारतीय रुपया';
-
-  @override
-  String get legalAndPolicies => 'कानूनी और नीतियां';
 
   @override
   String get companyProfile => 'कंपनी प्रोफ़ाइल';
@@ -1035,15 +658,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get plotPrice => 'प्लॉट की कीमत';
-
-  @override
-  String get calculateEmi => 'ईएमआई की गणना करें';
-
-  @override
-  String get approximateEmi => 'अनुमानित ईएमआई';
-
-  @override
-  String get totalPayment => 'कुल भुगतान';
 
   @override
   String get offerDetails => 'ऑफ़र विवरण';
@@ -1210,9 +824,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get uploadDocumentImage => 'Upload Document Image:';
 
   @override
-  String get tapToPickImage => 'Tap to pick image';
-
-  @override
   String get userNotFound => 'User not found. Please log in again.';
 
   @override
@@ -1229,27 +840,13 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get emiAndPayments => 'EMI & Payments';
-
-  @override
-  String get paymentSummary => 'Payment Summary';
-
-  @override
   String get totalAmount => 'कुल राशि';
-
-  @override
-  String get amountPaid => 'Amount Paid';
 
   @override
   String get pendingBalance => 'शेष राशि';
 
   @override
   String get noPaymentRecords => 'No payment records found.';
-
-  @override
-  String paymentRef(String ref) {
-    return 'Ref: $ref';
-  }
 
   @override
   String get supportCenter => 'Support Center';
@@ -1277,30 +874,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get emailSupportSubtitle => 'support@realestate.com';
 
   @override
-  String get faqTitle => 'Frequently Asked Questions';
-
-  @override
-  String get faq1Question => 'How do I book a plot?';
-
-  @override
-  String get faq1Answer =>
-      'You can browse available plots in any active project and click \"Enquire\" or \"Book\". An agent will contact you shortly.';
-
-  @override
-  String get faq2Question => 'Where can I see my EMI status?';
-
-  @override
-  String get faq2Answer =>
-      'Go to Profile > My Properties, and select your booked plot to see your complete EMI tracker and payment history.';
-
-  @override
-  String get faq3Question => 'Can I change my registered email?';
-
-  @override
-  String get faq3Answer =>
-      'For security reasons, your registered email cannot be changed from the app. Please contact support.';
-
-  @override
   String get myProfile => 'My Profile';
 
   @override
@@ -1319,19 +892,12 @@ class AppLocalizationsHi extends AppLocalizations {
   String get loginBtn => 'Login';
 
   @override
-  String get pleaseLoginToViewProperties =>
-      'Please login to view your properties.';
-
-  @override
   String get noPropertiesYet => 'You have no booked or purchased plots yet.';
 
   @override
   String plotNoLabel(String number) {
     return 'Plot No: $number';
   }
-
-  @override
-  String get loginPageTitle => 'Login';
 
   @override
   String get welcomeBack => 'Welcome Back';
@@ -1396,9 +962,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get agreeToSuffix => ' से सहमत हूँ।';
 
   @override
-  String get permissionDenied => 'अनुमति नहीं है। कृपया सहायता से संपर्क करें।';
-
-  @override
   String get backToLogin => 'Back to Login';
 
   @override
@@ -1424,30 +987,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get alreadyHaveAccount => 'Already have an account? Login';
-
-  @override
-  String get valErrEmailRequired => 'ईमेल आवश्यक है';
-
-  @override
-  String get valErrEmailInvalid => 'कृपया एक वैध ईमेल पता दर्ज करें';
-
-  @override
-  String get valErrPasswordRequired => 'पासवर्ड आवश्यक है';
-
-  @override
-  String get valErrPasswordLength => 'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए';
-
-  @override
-  String get valErrFullNameRequired => 'पूरा नाम आवश्यक है';
-
-  @override
-  String get valErrMobileRequired => 'मोबाइल नंबर आवश्यक है';
-
-  @override
-  String get valErrMobileInvalid => 'कृपया एक वैध मोबाइल नंबर दर्ज करें';
-
-  @override
-  String get valErrFullNameInvalid => 'कृपया एक वैध नाम दर्ज करें (केवल अक्षर)';
 
   @override
   String get accountBlocked =>
@@ -1476,9 +1015,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get registrationSuccessMessage =>
       'हमने आपके पंजीकृत ईमेल पते पर एक सत्यापन ईमेल भेजा है।\n\nकृपया अपना इनबॉक्स और स्पैम/जंक फ़ोल्डर जांचें। अपने खाते में लॉग इन करने से पहले आपको अपना ईमेल सत्यापित करना होगा।';
-
-  @override
-  String get goToLogin => 'लॉगिन पर जाएं';
 
   @override
   String get unknownProject => 'अज्ञात प्रोजेक्ट';
@@ -1530,21 +1066,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get updatePassword => 'Update Password';
 
   @override
-  String get failedToChangePassword => 'Failed to change password';
-
-  @override
-  String get currentPasswordIncorrect => 'Current password is incorrect';
-
-  @override
-  String get invalidResponseFromServer => 'Invalid response from server.';
-
-  @override
-  String get realEstatePlatform => 'Real Estate Platform';
-
-  @override
-  String get userNotLoggedIn => 'User not logged in';
-
-  @override
   String get noSiteVisitsScheduled => 'No Site Visits Scheduled';
 
   @override
@@ -1594,15 +1115,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get enter6DigitOtp => 'Enter 6-digit OTP';
-
-  @override
-  String get errorLoadingContent => 'Error loading content';
-
-  @override
-  String get failedToLoadPropertyDetails => 'Failed to load property details';
-
-  @override
-  String get failedToLoadPayments => 'Failed to load payments';
 
   @override
   String inrPrice(String amount) {
@@ -1683,52 +1195,10 @@ class AppLocalizationsHi extends AppLocalizations {
       'हमें इस प्लॉट के लिए बुकिंग का विवरण नहीं मिल सका।';
 
   @override
-  String get propertyInformation => 'संपत्ति की जानकारी';
-
-  @override
   String get project => 'प्रोजेक्ट';
 
   @override
   String get plotNo => 'प्लॉट नं';
-
-  @override
-  String get plotArea1 => 'प्लॉट क्षेत्र 1';
-
-  @override
-  String get plotArea2 => 'प्लॉट क्षेत्र 2';
-
-  @override
-  String get plotArea3 => 'प्लॉट क्षेत्र 3';
-
-  @override
-  String get plotArea4 => 'प्लॉट क्षेत्र 4';
-
-  @override
-  String get salePriceSqFt => 'बिक्री मूल्य';
-
-  @override
-  String get devChargeSqFt => 'विकास शुल्क';
-
-  @override
-  String get firstApplicantDetails => 'प्रथम आवेदक विवरण';
-
-  @override
-  String get applicantName => 'नाम';
-
-  @override
-  String get swdOf => 'पुत्र/पत्नी/पुत्री';
-
-  @override
-  String get dob => 'जन्म तिथि';
-
-  @override
-  String get occupation => 'पेशा';
-
-  @override
-  String get nationality => 'राष्ट्रीयता';
-
-  @override
-  String get contactAndIdentity => 'संपर्क और पहचान';
 
   @override
   String get mobile => 'मोबाइल';
@@ -1743,34 +1213,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get address => 'पता';
 
   @override
-  String get presentAddress => 'वर्तमान पता';
-
-  @override
-  String get permanentAddress => 'स्थायी पता';
-
-  @override
-  String get nominee => 'नामित व्यक्ति';
-
-  @override
-  String get relation => 'संबंध';
-
-  @override
-  String get secondApplicantDetails => 'द्वितीय आवेदक विवरण';
-
-  @override
-  String get paymentTerms => 'भुगतान शर्तें';
-
-  @override
-  String get paymentPlan => 'भुगतान योजना';
-
-  @override
   String get paymentMode => 'भुगतान का तरीका';
-
-  @override
-  String get bankFinance => 'बैंक/फाइनेंस';
-
-  @override
-  String get applicationDate => 'आवेदन तिथि';
 
   @override
   String get bookingDate => 'बुकिंग तिथि';
@@ -1797,11 +1240,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get initialPaymentDesc => 'बुकिंग आवेदन से प्रारंभिक भुगतान';
-
-  @override
-  String paymentTxnSuffix(String txnId) {
-    return ' (लेन-देन: $txnId)';
-  }
 
   @override
   String get paymentModeCash => 'नकद';
