@@ -247,10 +247,13 @@ class _PaymentCard extends StatelessWidget {
                       tooltip: loc.downloadReceipt,
                       onPressed: () async {
                         try {
-                          await PaymentReceiptService.download(payment, loc);
+                          await PaymentReceiptService.download(null, payment);
                         } catch (error) {
                           if (context.mounted) {
-                            AppSnackbar.showError(context, loc.unableToDownloadReceipt);
+                            AppSnackbar.showError(
+                              context,
+                              loc.unableToDownloadReceipt,
+                            );
                           }
                         }
                       },

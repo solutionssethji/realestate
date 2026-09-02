@@ -293,6 +293,23 @@ const api = {
           data = await Promise.all(data.map((b) => enrichBookingData(b)));
         } else if (collectionName === "payments") {
           data = await Promise.all(data.map((p) => enrichPaymentData(p)));
+        } else if (collectionName === "offers") {
+          const now = new Date();
+          data = data.map((offer: any) => {
+            if (
+              (offer.status === "ACTIVE" ||
+                offer.status === "Active" ||
+                offer.status === "active") &&
+              offer.endDate &&
+              new Date(offer.endDate) < now
+            ) {
+              offer.status = "EXPIRED";
+              updateDoc(doc(db, "offers", offer.id), {
+                status: "EXPIRED",
+              }).catch((e) => console.error("Failed to expire offer:", e));
+            }
+            return offer;
+          });
         }
 
         const lastVisible =

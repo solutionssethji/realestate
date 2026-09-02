@@ -145,4 +145,18 @@ class CmsService {
       rethrow;
     }
   }
+
+  /// Fetches the receipt settings from Firebase
+  static Future<Map<String, dynamic>> getReceiptSettings() async {
+    try {
+      final doc = await _db.collection('setting').doc('receiptSettings').get();
+      if (doc.exists && doc.data() != null) {
+        return doc.data()!;
+      }
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(e, function: 'getFaqs()');
+    }
+    // Return empty map or defaults if it fails
+    return {};
+  }
 }

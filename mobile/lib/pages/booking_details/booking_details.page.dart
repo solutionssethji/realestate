@@ -9,6 +9,7 @@ import '../../theme/spacing.dart';
 import '../../widgets/empty_state.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../widgets/premium_app_bar.dart';
+import '../../services/payment_receipt_service.dart';
 
 class BookingDetailsPage extends HookConsumerWidget {
   final String plotId;
@@ -264,14 +265,24 @@ class BookingDetailsPage extends HookConsumerWidget {
                                     child: _LedgerButton(
                                       icon: Icons.visibility_outlined,
                                       label: l10n.viewAll,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        PaymentReceiptService.viewAll(
+                                          bookingData,
+                                          state.payments,
+                                        );
+                                      },
                                     ),
                                   ),
                                   Expanded(
                                     child: _LedgerButton(
                                       icon: Icons.file_download_outlined,
                                       label: l10n.downloadAll,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        PaymentReceiptService.downloadAll(
+                                          bookingData,
+                                          state.payments,
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
@@ -337,6 +348,15 @@ class BookingDetailsPage extends HookConsumerWidget {
                                 subtitle: subtitle,
                                 dateFormatted: dateFormatted,
                                 statusLabel: l10n.paymentCompleted,
+                                onView: () {
+                                  PaymentReceiptService.view(bookingData, p);
+                                },
+                                onDownload: () {
+                                  PaymentReceiptService.download(
+                                    bookingData,
+                                    p,
+                                  );
+                                },
                               );
                             }).toList(),
                           ),
@@ -519,12 +539,16 @@ class _PaymentRow extends StatelessWidget {
   final String subtitle;
   final String dateFormatted;
   final String statusLabel;
+  final VoidCallback onView;
+  final VoidCallback onDownload;
 
   const _PaymentRow({
     required this.amount,
     required this.subtitle,
     required this.dateFormatted,
     required this.statusLabel,
+    required this.onView,
+    required this.onDownload,
   });
 
   @override
@@ -609,14 +633,14 @@ class _PaymentRow extends StatelessWidget {
                 child: _LedgerButton(
                   icon: Icons.visibility_outlined,
                   label: l10n.view,
-                  onPressed: () {},
+                  onPressed: onView,
                 ),
               ),
               Expanded(
                 child: _LedgerButton(
                   icon: Icons.file_download_outlined,
                   label: l10n.download,
-                  onPressed: () {},
+                  onPressed: onDownload,
                 ),
               ),
             ],
