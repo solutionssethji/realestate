@@ -1,4 +1,5 @@
 import 'package:customer_app/theme/spacing.dart';
+import 'package:customer_app/utils/utils.dart';
 import 'package:customer_app/widgets/empty_state.dart';
 import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +92,7 @@ class MySiteVisitsPage extends HookConsumerWidget {
     final createdAt = visit['createdAt']?.toDate();
     final locale = Localizations.localeOf(context);
     final dateStr = createdAt != null
-        ? _formatDate(createdAt, locale)
+        ? formatDate(createdAt, locale)
         : context.l10n.unknownDate;
     final status = visit['status'] ?? 'NEW';
     final preferredDateStr = visit['preferredDate'];
@@ -103,10 +104,21 @@ class MySiteVisitsPage extends HookConsumerWidget {
         final dt = DateTime.parse(preferredDateStr);
         if (locale.languageCode == 'hi') {
           final months = [
-            'जन', 'फ़र', 'मार्च', 'अप्र', 'मई', 'जून',
-            'जुल', 'अग', 'सित', 'अक्ट', 'नव', 'दिस'
+            'जन',
+            'फ़र',
+            'मार्च',
+            'अप्र',
+            'मई',
+            'जून',
+            'जुल',
+            'अग',
+            'सित',
+            'अक्ट',
+            'नव',
+            'दिस',
           ];
-          formattedPrefDate = '${dt.day.toString().padLeft(2, '0')} ${months[dt.month - 1]} ${dt.year}';
+          formattedPrefDate =
+              '${dt.day.toString().padLeft(2, '0')} ${months[dt.month - 1]} ${dt.year}';
         } else {
           formattedPrefDate = DateFormat('MMM dd, yyyy').format(dt);
         }
@@ -180,17 +192,17 @@ class MySiteVisitsPage extends HookConsumerWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(status).withValues(alpha: 0.1),
+                    color: getStatusColor(status).withValues(alpha: 0.1),
                     border: Border.all(
-                      color: _getStatusColor(status).withValues(alpha: 0.2),
+                      color: getStatusColor(status).withValues(alpha: 0.2),
                     ),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    _translateStatus(context, status),
+                    translateStatus(context, status),
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: _getStatusColor(status),
+                      color: getStatusColor(status),
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -279,49 +291,5 @@ class MySiteVisitsPage extends HookConsumerWidget {
         ),
       ),
     );
-  }
-
-  Color _getStatusColor(String status) {
-    switch (status.toUpperCase()) {
-      case 'NEW':
-        return AppTheme.info;
-      case 'CONFIRMED':
-      case 'COMPLETED':
-        return AppTheme.success;
-      case 'CANCELLED':
-        return AppTheme.error;
-      default:
-        return AppTheme.midnightNavy;
-    }
-  }
-
-  String _translateStatus(BuildContext context, String status) {
-    final l10n = context.l10n;
-    switch (status.toUpperCase()) {
-      case 'NEW':
-        return l10n.statusNew;
-      case 'CONFIRMED':
-        return l10n.statusConfirmed;
-      case 'COMPLETED':
-        return l10n.statusCompleted;
-      case 'CANCELLED':
-        return l10n.statusCancelled;
-      default:
-        return status;
-    }
-  }
-
-  String _formatDate(DateTime date, Locale locale) {
-    if (locale.languageCode == 'hi') {
-      final months = [
-        'जन', 'फ़र', 'मार्च', 'अप्र', 'मई', 'जून',
-        'जुल', 'अग', 'सित', 'अक्ट', 'नव', 'दिस'
-      ];
-      final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
-      final minute = date.minute.toString().padLeft(2, '0');
-      final amPm = date.hour >= 12 ? 'PM' : 'AM';
-      return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year} - $hour:$minute $amPm';
-    }
-    return DateFormat('MMM dd, yyyy - hh:mm a').format(date);
   }
 }

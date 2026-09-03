@@ -13,6 +13,8 @@ import 'config/locale_provider.dart';
 import 'l10n/app_localizations.dart';
 import 'theme/theme.dart';
 import 'routes/routes.dart';
+import 'package:go_router/go_router.dart';
+import 'routes/app_routes.dart';
 import 'constants.dart';
 import 'firebase_options.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
@@ -62,6 +64,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint("Handling a background message: ${message.messageId}");
 }
 
+void _handleNotificationTap(RemoteMessage message) {
+  final data = message.data;
+  if (data['type'] == 'NEW_OFFER' || data['type'] == 'OFFER') {
+    final offerId = data['offerId'];
+    if (offerId != null && rootNavigatorKey.currentContext != null) {
+      GoRouter.of(rootNavigatorKey.currentContext!).push(AppRoutes.offerDetails(offerId));
+    }
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -77,6 +89,20 @@ void main() async {
   FirebaseMessaging.onMessage.listen((message) {
     debugPrint('Foreground push notification received: ${message.messageId}');
   });
+
+  // Handle notification tap when app is in background
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    _handleNotificationTap(message);
+  });
+
+  // Handle notification tap when app is terminated
+  final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  if (initialMessage != null) {
+    // We defer the routing slightly to ensure the router is ready
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _handleNotificationTap(initialMessage);
+    });
+  }
 
   FirebaseAnalytics.instance;
   AuthService.authStateChanges().listen((user) async {

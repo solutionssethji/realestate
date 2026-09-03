@@ -15,6 +15,7 @@ import '../../utils/l10n_extension.dart';
 import '../../widgets/offer_card.dart';
 import 'package:flutter/rendering.dart';
 import '../../providers/fab_provider.dart';
+import '../../providers/notifications_provider.dart';
 import '../../routes/app_routes.dart';
 
 class HomePage extends HookConsumerWidget {
@@ -43,10 +44,23 @@ class HomePage extends HookConsumerWidget {
           fit: BoxFit.contain,
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: AppTheme.midnightNavy),
-            onPressed: () {},
-          ),
+          Consumer(builder: (context, ref, child) {
+            final unreadCount = ref.watch(unreadNotificationsCountProvider).value ?? 0;
+            return IconButton(
+              icon: unreadCount > 0
+                  ? Badge(
+                      label: Text(
+                        unreadCount.toString(),
+                        style: const TextStyle(color: Colors.white, fontSize: 10),
+                      ),
+                      child: const Icon(Icons.notifications, color: AppTheme.midnightNavy),
+                    )
+                  : const Icon(Icons.notifications, color: AppTheme.midnightNavy),
+              onPressed: () {
+                context.push(AppRoutes.notifications);
+              },
+            );
+          }),
           const SizedBox(width: 8),
         ],
       ),

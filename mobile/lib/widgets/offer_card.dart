@@ -1,21 +1,23 @@
 import 'dart:ui';
+import 'package:customer_app/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/offer.dart';
 import '../theme/theme.dart';
 import '../theme/spacing.dart';
 import 'app_cached_image.dart';
-import 'package:intl/intl.dart';
 import '../utils/l10n_extension.dart';
 
-/// Premium image-first offer card for grids and horizontal lists.
-class OfferCard extends StatelessWidget {
+class OfferCard extends HookConsumerWidget {
   final Offer offer;
   final VoidCallback onTap;
 
   const OfferCard({super.key, required this.offer, required this.onTap});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = Localizations.localeOf(context);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -88,7 +90,9 @@ class OfferCard extends StatelessWidget {
                               ),
                               AppSpacing.wXs,
                               Text(
-                                context.l10n.validTillText(DateFormat('d MMM yyyy').format(offer.endDate)),
+                                context.l10n.validTillText(
+                                  formatDateOnly(offer.endDate, locale),
+                                ),
                                 style: Theme.of(context).textTheme.labelSmall
                                     ?.copyWith(
                                       color: AppTheme.white,

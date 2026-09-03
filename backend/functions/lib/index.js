@@ -40,18 +40,16 @@ const admin = __importStar(require("firebase-admin"));
 const v2_1 = require("firebase-functions/v2");
 (0, v2_1.setGlobalOptions)({
     maxInstances: 1,
-    memory: '256MiB',
+    memory: "256MiB",
     concurrency: 80,
-    timeoutSeconds: 60
+    timeoutSeconds: 60,
 });
 // Initialize the Firebase Admin SDK
 admin.initializeApp();
 // Export Cloud Functions
 __exportStar(require("./admin"), exports);
-__exportStar(require("./payments"), exports);
 __exportStar(require("./plots"), exports);
 __exportStar(require("./notifications"), exports);
 __exportStar(require("./transactions"), exports);
-__exportStar(require("./users"), exports);
-// offers module removed - expiry now handled client-side via endDate filter
+__exportStar(require("./offers"), exports);
 //# sourceMappingURL=index.js.map

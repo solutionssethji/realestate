@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/customer.dart';
+import '../models/app_notification.dart';
 import '../models/project.dart';
 import '../models/plot.dart';
 import '../models/plot_status.dart';
@@ -108,6 +109,7 @@ class ApiService {
     DocumentSnapshot? lastDocument,
     int limit = 10,
     bool? isFeatured,
+    String? searchQuery,
   }) async {
     logApi(
       function: 'getProjects()',
@@ -118,6 +120,19 @@ class ApiService {
 
       if (isFeatured != null) {
         query = query.where('isFeatured', isEqualTo: isFeatured);
+      }
+
+      if (searchQuery != null && searchQuery.trim().isNotEmpty) {
+        final queryText = searchQuery.trim();
+        final capitalized = queryText.replaceAllMapped(
+          RegExp(r'\b\w'),
+          (match) => match.group(0)!.toUpperCase(),
+        );
+
+        query = query
+            .where('name.en', isGreaterThanOrEqualTo: capitalized)
+            .where('name.en', isLessThanOrEqualTo: '$capitalized\uf8ff')
+            .orderBy('name.en');
       }
 
       query = query.limit(limit);
@@ -567,7 +582,7 @@ class ApiService {
 
   // ─── Notifications (Alerts Tab) ───────────────────────────────────────────────
 
-  static Future<List<Map<String, dynamic>>> getNotifications(
+  static Future<(List<AppNotification>, DocumentSnapshot?)> getNotifications(
     String uid, {
     DocumentSnapshot? lastDocument,
     int limit = 20,
@@ -584,7 +599,14 @@ class ApiService {
         query = query.startAfterDocument(lastDocument);
       }
       final snapshot = await query.get();
-      return snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
+      final notifications = snapshot.docs.map((d) {
+        final data = d.data();
+        data['id'] = d.id;
+        return AppNotification.fromJson(data);
+      }).toList();
+      
+      final lastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+      return (notifications, lastDoc);
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
         e,
@@ -1006,9 +1028,6 @@ class ApiService {
                 DateTime.now().add(const Duration(days: 30))
           : DateTime.now().add(const Duration(days: 30)),
       status: data['status']?.toString() ?? 'ACTIVE',
-      discountType: data['discountType']?.toString(),
-      discountValue: (data['discountValue'] as num?)?.toDouble(),
-      offerCode: data['offerCode']?.toString() ?? data['code']?.toString(),
       projectId: data['projectId']?.toString(),
       projectName: BilingualHelper.get(data['projectName']),
     );

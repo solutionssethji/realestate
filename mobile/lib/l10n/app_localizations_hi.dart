@@ -9,7 +9,10 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get appName => 'एलिज़ियम रियल एस्टेट';
+  String get appName => 'Shubhaytanam Connect';
+
+  @override
+  String get search => 'खोजें';
 
   @override
   String get errorLoadingCode => 'कोड लोड करने में त्रुटि';
@@ -824,7 +827,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get uploadDocumentImage => 'दस्तावेज की छवि अपलोड करें:';
 
   @override
-  String get userNotFound => 'User not found. Please log in again.';
+  String get userNotFound => 'उपयोगकर्ता नहीं मिला। कृपया पुनः लॉग इन करें।';
 
   @override
   String failedToPickImage(String error) {
@@ -1098,7 +1101,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String totalPlots(int count) {
-    return '$count Total Plots';
+    return '$count कुल प्लॉट';
   }
 
   @override
@@ -1168,7 +1171,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String validTillText(String date) {
-    return 'Valid till $date';
+    return 'तब तक वैध $date';
   }
 
   @override
@@ -1274,6 +1277,21 @@ class AppLocalizationsHi extends AppLocalizations {
   String get statusCancelled => 'रद्द';
 
   @override
+  String get statusContacted => 'संपर्क किया गया';
+
+  @override
+  String get statusFollowUp => 'फ़ॉलो-अप';
+
+  @override
+  String get statusInProgress => 'प्रगति पर';
+
+  @override
+  String get statusResolved => 'हल हो गया';
+
+  @override
+  String get statusClosed => 'बंद';
+
+  @override
   String get naLabel => 'N/A';
 
   @override
@@ -1317,4 +1335,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get priceLabel => 'कीमत';
+
+  @override
+  String get featured => 'प्रदर्शित';
 }

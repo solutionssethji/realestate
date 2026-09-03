@@ -9,6 +9,7 @@ class AppRoutes {
   static const String projects = '/projects';
   static const String myProperties = '/my-properties';
   static const String profile = '/profile';
+  static const String notifications = '/notifications';
 
   // Home sub-routes
   static const String offers = '/offers';

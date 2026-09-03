@@ -10,6 +10,7 @@ import 'plot_details.logic.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import '../../models/plot_status.dart';
+import '../../utils/price_formatter.dart';
 import '../../widgets/premium_button.dart';
 import '../../widgets/status_badge.dart';
 import '../../widgets/shimmer_loader.dart';
@@ -150,7 +151,7 @@ class PlotDetailsPage extends ConsumerWidget {
                           ),
                           Text(
                             context.l10n.inrPrice(
-                              plot.price.toStringAsFixed(0),
+                              PriceFormatter.formatNumber(plot.price),
                             ),
                             style: Theme.of(context).textTheme.displaySmall
                                 ?.copyWith(color: AppTheme.midnightNavy),

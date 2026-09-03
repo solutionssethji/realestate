@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'typography.dart';
 import 'spacing.dart';
 
@@ -20,6 +21,10 @@ class AppColors {
   static const Color warning = Color(0xFFF59E0B);
   static const Color error = Color(0xFFEF4444);
   static const Color info = Color(0xFF3B82F6);
+
+  // Social / Utility
+  static const Color whatsAppGreen = Color(0xFF25D366);
+  static const Color whatsAppDark = Color(0xFF128C7E);
 
   static const Color white = Colors.white;
   static const Color white70 = Colors.white70;
@@ -47,6 +52,10 @@ class AppTheme {
   static const Color textSecondary = AppColors.textSecondary;
   static const Color border = AppColors.border;
 
+  // Social / Utility
+  static const Color whatsAppGreen = AppColors.whatsAppGreen;
+  static const Color whatsAppDark = AppColors.whatsAppDark;
+
   // Status Colors
   static const Color success = AppColors.success;
   static const Color warning = AppColors.warning;
@@ -64,6 +73,17 @@ class AppTheme {
   static const Color neutral400 = AppColors.neutral400;
   static const Color neutral500 = AppColors.neutral500;
   static const Color neutral600 = AppColors.neutral600;
+
+  // Brand Gradients
+  static const LinearGradient whatsAppGradient = LinearGradient(
+    colors: [AppColors.whatsAppGreen, AppColors.whatsAppDark],
+  );
+  static const LinearGradient navyGradient = LinearGradient(
+    colors: [AppColors.primary, AppColors.primaryDark],
+  );
+  static const LinearGradient goldGradient = LinearGradient(
+    colors: [AppColors.accent, AppColors.accentDark],
+  );
 
   static ThemeData get lightTheme {
     return ThemeData(
@@ -87,6 +107,7 @@ class AppTheme {
         foregroundColor: midnightNavy,
         elevation: 0,
         centerTitle: true,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         titleTextStyle: AppTypography.textTheme.titleLarge?.copyWith(
           color: midnightNavy,
         ),

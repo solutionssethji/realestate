@@ -1,6 +1,7 @@
 {
   "@@locale": "en",
   "appName": "Shubhaytanam Connect",
+  "search": "Search",
   "errorLoadingCode": "Error loading code",
   "shareCode": "Share Code",
   "aboutCompany": "About Company",
@@ -378,7 +379,7 @@
   "ifscCode": "IFSC Code",
   "saveDetails": "Save Details",
   "uploadDocumentImage": "Upload Document Image:",
-  "userNotFound": "User not found",
+  "userNotFound": "User not found. Please log in again.",
   "failedToPickImage": "Failed to pick image: {error}",
   "@failedToPickImage": {
     "placeholders": {
@@ -573,6 +574,11 @@
   "statusConfirmed": "Confirmed",
   "statusCompleted": "Completed",
   "statusCancelled": "Cancelled",
+  "statusContacted": "Contacted",
+  "statusFollowUp": "Follow Up",
+  "statusInProgress": "In Progress",
+  "statusResolved": "Resolved",
+  "statusClosed": "Closed",
   "naLabel": "N/A",
   "view": "View",
   "download": "Download",
@@ -598,5 +604,6 @@
       }
     }
   },
-  "priceLabel": "Price"
+  "priceLabel": "Price",
+  "featured": "Featured"
 }

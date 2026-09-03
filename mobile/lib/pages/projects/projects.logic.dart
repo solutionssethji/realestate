@@ -1,12 +1,14 @@
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'projects.state.dart';
-import '../../../models/project.dart';
 import '../../../services/api_service.dart';
 
 part 'projects.logic.g.dart';
 
 @Riverpod(keepAlive: true)
 class ProjectsLogic extends _$ProjectsLogic {
+  Timer? _debounce;
+
   @override
   ProjectsState build() {
     Future.microtask(() => loadProjects(isRefresh: true));
@@ -40,6 +42,7 @@ class ProjectsLogic extends _$ProjectsLogic {
     final (newProjects, newLastDoc) = await ApiService.getProjects(
       lastDocument: state.lastDocument,
       limit: 10,
+      searchQuery: state.searchQuery,
     );
 
     final combinedProjects = isRefresh
@@ -48,7 +51,7 @@ class ProjectsLogic extends _$ProjectsLogic {
 
     state = state.copyWith(
       allProjects: combinedProjects,
-      filteredProjects: _filter(combinedProjects, state.searchQuery),
+      filteredProjects: combinedProjects, // No more client-side filtering
       lastDocument: newLastDoc,
       hasMore: newProjects.length == 10,
       isLoading: false,
@@ -62,21 +65,22 @@ class ProjectsLogic extends _$ProjectsLogic {
   }
 
   void updateSearch(String query) {
-    state = state.copyWith(
-      searchQuery: query,
-      filteredProjects: _filter(state.allProjects, query),
-    );
+    if (state.searchQuery == query) return;
+    state = state.copyWith(searchQuery: query);
+    
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      loadProjects(isRefresh: true);
+    });
   }
 
-  List<Project> _filter(List<Project> projects, String query) {
-    if (query.isEmpty) return projects;
-    final lowerQuery = query.toLowerCase();
-    return projects
-        .where(
-          (p) =>
-              p.name.toLowerCase().contains(lowerQuery) ||
-              p.location.toLowerCase().contains(lowerQuery),
-        )
-        .toList();
+  void clearSearchAndReload() {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    if (state.searchQuery.isEmpty) {
+      loadProjects(isRefresh: true);
+    } else {
+      state = state.copyWith(searchQuery: '');
+      loadProjects(isRefresh: true);
+    }
   }
 }

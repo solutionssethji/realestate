@@ -13,8 +13,7 @@ admin.initializeApp();
 
 // Export Cloud Functions
 export * from "./admin";
-export * from "./payments";
 export * from "./plots";
 export * from "./notifications";
 export * from "./transactions";
-// offers module removed - expiry now handled client-side via endDate filter
+export * from "./offers";

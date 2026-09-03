@@ -5,6 +5,7 @@ import '../theme/spacing.dart';
 import '../models/plot_status.dart';
 import 'status_badge.dart';
 import '../utils/l10n_extension.dart';
+import '../utils/price_formatter.dart';
 
 /// Premium plot card for grid view.
 class PlotCard extends StatelessWidget {
@@ -136,7 +137,7 @@ class PlotCard extends StatelessWidget {
                             ),
                             Text(
                               context.l10n.inrPrice(
-                                plot.price.toStringAsFixed(0),
+                                PriceFormatter.formatNumber(plot.price),
                               ),
                               style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(

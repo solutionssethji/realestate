@@ -247,12 +247,24 @@ class ReferredUsersPage extends HookConsumerWidget {
   String _formatDate(DateTime date, Locale locale) {
     if (locale.languageCode == 'hi') {
       final months = [
-        'जन', 'फ़र', 'मार्च', 'अप्र', 'मई', 'जून',
-        'जुल', 'अग', 'सित', 'अक्ट', 'नव', 'दिस'
+        'जन',
+        'फ़र',
+        'मार्च',
+        'अप्र',
+        'मई',
+        'जून',
+        'जुल',
+        'अग',
+        'सित',
+        'अक्ट',
+        'नव',
+        'दिस',
       ];
-      final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
+      final hour = date.hour > 12
+          ? date.hour - 12
+          : (date.hour == 0 ? 12 : date.hour);
       final minute = date.minute.toString().padLeft(2, '0');
-      final amPm = date.hour >= 12 ? 'PM' : 'AM';
+      final amPm = date.hour >= 12 ? 'अपराह्न' : 'पूर्वाह्न';
       return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}\n$hour:$minute $amPm';
     }
     return DateFormat('MMM dd, yyyy\nhh:mm a').format(date);

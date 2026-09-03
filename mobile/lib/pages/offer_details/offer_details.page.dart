@@ -1,3 +1,4 @@
+import 'package:customer_app/utils/utils.dart';
 import 'package:customer_app/widgets/app_cached_image.dart';
 import 'package:customer_app/widgets/generic_shimmer_loader.dart';
 import 'package:customer_app/widgets/premium_app_bar.dart';
@@ -6,7 +7,7 @@ import 'package:customer_app/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
+
 
 import 'offer_details.logic.dart';
 import '../../theme/theme.dart';
@@ -22,7 +23,7 @@ class OfferDetailsPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(offerDetailsLogicProvider(offerId));
     final offer = state.offer;
-    final dateFormat = DateFormat('dd MMM yyyy');
+    final locale = Localizations.localeOf(context);
 
     if (state.isLoading) {
       return Scaffold(
@@ -81,6 +82,8 @@ class OfferDetailsPage extends HookConsumerWidget {
       );
     }
 
+    final startDate = formatDateOnly(offer.startDate, locale);
+    final endDate = formatDateOnly(offer.endDate, locale);
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.offerDetails),
       body: SafeArea(
@@ -105,22 +108,11 @@ class OfferDetailsPage extends HookConsumerWidget {
                       children: [
                         _OfferBadge(
                           text:
-                              '${context.l10n.validText}: ${dateFormat.format(offer.startDate)} - ${dateFormat.format(offer.endDate)}',
+                              '${context.l10n.validText}: $startDate - $endDate',
                           color: Theme.of(context).colorScheme.primary,
                           backgroundColor: Theme.of(
                             context,
                           ).colorScheme.primary.withValues(alpha: 0.1),
-                        ),
-                        _OfferBadge(
-                          text: offer.status,
-                          color: offer.status == 'ACTIVE'
-                              ? AppTheme.success
-                              : AppTheme.error,
-                          backgroundColor:
-                              (offer.status == 'ACTIVE'
-                                      ? AppTheme.success
-                                      : AppTheme.error)
-                                  .withValues(alpha: 0.1),
                         ),
                       ],
                     ),
@@ -129,60 +121,6 @@ class OfferDetailsPage extends HookConsumerWidget {
                       offer.title,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
-                    if (offer.discountValue != null &&
-                        offer.discountValue! > 0) ...[
-                      const SizedBox(height: 12),
-                      Text(
-                        offer.discountType == 'FLAT'
-                            ? '${context.l10n.flat} ₹${NumberFormat('#,##,###').format(offer.discountValue)} ${context.l10n.off}'
-                            : '${offer.discountValue!.toInt()}% ${context.l10n.off}',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppTheme.darkGold,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                    if (offer.offerCode?.isNotEmpty == true) ...[
-                      const SizedBox(height: 12),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppTheme.info.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    context.l10n.promoCode,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium
-                                        ?.copyWith(color: AppTheme.info),
-                                  ),
-                                  Text(
-                                    offer.offerCode!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          color: AppTheme.info,
-                                          fontWeight: FontWeight.w900,
-                                        ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
                     const SizedBox(height: 16),
                     Text(
                       context.l10n.aboutTheOffer,

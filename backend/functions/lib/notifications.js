@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onPlotAssigned = exports.onEnquiryCreated = exports.onSiteVisitCreated = exports.sendBroadcastNotification = void 0;
+exports.onSiteVisitUpdated = exports.onEnquiryUpdated = exports.onPlotAssigned = exports.onEnquiryCreated = exports.onSiteVisitCreated = exports.sendBroadcastNotification = void 0;
 const firestore_1 = require("firebase-functions/v2/firestore");
 const https_1 = require("firebase-functions/v2/https");
 const admin = __importStar(require("firebase-admin"));
@@ -282,6 +282,132 @@ exports.onPlotAssigned = (0, firestore_1.onDocumentWritten)("assignPlots/{assign
                 },
             },
         },
+    });
+    if (result.failureCount > 0) {
+        const invalidTokens = result.responses
+            .map((response, index) => ({ response, index }))
+            .filter(({ response }) => !response.success)
+            .map(({ index }) => tokens[index])
+            .filter((token) => Boolean(token));
+        if (invalidTokens.length > 0) {
+            await removeInvalidFcmTokens(customerId, invalidTokens);
+        }
+    }
+});
+exports.onEnquiryUpdated = (0, firestore_1.onDocumentWritten)("enquiries/{docId}", async (event) => {
+    const before = event.data?.before;
+    const after = event.data?.after;
+    if (!before || !after || !before.exists || !after.exists) {
+        return;
+    }
+    const beforeData = before.data() ?? {};
+    const afterData = after.data() ?? {};
+    // Only notify if status changed
+    if (beforeData.status === afterData.status) {
+        return;
+    }
+    const customerId = afterData.customerId || afterData.userId;
+    if (!customerId) {
+        return;
+    }
+    const db = admin.firestore();
+    const title = "Enquiry Status Updated";
+    const body = `Your enquiry status has been updated to ${afterData.status}.`;
+    const notificationId = `${after.id}-${Date.now()}`;
+    const userNotificationRef = db
+        .collection("users")
+        .doc(customerId)
+        .collection("notifications")
+        .doc(notificationId);
+    await userNotificationRef.set({
+        id: userNotificationRef.id,
+        type: "ENQUIRY_UPDATE",
+        resourceId: after.id,
+        title,
+        body,
+        read: false,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        payload: {
+            enquiryId: after.id,
+            status: afterData.status,
+        },
+    });
+    const tokens = await resolveCustomerFcmTokens(customerId);
+    if (tokens.length === 0)
+        return;
+    const result = await admin.messaging().sendEachForMulticast({
+        tokens,
+        notification: { title, body },
+        data: {
+            type: "ENQUIRY_UPDATE",
+            enquiryId: after.id,
+            status: String(afterData.status),
+        },
+        android: { priority: "high" },
+        apns: { payload: { aps: { sound: "default", badge: 1 } } },
+    });
+    if (result.failureCount > 0) {
+        const invalidTokens = result.responses
+            .map((response, index) => ({ response, index }))
+            .filter(({ response }) => !response.success)
+            .map(({ index }) => tokens[index])
+            .filter((token) => Boolean(token));
+        if (invalidTokens.length > 0) {
+            await removeInvalidFcmTokens(customerId, invalidTokens);
+        }
+    }
+});
+exports.onSiteVisitUpdated = (0, firestore_1.onDocumentWritten)("siteVisits/{docId}", async (event) => {
+    const before = event.data?.before;
+    const after = event.data?.after;
+    if (!before || !after || !before.exists || !after.exists) {
+        return;
+    }
+    const beforeData = before.data() ?? {};
+    const afterData = after.data() ?? {};
+    // Only notify if status changed
+    if (beforeData.status === afterData.status) {
+        return;
+    }
+    const customerId = afterData.customerId || afterData.userId;
+    if (!customerId) {
+        return;
+    }
+    const db = admin.firestore();
+    const title = "Site Visit Status Updated";
+    const body = `Your site visit status has been updated to ${afterData.status}.`;
+    const notificationId = `${after.id}-${Date.now()}`;
+    const userNotificationRef = db
+        .collection("users")
+        .doc(customerId)
+        .collection("notifications")
+        .doc(notificationId);
+    await userNotificationRef.set({
+        id: userNotificationRef.id,
+        type: "SITE_VISIT_UPDATE",
+        resourceId: after.id,
+        title,
+        body,
+        read: false,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        payload: {
+            siteVisitId: after.id,
+            status: afterData.status,
+        },
+    });
+    const tokens = await resolveCustomerFcmTokens(customerId);
+    if (tokens.length === 0)
+        return;
+    const result = await admin.messaging().sendEachForMulticast({
+        tokens,
+        notification: { title, body },
+        data: {
+            type: "SITE_VISIT_UPDATE",
+            siteVisitId: after.id,
+            status: String(afterData.status),
+        },
+        android: { priority: "high" },
+        apns: { payload: { aps: { sound: "default", badge: 1 } } },
     });
     if (result.failureCount > 0) {
         const invalidTokens = result.responses

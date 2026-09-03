@@ -43,9 +43,6 @@ export default function NewOfferPage() {
     titleHi: "",
     descriptionEn: "",
     descriptionHi: "",
-    code: "",
-    discountType: "PERCENTAGE",
-    discountValue: "",
     projectId: "global", // 'global' or actual ID
     startDate: "",
     endDate: "",
@@ -56,14 +53,9 @@ export default function NewOfferPage() {
 
   const validateField = (name: string, value: string, currentFormData = formData) => {
     let error = "";
-    if (name.includes("title") || name.includes("description") || name === "code" || name === "discountValue" || name === "startDate" || name === "endDate") {
+    if (name.includes("title") || name.includes("description") || name === "startDate" || name === "endDate") {
       if (!value.trim()) {
         error = "This field is required";
-      }
-    }
-    if (name === "discountValue" && value.trim() && currentFormData.discountType === "PERCENTAGE") {
-      if (parseFloat(value) > 100) {
-        error = "Percentage cannot exceed 100";
       }
     }
     return error;
@@ -71,22 +63,10 @@ export default function NewOfferPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    let formattedValue = value;
-    if (name === "code") {
-      formattedValue = value.toUpperCase().replace(/\s/g, "");
-    }
-    const updatedFormData = { ...formData, [name]: formattedValue };
-
-    // If discountType changes, re-validate discountValue
-    if (name === "discountType") {
-      setErrors(prev => ({
-        ...prev,
-        discountValue: validateField("discountValue", updatedFormData.discountValue, updatedFormData)
-      }));
-    }
+    const updatedFormData = { ...formData, [name]: value };
 
     setFormData(updatedFormData);
-    setErrors(prev => ({ ...prev, [name]: validateField(name, formattedValue, updatedFormData) }));
+    setErrors(prev => ({ ...prev, [name]: validateField(name, value, updatedFormData) }));
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -124,12 +104,6 @@ export default function NewOfferPage() {
     setImageToCrop(null);
   };
 
-  const checkDuplicateCode = async (code: string) => {
-    const q = query(collection(db, "offers"), where("code", "==", code));
-    const snap = await getDocs(q);
-    return !snap.empty;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -148,19 +122,9 @@ export default function NewOfferPage() {
 
     setLoading(true);
     try {
-      const code = formData.code;
-      if (await checkDuplicateCode(code)) {
-        toast.error(`Promo code "${code}" already exists!`);
-        setLoading(false);
-        return;
-      }
-
       const docRef = await addDoc(collection(db, "offers"), {
-        code,
         title: { en: formData.titleEn, hi: formData.titleHi },
         description: { en: formData.descriptionEn, hi: formData.descriptionHi },
-        discountType: formData.discountType,
-        discountValue: parseFloat(formData.discountValue),
         projectId: formData.projectId === "global" ? null : formData.projectId,
         startDate: formData.startDate,
         endDate: formData.endDate,
@@ -274,38 +238,6 @@ export default function NewOfferPage() {
                 ))}
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Promo Code *</label>
-              <input type="text" name="code" value={formData.code} onChange={handleChange} onBlur={handleBlur} placeholder="e.g. DIWALI2026" className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.code ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold uppercase tracking-wide transition-all`} />
-              {errors.code && <p className="text-red-500 text-xs mt-1">{errors.code}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Discount Type *</label>
-              <div className="flex gap-4">
-                <label className={`flex-1 flex items-center justify-center gap-2 p-3 border rounded-xl cursor-pointer transition-all ${formData.discountType === 'PERCENTAGE' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}>
-                  <input type="radio" name="discountType" value="PERCENTAGE" checked={formData.discountType === 'PERCENTAGE'} onChange={handleChange} className="hidden" />
-                  <Percent className="h-4 w-4" />
-                  <span className="font-semibold">Percentage (%)</span>
-                </label>
-                <label className={`flex-1 flex items-center justify-center gap-2 p-3 border rounded-xl cursor-pointer transition-all ${formData.discountType === 'FLAT' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'}`}>
-                  <input type="radio" name="discountType" value="FLAT" checked={formData.discountType === 'FLAT'} onChange={handleChange} className="hidden" />
-                  <IndianRupee className="h-4 w-4" />
-                  <span className="font-semibold">Flat (₹)</span>
-                </label>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Discount Value *</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  {formData.discountType === 'PERCENTAGE' ? <Percent className="h-4 w-4 text-slate-400" /> : <IndianRupee className="h-4 w-4 text-slate-400" />}
-                </div>
-                <input type="number" name="discountValue" min="0" max={formData.discountType === 'PERCENTAGE' ? "100" : undefined} step="0.01" value={formData.discountValue} onChange={handleChange} onBlur={handleBlur} placeholder={formData.discountType === 'PERCENTAGE' ? '10' : '50000'} className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border ${errors.discountValue ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold transition-all`} />
-              </div>
-              {errors.discountValue && <p className="text-red-500 text-xs mt-1">{errors.discountValue}</p>}
-            </div>
-
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-slate-400" /> Start Date *

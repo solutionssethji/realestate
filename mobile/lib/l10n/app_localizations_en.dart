@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'Shubhaytanam Connect';
 
   @override
+  String get search => 'Search';
+
+  @override
   String get errorLoadingCode => 'Error loading code';
 
   @override
@@ -824,7 +827,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadDocumentImage => 'Upload Document Image:';
 
   @override
-  String get userNotFound => 'User not found';
+  String get userNotFound => 'User not found. Please log in again.';
 
   @override
   String failedToPickImage(String error) {
@@ -1271,6 +1274,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusCancelled => 'Cancelled';
 
   @override
+  String get statusContacted => 'Contacted';
+
+  @override
+  String get statusFollowUp => 'Follow Up';
+
+  @override
+  String get statusInProgress => 'In Progress';
+
+  @override
+  String get statusResolved => 'Resolved';
+
+  @override
+  String get statusClosed => 'Closed';
+
+  @override
   String get naLabel => 'N/A';
 
   @override
@@ -1314,4 +1332,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get priceLabel => 'Price';
+
+  @override
+  String get featured => 'Featured';
 }

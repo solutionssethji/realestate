@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Shubhaytanam Connect'**
   String get appName;
 
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
   /// No description provided for @errorLoadingCode.
   ///
   /// In en, this message translates to:
@@ -1595,7 +1601,7 @@ abstract class AppLocalizations {
   /// No description provided for @userNotFound.
   ///
   /// In en, this message translates to:
-  /// **'User not found'**
+  /// **'User not found. Please log in again.'**
   String get userNotFound;
 
   /// No description provided for @failedToPickImage.
@@ -2426,6 +2432,36 @@ abstract class AppLocalizations {
   /// **'Cancelled'**
   String get statusCancelled;
 
+  /// No description provided for @statusContacted.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacted'**
+  String get statusContacted;
+
+  /// No description provided for @statusFollowUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow Up'**
+  String get statusFollowUp;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get statusInProgress;
+
+  /// No description provided for @statusResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get statusResolved;
+
+  /// No description provided for @statusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get statusClosed;
+
   /// No description provided for @naLabel.
   ///
   /// In en, this message translates to:
@@ -2509,6 +2545,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Price'**
   String get priceLabel;
+
+  /// No description provided for @featured.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured'**
+  String get featured;
 }
 
 class _AppLocalizationsDelegate

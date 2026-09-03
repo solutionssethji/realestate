@@ -191,8 +191,7 @@ class MyPropertiesPage extends HookConsumerWidget {
                                           ),
                                         ),
                                         child: Text(
-                                          _translateStatus(
-                                            context, status),
+                                          _translateStatus(context, status),
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelSmall

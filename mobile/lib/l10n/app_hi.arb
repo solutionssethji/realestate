@@ -1,6 +1,7 @@
 {
   "@@locale": "hi",
-  "appName": "एलिज़ियम रियल एस्टेट",
+  "appName": "Shubhaytanam Connect",
+  "search": "खोजें",
   "errorLoadingCode": "कोड लोड करने में त्रुटि",
   "shareCode": "कोड साझा करें",
   "aboutCompany": "कंपनी के बारे में",
@@ -270,7 +271,7 @@
   "newPassword": "नया पासवर्ड",
   "confirmNewPassword": "नया पासवर्ड पुष्टि करें",
   "updatePassword": "पासवर्ड अपडेट करें",
-  "userNotFound": "User not found. Please log in again.",
+  "userNotFound": "उपयोगकर्ता नहीं मिला। कृपया पुनः लॉग इन करें।",
   "noSiteVisitsScheduled": "कोई साइट विज़िट निर्धारित नहीं",
   "noSiteVisitsMessage": "आपने अभी तक कोई साइट विज़िट निर्धारित नहीं की है। संपत्तियाँ व्यक्तिगत रूप से देखने के लिए एक विज़िट बुक करें!",
   "scheduledDate": "निर्धारित तारीख़:",
@@ -281,7 +282,7 @@
   "profileUpdatedSuccessfully": "प्रोफ़ाइल सफलतापूर्वक अपडेट हुई",
   "saveChanges": "बदलाव सहेजें",
   "errorLoadingSupportInfo": "सहायता जानकारी लोड करने में त्रुटि",
-  "totalPlots": "{count} Total Plots",
+  "totalPlots": "{count} कुल प्लॉट",
   "@totalPlots": {
     "placeholders": {
       "count": {
@@ -322,7 +323,7 @@
   "validationAccountLength": "एक वैध खाता नंबर दर्ज करें (9 से 18 अंक)",
   "validationAccountRequired": "खाता नंबर आवश्यक है",
   "validationAadhaarRequired": "आधार नंबर आवश्यक है",
-  "validTillText": "Valid till {date}",
+  "validTillText": "तब तक वैध {date}",
   "@validTillText": {
     "placeholders": {
       "date": {
@@ -378,6 +379,11 @@
   "statusConfirmed": "पुष्टि हो गई",
   "statusCompleted": "पूर्ण",
   "statusCancelled": "रद्द",
+  "statusContacted": "संपर्क किया गया",
+  "statusFollowUp": "फ़ॉलो-अप",
+  "statusInProgress": "प्रगति पर",
+  "statusResolved": "हल हो गया",
+  "statusClosed": "बंद",
   "showingPlotsCount": "{total} में से {filtered} प्लॉट दिखा रहे हैं",
   "priceLabel": "कीमत",
   "somethingWentWrong": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।",
@@ -431,5 +437,6 @@
   "emailAddress": "ईमेल पता",
   "register": "रजिस्टर करें",
   "alreadyHaveAccount": "पहले से खाता है? लॉगिन करें",
-  "referralCodeOptional": "रेफ़रल कोड (वैकल्पिक)"
+  "referralCodeOptional": "रेफ़रल कोड (वैकल्पिक)",
+  "featured": "प्रदर्शित"
 }
