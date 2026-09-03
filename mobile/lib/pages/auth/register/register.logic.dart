@@ -26,9 +26,10 @@ class RegisterLogic extends _$RegisterLogic {
     required String password,
     String? referralCode,
     XFile? profileImage,
+    required dynamic l10n,
   }) async {
     if (name.isEmpty || mobile.isEmpty || email.isEmpty || password.isEmpty) {
-      state = state.copyWith(errorMessage: 'Please fill all fields');
+      state = state.copyWith(errorMessage: l10n.pleaseFillAllFields);
       return false;
     }
 
@@ -40,7 +41,7 @@ class RegisterLogic extends _$RegisterLogic {
       if (referrer == null) {
         state = state.copyWith(
           isLoading: false,
-          errorMessage: 'Invalid referral code',
+          errorMessage: l10n.invalidReferralCode,
         );
         return false;
       }
@@ -88,6 +89,13 @@ class RegisterLogic extends _$RegisterLogic {
 
     // Send email verification
     if (userCredential.user != null && !userCredential.user!.emailVerified) {
+      // Increment referrer's invite count before signing out (needs auth)
+      if (referredByUid != null) {
+        await ApiService.incrementUserInvitesSent(
+          referredByUid,
+          userCredential.user!.uid,
+        );
+      }
       await userCredential.user!.sendEmailVerification();
       // We sign out the user so they have to login after verifying
       await AuthService.signOut();

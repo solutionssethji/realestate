@@ -6,6 +6,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../l10n/app_localizations.dart';
+import '../models/customer.dart';
 import '../models/project.dart';
 import '../models/plot.dart';
 import '../models/plot_status.dart';
@@ -382,23 +383,35 @@ class ApiService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getUserEnquiries(
-    String customerId,
-  ) async {
+  static Future<(List<Map<String, dynamic>>, DocumentSnapshot?)>
+  getUserEnquiries(
+    String customerId, {
+    DocumentSnapshot? lastDoc,
+    int limit = 10,
+  }) async {
     logApi(function: 'getUserEnquiries()', request: {'customerId': customerId});
     try {
-      final snapshot = await _db
+      Query query = _db
           .collection('enquiries')
           .where('customerId', isEqualTo: customerId)
           .orderBy('createdAt', descending: true)
-          .get();
+          .limit(limit);
 
-      final enquiries = snapshot.docs.map((doc) => doc.data()).toList();
+      if (lastDoc != null) {
+        query = query.startAfterDocument(lastDoc);
+      }
+
+      final snapshot = await query.get();
+      final enquiries = snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+      final newLastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+
       logApi(
         function: 'getUserEnquiries()',
         response: 'Fetched ${enquiries.length} enquiries',
       );
-      return enquiries;
+      return (enquiries, newLastDoc);
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
         e,
@@ -437,26 +450,38 @@ class ApiService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getUserSiteVisits(
-    String customerId,
-  ) async {
+  static Future<(List<Map<String, dynamic>>, DocumentSnapshot?)>
+  getUserSiteVisits(
+    String customerId, {
+    DocumentSnapshot? lastDoc,
+    int limit = 10,
+  }) async {
     logApi(
       function: 'getUserSiteVisits()',
       request: {'customerId': customerId},
     );
     try {
-      final snapshot = await _db
+      Query query = _db
           .collection('siteVisits')
           .where('customerId', isEqualTo: customerId)
           .orderBy('createdAt', descending: true)
-          .get();
+          .limit(limit);
 
-      final visits = snapshot.docs.map((doc) => doc.data()).toList();
+      if (lastDoc != null) {
+        query = query.startAfterDocument(lastDoc);
+      }
+
+      final snapshot = await query.get();
+      final visits = snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+      final newLastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+
       logApi(
         function: 'getUserSiteVisits()',
         response: 'Fetched ${visits.length} site visits',
       );
-      return visits;
+      return (visits, newLastDoc);
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
         e,
@@ -668,6 +693,7 @@ class ApiService {
     logApi(function: 'createUserProfile()', request: {'uid': uid, ...data});
     try {
       await _db.collection('users').doc(uid).set(data);
+      logApi(function: 'createUserProfile()', response: 'Success');
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
         e,
@@ -684,10 +710,90 @@ class ApiService {
     logApi(function: 'updateUserProfile()', request: {'uid': uid, ...data});
     try {
       await _db.collection('users').doc(uid).set(data, SetOptions(merge: true));
+      logApi(function: 'updateUserProfile()', response: 'Success');
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
         e,
         function: 'updateUserProfile()',
+      );
+      rethrow;
+    }
+  }
+
+  static Future<void> incrementUserInvitesSent(
+    String uid,
+    String newUserId,
+  ) async {
+    logApi(
+      function: 'incrementUserInvitesSent()',
+      request: {'uid': uid, 'newUserId': newUserId},
+    );
+    try {
+      final entryId = _db.collection('users').doc().id;
+      await _db.collection('users').doc(uid).update({
+        'invitesSent': FieldValue.increment(1),
+        'referredUserIds': FieldValue.arrayUnion([
+          {
+            'id': entryId,
+            'customerId': newUserId,
+            'createdAt': FieldValue.serverTimestamp(),
+          },
+        ]),
+        'updatedAt': DateTime.now().toIso8601String(),
+      });
+      logApi(function: 'incrementUserInvitesSent()', response: 'Success');
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'incrementUserInvitesSent()',
+      );
+      // Don't rethrow — referral count failure shouldn't block registration
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getReferredUsers(
+    List<ReferredUser> referredUsers, {
+    int page = 0,
+    int limit = 10,
+  }) async {
+    logApi(
+      function: 'getReferredUsers()',
+      request: {'total': referredUsers.length, 'page': page, 'limit': limit},
+    );
+    try {
+      final start = page * limit;
+      final end = (start + limit).clamp(0, referredUsers.length);
+      if (start >= referredUsers.length) return [];
+
+      final pageEntries = referredUsers.sublist(start, end);
+      final futures = pageEntries.map(
+        (ru) => _db.collection('users').doc(ru.customerId).get(),
+      );
+      final docs = await Future.wait(futures);
+
+      final users = <Map<String, dynamic>>[];
+      for (var i = 0; i < docs.length; i++) {
+        final doc = docs[i];
+        if (!doc.exists) continue;
+        final ru = pageEntries[i];
+        users.add({
+          ...doc.data()!,
+          'id': ru.id,
+          'customerId': ru.customerId,
+          'createdAt':
+              ru.createdAt, // DateTime? — overrides Firestore Timestamp
+        });
+      }
+
+      logApi(
+        function: 'getReferredUsers()',
+        response: 'Fetched ${users.length}',
+      );
+      return users;
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'getReferredUsers()',
       );
       rethrow;
     }
@@ -702,6 +808,8 @@ class ApiService {
           .limit(1)
           .get();
       if (snapshot.docs.isEmpty) return null;
+      logApi(function: 'getUserByEmail()', response: 'Success');
+
       return snapshot.docs.first.data();
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
@@ -723,6 +831,8 @@ class ApiService {
           .collection('payments')
           .orderBy('date', descending: true)
           .get();
+      logApi(function: 'getUserPayments()', response: 'Success');
+
       return snapshot.docs.map((e) => {'id': e.id, ...e.data()}).toList();
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
@@ -905,16 +1015,14 @@ class ApiService {
   }
 
   static PlotStatus _parsePlotStatus(String? status) {
-    switch (status) {
-      case 'AVAILABLE':
-        return PlotStatus.available;
-      case 'HOLD':
-        return PlotStatus.hold;
-      case 'BOOKED_SOLD':
-        return PlotStatus.bookedSold;
-      default:
-        return PlotStatus.available;
+    if (status == null) return PlotStatus.available;
+    final upperStatus = status.toUpperCase();
+    if (upperStatus.contains('HOLD')) {
+      return PlotStatus.hold;
+    } else if (upperStatus.contains('BOOKED') || upperStatus.contains('SOLD')) {
+      return PlotStatus.bookedSold;
     }
+    return PlotStatus.available;
   }
 
   // ─── Pagination Methods ───────────────────────────────────────────────────

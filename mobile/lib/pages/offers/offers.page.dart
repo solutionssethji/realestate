@@ -1,10 +1,10 @@
+import 'package:customer_app/widgets/app_cached_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../utils/l10n_extension.dart';
 import 'package:go_router/go_router.dart';
 import '../../widgets/premium_app_bar.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'offers.logic.dart';
 import '../../theme/theme.dart';
@@ -130,23 +130,10 @@ class _OfferImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //     final loc = AppLocalizations.of(context);
     return SizedBox(
       width: width,
       height: height ?? 180,
-      child: CachedNetworkImage(
-        imageUrl: imageUrl,
-        fit: BoxFit.cover,
-        placeholder: (_, _) => const ColoredBox(color: AppTheme.border),
-        errorWidget: (_, _, _) => const ColoredBox(
-          color: AppTheme.border,
-          child: Icon(
-            Icons.image_outlined,
-            color: AppTheme.textSecondary,
-            size: 40,
-          ),
-        ),
-      ),
+      child: AppCachedImage(imageUrl: imageUrl, fit: BoxFit.cover),
     );
   }
 }

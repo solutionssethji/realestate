@@ -46,10 +46,18 @@ service cloud.firestore {
     }
     
     // USERS (Customers of the mobile app)
+    match /users/{userId} {
+      // Allow public read to verify referral codes during registration
+      allow read: if true;
+      // Own document: full write access
+      allow write: if request.auth != null && request.auth.uid == userId || isAdmin();
+      // Allow any authenticated user to increment invitesSent (for referral tracking)
+      allow update: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['invitesSent', 'referredUserIds', 'updatedAt']);
+    }
     match /users/{userId}/{document=**} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if request.auth != null && request.auth.uid == userId;
-      allow read, write: if isAdmin();
+      allow read: if request.auth != null && request.auth.uid == userId || isAdmin();
+      allow write: if request.auth != null && request.auth.uid == userId || isAdmin();
     }
     
     // CUSTOMER PLOTS (Private ownership data)

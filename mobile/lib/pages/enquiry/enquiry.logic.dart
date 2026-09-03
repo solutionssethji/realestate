@@ -14,6 +14,7 @@ class EnquiryLogic extends _$EnquiryLogic {
   Future<bool> submitEnquiry({
     required String customerId,
     String? projectId,
+    String? plotId,
     String? plotRequirement,
     String? budget,
     String? message,
@@ -27,6 +28,7 @@ class EnquiryLogic extends _$EnquiryLogic {
     await ApiService.submitEnquiry({
       'customerId': customerId,
       if (projectId != null && projectId.isNotEmpty) 'projectId': projectId,
+      if (plotId != null && plotId.isNotEmpty) 'plotId': plotId,
       if (plotRequirement != null && plotRequirement.isNotEmpty)
         'plotRequirement': plotRequirement,
       if (budget != null && budget.isNotEmpty) 'budget': budget,

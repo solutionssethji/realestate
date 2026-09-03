@@ -8,7 +8,7 @@ part 'plot_details.logic.g.dart';
 class PlotDetailsLogic extends _$PlotDetailsLogic {
   @override
   PlotDetailsState build(String projectId, String plotId) {
-    loadPlotDetails(projectId, plotId);
+    Future.microtask(() => loadPlotDetails(projectId, plotId));
     return const PlotDetailsState();
   }
 

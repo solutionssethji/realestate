@@ -481,7 +481,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'आपकी बुकिंग की पुष्टि हो गई है। जल्द ही आपको एक पुष्टि भेजी जाएगी।';
 
   @override
-  String get somethingWentWrong => 'Something went wrong. Please try again.';
+  String get somethingWentWrong => 'कुछ गलत हो गया। कृपया पुनः प्रयास करें।';
 
   @override
   String get paymentFailed => 'भुगतान विफल।';
@@ -788,55 +788,55 @@ class AppLocalizationsHi extends AppLocalizations {
   String get authErrDefault => 'प्रमाणीकरण विफल रहा। कृपया पुनः प्रयास करें।';
 
   @override
-  String get kycAndDocuments => 'KYC & Documents';
+  String get kycAndDocuments => 'KYC और दस्तावेज';
 
   @override
-  String get identityDocuments => 'Identity Documents';
+  String get identityDocuments => 'पहचान दस्तावेज';
 
   @override
-  String get aadharCard => 'Aadhar Card';
+  String get aadharCard => 'आधार कार्ड';
 
   @override
-  String get enterAadharNumber => 'Enter 12-digit Aadhar Number';
+  String get enterAadharNumber => '12 अंकों वाला आधार नंबर दर्ज करें';
 
   @override
-  String get panCard => 'PAN Card';
+  String get panCard => 'PAN कार्ड';
 
   @override
-  String get enterPanNumber => 'Enter 10-character PAN Number';
+  String get enterPanNumber => '10 अक्षरों वाला PAN नंबर दर्ज करें';
 
   @override
-  String get bankDetails => 'Bank Details';
+  String get bankDetails => 'बैंक विवरण';
 
   @override
-  String get bankName => 'Bank Name';
+  String get bankName => 'बैंक का नाम';
 
   @override
-  String get accountNumber => 'Account Number';
+  String get accountNumber => 'खाता संख्या';
 
   @override
-  String get ifscCode => 'IFSC Code';
+  String get ifscCode => 'IFSC कोड';
 
   @override
-  String get saveDetails => 'Save Details';
+  String get saveDetails => 'विवरण सहेजें';
 
   @override
-  String get uploadDocumentImage => 'Upload Document Image:';
+  String get uploadDocumentImage => 'दस्तावेज की छवि अपलोड करें:';
 
   @override
   String get userNotFound => 'User not found. Please log in again.';
 
   @override
   String failedToPickImage(String error) {
-    return 'Failed to pick image: $error';
+    return 'छवि चुनने में विफल: $error';
   }
 
   @override
-  String get kycUpdatedSuccessfully => 'KYC details updated successfully!';
+  String get kycUpdatedSuccessfully => 'KYC विवरण सफलतापूर्वक अपडेट किए गए!';
 
   @override
   String failedToUpdateKyc(String error) {
-    return 'Failed to update KYC: $error';
+    return 'KYC अपडेट विफल: $error';
   }
 
   @override
@@ -846,76 +846,76 @@ class AppLocalizationsHi extends AppLocalizations {
   String get pendingBalance => 'शेष राशि';
 
   @override
-  String get noPaymentRecords => 'No payment records found.';
+  String get noPaymentRecords => 'कोई भुगतान रिकॉर्ड नहीं मिला।';
 
   @override
-  String get supportCenter => 'Support Center';
+  String get supportCenter => 'सहायता केंद्र';
 
   @override
-  String get howCanWeHelp => 'How can we help you?';
+  String get howCanWeHelp => 'हम आपकी कैसे मदद कर सकते हैं?';
 
   @override
   String get supportDesc =>
-      'Our team is available to assist you with any questions about properties, payments, or your account.';
+      'हमारी टीम संपत्ति, भुगतान या आपके खाते से जुड़े किसी भी प्रश्न में सहायता के लिए उपलब्ध है।';
 
   @override
-  String get whatsappSupport => 'WhatsApp Support';
+  String get whatsappSupport => 'WhatsApp सहायता';
 
   @override
-  String get whatsappSubtitle => 'Fastest response time';
+  String get whatsappSubtitle => 'सबसे तेज़ प्रतिक्रिया समय';
 
   @override
-  String get callUsSubtitle => 'Mon-Sat, 10 AM to 6 PM';
+  String get callUsSubtitle => 'सोम-शनि, सुबह 10 बजे से शाम 6 बजे तक';
 
   @override
-  String get emailSupport => 'Email Support';
+  String get emailSupport => 'ईमेल सहायता';
 
   @override
   String get emailSupportSubtitle => 'support@realestate.com';
 
   @override
-  String get myProfile => 'My Profile';
+  String get myProfile => 'मेरी प्रोफ़ाइल';
 
   @override
-  String get notLoggedIn => 'You are not logged in.';
+  String get notLoggedIn => 'आप लॉगिन नहीं हैं।';
 
   @override
-  String get myProperties => 'My Properties';
+  String get myProperties => 'मेरी संपत्तियाँ';
 
   @override
-  String get myEnquiries => 'My Enquiries';
+  String get myEnquiries => 'मेरी पूछताछ';
 
   @override
-  String get mySiteVisits => 'My Site Visits';
+  String get mySiteVisits => 'मेरे साइट विजिट';
 
   @override
-  String get loginBtn => 'Login';
+  String get loginBtn => 'लॉगिन';
 
   @override
-  String get noPropertiesYet => 'You have no booked or purchased plots yet.';
+  String get noPropertiesYet => 'आपने अभी तक कोई प्लॉट बुक या खरीदा नहीं है।';
 
   @override
   String plotNoLabel(String number) {
-    return 'Plot No: $number';
+    return 'प्लॉट नं.: $number';
   }
 
   @override
-  String get welcomeBack => 'Welcome Back';
+  String get welcomeBack => 'स्वागत है';
 
   @override
-  String get emailLabel => 'Email';
+  String get emailLabel => 'ईमेल';
 
   @override
-  String get passwordLabel => 'Password';
+  String get passwordLabel => 'पासवर्ड';
 
   @override
-  String get forgotPassword => 'Forgot Password?';
+  String get forgotPassword => 'पासवर्ड भूल गए?';
 
   @override
-  String get dontHaveAccount => 'Don\'t have an account? Register';
+  String get dontHaveAccount => 'खाता नहीं है? रजिस्टर करें';
 
   @override
-  String get forgotPasswordTitle => 'Forgot Password';
+  String get forgotPasswordTitle => 'पासवर्ड भूले';
 
   @override
   String get forgotPasswordInvalidEmail =>
@@ -929,14 +929,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get forgotPasswordFailed => 'पासवर्ड रीसेट लिंक भेजने में विफल।';
 
   @override
-  String get resetPassword => 'Reset Password';
+  String get resetPassword => 'पासवर्ड रीसेट करें';
 
   @override
   String get resetPasswordDesc =>
-      'Enter your email address and we will send you a link to reset your password.';
+      'अपना ईमेल पता दर्ज करें और हम आपको पासवर्ड रीसेट लिंक भेजेंगे।';
 
   @override
-  String get sendResetLink => 'Send Reset Link';
+  String get sendResetLink => 'रीसेट लिंक भेजें';
 
   @override
   String get resetLinkSent =>
@@ -962,31 +962,31 @@ class AppLocalizationsHi extends AppLocalizations {
   String get agreeToSuffix => ' से सहमत हूँ।';
 
   @override
-  String get backToLogin => 'Back to Login';
+  String get backToLogin => 'लॉगिन पर वापस जाएं';
 
   @override
-  String get createAccount => 'Create Account';
+  String get createAccount => 'खाता बनाएं';
 
   @override
-  String get joinUs => 'Join Us';
+  String get joinUs => 'हमसे जुड़ें';
 
   @override
-  String get chooseFromGallery => 'Choose from Gallery';
+  String get chooseFromGallery => 'गैलरी से चुनें';
 
   @override
-  String get takeAPhoto => 'Take a Photo';
+  String get takeAPhoto => 'फोटो खींचें';
 
   @override
-  String get removePhoto => 'Remove Photo';
+  String get removePhoto => 'फोटो हटाएं';
 
   @override
-  String get emailAddress => 'Email Address';
+  String get emailAddress => 'ईमेल पता';
 
   @override
-  String get register => 'Register';
+  String get register => 'रजिस्टर करें';
 
   @override
-  String get alreadyHaveAccount => 'Already have an account? Login';
+  String get alreadyHaveAccount => 'पहले से खाता है? लॉगिन करें';
 
   @override
   String get accountBlocked =>
@@ -1026,75 +1026,75 @@ class AppLocalizationsHi extends AppLocalizations {
   String get noPropertiesFound => 'कोई प्रॉपर्टी नहीं मिली';
 
   @override
-  String get noEnquiriesYet => 'No Enquiries Yet';
+  String get noEnquiriesYet => 'अभी तक कोई पूछताछ नहीं';
 
   @override
   String get noEnquiriesMessage =>
-      'You have not submitted any property enquiries. Once you do, they will appear here.';
+      'आपने अभी तक कोई संपत्ति पूछताछ नहीं सबमिट की है। एक बार करने पर वे यहाँ दिखेंगी।';
 
   @override
-  String get requirementLabel => 'Requirement:';
+  String get requirementLabel => 'आवश्यकता:';
 
   @override
-  String get budgetLabel => 'Budget:';
+  String get budgetLabel => 'बजट:';
 
   @override
-  String get messageLabel => 'Message:';
+  String get messageLabel => 'संदेश:';
 
   @override
-  String get changePassword => 'Change Password';
+  String get changePassword => 'पासवर्ड बदलें';
 
   @override
-  String get passwordsDoNotMatch => 'Passwords do not match';
+  String get passwordsDoNotMatch => 'पासवर्ड मेल नहीं खाते';
 
   @override
-  String get passwordChangedSuccessfully => 'Password changed successfully';
+  String get passwordChangedSuccessfully => 'पासवर्ड सफलतापूर्वक बदला गया';
 
   @override
-  String get currentPassword => 'Current Password';
+  String get currentPassword => 'वर्तमान पासवर्ड';
 
   @override
-  String get currentPasswordRequired => 'Current password is required';
+  String get currentPasswordRequired => 'वर्तमान पासवर्ड आवश्यक है';
 
   @override
-  String get newPassword => 'New Password';
+  String get newPassword => 'नया पासवर्ड';
 
   @override
-  String get confirmNewPassword => 'Confirm New Password';
+  String get confirmNewPassword => 'नया पासवर्ड पुष्टि करें';
 
   @override
-  String get updatePassword => 'Update Password';
+  String get updatePassword => 'पासवर्ड अपडेट करें';
 
   @override
-  String get noSiteVisitsScheduled => 'No Site Visits Scheduled';
+  String get noSiteVisitsScheduled => 'कोई साइट विज़िट निर्धारित नहीं';
 
   @override
   String get noSiteVisitsMessage =>
-      'You have not scheduled any site visits yet. Book a visit to see properties in person!';
+      'आपने अभी तक कोई साइट विज़िट निर्धारित नहीं की है। संपत्तियाँ व्यक्तिगत रूप से देखने के लिए एक विज़िट बुक करें!';
 
   @override
-  String get scheduledDate => 'Scheduled Date:';
+  String get scheduledDate => 'निर्धारित तारीख़';
 
   @override
-  String get scheduledTime => 'Scheduled Time:';
+  String get scheduledTime => 'निर्धारित समय';
 
   @override
-  String get errorLoadingAboutInfo => 'Error loading about info';
+  String get errorLoadingAboutInfo => 'जानकारी लोड करने में त्रुटि';
 
   @override
-  String get noName => 'No Name';
+  String get noName => 'नाम नहीं';
 
   @override
-  String get editProfile => 'Edit Profile';
+  String get editProfile => 'प्रोफ़ाइल संपादित करें';
 
   @override
-  String get profileUpdatedSuccessfully => 'Profile updated successfully';
+  String get profileUpdatedSuccessfully => 'प्रोफ़ाइल सफलतापूर्वक अपडेट हुई';
 
   @override
-  String get saveChanges => 'Save Changes';
+  String get saveChanges => 'बदलाव सहेजें';
 
   @override
-  String get errorLoadingSupportInfo => 'Error loading support info';
+  String get errorLoadingSupportInfo => 'सहायता जानकारी लोड करने में त्रुटि';
 
   @override
   String totalPlots(int count) {
@@ -1102,19 +1102,21 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get viewOnGoogleMaps => 'View on Google Maps';
+  String get viewOnGoogleMaps => 'Google Maps पर देखें';
 
   @override
-  String get loginToBookSiteVisit => 'Please log in to book a site visit.';
+  String get loginToBookSiteVisit =>
+      'साइट विज़िट बुक करने के लिए कृपया लॉग इन करें।';
 
   @override
-  String get unableToOpenDocument => 'Unable to open this document.';
+  String get unableToOpenDocument => 'यह दस्तावेज़ नहीं खुल सका।';
 
   @override
-  String get loginToSubmitEnquiry => 'Please log in to submit an enquiry.';
+  String get loginToSubmitEnquiry =>
+      'पूछताछ सबमिट करने के लिए कृपया लॉग इन करें।';
 
   @override
-  String get enter6DigitOtp => 'Enter 6-digit OTP';
+  String get enter6DigitOtp => '6 अंकीय OTP दर्ज करें';
 
   @override
   String inrPrice(String amount) {
@@ -1122,47 +1124,47 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get validationPanLength => 'Enter a valid 10-character PAN Number';
+  String get validationPanLength => 'एक वैध 10-अक्षर का PAN नंबर दर्ज करें';
 
   @override
-  String get validationIfscRequired => 'IFSC Code is required';
+  String get validationIfscRequired => 'IFSC कोड आवश्यक है';
 
   @override
   String get validationPasswordLength =>
-      'Password must be at least 6 characters';
+      'पासवर्ड कम से कम 6 अक्षरों का होना चाहिए';
 
   @override
-  String get validationMobileLength => 'Enter a valid 10-digit mobile number';
+  String get validationMobileLength => 'एक वैध 10 अंकीय मोबाइल नंबर दर्ज करें';
 
   @override
   String validationFieldRequired(String label) {
-    return '$label is required';
+    return '$label आवश्यक है';
   }
 
   @override
-  String get validationIfscLength => 'Enter a valid 11-character IFSC Code';
+  String get validationIfscLength => 'एक वैध 11-अक्षर का IFSC कोड दर्ज करें';
 
   @override
-  String get validationEmailFormat => 'Enter a valid email address';
+  String get validationEmailFormat => 'एक वैध ईमेल पता दर्ज करें';
 
   @override
-  String get validationThisField => 'This field';
+  String get validationThisField => 'यह फ़ील्ड';
 
   @override
-  String get validationPanRequired => 'PAN Number is required';
+  String get validationPanRequired => 'PAN नंबर आवश्यक है';
 
   @override
-  String get validationAadhaarLength => 'Enter a valid 12-digit Aadhaar Number';
+  String get validationAadhaarLength => 'एक वैध 12 अंकीय आधार नंबर दर्ज करें';
 
   @override
   String get validationAccountLength =>
-      'Enter a valid Account Number (9 to 18 digits)';
+      'एक वैध खाता नंबर दर्ज करें (9 से 18 अंक)';
 
   @override
-  String get validationAccountRequired => 'Account Number is required';
+  String get validationAccountRequired => 'खाता नंबर आवश्यक है';
 
   @override
-  String get validationAadhaarRequired => 'Aadhaar Number is required';
+  String get validationAadhaarRequired => 'आधार नंबर आवश्यक है';
 
   @override
   String validTillText(String date) {
@@ -1170,19 +1172,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get tapToPickPdf => 'Tap to select PDF';
+  String get tapToPickPdf => 'PDF चुनने के लिए टैप करें';
 
   @override
-  String get viewPdf => 'View PDF';
+  String get viewPdf => 'PDF देखें';
 
   @override
-  String get pdfTooLarge => 'PDF must be less than 2MB';
+  String get pdfTooLarge => 'PDF 2MB से कम होनी चाहिए';
 
   @override
-  String get fileSelected => 'PDF Selected';
+  String get fileSelected => 'PDF चुनी गई';
 
   @override
-  String get referralCodeOptional => 'Referral Code (Optional)';
+  String get referralCodeOptional => 'रेफ़रल कोड (वैकल्पिक)';
 
   @override
   String get bookingDetailsTitle => 'बुकिंग विवरण';
@@ -1245,6 +1247,33 @@ class AppLocalizationsHi extends AppLocalizations {
   String get paymentModeCash => 'नकद';
 
   @override
+  String get paymentModeUpi => 'यूपीआई';
+
+  @override
+  String get paymentModeBankTransfer => 'बैंक ट्रांसफर';
+
+  @override
+  String get paymentModeCheque => 'चेक';
+
+  @override
+  String get paymentModeOnline => 'ऑनलाइन';
+
+  @override
+  String get viewPaymentDetails => 'भुगतान विवरण देखें';
+
+  @override
+  String get statusNew => 'नया';
+
+  @override
+  String get statusConfirmed => 'पुष्टि हो गई';
+
+  @override
+  String get statusCompleted => 'पूर्ण';
+
+  @override
+  String get statusCancelled => 'रद्द';
+
+  @override
   String get naLabel => 'N/A';
 
   @override
@@ -1252,4 +1281,40 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get download => 'डाउनलोड';
+
+  @override
+  String get dateLabel => 'तारीख़';
+
+  @override
+  String get plot => 'प्लॉट';
+
+  @override
+  String get generalEnquiry => 'सामान्य पूछताछ';
+
+  @override
+  String get support => 'सहयोग';
+
+  @override
+  String get dateSubmitted => 'जमा करने की तारीख़';
+
+  @override
+  String get pleaseFillAllFields => 'कृपया सभी फ़ील्ड भरें';
+
+  @override
+  String get invalidReferralCode => 'अमान्य रेफ़रल कोड';
+
+  @override
+  String get noReferredUsersYet => 'अभी तक कोई रेफ़र किया हुआ उपयोगकर्ता नहीं';
+
+  @override
+  String get noReferredUsersMessage =>
+      'आपके रेफ़रल कोड का उपयोग करके जो उपयोगकर्ता जुड़ेंगे वे यहाँ दिखेंगे।';
+
+  @override
+  String showingPlotsCount(int filtered, int total) {
+    return '$total में से $filtered प्लॉट दिखा रहे हैं';
+  }
+
+  @override
+  String get priceLabel => 'कीमत';
 }

@@ -7,6 +7,7 @@ import '../pages/booking_details/booking_details.page.dart'
     show BookingDetailsPage;
 import 'package:customer_app/pages/offer_details/offer_details.page.dart';
 import 'package:customer_app/pages/referral/referral.page.dart';
+import '../pages/referred_users/referred_users.page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -153,6 +154,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.enquiry,
         builder: (context, state) => EnquiryPage(
           initialProjectId: state.uri.queryParameters['projectId'],
+          initialPlotId: state.uri.queryParameters['plotId'],
         ),
       ),
       GoRoute(
@@ -250,6 +252,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.referral,
         builder: (context, state) => const ReferralPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.referredUsers,
+        builder: (context, state) => const ReferredUsersPage(),
       ),
     ],
   );

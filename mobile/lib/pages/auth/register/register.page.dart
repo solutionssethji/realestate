@@ -68,6 +68,7 @@ class RegisterPage extends HookConsumerWidget {
         password: passwordController.text.trim(),
         referralCode: referralCodeController.text.trim(),
         profileImage: profileImage.value,
+        l10n: l10n,
       );
       if (success && context.mounted) {
         showDialog(

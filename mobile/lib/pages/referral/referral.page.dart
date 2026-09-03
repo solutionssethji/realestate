@@ -9,6 +9,8 @@ import '../../theme/theme.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:share_plus/share_plus.dart';
 import 'referral.logic.dart';
+import 'package:go_router/go_router.dart';
+import '../../routes/app_routes.dart';
 
 class ReferralPage extends HookConsumerWidget {
   const ReferralPage({super.key});
@@ -178,12 +180,15 @@ class ReferralPage extends HookConsumerWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: _StatCard(
-                            icon: LucideIcons.users,
-                            label: context.l10n.invitesSent,
-                            value: (customerAsync.value?.invitesSent ?? 0)
-                                .toString()
-                                .padLeft(2, '0'),
+                          child: GestureDetector(
+                            onTap: () => context.push(AppRoutes.referredUsers),
+                            child: _StatCard(
+                              icon: LucideIcons.users,
+                              label: context.l10n.invitesSent,
+                              value: (customerAsync.value?.invitesSent ?? 0)
+                                  .toString()
+                                  .padLeft(2, '0'),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),

@@ -130,7 +130,7 @@ class ProjectsPage extends HookConsumerWidget {
                       child: AppLoadingView(size: 24),
                     ),
                   ),
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                const SliverToBoxAdapter(child: SizedBox(height: 120)),
               ],
             ],
           ),

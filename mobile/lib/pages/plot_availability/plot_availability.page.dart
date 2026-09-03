@@ -27,6 +27,18 @@ class PlotAvailabilityPage extends HookConsumerWidget {
     final bool isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
     final bool isDesktop = ResponsiveBreakpoints.of(context).largerThan(TABLET);
 
+    // Live counts from allPlots for badge display
+    final allCount = state.allPlots.length;
+    final availableCount = state.allPlots
+        .where((p) => p.status == PlotStatus.available)
+        .length;
+    final holdCount = state.allPlots
+        .where((p) => p.status == PlotStatus.hold)
+        .length;
+    final bookedCount = state.allPlots
+        .where((p) => p.status == PlotStatus.bookedSold)
+        .length;
+
     return Scaffold(
       appBar: PremiumAppBar(title: loc.plotAvailability),
       body: Column(
@@ -51,6 +63,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                     children: [
                       _StatusChip(
                         label: loc.all,
+                        count: allCount,
                         isSelected: state.selectedStatusFilter == null,
                         color: AppTheme.midnightNavy,
                         onSelected: () => logic.setStatusFilter(null),
@@ -58,6 +71,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                       AppSpacing.wSm,
                       _StatusChip(
                         label: loc.available,
+                        count: availableCount,
                         isSelected:
                             state.selectedStatusFilter == PlotStatus.available,
                         color: AppTheme.success,
@@ -67,6 +81,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                       AppSpacing.wSm,
                       _StatusChip(
                         label: loc.hold,
+                        count: holdCount,
                         isSelected:
                             state.selectedStatusFilter == PlotStatus.hold,
                         color: AppTheme.warning,
@@ -76,6 +91,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                       AppSpacing.wSm,
                       _StatusChip(
                         label: loc.booked,
+                        count: bookedCount,
                         isSelected:
                             state.selectedStatusFilter == PlotStatus.bookedSold,
                         color: AppTheme.error,
@@ -89,7 +105,25 @@ class PlotAvailabilityPage extends HookConsumerWidget {
             ),
           ),
 
-          // ── Grid ─────────────────────────────────────────────────────────
+          // ── Results Summary Bar ───────────────────────────────────────────
+          if (!state.isLoading && !state.isError && state.allPlots.isNotEmpty)
+            Container(
+              width: double.infinity,
+              color: AppTheme.background,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
+              ),
+              child: Text(
+                context.l10n.showingPlotsCount(state.filteredPlots.length, allCount),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppTheme.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+
+          // ── Plot List / Grid ──────────────────────────────────────────────
           Expanded(
             child: state.isLoading
                 ? GridView.builder(
@@ -98,7 +132,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                       crossAxisCount: isDesktop ? 3 : (isTablet ? 2 : 1),
                       crossAxisSpacing: AppSpacing.md,
                       mainAxisSpacing: AppSpacing.md,
-                      childAspectRatio: isTablet ? 1.35 : 1.7,
+                      mainAxisExtent: 220,
                     ),
                     itemCount: 6,
                     itemBuilder: (_, _) => const PlotCardSkeleton(),
@@ -118,25 +152,41 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                   )
                 : RefreshIndicator(
                     onRefresh: () => logic.loadPlots(projectId),
-                    child: GridView.builder(
-                      padding: AppSpacing.allLg,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: isDesktop ? 3 : (isTablet ? 2 : 1),
-                        mainAxisSpacing: AppSpacing.lg,
-                        crossAxisSpacing: AppSpacing.lg,
-                        childAspectRatio: 1.6,
-                      ),
-                      itemCount: state.filteredPlots.length,
-                      itemBuilder: (context, index) {
-                        final plot = state.filteredPlots[index];
-                        return PlotCard(
-                          plot: plot,
-                          onTap: () => context.push(
-                            '/project/$projectId/plots/${plot.id}',
+                    child: isTablet || isDesktop
+                        ? GridView.builder(
+                            padding: AppSpacing.allLg,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: isDesktop ? 3 : 2,
+                                  mainAxisSpacing: AppSpacing.lg,
+                                  crossAxisSpacing: AppSpacing.lg,
+                                  mainAxisExtent: 220,
+                                ),
+                            itemCount: state.filteredPlots.length,
+                            itemBuilder: (context, index) {
+                              final plot = state.filteredPlots[index];
+                              return PlotCard(
+                                plot: plot,
+                                onTap: () => context.push(
+                                  '/project/$projectId/plots/${plot.id}',
+                                ),
+                              );
+                            },
+                          )
+                        : ListView.separated(
+                            padding: AppSpacing.allLg,
+                            itemCount: state.filteredPlots.length,
+                            separatorBuilder: (_, _) => AppSpacing.hMd,
+                            itemBuilder: (context, index) {
+                              final plot = state.filteredPlots[index];
+                              return PlotCard(
+                                plot: plot,
+                                onTap: () => context.push(
+                                  '/project/$projectId/plots/${plot.id}',
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ),
           ),
         ],
@@ -147,12 +197,14 @@ class PlotAvailabilityPage extends HookConsumerWidget {
 
 class _StatusChip extends StatelessWidget {
   final String label;
+  final int count;
   final bool isSelected;
   final Color color;
   final VoidCallback onSelected;
 
   const _StatusChip({
     required this.label,
+    required this.count,
     required this.isSelected,
     required this.color,
     required this.onSelected,
@@ -160,7 +212,6 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //     final loc = AppLocalizations.of(context);
     return GestureDetector(
       onTap: onSelected,
       child: AnimatedContainer(
@@ -174,12 +225,34 @@ class _StatusChip extends StatelessWidget {
           borderRadius: AppRadius.circularPill,
           border: Border.all(color: isSelected ? color : AppTheme.border),
         ),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: isSelected ? AppTheme.white : AppTheme.textPrimary,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: isSelected ? AppTheme.white : AppTheme.textPrimary,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+            AppSpacing.wXs,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppTheme.white.withValues(alpha: 0.25)
+                    : color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                '$count',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: isSelected ? AppTheme.white : color,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

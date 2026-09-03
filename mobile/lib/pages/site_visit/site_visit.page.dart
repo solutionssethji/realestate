@@ -8,10 +8,10 @@ import 'site_visit.logic.dart';
 import '../../theme/theme.dart';
 import '../../theme/spacing.dart';
 import '../../widgets/premium_button.dart';
-import '../../widgets/feedback_banner.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import '../../utils/snackbar_utils.dart';
+import 'package:go_router/go_router.dart';
 
 class SiteVisitPage extends HookConsumerWidget {
   final String? initialProjectId;
@@ -23,6 +23,19 @@ class SiteVisitPage extends HookConsumerWidget {
     final loc = AppLocalizations.of(context);
     final state = ref.watch(siteVisitLogicProvider);
     final logic = ref.read(siteVisitLogicProvider.notifier);
+
+    ref.listen(siteVisitLogicProvider, (previous, next) {
+      if (next.isSuccess && (previous == null || !previous.isSuccess)) {
+        AppSnackbar.showGlobalSuccess(context.l10n.bookingConfirmedCall);
+        context.pop();
+      }
+      if (next.isError && (previous == null || !previous.isError)) {
+        AppSnackbar.showError(
+          context,
+          next.errorMessage ?? context.l10n.bookingFailed,
+        );
+      }
+    });
 
     final formKey = useMemoized(() => GlobalKey<FormState>());
     final selectedDate = useState<DateTime?>(null);
@@ -95,45 +108,30 @@ class SiteVisitPage extends HookConsumerWidget {
                   ),
                   AppSpacing.hXXl,
 
-                  if (state.isError) ...[
-                    FeedbackBanner(
-                      text: state.errorMessage ?? context.l10n.bookingFailed,
-                      color: AppTheme.error,
-                    ),
-                    AppSpacing.hLg,
-                  ],
-                  if (state.isSuccess) ...[
-                    FeedbackBanner(
-                      text: context.l10n.bookingConfirmedCall,
-                      color: AppTheme.success,
-                      icon: Icons.check_circle_outline,
-                    ),
-                    AppSpacing.hLg,
-                  ],
-
                   PremiumButton(
-                    text: state.isSuccess
-                        ? context.l10n.bookingConfirmed
-                        : context.l10n.confirmSiteVisit,
+                    text: context.l10n.confirmSiteVisit,
                     isLoading: state.isSubmitting,
-                    icon: state.isSuccess
-                        ? null
-                        : Icons.directions_car_outlined,
+                    icon: Icons.directions_car_outlined,
                     onPressed:
-                        state.isSuccess ||
-                            state.isSubmitting ||
+                        state.isSubmitting ||
                             selectedDate.value == null ||
                             selectedTime.value == null
                         ? null
                         : () {
                             final currentUser = AuthService.currentUser;
                             if (currentUser == null) {
-                              AppSnackbar.showError(context, context.l10n.loginToBookSiteVisit);
+                              AppSnackbar.showError(
+                                context,
+                                context.l10n.loginToBookSiteVisit,
+                              );
                               return;
                             }
                             if (selectedDate.value == null ||
                                 selectedTime.value == null) {
-                              AppSnackbar.showError(context, loc.pleaseSelectDateAndTime);
+                              AppSnackbar.showError(
+                                context,
+                                loc.pleaseSelectDateAndTime,
+                              );
                               return;
                             }
                             if (formKey.currentState!.validate()) {

@@ -1,6 +1,8 @@
 import 'package:customer_app/widgets/app_cached_image.dart';
 import 'package:customer_app/widgets/generic_shimmer_loader.dart';
 import 'package:customer_app/widgets/premium_app_bar.dart';
+import 'package:customer_app/widgets/error_state.dart';
+import 'package:customer_app/widgets/empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -41,7 +43,12 @@ class OfferDetailsPage extends HookConsumerWidget {
                     SizedBox(height: 16),
                     ShimmerLoader(count: 1, height: 80, width: double.infinity),
                     SizedBox(height: 16),
-                    ShimmerLoader(count: 3, height: 20, width: double.infinity, spacing: 8),
+                    ShimmerLoader(
+                      count: 3,
+                      height: 20,
+                      width: double.infinity,
+                      spacing: 8,
+                    ),
                   ],
                 ),
               ),
@@ -51,11 +58,25 @@ class OfferDetailsPage extends HookConsumerWidget {
       );
     }
 
-    if (state.isError || offer == null) {
+    if (state.isError) {
       return Scaffold(
         appBar: PremiumAppBar(title: context.l10n.offerDetails),
-        body: Center(
-          child: Text(state.errorMessage ?? context.l10n.offerNotFound),
+        body: ErrorState(
+          message: state.errorMessage,
+          onRetry: () => ref
+              .read(offerDetailsLogicProvider(offerId).notifier)
+              .loadOffer(offerId),
+        ),
+      );
+    }
+
+    if (offer == null) {
+      return Scaffold(
+        appBar: PremiumAppBar(title: context.l10n.offerDetails),
+        body: EmptyState(
+          title: context.l10n.offerNotFound,
+          message: context.l10n.offerNotFound,
+          icon: Icons.local_offer_outlined,
         ),
       );
     }
@@ -158,7 +179,6 @@ class OfferDetailsPage extends HookConsumerWidget {
                                 ],
                               ),
                             ),
-                            const Icon(Icons.copy, color: AppTheme.info),
                           ],
                         ),
                       ),
@@ -182,18 +202,21 @@ class OfferDetailsPage extends HookConsumerWidget {
                         context.l10n.applicableProject,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      if (offer.projectName?.isNotEmpty == true)
+                      if (offer.projectName?.isNotEmpty == true) ...[
+                        const SizedBox(height: 16),
                         Text(
-                          offer.projectName!,
+                          offer.projectName ?? '',
                           style: Theme.of(context).textTheme.bodyLarge
                               ?.copyWith(color: AppTheme.black),
                         ),
+                      ],
                       const SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () =>
-                              context.push(AppRoutes.projectDetails(offer.projectId ?? "")),
+                          onPressed: () => context.push(
+                            AppRoutes.projectDetails(offer.projectId ?? ""),
+                          ),
                           child: Text(context.l10n.viewProjectDetails),
                         ),
                       ),

@@ -564,7 +564,39 @@
   },
   "initialPaymentDesc": "Initial payment from booking application",
   "paymentModeCash": "Cash",
+  "paymentModeUpi": "UPI",
+  "paymentModeBankTransfer": "Bank Transfer",
+  "paymentModeCheque": "Cheque",
+  "paymentModeOnline": "Online",
+  "viewPaymentDetails": "View Payment Details",
+  "statusNew": "New",
+  "statusConfirmed": "Confirmed",
+  "statusCompleted": "Completed",
+  "statusCancelled": "Cancelled",
   "naLabel": "N/A",
   "view": "View",
-  "download": "Download"
+  "download": "Download",
+  "dateLabel": "Date",
+  "plot": "Plot",
+  "generalEnquiry": "General Enquiry",
+  "support": "Support",
+  "dateSubmitted": "Date Submitted",
+  "scheduledDate": "Scheduled Date",
+  "scheduledTime": "Scheduled Time",
+  "pleaseFillAllFields": "Please fill all fields",
+  "invalidReferralCode": "Invalid referral code",
+  "noReferredUsersYet": "No Referred Users Yet",
+  "noReferredUsersMessage": "Users who join using your referral code will appear here.",
+  "showingPlotsCount": "Showing {filtered} of {total} plots",
+  "@showingPlotsCount": {
+    "placeholders": {
+      "filtered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "priceLabel": "Price"
 }

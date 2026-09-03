@@ -48,8 +48,7 @@ class MyEnquiriesPage extends HookConsumerWidget {
       return EmptyState(
         icon: LucideIcons.inbox,
         title: context.l10n.noEnquiriesYet,
-        message:
-            context.l10n.noEnquiriesMessage,
+        message: context.l10n.noEnquiriesMessage,
         buttonText: null,
         onAction: null,
       );
@@ -57,14 +56,29 @@ class MyEnquiriesPage extends HookConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async => ref.invalidate(myEnquiriesLogicProvider),
-      child: ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16),
-        itemCount: enquiries.length,
-        itemBuilder: (context, index) {
-          final enquiry = enquiries[index];
-          return _buildEnquiryCard(context, enquiry, l10n);
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          if (!state.isFetchingMore &&
+              scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+            ref.read(myEnquiriesLogicProvider.notifier).loadMore();
+          }
+          return false;
         },
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          itemCount: enquiries.length + (state.hasMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index == enquiries.length) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            final enquiry = enquiries[index];
+            return _buildEnquiryCard(context, enquiry, l10n);
+          },
+        ),
       ),
     );
   }
@@ -75,100 +89,220 @@ class MyEnquiriesPage extends HookConsumerWidget {
     l10n,
   ) {
     final createdAt = enquiry['createdAt']?.toDate();
+    final locale = Localizations.localeOf(context);
     final dateStr = createdAt != null
-        ? DateFormat('MMM dd, yyyy - hh:mm a').format(createdAt)
+        ? _formatDate(createdAt, locale)
         : context.l10n.unknownDate;
     final status = enquiry['status'] ?? 'NEW';
     final plotReq = enquiry['plotRequirement'];
     final budget = enquiry['budget'];
     final message = enquiry['message'];
+    final projectId = enquiry['projectId'];
+    final plotId = enquiry['plotId'];
+    final projectName = enquiry['projectName'];
+    final plotName = enquiry['plotName'];
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      color: AppTheme.white,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header: Project Info + Status
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  dateStr,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppTheme.textSecondary,
-                    fontWeight: FontWeight.w500,
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppTheme.midnightNavy.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    LucideIcons.building,
+                    size: 20,
+                    color: AppTheme.midnightNavy,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        projectId != null
+                            ? (projectName ?? projectId)
+                            : (plotId != null
+                                  ? (plotName != null
+                                        ? l10n.plotTitle(plotName)
+                                        : plotId)
+                                  : l10n.generalEnquiry),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      // Show plot name as subtitle if both projectId and plotId exist
+                      if (plotId != null &&
+                          projectId != null &&
+                          plotName != null)
+                        Text(
+                          l10n.plotTitle(plotName),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: AppTheme.midnightNavy,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        )
+                      else
+                        Text(
+                          projectId != null
+                              ? l10n.project
+                              : (plotId != null ? l10n.plot : l10n.support),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(color: AppTheme.neutral500),
+                        ),
+                    ],
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
+                    horizontal: 12,
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
                     color: _getStatusColor(status).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: _getStatusColor(status).withValues(alpha: 0.2),
+                    ),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    status,
+                    _translateStatus(context, status),
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
                       color: _getStatusColor(status),
-                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            if (plotReq != null && plotReq.toString().isNotEmpty) ...[
-              _buildDetailRow(context, context.l10n.requirementLabel, plotReq),
-              const SizedBox(height: 4),
-            ],
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Divider(height: 1, color: AppTheme.neutral200),
+            ),
+            // Details Grid
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.dateLabel.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.neutral500,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        dateStr,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
             if (budget != null && budget.toString().isNotEmpty) ...[
-              _buildDetailRow(context, context.l10n.budgetLabel, budget),
-              const SizedBox(height: 4),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  if (plotReq != null && plotReq.toString().isNotEmpty)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.plotRequirement.toUpperCase(),
+                            style: Theme.of(context).textTheme.labelSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.neutral500,
+                                ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            plotReq.toString(),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppTheme.textPrimary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.budget.toUpperCase(),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.neutral500,
+                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.inrPrice(budget.toString()),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppTheme.textPrimary),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
             if (message != null && message.toString().isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(
-                context.l10n.messageLabel,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
+              const SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.message.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.neutral500,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    message.toString(),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 2),
-              Text(message, style: Theme.of(context).textTheme.bodyMedium),
             ],
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildDetailRow(BuildContext context, String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(
-            label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-          ),
-        ),
-      ],
     );
   }
 
@@ -179,12 +313,40 @@ class MyEnquiriesPage extends HookConsumerWidget {
       case 'IN_PROGRESS':
         return AppTheme.warning;
       case 'RESOLVED':
-      case 'COMPLETED':
-        return AppTheme.success;
       case 'CLOSED':
-        return AppTheme.textSecondary;
+        return AppTheme.success;
       default:
         return AppTheme.midnightNavy;
     }
+  }
+
+  String _translateStatus(BuildContext context, String status) {
+    final l10n = context.l10n;
+    switch (status.toUpperCase()) {
+      case 'NEW':
+        return l10n.statusNew;
+      case 'CONFIRMED':
+        return l10n.statusConfirmed;
+      case 'COMPLETED':
+        return l10n.statusCompleted;
+      case 'CANCELLED':
+        return l10n.statusCancelled;
+      default:
+        return status;
+    }
+  }
+
+  String _formatDate(DateTime date, Locale locale) {
+    if (locale.languageCode == 'hi') {
+      final months = [
+        'जन', 'फ़र', 'मार्च', 'अप्र', 'मई', 'जून',
+        'जुल', 'अग', 'सित', 'अक्ट', 'नव', 'दिस'
+      ];
+      final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
+      final minute = date.minute.toString().padLeft(2, '0');
+      final amPm = date.hour >= 12 ? 'PM' : 'AM';
+      return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year} - $hour:$minute $amPm';
+    }
+    return DateFormat('MMM dd, yyyy - hh:mm a').format(date);
   }
 }

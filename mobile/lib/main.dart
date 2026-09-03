@@ -95,7 +95,6 @@ class RealEstateApp extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeControllerProvider);
-
     return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,

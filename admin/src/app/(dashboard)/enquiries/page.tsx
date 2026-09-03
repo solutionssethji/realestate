@@ -51,6 +51,8 @@ function EnquiriesContent() {
   const [userCache, setUserCache] = useState<Record<string, UserInfo>>({});
   // Cache of projectId → project info
   const [projectCache, setProjectCache] = useState<Record<string, any>>({});
+  // Cache of plotId → plot info (plotNumber)
+  const [plotCache, setPlotCache] = useState<Record<string, any>>();
 
   const filters: any[] = [];
   if (statusFilter !== "ALL") {
@@ -135,6 +137,35 @@ function EnquiriesContent() {
         setProjectCache((prev) => ({ ...prev, ...newEntries }));
       });
     }
+
+    // Fetch plots
+    const plotIdsToFetch = [
+      ...new Set(
+        enquiries
+          .map((e: Enquiry) => e.plotId)
+          .filter((id: string | undefined) => id && !plotCache?.[id])
+      )
+    ] as string[];
+
+    if (plotIdsToFetch.length > 0) {
+      Promise.allSettled(
+        plotIdsToFetch.map(async (id) => {
+          const docSnap = await getDoc(doc(db, "plots", id));
+          if (docSnap.exists()) {
+            return { id, info: docSnap.data() };
+          }
+          return { id, info: null };
+        })
+      ).then((results) => {
+        const newEntries: Record<string, any> = {};
+        results.forEach((r) => {
+          if (r.status === "fulfilled" && r.value) {
+            newEntries[r.value.id] = r.value.info;
+          }
+        });
+        setPlotCache((prev) => ({ ...prev, ...newEntries }));
+      });
+    }
   }, [enquiries]);
 
   useEffect(() => {
@@ -167,6 +198,16 @@ function EnquiriesContent() {
             setProjectCache((prev) => ({
               ...prev,
               [enq.projectId!]: projectSnap.data()
+            }));
+          }
+        }
+        // Also fetch plot if not in cache
+        if (enq.plotId && !plotCache?.[enq.plotId]) {
+          const plotSnap = await getDoc(doc(db, "plots", enq.plotId));
+          if (plotSnap.exists()) {
+            setPlotCache((prev) => ({
+              ...prev,
+              [enq.plotId!]: plotSnap.data()
             }));
           }
         }
@@ -267,6 +308,8 @@ function EnquiriesContent() {
       render: (enq: Enquiry) => {
         const project = enq.projectId ? projectCache[enq.projectId] : null;
         const projectName = project?.name?.en || (typeof project?.name === 'string' ? project.name : null);
+        const plotInfo = enq.plotId ? plotCache?.[enq.plotId] : null;
+        const plotNumber = plotInfo?.plotNumber;
         
         return (
           <div>
@@ -274,8 +317,10 @@ function EnquiriesContent() {
               <span className="font-bold text-blue-900">{projectName}</span>
             ) : enq.projectId ? (
               <span className="font-bold text-blue-900">{enq.projectId}</span>
+            ) : plotNumber ? (
+              <span className="font-bold text-slate-700">{t('plot_number')}: {plotNumber}</span>
             ) : enq.plotId ? (
-              <span className="font-bold text-slate-700">{t('plot_id')}: {enq.plotId}</span>
+              <span className="text-slate-400 italic text-xs">{t('loading_ellipsis')}</span>
             ) : (
               <span className="text-slate-400">—</span>
             )}
@@ -324,6 +369,8 @@ function EnquiriesContent() {
   const selectedUser = selectedEnquiry ? userCache[selectedEnquiry.customerId] : null;
   const selectedProject = (selectedEnquiry && selectedEnquiry.projectId) ? projectCache[selectedEnquiry.projectId] : null;
   const projectName = selectedProject?.name?.en || (typeof selectedProject?.name === 'string' ? selectedProject.name : null);
+  const selectedPlot = (selectedEnquiry && selectedEnquiry.plotId) ? plotCache?.[selectedEnquiry.plotId] : null;
+  const plotNumber = selectedPlot?.plotNumber;
 
   return (
     <div className="space-y-6 pb-8">
@@ -434,8 +481,13 @@ function EnquiriesContent() {
                 )}
                 {selectedEnquiry.plotId && (
                   <div>
-                    <p className="text-xs font-semibold text-blue-600 uppercase">{t('plot_id')}</p>
-                    <p className="text-sm font-bold text-blue-900 mt-1">{selectedEnquiry.plotId}</p>
+                    <p className="text-xs font-semibold text-blue-600 uppercase">{t('plot_number')}</p>
+                    <p className="text-sm font-bold text-blue-900 mt-1">
+                      {plotNumber 
+                        ? `Plot ${plotNumber}` 
+                        : <span className="italic text-slate-400">{t('loading_ellipsis')}</span>
+                      }
+                    </p>
                   </div>
                 )}
                 {selectedEnquiry.plotRequirement && (

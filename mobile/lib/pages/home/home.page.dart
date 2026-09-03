@@ -224,7 +224,7 @@ class HomePage extends HookConsumerWidget {
                   ),
                 ),
 
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              const SliverToBoxAdapter(child: SizedBox(height: 120)),
             ],
           ),
         ),

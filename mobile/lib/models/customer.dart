@@ -29,6 +29,7 @@ abstract class Customer with _$Customer {
     @Default(0.0) double rewardsEarned,
     @Default(0.0) double pendingPayout,
     String? referralStatus,
+    @Default([]) List<ReferredUser> referredUserIds,
     @TimestampConverter() DateTime? createdAt,
     @TimestampConverter() DateTime? updatedAt,
   }) = _Customer;
@@ -53,4 +54,16 @@ class TimestampConverter implements JsonConverter<DateTime?, Object?> {
     if (object == null) return null;
     return Timestamp.fromDate(object);
   }
+}
+
+@freezed
+abstract class ReferredUser with _$ReferredUser {
+  const factory ReferredUser({
+    required String id,
+    required String customerId,
+    @TimestampConverter() DateTime? createdAt,
+  }) = _ReferredUser;
+
+  factory ReferredUser.fromJson(Map<String, dynamic> json) =>
+      _$ReferredUserFromJson(json);
 }

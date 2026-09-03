@@ -1,3 +1,4 @@
+import 'package:customer_app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
@@ -12,7 +13,6 @@ import '../../models/plot_status.dart';
 import '../../widgets/premium_button.dart';
 import '../../widgets/status_badge.dart';
 import '../../widgets/shimmer_loader.dart';
-import '../../routes/app_routes.dart';
 
 class PlotDetailsPage extends ConsumerWidget {
   final String projectId;
@@ -127,7 +127,7 @@ class PlotDetailsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                AppSpacing.hXXl,
+                // AppSpacing.hXXl,
 
                 // Pricing & Actions
                 Container(
@@ -149,7 +149,9 @@ class PlotDetailsPage extends ConsumerWidget {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(
-                            context.l10n.inrPrice(plot.price.toStringAsFixed(0)),
+                            context.l10n.inrPrice(
+                              plot.price.toStringAsFixed(0),
+                            ),
                             style: Theme.of(context).textTheme.displaySmall
                                 ?.copyWith(color: AppTheme.midnightNavy),
                           ),
@@ -158,22 +160,10 @@ class PlotDetailsPage extends ConsumerWidget {
                       AppSpacing.hXXl,
                       PremiumButton(
                         text: context.l10n.enquireAboutPlot,
-                        style: PremiumButtonStyle.outline,
-                        onPressed: () => context.push(
-                          '/home/enquiry?projectId=$projectId&plotId=${plot.id}',
-                        ),
-                      ),
-                      AppSpacing.hMd,
-                      PremiumButton(
-                        text: isAvailable
-                            ? context.l10n.proceedToPayment
-                            : context.l10n.plotNotAvailable,
-                        style: isAvailable
-                            ? PremiumButtonStyle.primary
-                            : PremiumButtonStyle.ghost,
+                        style: PremiumButtonStyle.primary,
                         onPressed: isAvailable
                             ? () => context.push(
-                                '${AppRoutes.payment}?refId=${plot.id}&desc=Plot+${plot.plotNumber}&amount=${(plot.price * 0.1).toStringAsFixed(0)}',
+                                '${AppRoutes.enquiry}?projectId=$projectId&plotId=${plot.id}',
                               )
                             : null,
                       ),
