@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 import { useServerPagination } from "@/hooks/useServerPagination";
 import { CalendarCheck, Search, Eye, User } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { sendNotificationToUser } from "@/app/actions/notifications";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -188,6 +189,19 @@ function SiteVisitsContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
+
+      const visit = siteVisits.find((v: SiteVisit) => v.id === id);
+      if (visit && visit.customerId) {
+        await sendNotificationToUser(
+          visit.customerId,
+          "SITE_VISIT_UPDATE",
+          "Site Visit Status Updated",
+          `Your site visit status has been updated to ${newStatus}.`,
+          { siteVisitId: id, status: newStatus },
+          id
+        );
+      }
+
       toast.success(t('site_visit_status_updated'));
       setSiteVisits(siteVisits.map((v: SiteVisit) => v.id === id ? { ...v, status: newStatus } : v));
     } catch (error) {
@@ -205,6 +219,18 @@ function SiteVisitsContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
+
+      if (selectedVisit.customerId) {
+        await sendNotificationToUser(
+          selectedVisit.customerId,
+          "SITE_VISIT_UPDATE",
+          "Site Visit Status Updated",
+          `Your site visit status has been updated to ${newStatus}.`,
+          { siteVisitId: selectedVisit.id, status: newStatus },
+          selectedVisit.id
+        );
+      }
+
       toast.success(t('site_visit_status_updated'));
       setSelectedVisit({ ...selectedVisit, status: newStatus });
       setSiteVisits(siteVisits.map((v: SiteVisit) => v.id === selectedVisit.id ? { ...v, status: newStatus } : v));

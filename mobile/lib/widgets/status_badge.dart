@@ -1,3 +1,4 @@
+import 'package:customer_app/utils/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import '../models/plot_status.dart';
 import '../theme/theme.dart';
@@ -20,15 +21,15 @@ class StatusBadge extends StatelessWidget {
       case PlotStatus.available:
         bg = AppTheme.success.withValues(alpha: 0.12);
         fg = AppTheme.success;
-        label = 'AVAILABLE';
+        label = context.l10n.available;
       case PlotStatus.hold:
         bg = AppTheme.warning.withValues(alpha: 0.12);
         fg = AppTheme.warning;
-        label = 'HOLD';
+        label = context.l10n.hold;
       case PlotStatus.bookedSold:
         bg = AppTheme.error.withValues(alpha: 0.12);
         fg = AppTheme.error;
-        label = 'BOOKED';
+        label = context.l10n.booked;
     }
 
     return Container(

@@ -15,7 +15,17 @@ class PlotAvailabilityLogic extends _$PlotAvailabilityLogic {
 
   Future<void> loadPlots(String projectId) async {
     state = state.copyWith(isLoading: true, isError: false, errorMessage: null);
-    final plots = await ApiService.getPlots(projectId);
+
+    var plots = await ApiService.getPlots(projectId);
+
+    // Fallback: if the plots collection is empty, try to get them from the embedded project document
+    if (plots.isEmpty) {
+      final project = await ApiService.getProject(projectId);
+      if (project != null && project.plots.isNotEmpty) {
+        plots = project.plots;
+      }
+    }
+
     state = state.copyWith(
       isLoading: false,
       allPlots: plots,

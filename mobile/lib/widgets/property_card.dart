@@ -89,7 +89,7 @@ class PropertyCard extends StatelessWidget {
                                 ),
                                 AppSpacing.wXs,
                                 Text(
-                                  'FEATURED',
+                                  context.l10n.featured,
                                   style: Theme.of(context).textTheme.labelSmall
                                       ?.copyWith(
                                         color: AppTheme.white,

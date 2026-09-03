@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Shubhaytanam Connect'**
   String get appName;
 
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
   /// No description provided for @errorLoadingCode.
   ///
   /// In en, this message translates to:
@@ -1595,7 +1601,7 @@ abstract class AppLocalizations {
   /// No description provided for @userNotFound.
   ///
   /// In en, this message translates to:
-  /// **'User not found'**
+  /// **'User not found. Please log in again.'**
   String get userNotFound;
 
   /// No description provided for @failedToPickImage.
@@ -2057,13 +2063,13 @@ abstract class AppLocalizations {
   /// No description provided for @scheduledDate.
   ///
   /// In en, this message translates to:
-  /// **'Scheduled Date:'**
+  /// **'Scheduled Date'**
   String get scheduledDate;
 
   /// No description provided for @scheduledTime.
   ///
   /// In en, this message translates to:
-  /// **'Scheduled Time:'**
+  /// **'Scheduled Time'**
   String get scheduledTime;
 
   /// No description provided for @errorLoadingAboutInfo.
@@ -2372,6 +2378,90 @@ abstract class AppLocalizations {
   /// **'Cash'**
   String get paymentModeCash;
 
+  /// No description provided for @paymentModeUpi.
+  ///
+  /// In en, this message translates to:
+  /// **'UPI'**
+  String get paymentModeUpi;
+
+  /// No description provided for @paymentModeBankTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Transfer'**
+  String get paymentModeBankTransfer;
+
+  /// No description provided for @paymentModeCheque.
+  ///
+  /// In en, this message translates to:
+  /// **'Cheque'**
+  String get paymentModeCheque;
+
+  /// No description provided for @paymentModeOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get paymentModeOnline;
+
+  /// No description provided for @viewPaymentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'View Payment Details'**
+  String get viewPaymentDetails;
+
+  /// No description provided for @statusNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get statusNew;
+
+  /// No description provided for @statusConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get statusConfirmed;
+
+  /// No description provided for @statusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get statusCompleted;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @statusContacted.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacted'**
+  String get statusContacted;
+
+  /// No description provided for @statusFollowUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow Up'**
+  String get statusFollowUp;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get statusInProgress;
+
+  /// No description provided for @statusResolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolved'**
+  String get statusResolved;
+
+  /// No description provided for @statusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get statusClosed;
+
   /// No description provided for @naLabel.
   ///
   /// In en, this message translates to:
@@ -2389,6 +2479,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download'**
   String get download;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get dateLabel;
+
+  /// No description provided for @plot.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot'**
+  String get plot;
+
+  /// No description provided for @generalEnquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'General Enquiry'**
+  String get generalEnquiry;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @dateSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Submitted'**
+  String get dateSubmitted;
+
+  /// No description provided for @pleaseFillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all fields'**
+  String get pleaseFillAllFields;
+
+  /// No description provided for @invalidReferralCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid referral code'**
+  String get invalidReferralCode;
+
+  /// No description provided for @noReferredUsersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Referred Users Yet'**
+  String get noReferredUsersYet;
+
+  /// No description provided for @noReferredUsersMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Users who join using your referral code will appear here.'**
+  String get noReferredUsersMessage;
+
+  /// No description provided for @showingPlotsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {filtered} of {total} plots'**
+  String showingPlotsCount(int filtered, int total);
+
+  /// No description provided for @priceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get priceLabel;
+
+  /// No description provided for @featured.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured'**
+  String get featured;
 }
 
 class _AppLocalizationsDelegate

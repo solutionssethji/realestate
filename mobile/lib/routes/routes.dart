@@ -7,6 +7,8 @@ import '../pages/booking_details/booking_details.page.dart'
     show BookingDetailsPage;
 import 'package:customer_app/pages/offer_details/offer_details.page.dart';
 import 'package:customer_app/pages/referral/referral.page.dart';
+import '../pages/referred_users/referred_users.page.dart';
+import '../pages/notifications/notifications.page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -27,9 +29,6 @@ import '../pages/enquiry/enquiry.page.dart';
 import '../pages/site_visit/site_visit.page.dart';
 import '../pages/calculator/calculator.page.dart';
 import '../pages/about/about.page.dart';
-import '../pages/payment/payment.page.dart';
-import '../pages/payment_history_auth/payment_history_auth.page.dart';
-import '../pages/payment_history/payment_history.page.dart';
 import '../pages/my_enquiries/my_enquiries.page.dart';
 import '../pages/my_site_visits/my_site_visits.page.dart';
 import '../widgets/bottom_nav_bar/bottom_nav_bar.widget.dart';
@@ -153,6 +152,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.enquiry,
         builder: (context, state) => EnquiryPage(
           initialProjectId: state.uri.queryParameters['projectId'],
+          initialPlotId: state.uri.queryParameters['plotId'],
         ),
       ),
       GoRoute(
@@ -177,30 +177,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.mySiteVisits,
         builder: (context, state) => const MySiteVisitsPage(),
       ),
-      GoRoute(
-        path: AppRoutes.payment,
-        builder: (context, state) {
-          final params = state.uri.queryParameters;
-          final amount = double.tryParse(params['amount'] ?? '0') ?? 0;
-          final refId = params['refId'] ?? '';
-          final desc = params['desc'] ?? '';
-          return PaymentPage(
-            amount: amount,
-            referenceId: refId,
-            description: desc,
-          );
-        },
-      ),
-      GoRoute(
-        path: AppRoutes.paymentHistoryAuth,
-        builder: (context, state) => const PaymentHistoryAuthPage(),
-      ),
-      GoRoute(
-        path: AppRoutes.paymentHistory,
-        builder: (context, state) => const PaymentHistoryPage(),
-      ),
 
       // Project Details Routes
+      GoRoute(
+        path: AppRoutes.notifications,
+        builder: (context, state) => const NotificationsPage(),
+      ),
       GoRoute(
         path: AppRoutes.projectDetailsBase,
         builder: (context, state) =>
@@ -250,6 +232,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.referral,
         builder: (context, state) => const ReferralPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.referredUsers,
+        builder: (context, state) => const ReferredUsersPage(),
       ),
     ],
   );

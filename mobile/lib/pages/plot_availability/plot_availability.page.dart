@@ -89,7 +89,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
             ),
           ),
 
-          // ── Grid ─────────────────────────────────────────────────────────
+          // ── Plot List / Grid ──────────────────────────────────────────────
           Expanded(
             child: state.isLoading
                 ? GridView.builder(
@@ -98,7 +98,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                       crossAxisCount: isDesktop ? 3 : (isTablet ? 2 : 1),
                       crossAxisSpacing: AppSpacing.md,
                       mainAxisSpacing: AppSpacing.md,
-                      childAspectRatio: isTablet ? 1.35 : 1.7,
+                      mainAxisExtent: 220,
                     ),
                     itemCount: 6,
                     itemBuilder: (_, _) => const PlotCardSkeleton(),
@@ -118,25 +118,41 @@ class PlotAvailabilityPage extends HookConsumerWidget {
                   )
                 : RefreshIndicator(
                     onRefresh: () => logic.loadPlots(projectId),
-                    child: GridView.builder(
-                      padding: AppSpacing.allLg,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: isDesktop ? 3 : (isTablet ? 2 : 1),
-                        mainAxisSpacing: AppSpacing.lg,
-                        crossAxisSpacing: AppSpacing.lg,
-                        childAspectRatio: 1.6,
-                      ),
-                      itemCount: state.filteredPlots.length,
-                      itemBuilder: (context, index) {
-                        final plot = state.filteredPlots[index];
-                        return PlotCard(
-                          plot: plot,
-                          onTap: () => context.push(
-                            '/project/$projectId/plots/${plot.id}',
+                    child: isTablet || isDesktop
+                        ? GridView.builder(
+                            padding: AppSpacing.allLg,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: isDesktop ? 3 : 2,
+                                  mainAxisSpacing: AppSpacing.lg,
+                                  crossAxisSpacing: AppSpacing.lg,
+                                  mainAxisExtent: 220,
+                                ),
+                            itemCount: state.filteredPlots.length,
+                            itemBuilder: (context, index) {
+                              final plot = state.filteredPlots[index];
+                              return PlotCard(
+                                plot: plot,
+                                onTap: () => context.push(
+                                  '/project/$projectId/plots/${plot.id}',
+                                ),
+                              );
+                            },
+                          )
+                        : ListView.separated(
+                            padding: AppSpacing.allLg,
+                            itemCount: state.filteredPlots.length,
+                            separatorBuilder: (_, _) => AppSpacing.hMd,
+                            itemBuilder: (context, index) {
+                              final plot = state.filteredPlots[index];
+                              return PlotCard(
+                                plot: plot,
+                                onTap: () => context.push(
+                                  '/project/$projectId/plots/${plot.id}',
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ),
           ),
         ],
@@ -160,7 +176,6 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //     final loc = AppLocalizations.of(context);
     return GestureDetector(
       onTap: onSelected,
       child: AnimatedContainer(
@@ -174,12 +189,17 @@ class _StatusChip extends StatelessWidget {
           borderRadius: AppRadius.circularPill,
           border: Border.all(color: isSelected ? color : AppTheme.border),
         ),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: isSelected ? AppTheme.white : AppTheme.textPrimary,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: isSelected ? AppTheme.white : AppTheme.textPrimary,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ],
         ),
       ),
     );

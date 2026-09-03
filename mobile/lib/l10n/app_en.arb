@@ -1,6 +1,7 @@
 {
   "@@locale": "en",
   "appName": "Shubhaytanam Connect",
+  "search": "Search",
   "errorLoadingCode": "Error loading code",
   "shareCode": "Share Code",
   "aboutCompany": "About Company",
@@ -378,7 +379,7 @@
   "ifscCode": "IFSC Code",
   "saveDetails": "Save Details",
   "uploadDocumentImage": "Upload Document Image:",
-  "userNotFound": "User not found",
+  "userNotFound": "User not found. Please log in again.",
   "failedToPickImage": "Failed to pick image: {error}",
   "@failedToPickImage": {
     "placeholders": {
@@ -564,7 +565,45 @@
   },
   "initialPaymentDesc": "Initial payment from booking application",
   "paymentModeCash": "Cash",
+  "paymentModeUpi": "UPI",
+  "paymentModeBankTransfer": "Bank Transfer",
+  "paymentModeCheque": "Cheque",
+  "paymentModeOnline": "Online",
+  "viewPaymentDetails": "View Payment Details",
+  "statusNew": "New",
+  "statusConfirmed": "Confirmed",
+  "statusCompleted": "Completed",
+  "statusCancelled": "Cancelled",
+  "statusContacted": "Contacted",
+  "statusFollowUp": "Follow Up",
+  "statusInProgress": "In Progress",
+  "statusResolved": "Resolved",
+  "statusClosed": "Closed",
   "naLabel": "N/A",
   "view": "View",
-  "download": "Download"
+  "download": "Download",
+  "dateLabel": "Date",
+  "plot": "Plot",
+  "generalEnquiry": "General Enquiry",
+  "support": "Support",
+  "dateSubmitted": "Date Submitted",
+  "scheduledDate": "Scheduled Date",
+  "scheduledTime": "Scheduled Time",
+  "pleaseFillAllFields": "Please fill all fields",
+  "invalidReferralCode": "Invalid referral code",
+  "noReferredUsersYet": "No Referred Users Yet",
+  "noReferredUsersMessage": "Users who join using your referral code will appear here.",
+  "showingPlotsCount": "Showing {filtered} of {total} plots",
+  "@showingPlotsCount": {
+    "placeholders": {
+      "filtered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "priceLabel": "Price",
+  "featured": "Featured"
 }

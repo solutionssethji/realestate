@@ -18,8 +18,9 @@ import '../../utils/snackbar_utils.dart';
 
 class EnquiryPage extends HookConsumerWidget {
   final String? initialProjectId;
+  final String? initialPlotId;
 
-  const EnquiryPage({super.key, this.initialProjectId});
+  const EnquiryPage({super.key, this.initialProjectId, this.initialPlotId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -145,6 +146,7 @@ class EnquiryPage extends HookConsumerWidget {
                                 plotRequirement: requirementCtrl.text.trim(),
                                 budget: budgetCtrl.text.trim(),
                                 projectId: initialProjectId,
+                                plotId: initialPlotId,
                                 message: messageCtrl.text.trim(),
                               );
                             }

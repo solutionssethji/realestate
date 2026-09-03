@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { collection, query, orderBy, limit, doc, updateDoc, onSnapshot, getDoc } from "firebase/firestore";
-import { httpsCallable } from "firebase/functions";
-import { db, functions } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import { Bell, Loader2, CheckCircle2, Circle, Check, Send } from "lucide-react";
+import { sendBroadcastNotification } from "@/app/actions/notifications";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -183,10 +183,8 @@ export default function NotificationsPage() {
 
     setSendingNotification(true);
     try {
-      const sendNotificationFn = httpsCallable(functions, "sendBroadcastNotification");
-      const result: any = await sendNotificationFn({ title, body });
-      const payload = result?.data ?? {};
-      toast.success(`Notification sent to ${payload.total ?? 0} user(s)`);
+      const result: any = await sendBroadcastNotification(title, body, { target: "ALL_USERS" });
+      toast.success(`Notification sent to ${result.recipients ?? 0} user(s)`);
       setShowComposer(false);
       setNotificationTitle("");
       setNotificationBody("");

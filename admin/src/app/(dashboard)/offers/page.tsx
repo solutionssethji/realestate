@@ -144,16 +144,6 @@ export default function OffersListPage() {
       }
     },
     {
-      header: t('discount'),
-      key: "discount",
-      render: (offer: any) => {
-        if (offer.discountType === 'PERCENTAGE') {
-          return <span className="font-bold text-green-600">{offer.discountValue}% OFF</span>;
-        }
-        return <span className="font-bold text-green-600">₹{offer.discountValue} OFF</span>;
-      }
-    },
-    {
       header: t('validity'),
       key: "validity",
       render: (offer: any) => (

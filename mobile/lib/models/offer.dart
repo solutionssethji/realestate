@@ -12,9 +12,6 @@ abstract class Offer with _$Offer {
     required DateTime startDate,
     required DateTime endDate,
     required String status,
-    String? discountType,
-    double? discountValue,
-    String? offerCode,
     String? projectId,
     String? projectName,
   }) = _Offer;

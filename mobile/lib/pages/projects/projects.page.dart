@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/premium_app_bar.dart';
@@ -12,6 +13,7 @@ import '../../widgets/empty_state.dart';
 import '../../widgets/error_state.dart';
 import '../../widgets/app_loading_view.dart';
 import '../../routes/app_routes.dart';
+import '../../theme/theme.dart';
 
 class ProjectsPage extends HookConsumerWidget {
   const ProjectsPage({super.key});
@@ -23,6 +25,13 @@ class ProjectsPage extends HookConsumerWidget {
     final logic = ref.read(projectsLogicProvider.notifier);
     final bool isTablet = ResponsiveBreakpoints.of(context).largerThan(MOBILE);
     final bool isDesktop = ResponsiveBreakpoints.of(context).largerThan(TABLET);
+    final searchController = useTextEditingController(text: state.searchQuery);
+
+    ref.listen(projectsLogicProvider, (previous, next) {
+      if (next.searchQuery.isEmpty && searchController.text.isNotEmpty) {
+        searchController.clear();
+      }
+    });
 
     return Scaffold(
       appBar: PremiumAppBar(title: loc.allProjects, showBackButton: false),
@@ -43,6 +52,60 @@ class ProjectsPage extends HookConsumerWidget {
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    AppSpacing.lg,
+                    0,
+                  ),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: logic.updateSearch,
+                    decoration: InputDecoration(
+                      hintText: context.l10n.search,
+                      prefixIcon: const Icon(
+                        Icons.search_rounded,
+                        color: AppTheme.textSecondary,
+                      ),
+                      suffixIcon: state.searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(
+                                Icons.clear_rounded,
+                                color: AppTheme.textSecondary,
+                              ),
+                              onPressed: () {
+                                searchController.clear();
+                                logic.updateSearch('');
+                              },
+                            )
+                          : null,
+                      filled: true,
+                      fillColor: AppTheme.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: 16,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppTheme.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: AppTheme.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppTheme.midnightNavy,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               if (state.isLoading)
                 const SliverFillRemaining(
                   hasScrollBody: false,
@@ -73,7 +136,10 @@ class ProjectsPage extends HookConsumerWidget {
                           ? context.l10n.clearSearchFilters
                           : null,
                       onAction: state.searchQuery.isNotEmpty
-                          ? () => logic.updateSearch('')
+                          ? () {
+                              searchController.clear();
+                              logic.updateSearch('');
+                            }
                           : null,
                     ),
                   ),
@@ -130,7 +196,7 @@ class ProjectsPage extends HookConsumerWidget {
                       child: AppLoadingView(size: 24),
                     ),
                   ),
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                const SliverToBoxAdapter(child: SizedBox(height: 120)),
               ],
             ],
           ),

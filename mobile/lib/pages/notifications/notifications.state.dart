@@ -1,45 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../models/app_notification.dart';
 
-class NotificationsState {
-  final List<Map<String, dynamic>> notifications;
-  final bool isLoading;
-  final bool hasLoaded;
-  final bool hasMore;
-  final bool isFetchingMore;
-  final bool isError;
-  final String? errorMessage;
-  final DocumentSnapshot? lastDocument;
+part 'notifications.state.freezed.dart';
 
-  const NotificationsState({
-    this.notifications = const [],
-    this.isLoading = true,
-    this.hasLoaded = false,
-    this.hasMore = true,
-    this.isFetchingMore = false,
-    this.isError = false,
-    this.errorMessage,
-    this.lastDocument,
-  });
-
-  NotificationsState copyWith({
-    List<Map<String, dynamic>>? notifications,
-    bool? isLoading,
-    bool? hasLoaded,
-    bool? hasMore,
-    bool? isFetchingMore,
-    bool? isError,
+@freezed
+sealed class NotificationsState with _$NotificationsState {
+  const factory NotificationsState({
+    @Default(true) bool isLoading,
+    @Default(false) bool isFetchingMore,
+    @Default(false) bool isError,
+    @Default(true) bool hasMore,
+    dynamic lastDocument,
+    @Default([]) List<AppNotification> notifications,
     String? errorMessage,
-    DocumentSnapshot? lastDocument,
-  }) {
-    return NotificationsState(
-      notifications: notifications ?? this.notifications,
-      isLoading: isLoading ?? this.isLoading,
-      hasLoaded: hasLoaded ?? this.hasLoaded,
-      hasMore: hasMore ?? this.hasMore,
-      isFetchingMore: isFetchingMore ?? this.isFetchingMore,
-      isError: isError ?? this.isError,
-      errorMessage: errorMessage ?? this.errorMessage,
-      lastDocument: lastDocument ?? this.lastDocument,
-    );
-  }
+  }) = _NotificationsState;
 }

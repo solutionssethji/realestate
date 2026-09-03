@@ -4,6 +4,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Search, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/Button";
+import { sendNotificationToUser } from "@/app/actions/notifications";
 import {
   BookingApplicationForm,
   BookingApplicationFormData,
@@ -113,6 +114,16 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
             updatedAt: new Date().toISOString(),
           }
           : undefined,
+      );
+
+      // Send Push Notification via Next.js Server Action
+      await sendNotificationToUser(
+        selectedUser.id,
+        "PLOT_ASSIGNED",
+        "Plot assigned",
+        `Plot ${plot.plotNumber} has been assigned to you.`,
+        { plotId: plot.id, projectId: plot.projectId || "" },
+        plot.id
       );
 
       toast.success(`Plot assigned to ${applicationForm.firstApplicantName}`);

@@ -251,45 +251,150 @@ class DetailPageSkeleton extends StatelessWidget {
   const DetailPageSkeleton({super.key});
 
   @override
-  Widget build(BuildContext context) => ListView(
-    padding: AppSpacing.allMd,
-    children: [
-      Shimmer.fromColors(
-        baseColor: AppTheme.neutral200,
-        highlightColor: AppTheme.neutral100,
-        child: const _ShimmerBox(
-          height: 220,
-          width: double.infinity,
-          radius: 12,
-        ),
-      ),
-      AppSpacing.hMd,
-      _shimmerCard(
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _ShimmerBox(height: 22, width: 220),
-            AppSpacing.hMd,
-            _ShimmerBox(height: 14, width: double.infinity),
-            AppSpacing.hSm,
-            _ShimmerBox(height: 14, width: 180),
-            AppSpacing.hLg,
-            Row(
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppTheme.neutral200,
+      highlightColor: AppTheme.neutral100,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          // ── Cover image ──────────────────────────────────────────────────
+          const _ShimmerBox(
+            height: 250,
+            width: double.infinity,
+            radius: 0,
+          ),
+
+          // ── Body ─────────────────────────────────────────────────────────
+          Padding(
+            padding: AppSpacing.allLg,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _ShimmerBox(height: 70, width: double.infinity),
+                // Badge row
+                const Row(
+                  children: [
+                    _ShimmerBox(height: 22, width: 80, radius: AppRadius.pill),
+                    AppSpacing.wSm,
+                    _ShimmerBox(height: 22, width: 100, radius: AppRadius.pill),
+                  ],
                 ),
-                AppSpacing.wSm,
-                Expanded(
-                  child: _ShimmerBox(height: 70, width: double.infinity),
+                AppSpacing.hSm,
+
+                // Title
+                const _ShimmerBox(height: 28, width: double.infinity),
+                AppSpacing.hXs,
+                const _ShimmerBox(height: 28, width: 220),
+                AppSpacing.hSm,
+
+                // Location
+                const Row(
+                  children: [
+                    _ShimmerBox(height: 16, width: 16, radius: 8),
+                    AppSpacing.wXs,
+                    _ShimmerBox(height: 14, width: 180),
+                  ],
                 ),
+                AppSpacing.hSm,
+
+                // Plot count
+                const Row(
+                  children: [
+                    _ShimmerBox(height: 16, width: 16, radius: 8),
+                    AppSpacing.wXs,
+                    _ShimmerBox(height: 14, width: 120),
+                  ],
+                ),
+                AppSpacing.hXXl,
+
+                // ── About section ───────────────────────────────────────────
+                const _ShimmerBox(height: 22, width: 160),
+                AppSpacing.hMd,
+                const _ShimmerBox(height: 14, width: double.infinity),
+                AppSpacing.hXs,
+                const _ShimmerBox(height: 14, width: double.infinity),
+                AppSpacing.hXs,
+                const _ShimmerBox(height: 14, width: 260),
+                AppSpacing.hXXl,
+
+                // ── Gallery section ─────────────────────────────────────────
+                const _ShimmerBox(height: 22, width: 80),
+                AppSpacing.hMd,
+                SizedBox(
+                  height: 180,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 3,
+                    separatorBuilder: (_, _) => AppSpacing.wMd,
+                    itemBuilder: (_, _) => const _ShimmerBox(
+                      height: 180,
+                      width: 260,
+                      radius: AppRadius.md,
+                    ),
+                  ),
+                ),
+                AppSpacing.hXXl,
+
+                // ── Amenities section ────────────────────────────────────────
+                const _ShimmerBox(height: 22, width: 100),
+                AppSpacing.hMd,
+                const Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  children: [
+                    _ShimmerBox(height: 32, width: 90, radius: AppRadius.pill),
+                    _ShimmerBox(height: 32, width: 110, radius: AppRadius.pill),
+                    _ShimmerBox(height: 32, width: 80, radius: AppRadius.pill),
+                    _ShimmerBox(height: 32, width: 120, radius: AppRadius.pill),
+                    _ShimmerBox(height: 32, width: 100, radius: AppRadius.pill),
+                  ],
+                ),
+                AppSpacing.hXXl,
+
+                // ── Pricing / CTA card ──────────────────────────────────────
+                Container(
+                  padding: AppSpacing.allLg,
+                  decoration: BoxDecoration(
+                    color: AppTheme.surface,
+                    borderRadius: AppRadius.circularLg,
+                    border: Border.all(color: AppTheme.border),
+                  ),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ShimmerBox(height: 14, width: 90),
+                      AppSpacing.hXs,
+                      _ShimmerBox(height: 32, width: 200),
+                      AppSpacing.hLg,
+                      _ShimmerBox(
+                        height: 48,
+                        width: double.infinity,
+                        radius: AppRadius.md,
+                      ),
+                      AppSpacing.hMd,
+                      _ShimmerBox(
+                        height: 48,
+                        width: double.infinity,
+                        radius: AppRadius.md,
+                      ),
+                      AppSpacing.hMd,
+                      _ShimmerBox(
+                        height: 48,
+                        width: double.infinity,
+                        radius: AppRadius.md,
+                      ),
+                    ],
+                  ),
+                ),
+                AppSpacing.hXXl,
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    ],
-  );
+    );
+  }
 }
 
 Widget _shimmerCard(Widget child) => Card(

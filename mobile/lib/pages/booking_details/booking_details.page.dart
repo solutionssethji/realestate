@@ -22,6 +22,7 @@ class BookingDetailsPage extends HookConsumerWidget {
     final logic = ref.watch(bookingDetailsLogicProvider(plotId).notifier);
     final l10n = context.l10n;
     final tt = Theme.of(context).textTheme;
+    final locale = Localizations.localeOf(context);
     final currencyFormat = NumberFormat.currency(
       locale: 'en_IN',
       symbol: '₹',
@@ -93,10 +94,10 @@ class BookingDetailsPage extends HookConsumerWidget {
                           ),
                         ),
                         _StatusChip(
-                          label:
-                              (bookingData['status']?.toString() ??
-                                      l10n.naLabel)
-                                  .toUpperCase(),
+                          label: _translateStatus(
+                            context,
+                            bookingData['status']?.toString() ?? l10n.naLabel,
+                          ),
                         ),
                       ],
                     ),
@@ -156,7 +157,7 @@ class BookingDetailsPage extends HookConsumerWidget {
                               ),
                             ),
                             Text(
-                              _formatDate(bookingData['createdAt']),
+                              _formatDate(bookingData['createdAt'], locale),
                               style: tt.titleSmall?.copyWith(
                                 color: AppTheme.textPrimary,
                               ),
@@ -316,7 +317,7 @@ class BookingDetailsPage extends HookConsumerWidget {
                               final notes = p['notes']?.toString() ?? '';
 
                               String subtitle = mode.isNotEmpty
-                                  ? mode
+                                  ? _translateMode(context, mode)
                                   : l10n.paymentModeCash;
                               if (txnId.isNotEmpty) {
                                 subtitle += ' (Txn: $txnId)';
@@ -338,9 +339,7 @@ class BookingDetailsPage extends HookConsumerWidget {
                               }
 
                               final dateFormatted = date != null
-                                  ? DateFormat(
-                                      'MMM d, yyyy, h:mm a',
-                                    ).format(date)
+                                  ? _formatDate(dateStr, locale)
                                   : l10n.naLabel;
 
                               return _PaymentRow(
@@ -382,14 +381,72 @@ class BookingDetailsPage extends HookConsumerWidget {
     );
   }
 
-  String _formatDate(dynamic raw) {
+  String _formatDate(dynamic raw, Locale locale) {
     if (raw == null || raw.toString().isEmpty) return 'N/A';
     try {
-      return DateFormat(
-        'MMM d, yyyy, h:mm a',
-      ).format(DateTime.parse(raw.toString()));
+      final date = DateTime.parse(raw.toString());
+      if (locale.languageCode == 'hi') {
+        // Hindi date format: day month year, time
+        final months = [
+          'जन',
+          'फ़र',
+          'मार्च',
+          'अप्र',
+          'मई',
+          'जून',
+          'जुल',
+          'अग',
+          'सित',
+          'अक्ट',
+          'नव',
+          'दिस',
+        ];
+        final hour = date.hour > 12
+            ? date.hour - 12
+            : (date.hour == 0 ? 12 : date.hour);
+        final minute = date.minute.toString().padLeft(2, '0');
+        final amPm = date.hour >= 12 ? 'अपराह्न' : 'पूर्वाह्न';
+        return '${date.day} ${months[date.month - 1]} ${date.year}, $hour:$minute $amPm';
+      }
+      return DateFormat('MMM d, yyyy, h:mm a').format(date);
     } catch (_) {
       return raw.toString();
+    }
+  }
+
+  String _translateStatus(BuildContext context, String status) {
+    final l10n = context.l10n;
+    switch (status.toUpperCase()) {
+      case 'BOOKED':
+        return l10n.booked.toUpperCase();
+      case 'SOLD':
+        return l10n.bookedSold.toUpperCase();
+      case 'AVAILABLE':
+        return l10n.available.toUpperCase();
+      case 'HOLD':
+        return l10n.hold.toUpperCase();
+      default:
+        return status.toUpperCase();
+    }
+  }
+
+  String _translateMode(BuildContext context, String mode) {
+    final l10n = context.l10n;
+    switch (mode.toUpperCase()) {
+      case 'CASH':
+        return l10n.paymentModeCash;
+      case 'UPI':
+        return l10n.paymentModeUpi;
+      case 'BANK_TRANSFER':
+      case 'BANK TRANSFER':
+        return l10n.paymentModeBankTransfer;
+      case 'CHEQUE':
+      case 'CHECK':
+        return l10n.paymentModeCheque;
+      case 'ONLINE':
+        return l10n.paymentModeOnline;
+      default:
+        return mode;
     }
   }
 }

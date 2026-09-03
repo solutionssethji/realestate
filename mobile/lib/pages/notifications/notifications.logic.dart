@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:customer_app/services/auth_service.dart';
-import '../../../services/api_service.dart';
 import 'notifications.state.dart';
+import '../../../services/api_service.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../models/app_notification.dart';
 
 part 'notifications.logic.g.dart';
 
@@ -9,21 +11,11 @@ part 'notifications.logic.g.dart';
 class NotificationsLogic extends _$NotificationsLogic {
   @override
   NotificationsState build() {
-    Future.microtask(() => load(isRefresh: true));
+    Future.microtask(() => loadNotifications(isRefresh: true));
     return const NotificationsState();
   }
 
-  Future<void> load({bool isRefresh = false}) async {
-    final uid = AuthService.currentUser?.uid;
-    if (uid == null) {
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-        errorMessage: 'User not logged in',
-      );
-      return;
-    }
-
+  Future<void> loadNotifications({bool isRefresh = false}) async {
     if (isRefresh) {
       state = state.copyWith(
         isLoading: true,
@@ -45,47 +37,68 @@ class NotificationsLogic extends _$NotificationsLogic {
         );
       }
     }
+    final user = ref.read(currentUserProvider);
+    if (user == null) {
+      state = state.copyWith(
+          isLoading: false, isFetchingMore: false, isError: true, errorMessage: 'User not logged in');
+      return;
+    }
 
-    final response = await ApiService.fetchNotificationsPagination(
-      userId: uid,
-      lastDocument: state.lastDocument,
-      limit: 15,
-    );
-
-    final combinedNotifications = isRefresh
-        ? response.data
-        : [...state.notifications, ...response.data];
-
-    state = state.copyWith(
-      notifications: combinedNotifications,
-      lastDocument: response.lastDocument,
-      hasMore: response.data.length == 15,
-      isLoading: false,
-      isFetchingMore: false,
-    );
+    try {
+      final (data, newLastDoc) = await ApiService.getNotifications(user.uid, lastDocument: state.lastDocument, limit: 20);
+      
+      // Enrich notifications with offer data if applicable
+      final enrichedData = await Future.wait(data.map((notification) async {
+        if (notification.type == 'NEW_OFFER' || notification.type == 'OFFER') {
+          final resourceId = notification.resourceId ?? notification.payload?['offerId'];
+          if (resourceId != null) {
+            try {
+              final offer = await ApiService.getOffer(resourceId);
+              if (offer != null) {
+                return notification.copyWith(offer: offer);
+              }
+            } catch (e) {
+              debugPrint('Failed to load offer for notification: $e');
+            }
+          }
+        }
+        return notification;
+      }));
+      
+      state = state.copyWith(
+        notifications: isRefresh ? enrichedData : [...state.notifications, ...enrichedData],
+        isLoading: false,
+        isFetchingMore: false,
+        lastDocument: newLastDoc,
+        hasMore: data.length == 20,
+      );
+    } catch (e) {
+      debugPrint('Failed to load notifications: $e');
+      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+    }
   }
 
   Future<void> loadMore() async {
-    if (state.isLoading || state.isFetchingMore || !state.hasMore) return;
-    await load();
+    if (!state.hasMore || state.isLoading || state.isFetchingMore) return;
+    await loadNotifications();
   }
 
-  Future<void> markRead(Map<String, dynamic> notification) async {
-    final userId = AuthService.currentUser?.uid;
-    final notificationId = notification['id'];
+  Future<void> markAsRead(AppNotification notification) async {
+    final user = ref.read(currentUserProvider);
+    if (user == null || notification.read == true) return;
 
-    // Optimistic update
-    final index = state.notifications.indexWhere(
-      (n) => n['id'] == notificationId,
-    );
-    if (index != -1) {
-      final updatedList = List<Map<String, dynamic>>.from(state.notifications);
-      updatedList[index] = {...updatedList[index], 'isRead': true};
-      state = state.copyWith(notifications: updatedList);
-    }
-
-    if (userId != null && notificationId != null) {
-      await ApiService.markNotificationRead(userId, notificationId);
+    try {
+      await ApiService.markNotificationRead(user.uid, notification.id);
+      // Optimistically update state
+      final updatedNotifications = state.notifications.map((n) {
+        if (n.id == notification.id) {
+          return n.copyWith(read: true);
+        }
+        return n;
+      }).toList();
+      state = state.copyWith(notifications: updatedNotifications);
+    } catch (e) {
+      debugPrint('Error marking read: $e');
     }
   }
 }

@@ -19,6 +19,13 @@ class Project {
   final bool isFeatured;
   final String siteLayout;
 
+  int get availablePlotsCount {
+    if (plots.isNotEmpty) {
+      return plots.where((p) => p.status == PlotStatus.available).length;
+    }
+    return plotCount;
+  }
+
   Project({
     required this.id,
     required this.name,
@@ -110,15 +117,13 @@ class Project {
   }
 
   static PlotStatus _parsePlotStatus(String? status) {
-    switch (status) {
-      case 'AVAILABLE':
-        return PlotStatus.available;
-      case 'HOLD':
-        return PlotStatus.hold;
-      case 'BOOKED_SOLD':
-        return PlotStatus.bookedSold;
-      default:
-        return PlotStatus.available;
+    if (status == null) return PlotStatus.available;
+    final upperStatus = status.toUpperCase();
+    if (upperStatus.contains('HOLD')) {
+      return PlotStatus.hold;
+    } else if (upperStatus.contains('BOOKED') || upperStatus.contains('SOLD')) {
+      return PlotStatus.bookedSold;
     }
+    return PlotStatus.available;
   }
 }

@@ -191,7 +191,7 @@ class MyPropertiesPage extends HookConsumerWidget {
                                           ),
                                         ),
                                         child: Text(
-                                          status,
+                                          _translateStatus(context, status),
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelSmall
@@ -217,7 +217,7 @@ class MyPropertiesPage extends HookConsumerWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'View Payment Details',
+                                        context.l10n.viewPaymentDetails,
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium
@@ -256,5 +256,21 @@ class MyPropertiesPage extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _translateStatus(BuildContext context, String status) {
+    final l10n = context.l10n;
+    switch (status.toUpperCase()) {
+      case 'BOOKED':
+        return l10n.booked.toUpperCase();
+      case 'SOLD':
+        return l10n.bookedSold.toUpperCase();
+      case 'AVAILABLE':
+        return l10n.available.toUpperCase();
+      case 'HOLD':
+        return l10n.hold.toUpperCase();
+      default:
+        return status;
+    }
   }
 }

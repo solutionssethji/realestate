@@ -9,6 +9,7 @@ class AppRoutes {
   static const String projects = '/projects';
   static const String myProperties = '/my-properties';
   static const String profile = '/profile';
+  static const String notifications = '/notifications';
 
   // Home sub-routes
   static const String offers = '/offers';
@@ -38,7 +39,7 @@ class AppRoutes {
   static const String faq = '/faq';
 
   // Project
-  static const String projectDetailsBase = '/project';
+  static const String projectDetailsBase = '/project/:id';
   static String projectDetails(String projectId) => '/project/$projectId';
 
   static String plotAvailability(String projectId) =>
@@ -53,4 +54,5 @@ class AppRoutes {
   static const String kyc = '/kyc';
   static const String support = '/support';
   static const String referral = '/referral';
+  static const String referredUsers = '/referred-users';
 }
