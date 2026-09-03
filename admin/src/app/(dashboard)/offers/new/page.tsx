@@ -11,7 +11,7 @@ import { Modal } from "@/components/ui/Modal";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Tag, Calendar, Percent, IndianRupee, CheckCircle, Image as ImageIcon, FileText } from "lucide-react";
 import { toast } from "react-hot-toast";
-
+import { sendBroadcastNotification } from "@/app/actions/notifications";
 export default function NewOfferPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -142,6 +142,13 @@ export default function NewOfferPage() {
 
 
       await updateDoc(doc(db, "offers", docRef.id), { id: docRef.id, offerImage: photoURL });
+
+      // Send Push Notifications using Next.js Server Action
+      await sendBroadcastNotification(
+        formData.titleEn,
+        formData.descriptionEn,
+        { offerId: docRef.id, target: "OFFER" }
+      );
 
       toast.success("Offer created successfully!");
       router.push("/offers");

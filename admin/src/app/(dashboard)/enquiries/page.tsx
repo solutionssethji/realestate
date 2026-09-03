@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 import { useServerPagination } from "@/hooks/useServerPagination";
 import { PhoneIncoming, Search, Eye, User } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { sendNotificationToUser } from "@/app/actions/notifications";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from '@/context/LanguageContext';
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -226,6 +227,19 @@ function EnquiriesContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
+
+      const enquiry = enquiries.find((e: Enquiry) => e.id === id);
+      if (enquiry && enquiry.customerId) {
+        await sendNotificationToUser(
+          enquiry.customerId,
+          "ENQUIRY_UPDATE",
+          "Enquiry Status Updated",
+          `Your enquiry status has been updated to ${newStatus}.`,
+          { enquiryId: id, status: newStatus },
+          id
+        );
+      }
+
       toast.success(t('enquiry_status_updated'));
       setEnquiries(enquiries.map((e: Enquiry) => e.id === id ? { ...e, status: newStatus } : e));
     } catch (error) {
@@ -243,6 +257,18 @@ function EnquiriesContent() {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
+
+      if (selectedEnquiry.customerId) {
+        await sendNotificationToUser(
+          selectedEnquiry.customerId,
+          "ENQUIRY_UPDATE",
+          "Enquiry Status Updated",
+          `Your enquiry status has been updated to ${newStatus}.`,
+          { enquiryId: selectedEnquiry.id, status: newStatus },
+          selectedEnquiry.id
+        );
+      }
+
       toast.success(t('enquiry_status_updated'));
       setSelectedEnquiry({ ...selectedEnquiry, status: newStatus });
       setEnquiries(enquiries.map((e: Enquiry) => e.id === selectedEnquiry.id ? { ...e, status: newStatus } : e));

@@ -390,6 +390,18 @@ class ApiService {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
+      // Create Admin Notification
+      final adminNotifRef = _db.collection('adminNotifications').doc();
+      batch.set(adminNotifRef, {
+        'id': adminNotifRef.id,
+        'type': 'ENQUIRY',
+        'relatedId': enquiriesRef.id,
+        'title': 'New Enquiry',
+        'body': 'A new enquiry has been received.',
+        'read': false,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
       await batch.commit();
       logApi(function: 'submitEnquiry()', response: 'Success');
     } catch (e) {
@@ -452,6 +464,18 @@ class ApiService {
         'status': 'NEW',
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Create Admin Notification
+      final adminNotifRef = _db.collection('adminNotifications').doc();
+      batch.set(adminNotifRef, {
+        'id': adminNotifRef.id,
+        'type': 'SITE_VISIT',
+        'relatedId': siteVisitRef.id,
+        'title': 'New Site Visit',
+        'body': 'A new site visit request has been received.',
+        'read': false,
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
       await batch.commit();
