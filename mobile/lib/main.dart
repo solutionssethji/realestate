@@ -66,11 +66,28 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void _handleNotificationTap(RemoteMessage message) {
   final data = message.data;
-  if (data['type'] == 'NEW_OFFER' || data['type'] == 'OFFER') {
-    final offerId = data['offerId'];
-    if (offerId != null && rootNavigatorKey.currentContext != null) {
-      GoRouter.of(rootNavigatorKey.currentContext!).push(AppRoutes.offerDetails(offerId));
+  final type = data['type'];
+  final resourceId = data['plotId'] ?? data['resourceId'] ?? data['offerId'];
+
+  if (rootNavigatorKey.currentContext == null) return;
+  final context = rootNavigatorKey.currentContext!;
+
+  if (type == 'NEW_OFFER' || type == 'OFFER') {
+    if (resourceId != null) {
+      GoRouter.of(context).push(AppRoutes.offerDetails(resourceId));
     }
+  } else if (type == 'ENQUIRY_UPDATE') {
+    GoRouter.of(context).push(AppRoutes.myEnquiries);
+  } else if (type == 'SITE_VISIT_UPDATE') {
+    GoRouter.of(context).push(AppRoutes.mySiteVisits);
+  } else if (type == 'PLOT_ASSIGNED' || type == 'PAYMENT' || type == 'PAYMENT_UPDATE' || type == 'BOOKING') {
+    if (resourceId != null) {
+      GoRouter.of(context).push(AppRoutes.bookingDetails(resourceId));
+    } else {
+      GoRouter.of(context).go(AppRoutes.myProperties);
+    }
+  } else if (type == 'ADMIN_BROADCAST') {
+    GoRouter.of(context).push(AppRoutes.notifications);
   }
 }
 

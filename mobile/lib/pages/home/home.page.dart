@@ -44,23 +44,35 @@ class HomePage extends HookConsumerWidget {
           fit: BoxFit.contain,
         ),
         actions: [
-          Consumer(builder: (context, ref, child) {
-            final unreadCount = ref.watch(unreadNotificationsCountProvider).value ?? 0;
-            return IconButton(
-              icon: unreadCount > 0
-                  ? Badge(
-                      label: Text(
-                        unreadCount.toString(),
-                        style: const TextStyle(color: Colors.white, fontSize: 10),
+          Consumer(
+            builder: (context, ref, child) {
+              final unreadCount =
+                  ref.watch(unreadNotificationsCountProvider).value ?? 0;
+              return IconButton(
+                icon: unreadCount > 0
+                    ? Badge(
+                        label: Text(
+                          unreadCount.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.notifications,
+                          color: AppTheme.midnightNavy,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.notifications,
+                        color: AppTheme.midnightNavy,
                       ),
-                      child: const Icon(Icons.notifications, color: AppTheme.midnightNavy),
-                    )
-                  : const Icon(Icons.notifications, color: AppTheme.midnightNavy),
-              onPressed: () {
-                context.push(AppRoutes.notifications);
-              },
-            );
-          }),
+                onPressed: () {
+                  context.push(AppRoutes.notifications);
+                },
+              );
+            },
+          ),
           const SizedBox(width: 8),
         ],
       ),

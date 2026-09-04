@@ -6,7 +6,7 @@ import '../theme/spacing.dart';
 class EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String message;
+  final String? message;
   final String? buttonText;
   final VoidCallback? onAction;
 
@@ -14,7 +14,7 @@ class EmptyState extends StatelessWidget {
     super.key,
     this.icon = Icons.search_off_rounded,
     required this.title,
-    required this.message,
+    this.message,
     this.buttonText,
     this.onAction,
   });
@@ -43,14 +43,16 @@ class EmptyState extends StatelessWidget {
               ).textTheme.headlineSmall?.copyWith(color: AppTheme.midnightNavy),
               textAlign: TextAlign.center,
             ),
-            AppSpacing.hSm,
-            Text(
-              message,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
-              textAlign: TextAlign.center,
-            ),
+            if (message != null && message!.isNotEmpty) ...[
+              AppSpacing.hSm,
+              Text(
+                message!,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
+                textAlign: TextAlign.center,
+              ),
+            ],
             if (buttonText != null && onAction != null) ...[
               AppSpacing.hXl,
               OutlinedButton(onPressed: onAction, child: Text(buttonText!)),

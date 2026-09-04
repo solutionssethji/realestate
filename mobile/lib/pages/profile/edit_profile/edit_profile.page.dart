@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../../../config/feature_flags.dart';
 import '../../../widgets/app_cached_image.dart';
 import '../../../utils/l10n_extension.dart';
 import '../../../theme/theme.dart';
@@ -224,13 +225,15 @@ class EditProfilePage extends HookConsumerWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
-              _buildActionTile(
-                context,
-                LucideIcons.fileBadge,
-                l10n.kycAndDocuments,
-                () => context.push(AppRoutes.kyc),
-              ),
-              const SizedBox(height: 12),
+              if (FeatureFlags.enableKyc) ...[
+                _buildActionTile(
+                  context,
+                  LucideIcons.fileBadge,
+                  l10n.kycAndDocuments,
+                  () => context.push(AppRoutes.kyc),
+                ),
+                const SizedBox(height: 12),
+              ],
               _buildActionTile(
                 context,
                 Icons.lock_outline,

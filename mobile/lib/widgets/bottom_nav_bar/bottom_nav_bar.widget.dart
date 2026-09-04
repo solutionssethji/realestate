@@ -11,6 +11,7 @@ import '../../utils/l10n_extension.dart';
 import '../../providers/fab_provider.dart';
 import '../../pages/home/home.logic.dart';
 import '../../routes/app_routes.dart';
+import '../../config/feature_flags.dart';
 
 // ─── Tab descriptor ────────────────────────────────────────────────────────────
 
@@ -75,7 +76,7 @@ class BottomNavBar extends ConsumerWidget {
       extendBody: true,
       body: navigationShell,
       // ── FAB — only on Home tab ──────────────────────────────────────────────
-      floatingActionButton: navigationShell.currentIndex == 0
+      floatingActionButton: (navigationShell.currentIndex == 0 && FeatureFlags.enableSupport)
           ? AnimatedOpacity(
               opacity: fabVisible ? 1.0 : 0.0,
               duration: _kAnimDuration,

@@ -207,9 +207,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // My Properties Routes
       GoRoute(
-        path: '/booking-details/:plotId',
+        path: '/booking-details/:id',
         builder: (context, state) =>
-            BookingDetailsPage(plotId: state.pathParameters['plotId']!),
+            BookingDetailsPage(id: state.pathParameters['id']!),
       ),
 
       // Profile Routes

@@ -12,6 +12,7 @@ import '../../theme/theme.dart';
 import '../../utils/snackbar_utils.dart';
 import 'profile.logic.dart';
 import '../../routes/app_routes.dart';
+import '../../config/feature_flags.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/locale_provider.dart';
 
@@ -164,44 +165,52 @@ class ProfilePage extends HookConsumerWidget {
                       context.push(AppRoutes.mySiteVisits);
                     },
                   ),
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.calculator,
-                    l10n.emiCalculator,
-                    () => context.push(AppRoutes.emiCalculator),
-                  ),
+                  if (FeatureFlags.enableCalculator) ...[
+                    const SizedBox(height: 12),
+                    _buildActionTile(
+                      context,
+                      LucideIcons.calculator,
+                      l10n.emiCalculator,
+                      () => context.push(AppRoutes.emiCalculator),
+                    ),
+                  ],
                   const SizedBox(height: 32),
                   Text(
                     l10n.account,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.user,
-                    context.l10n.editProfile,
-                    () => context.push(AppRoutes.editProfile),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.gift,
-                    l10n.referralRewards,
-                    () => context.push(AppRoutes.referral),
-                  ),
+                  if (FeatureFlags.enableEditProfile)
+                    _buildActionTile(
+                      context,
+                      LucideIcons.user,
+                      context.l10n.editProfile,
+                      () => context.push(AppRoutes.editProfile),
+                    ),
+                  if (FeatureFlags.enableReferrals) ...[
+                    const SizedBox(height: 12),
+                    _buildActionTile(
+                      context,
+                      LucideIcons.gift,
+                      l10n.referralRewards,
+                      () => context.push(AppRoutes.referral),
+                    ),
+                  ],
                   const SizedBox(height: 32),
                   Text(
                     l10n.legalAndSupport,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 16),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.contact2,
-                    l10n.supportCenter,
-                    () => context.push(AppRoutes.support),
-                  ),
+                  if (FeatureFlags.enableSupport) ...[
+                    const SizedBox(height: 16),
+                    _buildActionTile(
+                      context,
+                      LucideIcons.contact2,
+                      l10n.supportCenter,
+                      () => context.push(AppRoutes.support),
+                    ),
+                  ] else
+                    const SizedBox(height: 16),
                   const SizedBox(height: 12),
                   _buildActionTile(
                     context,

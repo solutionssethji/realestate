@@ -626,9 +626,15 @@ class ApiService {
       final notifications = snapshot.docs.map((d) {
         final data = d.data();
         data['id'] = d.id;
+        if (data['title'] != null) {
+          data['title'] = BilingualHelper.get(data['title']);
+        }
+        if (data['body'] != null) {
+          data['body'] = BilingualHelper.get(data['body']);
+        }
         return AppNotification.fromJson(data);
       }).toList();
-      
+
       final lastDoc = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
       return (notifications, lastDoc);
     } catch (e) {
@@ -650,7 +656,7 @@ class ApiService {
           .doc(uid)
           .collection('notifications')
           .doc(notificationId)
-          .update({'isRead': true});
+          .update({'read': true});
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(
         e,
@@ -917,12 +923,10 @@ class ApiService {
         });
   }
 
-  static Future<Map<String, dynamic>?> getAssignPlotDetails(
-    String plotId,
-  ) async {
-    logApi(function: 'getAssignPlotDetails()', request: {'plotId': plotId});
+  static Future<Map<String, dynamic>?> getAssignPlotDetails(String id) async {
+    logApi(function: 'getAssignPlotDetails()', request: {'Id': id});
     try {
-      final doc = await _db.collection('assignPlots').doc(plotId).get();
+      final doc = await _db.collection('assignPlots').doc(id).get();
       if (!doc.exists) return null;
 
       final docData = {'id': doc.id, ...doc.data()!};

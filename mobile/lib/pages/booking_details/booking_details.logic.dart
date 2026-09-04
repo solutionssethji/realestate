@@ -11,9 +11,9 @@ class BookingDetailsLogic extends _$BookingDetailsLogic {
   StreamSubscription? _paymentsSubscription;
 
   @override
-  BookingDetailsState build(String plotId) {
-    loadPlotDetails(plotId);
-    listenToPayments(plotId);
+  BookingDetailsState build(String id) {
+    loadPlotDetails(id);
+    listenToPayments(id);
 
     ref.onDispose(() {
       _paymentsSubscription?.cancel();
@@ -22,19 +22,26 @@ class BookingDetailsLogic extends _$BookingDetailsLogic {
     return const BookingDetailsState(isLoading: true);
   }
 
-  Future<void> loadPlotDetails(String plotId) async {
-    final data = await ApiService.getAssignPlotDetails(plotId);
-    if (data != null) {
-      state = state.copyWith(
-        isLoading: false, // ← shimmer band karo jab data aa jaye
-        bookingData: data,
-        totalAmount: (data['totalAmount'] ?? 0.0).toDouble(),
-        paidAmount: (data['paidAmount'] ?? 0.0).toDouble(),
-      );
-    } else {
+  Future<void> loadPlotDetails(String id) async {
+    try {
+      final data = await ApiService.getAssignPlotDetails(id);
+      if (data != null) {
+        state = state.copyWith(
+          isLoading: false, // ← shimmer band karo jab data aa jaye
+          bookingData: data,
+          totalAmount: (data['totalAmount'] ?? 0.0).toDouble(),
+          paidAmount: (data['paidAmount'] ?? 0.0).toDouble(),
+        );
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: 'Failed to load property details',
+        );
+      }
+    } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'Failed to load property details',
+        errorMessage: 'Failed to load property details: $e',
       );
     }
   }
