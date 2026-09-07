@@ -430,14 +430,8 @@ class _RightActions extends StatelessWidget {
                   style: PremiumButtonStyle.secondary,
                   icon: Icons.play_circle_outline,
                   isFullWidth: false,
-                  onPressed: () async {
-                    final uri = Uri.parse(project.projectVideo);
-                    if (await canLaunchUrl(uri)) {
-                      await launchUrl(
-                        uri,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    }
+                  onPressed: () {
+                    context.push(AppRoutes.virtualTour(projectId, project.projectVideo));
                   },
                 ),
               ],

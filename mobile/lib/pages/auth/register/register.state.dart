@@ -6,7 +6,6 @@ part 'register.state.freezed.dart';
 sealed class RegisterState with _$RegisterState {
   const factory RegisterState({
     @Default(false) bool isLoading,
-    @Default(true) bool isObscure,
     String? errorMessage,
   }) = _RegisterState;
 }

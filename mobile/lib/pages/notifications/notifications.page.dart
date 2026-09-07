@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,13 +29,27 @@ class NotificationsPage extends HookConsumerWidget {
     void handleNotificationTap(AppNotification notification) async {
       await logic.markAsRead(notification);
 
-      // Route based on type
-      if (context.mounted) {
-        final resourceId = notification.resourceId ?? notification.payload?['offerId'];
-        if (notification.type == 'NEW_OFFER' && resourceId != null) {
+      if (!context.mounted) return;
+
+      final type = notification.type;
+      final resourceId = notification.resourceId;
+      log('resourceId----- $resourceId');
+      if (type == 'NEW_OFFER' || type == 'OFFER') {
+        if (resourceId != null) {
           context.push(AppRoutes.offerDetails(resourceId));
-        } else if (notification.type == 'OFFER' && resourceId != null) {
-          context.push(AppRoutes.offerDetails(resourceId));
+        }
+      } else if (type == 'ENQUIRY_UPDATE' || type == 'ENQUIRY') {
+        context.push(AppRoutes.myEnquiries);
+      } else if (type == 'SITE_VISIT_UPDATE' || type == 'SITE_VISIT') {
+        context.push(AppRoutes.mySiteVisits);
+      } else if (type == 'PLOT_ASSIGNED' ||
+          type == 'PAYMENT' ||
+          type == 'PAYMENT_UPDATE' ||
+          type == 'BOOKING') {
+        if (resourceId != null) {
+          context.push(AppRoutes.bookingDetails(resourceId));
+        } else {
+          context.go(AppRoutes.myProperties);
         }
       }
     }
@@ -47,115 +63,137 @@ class NotificationsPage extends HookConsumerWidget {
                 itemBuilder: (_, _) => const NotificationListTileSkeleton(),
               )
             : state.isError
-                ? ErrorState(
-                    title: state.errorMessage ?? loc.somethingWentWrong,
-                    onRetry: logic.loadNotifications,
-                  )
-                : state.notifications.isEmpty
-                    ? EmptyState(
+            ? ErrorState(
+                title: state.errorMessage ?? loc.somethingWentWrong,
+                onRetry: logic.loadNotifications,
+              )
+            : state.notifications.isEmpty
+            ? RefreshIndicator(
+                onRefresh: () => logic.loadNotifications(isRefresh: true),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: EmptyState(
                         icon: Icons.notifications_none,
                         title: loc.noAlerts,
-                        message: '',
-                      )
-                    : RefreshIndicator(
-                        onRefresh: () => logic.loadNotifications(isRefresh: true),
-                        child: NotificationListener<ScrollNotification>(
-                          onNotification: (ScrollNotification scrollInfo) {
-                            if (scrollInfo.metrics.pixels >=
-                                scrollInfo.metrics.maxScrollExtent - 200) {
-                              Future.microtask(() {
-                                logic.loadMore();
-                              });
-                            }
-                            return false;
-                          },
-                          child: ListView.separated(
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            itemCount: state.notifications.length +
-                                (state.isFetchingMore ? 1 : 0),
-                            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
-                            itemBuilder: (context, index) {
-                              if (index == state.notifications.length) {
-                                return const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(AppSpacing.md),
-                                    child: AppLoadingView(size: 24),
-                                  ),
-                                );
-                              }
-                              final item = state.notifications[index];
-                    final isRead = item.read;
-                    
-                    if (item.offer != null) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            OfferCard(
-                              offer: item.offer!,
-                              onTap: () => handleNotificationTap(item),
-                            ),
-                            if (!isRead)
-                              Positioned(
-                                top: -4,
-                                right: -4,
-                                child: Container(
-                                  width: 14,
-                                  height: 14,
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.error,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white, width: 2),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : RefreshIndicator(
+                onRefresh: () => logic.loadNotifications(isRefresh: true),
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 200) {
+                      Future.microtask(() {
+                        logic.loadMore();
+                      });
+                    }
+                    return false;
+                  },
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    itemCount:
+                        state.notifications.length +
+                        (state.isFetchingMore ? 1 : 0),
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: AppSpacing.md),
+                    itemBuilder: (context, index) {
+                      if (index == state.notifications.length) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(AppSpacing.md),
+                            child: AppLoadingView(size: 24),
+                          ),
+                        );
+                      }
+                      final item = state.notifications[index];
+                      final isRead = item.read;
+
+                      if (item.offer != null) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              OfferCard(
+                                offer: item.offer!,
+                                onTap: () => handleNotificationTap(item),
+                              ),
+                              if (!isRead)
+                                Positioned(
+                                  top: -4,
+                                  right: -4,
+                                  child: Container(
+                                    width: 14,
+                                    height: 14,
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.error,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 2,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
-                        ),
-                      );
-                    }
-                    
-                    return Card(
-                      color: isRead ? Colors.white : AppTheme.midnightNavy.withValues(alpha: 0.05),
-                      margin: const EdgeInsets.only(bottom: 12.0),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(
-                          color: isRead ? Colors.grey.shade200 : AppTheme.midnightNavy.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: ListTile(
-                        onTap: () => handleNotificationTap(item),
-                        title: Text(
-                          item.title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
-                              ),
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(
-                            item.body,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            ],
+                          ),
+                        );
+                      }
+
+                      return Card(
+                        color: isRead
+                            ? Colors.white
+                            : AppTheme.midnightNavy.withValues(alpha: 0.05),
+                        margin: const EdgeInsets.only(bottom: 12.0),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(
+                            color: isRead
+                                ? Colors.grey.shade200
+                                : AppTheme.midnightNavy.withValues(alpha: 0.3),
                           ),
                         ),
-                        trailing: isRead
-                            ? null
-                            : Container(
-                                width: 10,
-                                height: 10,
-                                decoration: const BoxDecoration(
-                                  color: AppTheme.midnightNavy,
-                                  shape: BoxShape.circle,
+                        child: ListTile(
+                          onTap: () => handleNotificationTap(item),
+                          title: Text(
+                            item.title,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: isRead
+                                      ? FontWeight.normal
+                                      : FontWeight.bold,
                                 ),
-                              ),
-                      ),
-                    );
-                  },
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              item.body,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          trailing: isRead
+                              ? null
+                              : Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: const BoxDecoration(
+                                    color: AppTheme.midnightNavy,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
       ),
     );
   }

@@ -106,7 +106,7 @@ export default function UserDetailsPage({ params: paramsPromise }: { params: Pro
                 </div>
                 <div>
                   <p className="text-xs font-medium text-slate-500">Mobile Number</p>
-                  <p className="text-sm font-semibold text-slate-900">{user.mobileNumber || 'N/A'}</p>
+                  <p className="text-sm font-semibold text-slate-900">{user.countryCode ? `${user.countryCode} ${user.mobileNumber}` : (user.mobileNumber || 'N/A')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">

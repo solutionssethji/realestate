@@ -95,7 +95,7 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
       };
 
       const initialPayment = Number(applicationForm.initialPayment) || 0;
-      await createBookingIfPlotAvailable(
+      const res = await createBookingIfPlotAvailable(
         plot.id,
         bookingData,
         initialPayment > 0
@@ -114,16 +114,17 @@ export function AssignPlotDialog({ isOpen, onClose, plot, onAssigned }: AssignPl
             updatedAt: new Date().toISOString(),
           }
           : undefined,
-      );
+      ) as { bookingId: string; paymentId?: string };
 
-      // Send Push Notification via Next.js Server Action
       await sendNotificationToUser(
         selectedUser.id,
         "PLOT_ASSIGNED",
-        "Plot assigned",
-        `Plot ${plot.plotNumber} has been assigned to you.`,
-        { plotId: plot.id, projectId: plot.projectId || "" },
-        plot.id
+        { en: "Plot assigned", hi: "प्लॉट आवंटित" },
+        {
+          en: `Plot ${plot.plotNumber} has been assigned to you.`,
+          hi: `प्लॉट ${plot.plotNumber} आपको आवंटित किया गया है।`,
+        },
+        res.bookingId
       );
 
       toast.success(`Plot assigned to ${applicationForm.firstApplicantName}`);

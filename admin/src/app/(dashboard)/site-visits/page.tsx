@@ -182,6 +182,40 @@ function SiteVisitsContent() {
 
   const [statusLoading, setStatusLoading] = useState<string | null>(null);
 
+  const getStatusInEnglish = (status: string) => {
+    const map: Record<string, string> = {
+      NEW: 'New',
+      SCHEDULED: 'Scheduled',
+      COMPLETED: 'Completed',
+      CANCELLED: 'Cancelled',
+      CONFIRMED: 'Confirmed',
+      CONTACTED: 'Contacted',
+      FOLLOW_UP: 'Follow-up',
+      IN_PROGRESS: 'In Progress',
+      RESOLVED: 'Resolved',
+      CLOSED: 'Closed',
+    };
+
+    return map[status] || status;
+  };
+
+  const getStatusInHindi = (status: string) => {
+    const map: Record<string, string> = {
+      NEW: 'नया',
+      SCHEDULED: 'निर्धारित',
+      COMPLETED: 'पूरा हुआ',
+      CANCELLED: 'रद्द',
+      CONFIRMED: 'पुष्टि की गई',
+      CONTACTED: 'संपर्क किया गया',
+      FOLLOW_UP: 'फॉलो-अप',
+      IN_PROGRESS: 'प्रगति में',
+      RESOLVED: 'समाधान किया गया',
+      CLOSED: 'बंद',
+    };
+    return map[status] || status;
+  };
+
+
   const handleQuickStatusUpdate = async (id: string, newStatus: string) => {
     setStatusLoading(id);
     try {
@@ -195,9 +229,11 @@ function SiteVisitsContent() {
         await sendNotificationToUser(
           visit.customerId,
           "SITE_VISIT_UPDATE",
-          "Site Visit Status Updated",
-          `Your site visit status has been updated to ${newStatus}.`,
-          { siteVisitId: id, status: newStatus },
+          { en: "Site Visit Status Updated", hi: "साइट विजिट स्थिति अपडेट की गई" },
+          {
+            en: `Your site visit status has been updated to ${getStatusInEnglish(newStatus)}.`,
+            hi: `आपकी साइट विजिट की स्थिति ${getStatusInHindi(newStatus)} में अपडेट कर दी गई है।`,
+          },
           id
         );
       }
@@ -224,9 +260,11 @@ function SiteVisitsContent() {
         await sendNotificationToUser(
           selectedVisit.customerId,
           "SITE_VISIT_UPDATE",
-          "Site Visit Status Updated",
-          `Your site visit status has been updated to ${newStatus}.`,
-          { siteVisitId: selectedVisit.id, status: newStatus },
+          { en: "Site Visit Status Updated", hi: "साइट विजिट स्थिति अपडेट की गई" },
+          {
+            en: `Your site visit status has been updated to ${newStatus}.`,
+            hi: `आपकी साइट विजिट की स्थिति ${getStatusInHindi(newStatus)} में अपडेट कर दी गई है।`,
+          },
           selectedVisit.id
         );
       }
@@ -307,7 +345,7 @@ function SiteVisitsContent() {
       render: (visit: SiteVisit) => {
         const project = visit.projectId ? projectCache[visit.projectId] : null;
         const projectName = project?.name?.en || (typeof project?.name === 'string' ? project.name : null);
-        
+
         return (
           <div>
             {projectName ? (

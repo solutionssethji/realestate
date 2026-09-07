@@ -186,6 +186,13 @@ class ProfilePage extends HookConsumerWidget {
                   const SizedBox(height: 12),
                   _buildActionTile(
                     context,
+                    LucideIcons.badge,
+                    l10n.kycAndDocuments,
+                    () => context.push(AppRoutes.kyc),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildActionTile(
+                    context,
                     LucideIcons.gift,
                     l10n.referralRewards,
                     () => context.push(AppRoutes.referral),
@@ -202,6 +209,7 @@ class ProfilePage extends HookConsumerWidget {
                     l10n.supportCenter,
                     () => context.push(AppRoutes.support),
                   ),
+
                   const SizedBox(height: 12),
                   _buildActionTile(
                     context,

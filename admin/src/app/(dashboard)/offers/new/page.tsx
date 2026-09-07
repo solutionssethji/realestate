@@ -145,8 +145,8 @@ export default function NewOfferPage() {
 
       // Send Push Notifications using Next.js Server Action
       await sendBroadcastNotification(
-        formData.titleEn,
-        formData.descriptionEn,
+        { en: formData.titleEn, hi: formData.titleHi },
+        { en: formData.descriptionEn, hi: formData.descriptionHi },
         { offerId: docRef.id, target: "OFFER" }
       );
 

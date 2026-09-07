@@ -29,8 +29,8 @@ class EditProfilePage extends HookConsumerWidget {
     final nameController = useTextEditingController(
       text: customer?.fullName ?? '',
     );
-    final mobileController = useTextEditingController(
-      text: customer?.mobileNumber ?? '',
+    final emailController = useTextEditingController(
+      text: customer?.email ?? '',
     );
     final profileImage = useState<XFile?>(null);
     final removeExistingPhoto = useState(false);
@@ -41,11 +41,11 @@ class EditProfilePage extends HookConsumerWidget {
     final logic = ref.read(editProfileLogicProvider.notifier);
 
     useValueListenable(nameController);
-    useValueListenable(mobileController);
+    useValueListenable(emailController);
 
     final isFormFilled =
         nameController.text.trim().isNotEmpty &&
-        mobileController.text.trim().length == 10;
+        emailController.text.trim().isNotEmpty;
 
     ref.listen(editProfileLogicProvider, (previous, next) {
       if (next.errorMessage != null &&
@@ -60,9 +60,10 @@ class EditProfilePage extends HookConsumerWidget {
 
       final success = await logic.updateProfile(
         fullName: nameController.text.trim(),
-        mobileNumber: mobileController.text.trim(),
+        email: emailController.text.trim(),
         newProfileImage: profileImage.value,
         removeExistingPhoto: removeExistingPhoto.value,
+        l10n: l10n,
       );
 
       if (success && context.mounted) {
@@ -165,18 +166,29 @@ class EditProfilePage extends HookConsumerWidget {
                     );
                   },
                   child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: const BoxDecoration(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
                       color: AppTheme.neutral200,
                       shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppTheme.midnightNavy.withValues(alpha: 0.2),
+                        width: 3,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.midnightNavy.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: profileImage.value != null
                         ? Image.file(
                             File(profileImage.value!.path),
-                            width: 100,
-                            height: 100,
+                            width: 150,
+                            height: 150,
                             fit: BoxFit.cover,
                           )
                         : (!removeExistingPhoto.value &&
@@ -184,8 +196,8 @@ class EditProfilePage extends HookConsumerWidget {
                               customer!.photoURL!.isNotEmpty)
                         ? AppCachedImage(
                             imageUrl: customer.photoURL!,
-                            width: 100,
-                            height: 100,
+                            width: 150,
+                            height: 150,
                             fit: BoxFit.cover,
                           )
                         : const Icon(
@@ -206,11 +218,11 @@ class EditProfilePage extends HookConsumerWidget {
               ),
               const SizedBox(height: 16),
               AppTextField(
-                controller: mobileController,
-                label: l10n.mobileNumber,
-                prefixIcon: const Icon(Icons.phone_outlined),
-                keyboardType: TextInputType.phone,
-                validator: (v) => AppValidators.phone(context, v),
+                controller: emailController,
+                label: l10n.email,
+                prefixIcon: const Icon(Icons.email),
+                keyboardType: TextInputType.emailAddress,
+                validator: (v) => AppValidators.email(context, v),
               ),
               const SizedBox(height: 32),
               PremiumButton(
@@ -229,13 +241,6 @@ class EditProfilePage extends HookConsumerWidget {
                 LucideIcons.fileBadge,
                 l10n.kycAndDocuments,
                 () => context.push(AppRoutes.kyc),
-              ),
-              const SizedBox(height: 12),
-              _buildActionTile(
-                context,
-                Icons.lock_outline,
-                l10n.changePassword,
-                () => context.push(AppRoutes.changePassword),
               ),
               const SizedBox(height: 12),
             ],

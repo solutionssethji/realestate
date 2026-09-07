@@ -40,33 +40,59 @@ class NotificationsLogic extends _$NotificationsLogic {
     final user = ref.read(currentUserProvider);
     if (user == null) {
       state = state.copyWith(
-          isLoading: false, isFetchingMore: false, isError: true, errorMessage: 'User not logged in');
+        isLoading: false,
+        isFetchingMore: false,
+        isError: true,
+        errorMessage: 'User not logged in',
+      );
       return;
     }
 
     try {
-      final (data, newLastDoc) = await ApiService.getNotifications(user.uid, lastDocument: state.lastDocument, limit: 20);
-      
+      final (data, newLastDoc) = await ApiService.getNotifications(
+        user.uid,
+        lastDocument: state.lastDocument,
+        limit: 20,
+      );
+
       // Enrich notifications with offer data if applicable
-      final enrichedData = await Future.wait(data.map((notification) async {
-        if (notification.type == 'NEW_OFFER' || notification.type == 'OFFER') {
-          final resourceId = notification.resourceId ?? notification.payload?['offerId'];
-          if (resourceId != null) {
-            try {
-              final offer = await ApiService.getOffer(resourceId);
-              if (offer != null) {
-                return notification.copyWith(offer: offer);
+      final enrichedData = await Future.wait(
+        data.map((notification) async {
+          if (notification.type == 'NEW_OFFER' ||
+              notification.type == 'OFFER') {
+            final resourceId = notification.resourceId;
+            if (resourceId != null) {
+              try {
+                final offer = await ApiService.getOffer(resourceId);
+                if (offer != null) {
+                  return notification.copyWith(offer: offer);
+                }
+              } catch (e) {
+                debugPrint('Failed to load offer for notification: $e');
               }
-            } catch (e) {
-              debugPrint('Failed to load offer for notification: $e');
             }
           }
-        }
-        return notification;
-      }));
-      
+          return notification;
+        }),
+      );
+
+      final unreadIds = enrichedData
+          .where((n) => n.read != true)
+          .map((n) => n.id)
+          .toList();
+      if (unreadIds.isNotEmpty) {
+        // Update in background
+        Future.wait(
+          unreadIds.map((id) => ApiService.markNotificationRead(user.uid, id)),
+        ).catchError((_) => []);
+      }
+
+      final readData = enrichedData.map((n) => n.copyWith(read: true)).toList();
+
       state = state.copyWith(
-        notifications: isRefresh ? enrichedData : [...state.notifications, ...enrichedData],
+        notifications: isRefresh
+            ? readData
+            : [...state.notifications, ...readData],
         isLoading: false,
         isFetchingMore: false,
         lastDocument: newLastDoc,

@@ -12,14 +12,14 @@ import '../../widgets/premium_app_bar.dart';
 import '../../services/payment_receipt_service.dart';
 
 class BookingDetailsPage extends HookConsumerWidget {
-  final String plotId;
+  final String id;
 
-  const BookingDetailsPage({super.key, required this.plotId});
+  const BookingDetailsPage({super.key, required this.id});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(bookingDetailsLogicProvider(plotId));
-    final logic = ref.watch(bookingDetailsLogicProvider(plotId).notifier);
+    final state = ref.watch(bookingDetailsLogicProvider(id));
+    final logic = ref.watch(bookingDetailsLogicProvider(id).notifier);
     final l10n = context.l10n;
     final tt = Theme.of(context).textTheme;
     final locale = Localizations.localeOf(context);
@@ -39,8 +39,8 @@ class BookingDetailsPage extends HookConsumerWidget {
         return ErrorState(
           message: state.errorMessage,
           onRetry: () async {
-            await logic.loadPlotDetails(plotId);
-            logic.listenToPayments(plotId);
+            await logic.loadPlotDetails(id);
+            logic.listenToPayments(id);
           },
         );
       }

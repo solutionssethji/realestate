@@ -17,8 +17,8 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.showBackButton = true,
     this.actions,
-    this.backgroundColor = AppTheme.background,
-    this.foregroundColor = AppTheme.textPrimary,
+    this.backgroundColor = AppColors.primary,
+    this.foregroundColor = Colors.white,
     this.elevation = 0.5,
     this.centerTitle = true,
     this.leading,
@@ -39,7 +39,8 @@ class PremiumAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: foregroundColor,
         ),
       ),
-      leading: leading ??
+      leading:
+          leading ??
           (showBackButton
               ? IconButton(
                   icon: Icon(

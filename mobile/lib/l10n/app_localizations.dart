@@ -1859,8 +1859,56 @@ abstract class AppLocalizations {
   /// No description provided for @createAccount.
   ///
   /// In en, this message translates to:
-  /// **'Create Account'**
+  /// **'Complete Profile'**
   String get createAccount;
+
+  /// No description provided for @authLost.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication lost. Please try again.'**
+  String get authLost;
+
+  /// No description provided for @accountCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created successfully!'**
+  String get accountCreatedSuccessfully;
+
+  /// No description provided for @registrationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to complete registration.'**
+  String get registrationFailed;
+
+  /// No description provided for @failedToVerifyOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to verify OTP'**
+  String get failedToVerifyOtp;
+
+  /// No description provided for @otpResentSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP resent successfully'**
+  String get otpResentSuccessfully;
+
+  /// No description provided for @failedToResendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to resend OTP'**
+  String get failedToResendOtp;
+
+  /// No description provided for @failedToSendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send OTP'**
+  String get failedToSendOtp;
+
+  /// No description provided for @otpSentSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'OTP sent successfully!'**
+  String get otpSentSuccessfully;
 
   /// No description provided for @joinUs.
   ///
@@ -2551,6 +2599,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Featured'**
   String get featured;
+
+  /// No description provided for @tapToChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to change'**
+  String get tapToChange;
+
+  /// No description provided for @unknownUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown User'**
+  String get unknownUser;
+
+  /// No description provided for @userNotLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'User not logged in'**
+  String get userNotLoggedIn;
+
+  /// No description provided for @failedToLoadPropertyDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load property details'**
+  String get failedToLoadPropertyDetails;
+
+  /// No description provided for @failedToLoadPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load payments'**
+  String get failedToLoadPayments;
+
+  /// No description provided for @failedToChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to change password'**
+  String get failedToChangePassword;
+
+  /// No description provided for @currentPasswordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is incorrect'**
+  String get currentPasswordIncorrect;
+
+  /// No description provided for @newPasswordTooWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'New password is too weak'**
+  String get newPasswordTooWeak;
+
+  /// No description provided for @amountInWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount in Words'**
+  String get amountInWords;
+
+  /// No description provided for @saveReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Receipt'**
+  String get saveReceipt;
+
+  /// No description provided for @saveLedger.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Ledger'**
+  String get saveLedger;
+
+  /// No description provided for @zeroOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Zero only'**
+  String get zeroOnly;
+
+  /// No description provided for @indianRupee.
+  ///
+  /// In en, this message translates to:
+  /// **'Indian Rupee'**
+  String get indianRupee;
 }
 
 class _AppLocalizationsDelegate

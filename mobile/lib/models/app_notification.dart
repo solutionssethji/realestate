@@ -13,7 +13,6 @@ abstract class AppNotification with _$AppNotification {
     required String type,
     @Default(false) bool read,
     String? resourceId,
-    Map<String, dynamic>? payload,
     // ignore: invalid_annotation_target
     @JsonKey(includeFromJson: false, includeToJson: false) Offer? offer,
   }) = _AppNotification;

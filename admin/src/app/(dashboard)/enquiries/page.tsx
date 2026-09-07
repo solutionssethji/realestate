@@ -220,6 +220,39 @@ function EnquiriesContent() {
 
   const [statusLoading, setStatusLoading] = useState<string | null>(null);
 
+  const getStatusInEnglish = (status: string) => {
+    const map: Record<string, string> = {
+      NEW: 'New',
+      SCHEDULED: 'Scheduled',
+      COMPLETED: 'Completed',
+      CANCELLED: 'Cancelled',
+      CONFIRMED: 'Confirmed',
+      CONTACTED: 'Contacted',
+      FOLLOW_UP: 'Follow-up',
+      IN_PROGRESS: 'In Progress',
+      RESOLVED: 'Resolved',
+      CLOSED: 'Closed',
+    };
+
+    return map[status] || status;
+  };
+
+  const getStatusInHindi = (status: string) => {
+    const map: Record<string, string> = {
+      NEW: 'नया',
+      SCHEDULED: 'निर्धारित',
+      COMPLETED: 'पूरा हुआ',
+      CANCELLED: 'रद्द',
+      CONFIRMED: 'पुष्टि की गई',
+      CONTACTED: 'संपर्क किया गया',
+      FOLLOW_UP: 'फॉलो-अप',
+      IN_PROGRESS: 'प्रगति में',
+      RESOLVED: 'समाधान किया गया',
+      CLOSED: 'बंद',
+    };
+    return map[status] || status;
+  };
+
   const handleQuickStatusUpdate = async (id: string, newStatus: string) => {
     setStatusLoading(id);
     try {
@@ -233,9 +266,11 @@ function EnquiriesContent() {
         await sendNotificationToUser(
           enquiry.customerId,
           "ENQUIRY_UPDATE",
-          "Enquiry Status Updated",
-          `Your enquiry status has been updated to ${newStatus}.`,
-          { enquiryId: id, status: newStatus },
+          { en: "Enquiry Status Updated", hi: "पूछताछ स्थिति अपडेट की गई" },
+          {
+            en: `Your enquiry status has been updated to ${getStatusInEnglish(newStatus)}.`,
+            hi: `आपकी पूछताछ की स्थिति ${getStatusInHindi(newStatus)} में अपडेट कर दी गई है।`,
+          },
           id
         );
       }
@@ -262,9 +297,11 @@ function EnquiriesContent() {
         await sendNotificationToUser(
           selectedEnquiry.customerId,
           "ENQUIRY_UPDATE",
-          "Enquiry Status Updated",
-          `Your enquiry status has been updated to ${newStatus}.`,
-          { enquiryId: selectedEnquiry.id, status: newStatus },
+          { en: "Enquiry Status Updated", hi: "पूछताछ स्थिति अपडेट की गई" },
+          {
+            en: `Your enquiry status has been updated to ${newStatus}.`,
+            hi: `आपकी पूछताछ की स्थिति ${getStatusInHindi(newStatus)} में अपडेट कर दी गई है।`,
+          },
           selectedEnquiry.id
         );
       }
@@ -336,7 +373,7 @@ function EnquiriesContent() {
         const projectName = project?.name?.en || (typeof project?.name === 'string' ? project.name : null);
         const plotInfo = enq.plotId ? plotCache?.[enq.plotId] : null;
         const plotNumber = plotInfo?.plotNumber;
-        
+
         return (
           <div>
             {projectName ? (
@@ -509,8 +546,8 @@ function EnquiriesContent() {
                   <div>
                     <p className="text-xs font-semibold text-blue-600 uppercase">{t('plot_number')}</p>
                     <p className="text-sm font-bold text-blue-900 mt-1">
-                      {plotNumber 
-                        ? `Plot ${plotNumber}` 
+                      {plotNumber
+                        ? `Plot ${plotNumber}`
                         : <span className="italic text-slate-400">{t('loading_ellipsis')}</span>
                       }
                     </p>
