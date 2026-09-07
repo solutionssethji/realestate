@@ -23,8 +23,8 @@ service cloud.firestore {
 
       // User notifications subcollection
       match /notifications/{notifId} {
-        allow read: if isOwner(userId) || isAdmin();
-        allow write: if isAdmin();
+        allow read, update: if isOwner(userId) || isAdmin();
+        allow create, delete: if isAdmin();
       }
     }
 
@@ -76,7 +76,7 @@ service cloud.firestore {
 
     // ─── Assign Plots (Bookings) ──────────────────────────────────────────────
     match /assignPlots/{bookingId} {
-      allow read: if isAdmin() || (isLoggedIn() && resource.data.customerId == request.auth.uid);
+      allow read: if isAdmin() || (isLoggedIn() && (resource == null || resource.data.customerId == request.auth.uid));
       allow create, update: if isAdmin();
       allow delete: if false; // Never delete bookings
     }

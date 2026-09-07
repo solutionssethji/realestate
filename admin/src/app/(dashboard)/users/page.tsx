@@ -18,6 +18,7 @@ type User = {
   id: string;
   fullName: string;
   mobileNumber: string;
+  countryCode?: string;
   email?: string;
   status: string; // e.g., 'ACTIVE', 'BLOCKED'
   createdAt: any;
@@ -96,7 +97,7 @@ function UsersContent() {
       header: t('mobile'),
       key: "mobileNumber",
       render: (u: User) => (
-        <span className="font-medium text-slate-700">{u.mobileNumber}</span>
+        <span className="font-medium text-slate-700">{u.countryCode ? `${u.countryCode} ${u.mobileNumber}` : u.mobileNumber}</span>
       )
     },
     {

@@ -37,8 +37,10 @@ export default function NotificationsPage() {
   const [limitCount, setLimitCount] = useState(PAGE_SIZE);
   const [hasMore, setHasMore] = useState(false);
   const [showComposer, setShowComposer] = useState(false);
-  const [notificationTitle, setNotificationTitle] = useState("");
-  const [notificationBody, setNotificationBody] = useState("");
+  const [notificationTitleEn, setNotificationTitleEn] = useState("");
+  const [notificationBodyEn, setNotificationBodyEn] = useState("");
+  const [notificationTitleHi, setNotificationTitleHi] = useState("");
+  const [notificationBodyHi, setNotificationBodyHi] = useState("");
   const [sendingNotification, setSendingNotification] = useState(false);
 
   // Map of customerId -> displayName
@@ -173,21 +175,24 @@ export default function NotificationsPage() {
   };
 
   const handleSendNotification = async () => {
-    const title = notificationTitle.trim();
-    const body = notificationBody.trim();
-
-    if (!title || !body) {
-      toast.error("Please enter both title and message");
+    if (!notificationTitleEn.trim() || !notificationBodyEn.trim() || !notificationTitleHi.trim() || !notificationBodyHi.trim()) {
+      toast.error(t('fill_all_fields'));
       return;
     }
 
     setSendingNotification(true);
     try {
-      const result: any = await sendBroadcastNotification(title, body, { target: "ALL_USERS" });
+      const result: any = await sendBroadcastNotification(
+        { en: notificationTitleEn, hi: notificationTitleHi },
+        { en: notificationBodyEn, hi: notificationBodyHi },
+        { target: "ALL_USERS" }
+      );
       toast.success(`Notification sent to ${result.recipients ?? 0} user(s)`);
       setShowComposer(false);
-      setNotificationTitle("");
-      setNotificationBody("");
+      setNotificationTitleEn("");
+      setNotificationBodyEn("");
+      setNotificationTitleHi("");
+      setNotificationBodyHi("");
     } catch (error: any) {
       console.error("Failed to send notification", error);
       toast.error(error?.message || "Failed to send notification");
@@ -272,7 +277,7 @@ export default function NotificationsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-semibold ${!notification.read ? 'text-slate-900' : 'text-slate-600'}`}>
-                      {(notification as any).titleKey ? t((notification as any).titleKey) : notification.title}
+                      {(notification as any).titleKey ? t((notification as any).titleKey) : (typeof notification.title === 'string' ? notification.title : (notification.title as any)?.en)}
                     </p>
                     {/* Display resolved customer name (if available) */}
                     {(() => {
@@ -288,7 +293,10 @@ export default function NotificationsPage() {
                     <p className={`text-sm mt-1 ${!notification.read ? 'text-slate-700' : 'text-slate-500'}`}>
                       {(notification as any).messageKey
                         ? t((notification as any).messageKey, (notification as any).messageParams || {})
-                        : notification.message}
+                        : (() => {
+                            const val = notification.message || (notification as any).body;
+                            return typeof val === 'string' ? val : (val?.en || '');
+                          })()}
                     </p>
                     <p className="text-xs font-medium text-slate-400 mt-3">
                       {formatRelativeTime(notification.createdAt)}
@@ -318,37 +326,64 @@ export default function NotificationsPage() {
         isOpen={showComposer}
         onClose={() => setShowComposer(false)}
         title="Send push notification"
-        maxWidth="md"
+        maxWidth="2xl"
         footer={
           <>
             <Button variant="secondary" onClick={() => setShowComposer(false)}>
               Cancel
             </Button>
-            <Button variant="primary" onClick={handleSendNotification} disabled={sendingNotification}>
+            <Button 
+              variant="primary" 
+              onClick={handleSendNotification} 
+              disabled={sendingNotification || !notificationTitleEn.trim() || !notificationBodyEn.trim() || !notificationTitleHi.trim() || !notificationBodyHi.trim()}
+            >
               {sendingNotification ? "Sending..." : "Send to all users"}
             </Button>
           </>
         }
       >
         <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
-            <input
-              type="text"
-              value={notificationTitle}
-              onChange={(e) => setNotificationTitle(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Project launch"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Title (English)</label>
+              <input
+                type="text"
+                value={notificationTitleEn}
+                onChange={(e) => setNotificationTitleEn(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Project launch"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Title (Hindi)</label>
+              <input
+                type="text"
+                value={notificationTitleHi}
+                onChange={(e) => setNotificationTitleHi(e.target.value)}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="प्रोजेक्ट लॉन्च"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Message</label>
-            <textarea
-              value={notificationBody}
-              onChange={(e) => setNotificationBody(e.target.value)}
-              className="w-full min-h-[120px] px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Share a special offer or an important update with all customers."
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Message (English)</label>
+              <textarea
+                value={notificationBodyEn}
+                onChange={(e) => setNotificationBodyEn(e.target.value)}
+                className="w-full min-h-[120px] px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Share a special offer..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Message (Hindi)</label>
+              <textarea
+                value={notificationBodyHi}
+                onChange={(e) => setNotificationBodyHi(e.target.value)}
+                className="w-full min-h-[120px] px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="एक विशेष प्रस्ताव साझा करें..."
+              />
+            </div>
           </div>
         </div>
       </Modal>

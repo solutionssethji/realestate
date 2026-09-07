@@ -37,6 +37,8 @@ interface User {
   email: string;
   role: string;
   photoURL?: string;
+  mobileNumber?: string;
+  countryCode?: string;
 }
 
 interface AuthContextType {
