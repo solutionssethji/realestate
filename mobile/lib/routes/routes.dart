@@ -1,5 +1,4 @@
-import 'package:customer_app/pages/auth/forgot_password/forgot_password.page.dart'
-    show ForgotPasswordPage;
+import 'package:customer_app/pages/auth/otp/otp.page.dart' show OtpPage;
 import 'package:customer_app/pages/auth/login/login.page.dart' show LoginPage;
 import 'package:customer_app/pages/auth/register/register.page.dart'
     show RegisterPage;
@@ -15,7 +14,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../main.dart';
 import '../pages/profile/profile.page.dart';
 import '../pages/profile/edit_profile/edit_profile.page.dart';
-import '../pages/auth/change_password/change_password.page.dart';
 import '../pages/kyc/kyc.page.dart';
 import '../pages/my_properties/my_properties.page.dart';
 import '../pages/support/support.page.dart';
@@ -32,6 +30,10 @@ import '../pages/about/about.page.dart';
 import '../pages/my_enquiries/my_enquiries.page.dart';
 import '../pages/my_site_visits/my_site_visits.page.dart';
 import '../widgets/bottom_nav_bar/bottom_nav_bar.widget.dart';
+import '../pages/splash/splash.page.dart';
+import '../pages/virtual_tour/virtual_tour.page.dart';
+import '../pages/welcome/welcome.page.dart';
+import '../pages/language_selection/language_selection.page.dart';
 import 'app_routes.dart';
 
 import '../providers/auth_provider.dart';
@@ -54,19 +56,43 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: AppRoutes.home,
+    initialLocation: AppRoutes.splash,
     refreshListenable: notifier,
     redirect: (context, state) {
+      // Allow Splash Screen to load and handle its own navigation
+      if (state.matchedLocation == AppRoutes.splash) {
+        return null;
+      }
+
       final isAuth = appBox.get('authToken') != null;
+      final hasSelectedLanguage =
+          appBox.get('hasSelectedLanguage', defaultValue: false) as bool;
+      final hasSeenWelcome =
+          appBox.get('hasSeenWelcome', defaultValue: false) as bool;
+
+      if (!hasSelectedLanguage &&
+          state.matchedLocation != AppRoutes.languageSelection) {
+        return AppRoutes.languageSelection;
+      }
+
+      if (hasSelectedLanguage &&
+          !hasSeenWelcome &&
+          state.matchedLocation != AppRoutes.welcome &&
+          state.matchedLocation != AppRoutes.languageSelection) {
+        return AppRoutes.welcome;
+      }
 
       final isGoingToAuth =
           state.matchedLocation == AppRoutes.login ||
-          state.matchedLocation == AppRoutes.register ||
-          state.matchedLocation == AppRoutes.forgotPassword;
+          state.matchedLocation == AppRoutes.otp;
 
       const isGoingToPublic = false;
 
-      if (!isAuth && !isGoingToAuth && !isGoingToPublic) {
+      if (!isAuth &&
+          !isGoingToAuth &&
+          !isGoingToPublic &&
+          state.matchedLocation != AppRoutes.welcome &&
+          state.matchedLocation != AppRoutes.languageSelection) {
         return AppRoutes.login;
       }
 
@@ -78,6 +104,18 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
     debugLogDiagnostics: false,
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.languageSelection,
+        builder: (context, state) => const LanguageSelectionPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.welcome,
+        builder: (context, state) => const WelcomePage(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return BottomNavBar(navigationShell: navigationShell);
@@ -129,11 +167,29 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.register,
-        builder: (context, state) => const RegisterPage(),
+        builder: (context, state) {
+          final extras = state.extra as Map<String, dynamic>?;
+          return RegisterPage(
+            phoneNumber: extras?['phoneNumber'] as String?,
+            countryCode: extras?['countryCode'] as String?,
+          );
+        },
       ),
       GoRoute(
-        path: AppRoutes.forgotPassword,
-        builder: (context, state) => const ForgotPasswordPage(),
+        path: AppRoutes.otp,
+        builder: (context, state) {
+          final extras = state.extra as Map<String, dynamic>?;
+          final verificationId = extras?['verificationId'] as String? ?? '';
+          final phoneNumber = extras?['phoneNumber'] as String? ?? '';
+          final completeNumber = extras?['completeNumber'] as String? ?? '';
+          final countryCode = extras?['countryCode'] as String? ?? '';
+          return OtpPage(
+            verificationId: verificationId,
+            phoneNumber: phoneNumber,
+            completeNumber: completeNumber,
+            countryCode: countryCode,
+          );
+        },
       ),
 
       // Other Top-Level Routes (these hide the bottom nav bar naturally)
@@ -189,6 +245,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             ProjectDetailsPage(projectId: state.pathParameters['id']!),
         routes: [
           GoRoute(
+            path: '360-tour',
+            builder: (context, state) {
+              final url = state.uri.queryParameters['url'] ?? '';
+              return VirtualTourPage(url: url);
+            },
+          ),
+          GoRoute(
             path: 'plots',
             builder: (context, state) =>
                 PlotAvailabilityPage(projectId: state.pathParameters['id']!),
@@ -216,10 +279,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.editProfile,
         builder: (context, state) => const EditProfilePage(),
-      ),
-      GoRoute(
-        path: AppRoutes.changePassword,
-        builder: (context, state) => const ChangePasswordPage(),
       ),
       GoRoute(
         path: AppRoutes.kyc,

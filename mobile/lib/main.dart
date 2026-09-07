@@ -4,6 +4,7 @@ import 'package:customer_app/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -18,6 +19,7 @@ import 'routes/app_routes.dart';
 import 'constants.dart';
 import 'firebase_options.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+import 'widgets/version_check_wrapper.dart';
 
 late Box appBox;
 
@@ -80,7 +82,10 @@ void _handleNotificationTap(RemoteMessage message) {
     GoRouter.of(context).push(AppRoutes.myEnquiries);
   } else if (type == 'SITE_VISIT_UPDATE') {
     GoRouter.of(context).push(AppRoutes.mySiteVisits);
-  } else if (type == 'PLOT_ASSIGNED' || type == 'PAYMENT' || type == 'PAYMENT_UPDATE' || type == 'BOOKING') {
+  } else if (type == 'PLOT_ASSIGNED' ||
+      type == 'PAYMENT' ||
+      type == 'PAYMENT_UPDATE' ||
+      type == 'BOOKING') {
     if (resourceId != null) {
       GoRouter.of(context).push(AppRoutes.bookingDetails(resourceId));
     } else {
@@ -92,7 +97,8 @@ void _handleNotificationTap(RemoteMessage message) {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Hive.initFlutter();
@@ -138,34 +144,36 @@ class RealEstateApp extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeControllerProvider);
-    return MaterialApp.router(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      scaffoldMessengerKey: rootScaffoldMessengerKey,
-      routerConfig: router,
-      theme: AppTheme.lightTheme,
-      locale: locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) {
-        return GestureDetector(
-          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: ResponsiveBreakpoints.builder(
-            child: child!,
-            breakpoints: const [
-              Breakpoint(start: 0, end: 450, name: MOBILE),
-              Breakpoint(start: 451, end: 800, name: TABLET),
-              Breakpoint(start: 801, end: 1920, name: DESKTOP),
-              Breakpoint(start: 1921, end: double.infinity, name: '4K'),
-            ],
-          ),
-        );
-      },
+    return VersionCheckWrapper(
+      child: MaterialApp.router(
+        title: AppConstants.appName,
+        debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: rootScaffoldMessengerKey,
+        routerConfig: router,
+        theme: AppTheme.lightTheme,
+        locale: locale,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) {
+          return GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 450, name: MOBILE),
+                Breakpoint(start: 451, end: 800, name: TABLET),
+                Breakpoint(start: 801, end: 1920, name: DESKTOP),
+                Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

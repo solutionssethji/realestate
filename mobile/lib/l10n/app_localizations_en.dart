@@ -967,7 +967,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backToLogin => 'Back to Login';
 
   @override
-  String get createAccount => 'Create Account';
+  String get createAccount => 'Complete Profile';
+
+  @override
+  String get authLost => 'Authentication lost. Please try again.';
+
+  @override
+  String get accountCreatedSuccessfully => 'Account created successfully!';
+
+  @override
+  String get registrationFailed => 'Failed to complete registration.';
+
+  @override
+  String get failedToVerifyOtp => 'Failed to verify OTP';
+
+  @override
+  String get otpResentSuccessfully => 'OTP resent successfully';
+
+  @override
+  String get failedToResendOtp => 'Failed to resend OTP';
+
+  @override
+  String get failedToSendOtp => 'Failed to send OTP';
+
+  @override
+  String get otpSentSuccessfully => 'OTP sent successfully!';
 
   @override
   String get joinUs => 'Join Us';
@@ -1335,4 +1359,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featured => 'Featured';
+
+  @override
+  String get tapToChange => 'Tap to change';
+
+  @override
+  String get unknownUser => 'Unknown User';
+
+  @override
+  String get userNotLoggedIn => 'User not logged in';
+
+  @override
+  String get failedToLoadPropertyDetails => 'Failed to load property details';
+
+  @override
+  String get failedToLoadPayments => 'Failed to load payments';
+
+  @override
+  String get failedToChangePassword => 'Failed to change password';
+
+  @override
+  String get currentPasswordIncorrect => 'Current password is incorrect';
+
+  @override
+  String get newPasswordTooWeak => 'New password is too weak';
+
+  @override
+  String get amountInWords => 'Amount in Words';
+
+  @override
+  String get saveReceipt => 'Save Receipt';
+
+  @override
+  String get saveLedger => 'Save Ledger';
+
+  @override
+  String get zeroOnly => 'Zero only';
+
+  @override
+  String get indianRupee => 'Indian Rupee';
 }

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../services/api_service.dart';
 import '../../../services/storage_service.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'edit_profile.state.dart';
 
@@ -19,9 +20,10 @@ class EditProfileLogic extends _$EditProfileLogic {
 
   Future<bool> updateProfile({
     required String fullName,
-    required String mobileNumber,
+    required String email,
     XFile? newProfileImage,
     bool removeExistingPhoto = false,
+    required AppLocalizations l10n,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
@@ -30,7 +32,7 @@ class EditProfileLogic extends _$EditProfileLogic {
       if (user == null) {
         state = state.copyWith(
           isLoading: false,
-          errorMessage: 'User not found. Please log in again.',
+          errorMessage: l10n.userNotFound,
         );
         return false;
       }
@@ -47,10 +49,7 @@ class EditProfileLogic extends _$EditProfileLogic {
         }
       }
 
-      final data = <String, dynamic>{
-        'fullName': fullName,
-        'mobileNumber': mobileNumber,
-      };
+      final data = <String, dynamic>{'fullName': fullName, 'email': email};
 
       if (photoURL != null) {
         data['photoURL'] = photoURL;

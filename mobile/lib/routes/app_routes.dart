@@ -1,8 +1,11 @@
 class AppRoutes {
+  static const String splash = '/splash';
+  static const String languageSelection = '/language-selection';
+  static const String welcome = '/welcome';
   // Auth
   static const String login = '/login';
   static const String register = '/register';
-  static const String forgotPassword = '/forgot-password';
+  static const String otp = '/otp';
 
   // Main Tabs
   static const String home = '/home';
@@ -35,12 +38,14 @@ class AppRoutes {
   static const String terms = '/terms';
   static const String privacy = '/privacy';
   static const String editProfile = '/edit-profile';
-  static const String changePassword = '/change-password';
   static const String faq = '/faq';
 
   // Project
   static const String projectDetailsBase = '/project/:id';
   static String projectDetails(String projectId) => '/project/$projectId';
+
+  static String virtualTour(String projectId, String url) =>
+      '/project/$projectId/360-tour?url=${Uri.encodeComponent(url)}';
 
   static String plotAvailability(String projectId) =>
       '/project/$projectId/plots';

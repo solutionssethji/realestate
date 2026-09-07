@@ -10,6 +10,7 @@ abstract class Customer with _$Customer {
     required String id,
     required String fullName,
     required String mobileNumber,
+    String? countryCode,
     String? email,
     String? photoURL,
     String? address,

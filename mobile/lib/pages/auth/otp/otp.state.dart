@@ -1,11 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'login.state.freezed.dart';
+part 'otp.state.freezed.dart';
 
 @freezed
-sealed class LoginState with _$LoginState {
-  const factory LoginState({
+sealed class OtpState with _$OtpState {
+  const factory OtpState({
     @Default(false) bool isLoading,
     String? errorMessage,
-  }) = _LoginState;
+  }) = _OtpState;
 }

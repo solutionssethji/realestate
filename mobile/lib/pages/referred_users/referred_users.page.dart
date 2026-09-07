@@ -100,7 +100,7 @@ class ReferredUsersPage extends HookConsumerWidget {
   }
 
   Widget _buildUserCard(BuildContext context, Map<String, dynamic> user) {
-    final fullName = user['fullName'] ?? user['name'] ?? 'Unknown User';
+    final fullName = user['fullName'] ?? user['name'] ?? context.l10n.unknownUser;
     final mobile = user['mobileNumber'] ?? user['phone'] ?? '';
     final email = user['email'] ?? '';
     final photoURL = user['photoURL'] as String?;

@@ -11,7 +11,6 @@ import '../../utils/l10n_extension.dart';
 import '../../providers/fab_provider.dart';
 import '../../pages/home/home.logic.dart';
 import '../../routes/app_routes.dart';
-import '../../config/feature_flags.dart';
 
 // ─── Tab descriptor ────────────────────────────────────────────────────────────
 
@@ -76,7 +75,7 @@ class BottomNavBar extends ConsumerWidget {
       extendBody: true,
       body: navigationShell,
       // ── FAB — only on Home tab ──────────────────────────────────────────────
-      floatingActionButton: (navigationShell.currentIndex == 0 && FeatureFlags.enableSupport)
+      floatingActionButton: (navigationShell.currentIndex == 0)
           ? AnimatedOpacity(
               opacity: fabVisible ? 1.0 : 0.0,
               duration: _kAnimDuration,
@@ -100,16 +99,23 @@ class BottomNavBar extends ConsumerWidget {
                 height: _kNavBarHeight,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(_kNavBarRadius),
-                  color: AppTheme.white.withValues(alpha: .88),
+                  color: AppTheme.white.withValues(alpha: .10),
                   border: Border.all(
-                    color: AppTheme.white.withValues(alpha: .30),
+                    color: AppTheme.white.withValues(alpha: .18),
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppTheme.white.withValues(alpha: .18),
+                      AppTheme.white.withValues(alpha: .05),
+                    ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.black.withValues(alpha: .08),
-                      blurRadius: 24,
-                      spreadRadius: -2,
-                      offset: const Offset(0, 10),
+                      color: AppTheme.black.withValues(alpha: .10),
+                      blurRadius: 30,
+                      offset: const Offset(0, 12),
                     ),
                   ],
                 ),
@@ -242,8 +248,22 @@ class _NavItem extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
               color: selected
-                  ? primary.withValues(alpha: .10)
-                  : AppTheme.transparent,
+                  ? AppTheme.white.withValues(alpha: .35)
+                  : AppTheme.white.withValues(alpha: .00),
+              border: Border.all(
+                color: selected
+                    ? AppTheme.white.withValues(alpha: .25)
+                    : AppTheme.white.withValues(alpha: .00),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: selected
+                      ? primary.withValues(alpha: .08)
+                      : primary.withValues(alpha: .00),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

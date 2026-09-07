@@ -103,15 +103,15 @@ class AppTheme {
         displayColor: textPrimary,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: surface,
-        foregroundColor: midnightNavy,
+        backgroundColor: midnightNavy,
+        foregroundColor: white,
         elevation: 0,
         centerTitle: true,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
         titleTextStyle: AppTypography.textTheme.titleLarge?.copyWith(
-          color: midnightNavy,
+          color: white,
         ),
-        iconTheme: const IconThemeData(color: midnightNavy),
+        iconTheme: const IconThemeData(color: white),
       ),
       cardTheme: CardThemeData(
         elevation: 8,

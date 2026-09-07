@@ -1,9 +1,15 @@
 import 'dart:io';
+import 'package:customer_app/utils/l10n_extension.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../routes/app_routes.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/api_service.dart';
 import '../../../services/storage_service.dart';
+import '../../../main.dart';
+import '../../../utils/snackbar_utils.dart';
 import 'register.state.dart';
 
 part 'register.logic.g.dart';
@@ -15,26 +21,20 @@ class RegisterLogic extends _$RegisterLogic {
     return const RegisterState();
   }
 
-  void toggleObscure() {
-    state = state.copyWith(isObscure: !state.isObscure);
-  }
-
-  Future<bool> register({
+  Future<void> register({
     required String name,
     required String mobile,
+    required String countryCode,
     required String email,
-    required String password,
     String? referralCode,
     XFile? profileImage,
-    required dynamic l10n,
+    required BuildContext context,
   }) async {
-    if (name.isEmpty || mobile.isEmpty || email.isEmpty || password.isEmpty) {
-      state = state.copyWith(errorMessage: l10n.pleaseFillAllFields);
-      return false;
-    }
-
     state = state.copyWith(isLoading: true, errorMessage: null);
 
+    final l10n = context.l10n;
+
+    // Validate referral code if provided
     String? referredByUid;
     if (referralCode != null && referralCode.isNotEmpty) {
       final referrer = await ApiService.getUserByReferralCode(referralCode);
@@ -43,65 +43,63 @@ class RegisterLogic extends _$RegisterLogic {
           isLoading: false,
           errorMessage: l10n.invalidReferralCode,
         );
-        return false;
+        return;
       }
       referredByUid = referrer['id']?.toString();
     }
 
-    final userCredential = await AuthService.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-
-    if (userCredential == null) {
-      state = state.copyWith(isLoading: false);
-      return false;
+    final user = AuthService.currentUser;
+    if (user == null) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: l10n.authLost,
+      );
+      return;
     }
 
     // Create user document in Firestore
-    if (userCredential.user != null) {
-      String photoURL = '';
-
-      if (profileImage != null) {
-        final downloadUrl = await StorageService.uploadProfileImage(
-          uid: userCredential.user!.uid,
-          file: File(profileImage.path),
-        );
-        if (downloadUrl != null) {
-          photoURL = downloadUrl;
-        }
+    String photoURL = '';
+    if (profileImage != null) {
+      final downloadUrl = await StorageService.uploadProfileImage(
+        uid: user.uid,
+        file: File(profileImage.path),
+      );
+      if (downloadUrl != null) {
+        photoURL = downloadUrl;
       }
+    }
 
-      await ApiService.createUserProfile(userCredential.user!.uid, {
-        'id': userCredential.user!.uid,
+    try {
+      await ApiService.createUserProfile(user.uid, {
+        'id': user.uid,
         'fullName': name,
         'mobileNumber': mobile,
+        'countryCode': countryCode,
         'email': email,
         'photoURL': photoURL,
         'role': 'CUSTOMER',
         'status': 'ACTIVE',
-        'referredBy': ?referredByUid,
-        'createdAt': DateTime.now()
-            .toIso8601String(), // Or omit if handled server side
+        'referredBy': referredByUid,
+        'createdAt': DateTime.now().toIso8601String(),
         'updatedAt': DateTime.now().toIso8601String(),
       });
-    }
 
-    // Send email verification
-    if (userCredential.user != null && !userCredential.user!.emailVerified) {
-      // Increment referrer's invite count before signing out (needs auth)
       if (referredByUid != null) {
-        await ApiService.incrementUserInvitesSent(
-          referredByUid,
-          userCredential.user!.uid,
-        );
+        await ApiService.incrementUserInvitesSent(referredByUid, user.uid);
       }
-      await userCredential.user!.sendEmailVerification();
-      // We sign out the user so they have to login after verifying
-      await AuthService.signOut();
-    }
 
-    state = state.copyWith(isLoading: false);
-    return true;
+      await appBox.put('isProfileComplete', true);
+
+      state = state.copyWith(isLoading: false);
+      if (context.mounted) {
+        AppSnackbar.showSuccess(context, l10n.accountCreatedSuccessfully);
+        context.go(AppRoutes.home);
+      }
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: l10n.registrationFailed,
+      );
+    }
   }
 }

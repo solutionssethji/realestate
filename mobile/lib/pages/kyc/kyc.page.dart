@@ -361,7 +361,7 @@ class KycPage extends HookConsumerWidget {
                                   if (imageState.value != null ||
                                       existingUrl != null)
                                     Text(
-                                      'Tap to change',
+                                      l10n.tapToChange,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall

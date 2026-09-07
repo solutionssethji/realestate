@@ -827,7 +827,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get uploadDocumentImage => 'दस्तावेज की छवि अपलोड करें:';
 
   @override
-  String get userNotFound => 'उपयोगकर्ता नहीं मिला। कृपया पुनः लॉग इन करें।';
+  String get userNotFound => 'उपयोगकर्ता नहीं मिला। कृपया पुनः लॉगिन करें।';
 
   @override
   String failedToPickImage(String error) {
@@ -969,6 +969,30 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get createAccount => 'खाता बनाएं';
+
+  @override
+  String get authLost => 'प्रमाणीकरण खो गया। कृपया पुनः प्रयास करें।';
+
+  @override
+  String get accountCreatedSuccessfully => 'खाता सफलतापूर्वक बन गया!';
+
+  @override
+  String get registrationFailed => 'पंजीकरण पूरा करने में विफल।';
+
+  @override
+  String get failedToVerifyOtp => 'OTP सत्यापित करने में विफल';
+
+  @override
+  String get otpResentSuccessfully => 'OTP सफलतापूर्वक पुनः भेजा गया';
+
+  @override
+  String get failedToResendOtp => 'OTP पुनः भेजने में विफल';
+
+  @override
+  String get failedToSendOtp => 'OTP भेजने में विफल';
+
+  @override
+  String get otpSentSuccessfully => 'OTP सफलतापूर्वक भेजा गया!';
 
   @override
   String get joinUs => 'हमसे जुड़ें';
@@ -1338,4 +1362,44 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get featured => 'प्रदर्शित';
+
+  @override
+  String get tapToChange => 'बदलने के लिए टैप करें';
+
+  @override
+  String get unknownUser => 'अज्ञात उपयोगकर्ता';
+
+  @override
+  String get userNotLoggedIn => 'उपयोगकर्ता लॉग इन नहीं है';
+
+  @override
+  String get failedToLoadPropertyDetails =>
+      'संपत्ति का विवरण लोड करने में विफल';
+
+  @override
+  String get failedToLoadPayments => 'भुगतान लोड करने में विफल';
+
+  @override
+  String get failedToChangePassword => 'पासवर्ड बदलने में विफल';
+
+  @override
+  String get currentPasswordIncorrect => 'वर्तमान पासवर्ड गलत है';
+
+  @override
+  String get newPasswordTooWeak => 'नया पासवर्ड बहुत कमजोर है';
+
+  @override
+  String get amountInWords => 'शब्दों में राशि';
+
+  @override
+  String get saveReceipt => 'रसीद सहेजें';
+
+  @override
+  String get saveLedger => 'लेजर सहेजें';
+
+  @override
+  String get zeroOnly => 'केवल शून्य';
+
+  @override
+  String get indianRupee => 'भारतीय रुपया';
 }
