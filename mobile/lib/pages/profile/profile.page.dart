@@ -16,6 +16,8 @@ import '../../routes/app_routes.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/locale_provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../services/auth_service.dart';
+import '../../services/api_service.dart';
 
 class ProfilePage extends HookConsumerWidget {
   const ProfilePage({super.key});
@@ -44,7 +46,11 @@ class ProfilePage extends HookConsumerWidget {
         leading: IconButton(
           icon: const Icon(LucideIcons.globe),
           onPressed: () {
-            AppDialogs.showLanguageBottomSheet(context, ref, locale.languageCode);
+            AppDialogs.showLanguageBottomSheet(
+              context,
+              ref,
+              locale.languageCode,
+            );
           },
         ),
         actions: [
@@ -61,23 +67,14 @@ class ProfilePage extends HookConsumerWidget {
                 : IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text(l10n.signOut),
-                          content: Text(l10n.logoutConfirmation),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              child: Text(l10n.cancel),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              child: Text(l10n.signOut),
-                            ),
-                          ],
-                        ),
-                      );
+                      final confirm =
+                          await AppDialogs.showConfirmationBottomSheet(
+                            context,
+                            title: l10n.signOut,
+                            message: l10n.logoutConfirmation,
+                            confirmText: l10n.signOut,
+                            cancelText: l10n.cancel,
+                          );
                       if (confirm != true) return;
 
                       await logic.logout();
@@ -258,6 +255,61 @@ class ProfilePage extends HookConsumerWidget {
                     },
                   ),
 
+                  const SizedBox(height: 12),
+                  _buildActionTile(
+                    context,
+                    LucideIcons.trash2,
+                    // Hardcoded fallback if translation is not generated yet
+                    l10n.deleteAccount,
+                    () async {
+                      final confirm =
+                          await AppDialogs.showConfirmationBottomSheet(
+                            context,
+                            title: l10n.deleteAccount,
+                            message: l10n.deleteAccountWarning,
+                            confirmText: l10n.deleteAccount,
+                            cancelText: l10n.cancel,
+                            isDestructive: true,
+                          );
+                      if (confirm != true) return;
+
+                      final uid = AuthService.currentUser?.uid;
+                      if (uid != null) {
+                        final properties =
+                            await ApiService.fetchUserPropertiesPagination(
+                              limit: 1,
+                              uid: uid,
+                            );
+                        if (properties.data.isNotEmpty && context.mounted) {
+                          AppSnackbar.showError(
+                            context,
+                            l10n.cannotDeleteAccountBooking,
+                          );
+                          return;
+                        }
+                      }
+
+                      final success = await logic.deleteAccount();
+                      if (success && context.mounted) {
+                        context.go(AppRoutes.home);
+                      } else if (!success && context.mounted) {
+                        if (state.errorMessage?.contains(
+                              'requires-recent-login',
+                            ) ==
+                            true) {
+                          AppSnackbar.showError(
+                            context,
+                            'Please sign in again to delete your account.',
+                          );
+                          await logic.logout();
+                          if (context.mounted) {
+                            context.go(AppRoutes.login);
+                          }
+                        }
+                      }
+                    },
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                   const SizedBox(height: 120),
                 ],
               ),
@@ -269,26 +321,26 @@ class ProfilePage extends HookConsumerWidget {
     BuildContext context,
     IconData icon,
     String title,
-    VoidCallback onTap,
-  ) {
+    VoidCallback onTap, {
+    Color? color,
+  }) {
+    final effectiveColor = color ?? Theme.of(context).colorScheme.primary;
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+          color: effectiveColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(
-          icon,
-          size: 20,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        child: Icon(icon, size: 20, color: effectiveColor),
       ),
-      title: Text(title, style: Theme.of(context).textTheme.titleSmall),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(color: color),
+      ),
       trailing: const Icon(Icons.chevron_right, size: 20),
       onTap: onTap,
     );
   }
-
 }

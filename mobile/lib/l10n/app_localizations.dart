@@ -2701,6 +2701,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Indian Rupee'**
   String get indianRupee;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account? This action cannot be undone.'**
+  String get deleteAccountWarning;
+
+  /// No description provided for @cannotDeleteAccountBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot delete your account because you have an active booking.'**
+  String get cannotDeleteAccountBooking;
 }
 
 class _AppLocalizationsDelegate

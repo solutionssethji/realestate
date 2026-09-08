@@ -110,13 +110,13 @@ function UsersContent() {
             onChange={(e) => handleUpdateStatus(u, e.target.value)}
             disabled={statusLoading === u.id}
             className={`appearance-none pl-3 pr-8 py-1.5 text-xs font-bold rounded-full outline-none cursor-pointer border-2 transition-all ${u.status === 'BLOCKED' ? 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100' :
-                u.status === 'DELETED' ? 'bg-slate-100 text-slate-600 border-slate-300' :
-                  'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+              u.status === 'DELETED' ? 'bg-slate-100 text-slate-600 border-slate-300' :
+                'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
               } ${statusLoading === u.id ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <option value="ACTIVE">{t('active')}</option>
+            <option value="DISABLED">{t('disabled')}</option>
             <option value="BLOCKED">{t('blocked')}</option>
-            <option value="DELETED">{t('deleted')}</option>
           </select>
           <div className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2">
             {statusLoading === u.id

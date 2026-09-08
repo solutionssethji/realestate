@@ -15,6 +15,12 @@ service cloud.firestore {
       return isLoggedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    // ─── App Config ──────────────────────────────────────────────────────────
+    match /app_config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // ─── Users ───────────────────────────────────────────────────────────────
     match /users/{userId} {
       // Allow public read so we can query user status before OTP. Write is restricted.

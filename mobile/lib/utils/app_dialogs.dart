@@ -152,6 +152,89 @@ class AppDialogs {
     );
   }
 
+  /// Shows a confirmation bottom sheet and returns true if confirmed.
+  static Future<bool?> showConfirmationBottomSheet(
+    BuildContext context, {
+    required String title,
+    required String message,
+    required String confirmText,
+    required String cancelText,
+    bool isDestructive = false,
+  }) {
+    return showModalBottomSheet<bool>(
+      context: context,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  message,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 54,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            textStyle: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: Text(cancelText),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: SizedBox(
+                        height: 54,
+                        child: FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: isDestructive
+                                ? Theme.of(context).colorScheme.error
+                                : null,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            textStyle: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: Text(confirmText),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   /// Shows a full-screen image viewer dialog.
   static void showImageViewer(BuildContext context, String imageUrl) {
     showDialog(

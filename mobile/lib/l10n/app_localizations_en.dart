@@ -1411,4 +1411,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get indianRupee => 'Indian Rupee';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountWarning =>
+      'Are you sure you want to delete your account? This action cannot be undone.';
+
+  @override
+  String get cannotDeleteAccountBooking =>
+      'You cannot delete your account because you have an active booking.';
 }

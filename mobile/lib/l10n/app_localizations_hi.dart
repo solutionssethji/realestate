@@ -1292,7 +1292,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get viewPaymentDetails => 'भुगतान विवरण देखें';
 
   @override
-  String get statusScheduled => 'Scheduled';
+  String get statusScheduled => 'निर्धारित';
 
   @override
   String get statusInProgress => 'प्रगति पर';
@@ -1414,4 +1414,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get indianRupee => 'भारतीय रुपया';
+
+  @override
+  String get deleteAccount => 'खाता हटाएं';
+
+  @override
+  String get deleteAccountWarning =>
+      'क्या आप वाकई अपना खाता हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।';
+
+  @override
+  String get cannotDeleteAccountBooking =>
+      'आप अपना खाता नहीं हटा सकते क्योंकि आपकी एक सक्रिय बुकिंग है।';
 }
