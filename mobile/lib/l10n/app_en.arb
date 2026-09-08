@@ -633,5 +633,8 @@
   "saveReceipt": "Save Receipt",
   "saveLedger": "Save Ledger",
   "zeroOnly": "Zero only",
-  "indianRupee": "Indian Rupee"
+  "indianRupee": "Indian Rupee",
+  "deleteAccount": "Delete Account",
+  "deleteAccountWarning": "Are you sure you want to delete your account? This action cannot be undone.", 
+  "cannotDeleteAccountBooking": "You cannot delete your account because you have an active booking."
 }

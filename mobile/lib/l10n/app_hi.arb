@@ -465,5 +465,9 @@
   "saveReceipt": "रसीद सहेजें",
   "saveLedger": "लेजर सहेजें",
   "zeroOnly": "केवल शून्य",
-  "indianRupee": "भारतीय रुपया"
+  "indianRupee": "भारतीय रुपया",
+  "deleteAccount": "खाता हटाएं",
+  "deleteAccountWarning": "क्या आप वाकई अपना खाता हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
+  "cannotDeleteAccountBooking": "आप अपना खाता नहीं हटा सकते क्योंकि आपकी एक सक्रिय बुकिंग है।",
+  "statusScheduled": "निर्धारित"
 }
