@@ -251,14 +251,12 @@ class ApiService {
 
   static Future<(List<Offer>, DocumentSnapshot?)> getOffers({
     DocumentSnapshot? lastDocument,
-    int limit = 20,
   }) async {
-    logApi(function: 'getOffers()', request: {'limit': limit});
+    logApi(function: 'getOffers()');
     try {
       var query = _db
           .collection('offers')
-          .where('status', whereIn: ['ACTIVE', 'Active', 'active'])
-          .limit(limit);
+          .where('status', whereIn: ['ACTIVE', 'Active', 'active']);
 
       if (lastDocument != null) {
         query = query.startAfterDocument(lastDocument);
@@ -736,6 +734,36 @@ class ApiService {
         .doc(uid)
         .snapshots()
         .map((doc) => doc.exists ? {'id': doc.id, ...doc.data()!} : null);
+  }
+
+  static Future<String?> checkUserStatusByPhone(
+    String mobileNumber,
+    String countryCode,
+  ) async {
+    logApi(
+      function: 'checkUserStatusByPhone()',
+      request: {'mobileNumber': mobileNumber, 'countryCode': countryCode},
+    );
+    try {
+      final querySnapshot = await _db
+          .collection('users')
+          .where('mobileNumber', isEqualTo: mobileNumber)
+          .where('countryCode', isEqualTo: countryCode)
+          .limit(1)
+          .get();
+      if (querySnapshot.docs.isEmpty) {
+        return null; // Not found, which is fine for new users
+      }
+
+      final data = querySnapshot.docs.first.data();
+      return data['status'] as String?;
+    } catch (e) {
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'checkUserStatusByPhone()',
+      );
+      return null;
+    }
   }
 
   static Future<void> createUserProfile(

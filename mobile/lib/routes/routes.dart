@@ -4,7 +4,6 @@ import 'package:customer_app/pages/auth/register/register.page.dart'
     show RegisterPage;
 import '../pages/booking_details/booking_details.page.dart'
     show BookingDetailsPage;
-import 'package:customer_app/pages/offer_details/offer_details.page.dart';
 import 'package:customer_app/pages/referral/referral.page.dart';
 import '../pages/referred_users/referred_users.page.dart';
 import '../pages/notifications/notifications.page.dart';
@@ -22,7 +21,6 @@ import '../pages/projects/projects.page.dart';
 import '../pages/project_details/project_details.page.dart';
 import '../pages/plot_availability/plot_availability.page.dart';
 import '../pages/plot_details/plot_details.page.dart';
-import '../pages/offers/offers.page.dart';
 import '../pages/enquiry/enquiry.page.dart';
 import '../pages/site_visit/site_visit.page.dart';
 import '../pages/calculator/calculator.page.dart';
@@ -37,11 +35,57 @@ import '../pages/language_selection/language_selection.page.dart';
 import 'app_routes.dart';
 
 import '../providers/auth_provider.dart';
+import '../services/auth_service.dart';
+import '../l10n/app_localizations.dart';
 
 class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
   RouterNotifier(this._ref) {
     _ref.listen(currentUserProvider, (_, _) => notifyListeners());
+
+    // Listen to customer profile changes to handle block/delete
+    _ref.listen(customerProvider, (previous, next) async {
+      final currentUser = _ref.read(currentUserProvider);
+      if (currentUser == null) return;
+
+      if (next.hasValue) {
+        final customer = next.value;
+
+        // Handle blocked user
+        if (customer != null &&
+            (customer.status == 'DISABLED' || customer.status == 'BLOCKED')) {
+          await AuthService.signOut();
+          if (rootNavigatorKey.currentContext != null) {
+            final l10n = AppLocalizations.of(rootNavigatorKey.currentContext!);
+            _showSnack(l10n.authErrUserDisabled);
+          }
+        }
+        // Handle deleted user (profile existed before but is now null or status is DELETED)
+        else if ((customer != null && customer.status == 'DELETED') ||
+            (previous != null &&
+                previous.hasValue &&
+                previous.value != null &&
+                customer == null)) {
+          await AuthService.signOut();
+          if (rootNavigatorKey.currentContext != null) {
+            final l10n = AppLocalizations.of(rootNavigatorKey.currentContext!);
+            _showSnack(l10n.authErrUserDeleted);
+          }
+        }
+      }
+    });
+  }
+
+  void _showSnack(String message) {
+    if (rootScaffoldMessengerKey.currentState != null) {
+      rootScaffoldMessengerKey.currentState!.showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red.shade600,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 }
 
@@ -192,18 +236,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // Other Top-Level Routes (these hide the bottom nav bar naturally)
-      GoRoute(
-        path: AppRoutes.offers,
-        builder: (context, state) => const OffersPage(),
-        routes: [
-          GoRoute(
-            path: ':offerId',
-            builder: (context, state) =>
-                OfferDetailsPage(offerId: state.pathParameters['offerId']!),
-          ),
-        ],
-      ),
       GoRoute(
         path: AppRoutes.enquiry,
         builder: (context, state) => EnquiryPage(

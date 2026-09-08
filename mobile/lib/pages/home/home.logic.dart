@@ -17,7 +17,7 @@ class HomeLogic extends _$HomeLogic {
     try {
       final results = await Future.wait([
         ApiService.getProjects(limit: 10, isFeatured: true),
-        ApiService.getOffers(limit: 7),
+        ApiService.getOffers(),
         ApiService.getContactSettings(),
       ]);
 

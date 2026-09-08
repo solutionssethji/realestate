@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../routes/app_routes.dart';
 import '../../../services/auth_service.dart';
 import '../../../utils/l10n_extension.dart';
+import '../../../services/api_service.dart';
 import 'login.state.dart';
 
 part 'login.logic.g.dart';
@@ -25,6 +26,21 @@ class LoginLogic extends _$LoginLogic {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
+      final status = await ApiService.checkUserStatusByPhone(phoneNumber, countryCode);
+      if (status == 'DISABLED' || status == 'BLOCKED') {
+        state = state.copyWith(isLoading: false, errorMessage: l10n.authErrUserDisabled);
+        if (context.mounted) {
+          _showBlockedDialog(context, l10n.authErrUserDisabled);
+        }
+        return;
+      } else if (status == 'DELETED') {
+        state = state.copyWith(isLoading: false, errorMessage: l10n.authErrUserDeleted);
+        if (context.mounted) {
+          _showBlockedDialog(context, l10n.authErrUserDeleted);
+        }
+        return;
+      }
+
       await AuthService.verifyPhoneNumber(
         phoneNumber: completeNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
@@ -66,5 +82,23 @@ class LoginLogic extends _$LoginLogic {
         AppSnackbar.showError(context, l10n.failedToSendOtp);
       }
     }
+  }
+
+  void _showBlockedDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Text(context.l10n.error),
+        content: Text(message),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(context.l10n.close),
+          ),
+        ],
+      ),
+    );
   }
 }
