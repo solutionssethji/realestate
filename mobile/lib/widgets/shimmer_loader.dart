@@ -90,7 +90,9 @@ class PlotCardSkeleton extends StatelessWidget {
 
 /// Shimmer skeleton for a horizontal offer card.
 class OfferCardSkeleton extends StatelessWidget {
-  const OfferCardSkeleton({super.key});
+  final bool isBanner;
+
+  const OfferCardSkeleton({super.key, this.isBanner = false});
 
   @override
   Widget build(BuildContext context) {
@@ -109,28 +111,29 @@ class OfferCardSkeleton extends StatelessWidget {
       child: Shimmer.fromColors(
         baseColor: AppTheme.neutral200,
         highlightColor: AppTheme.neutral100,
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AspectRatio(
-              aspectRatio: 21 / 9,
+            const AspectRatio(
+              aspectRatio: 16 / 9,
               child: ColoredBox(color: AppTheme.surface),
             ),
-            Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ShimmerBox(height: 20, width: 100),
-                  AppSpacing.hSm,
-                  _ShimmerBox(height: 22, width: double.infinity),
-                  AppSpacing.hXs,
-                  _ShimmerBox(height: 16, width: 220),
-                  AppSpacing.hXs,
-                  _ShimmerBox(height: 16, width: 160),
-                ],
+            if (!isBanner)
+              Padding(
+                padding: EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _ShimmerBox(height: 20, width: 100),
+                    AppSpacing.hSm,
+                    _ShimmerBox(height: 22, width: double.infinity),
+                    AppSpacing.hXs,
+                    _ShimmerBox(height: 16, width: 220),
+                    AppSpacing.hXs,
+                    _ShimmerBox(height: 16, width: 160),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -259,11 +262,7 @@ class DetailPageSkeleton extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           // ── Cover image ──────────────────────────────────────────────────
-          const _ShimmerBox(
-            height: 250,
-            width: double.infinity,
-            radius: 0,
-          ),
+          const _ShimmerBox(height: 250, width: double.infinity, radius: 0),
 
           // ── Body ─────────────────────────────────────────────────────────
           Padding(

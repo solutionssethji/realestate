@@ -16,4 +16,14 @@ class PriceFormatter {
   static String formatNumber(double amount) {
     return _numberFormat.format(amount);
   }
+
+  static String formatString(String priceString) {
+    if (priceString.isEmpty) return priceString;
+    // Try to parse the string as double
+    final parsed = double.tryParse(priceString.replaceAll(RegExp(r'[^0-9.]'), ''));
+    if (parsed != null && parsed > 0) {
+      return format(parsed);
+    }
+    return priceString; // Fallback if parsing fails or 0
+  }
 }

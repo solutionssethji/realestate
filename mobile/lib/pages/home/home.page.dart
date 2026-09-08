@@ -35,15 +35,25 @@ class HomePage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 75,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        title: Image.asset(
-          'assets/logo_with_text.png',
-          height: 60,
-          fit: BoxFit.contain,
+        title: ColorFiltered(
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          child: Image.asset(
+            'assets/logo_with_vtext.png',
+            height: 60,
+            fit: BoxFit.contain,
+          ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.language, color: Colors.white),
+            onPressed: () {
+              context.push(AppRoutes.languageSelection);
+            },
+          ),
           Consumer(
             builder: (context, ref, child) {
               final unreadCount =
@@ -60,20 +70,16 @@ class HomePage extends HookConsumerWidget {
                         ),
                         child: const Icon(
                           Icons.notifications,
-                          color: AppTheme.midnightNavy,
+                          color: Colors.white,
                         ),
                       )
-                    : const Icon(
-                        Icons.notifications,
-                        color: AppTheme.midnightNavy,
-                      ),
+                    : const Icon(Icons.notifications, color: Colors.white),
                 onPressed: () {
                   context.push(AppRoutes.notifications);
                 },
               );
             },
           ),
-          const SizedBox(width: 8),
         ],
       ),
       body: NotificationListener<UserScrollNotification>(
@@ -119,7 +125,7 @@ class HomePage extends HookConsumerWidget {
                   child: state.isLoading
                       ? CarouselSlider(
                           options: CarouselOptions(
-                            height: 280,
+                            aspectRatio: 16 / 9,
                             viewportFraction: 0.9,
                             enableInfiniteScroll: false,
                             padEnds: true,
@@ -129,20 +135,19 @@ class HomePage extends HookConsumerWidget {
                               const Align(
                                 alignment: Alignment.topCenter,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.sm,
-                                  ),
-                                  child: OfferCardSkeleton(),
+                                  padding: EdgeInsets.symmetric(horizontal: 6),
+                                  child: OfferCardSkeleton(isBanner: true),
                                 ),
                               ),
                           ],
                         )
                       : CarouselSlider(
                           options: CarouselOptions(
-                            height: 280,
+                            aspectRatio: 16 / 9,
                             viewportFraction: 0.9,
                             enableInfiniteScroll: false,
                             padEnds: true,
+                            autoPlay: true,
                           ),
                           items: [
                             for (
@@ -156,9 +161,7 @@ class HomePage extends HookConsumerWidget {
                               Align(
                                 alignment: Alignment.topCenter,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.sm,
-                                  ),
+                                  padding: const EdgeInsets.only(right: 6),
                                   child: OfferCard(
                                     offer: state.offers[i],
                                     onTap: () {
@@ -179,7 +182,8 @@ class HomePage extends HookConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(
                     AppSpacing.lg,
-                    AppSpacing.section,
+                    // AppSpacing.section,
+                    0,
                     AppSpacing.lg,
                     AppSpacing.md,
                   ),

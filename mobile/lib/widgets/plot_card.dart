@@ -136,9 +136,7 @@ class PlotCard extends StatelessWidget {
                                   ),
                             ),
                             Text(
-                              context.l10n.inrPrice(
-                                PriceFormatter.formatNumber(plot.price),
-                              ),
+                              PriceFormatter.format(plot.price),
                               style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(
                                     color: AppTheme.midnightNavy,
