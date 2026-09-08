@@ -1,3 +1,4 @@
+import '../../utils/app_dialogs.dart';
 import 'package:customer_app/widgets/app_cached_image.dart';
 import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,7 @@ class ProjectDetailsPage extends HookConsumerWidget {
                     SliverToBoxAdapter(
                       child: GestureDetector(
                         onTap: () =>
-                            _showImageViewer(context, project.coverImage),
+                            AppDialogs.showImageViewer(context, project.coverImage),
                         child: AppCachedImage(
                           imageUrl: project.coverImage,
                           width: double.infinity,
@@ -255,7 +256,7 @@ class _LeftContent extends StatelessWidget {
                     borderRadius: AppRadius.circularMd,
                     child: GestureDetector(
                       onTap: () =>
-                          _showImageViewer(context, project.gallery[i]),
+                          AppDialogs.showImageViewer(context, project.gallery[i]),
                       child: AppCachedImage(
                         imageUrl: project.gallery[i],
                         width: 260,
@@ -471,37 +472,3 @@ class _Section extends StatelessWidget {
   }
 }
 
-void _showImageViewer(BuildContext context, String imageUrl) {
-  showDialog(
-    context: context,
-    builder: (context) => Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.zero,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: Container(color: Colors.black87),
-          ),
-          InteractiveViewer(
-            panEnabled: true,
-            minScale: 0.5,
-            maxScale: 4.0,
-            child: Center(
-              child: AppCachedImage(imageUrl: imageUrl, fit: BoxFit.contain),
-            ),
-          ),
-          Positioned(
-            top: 40,
-            right: 20,
-            child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white, size: 30),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}

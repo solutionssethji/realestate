@@ -1,3 +1,4 @@
+import '../../utils/app_dialogs.dart';
 import 'package:customer_app/config/locale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -55,7 +56,7 @@ class HomePage extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.language, color: Colors.white),
             onPressed: () {
-              _showLanguageBottomSheet(context, ref, locale.languageCode);
+              AppDialogs.showLanguageBottomSheet(context, ref, locale.languageCode);
             },
           ),
           Consumer(
@@ -263,99 +264,4 @@ class HomePage extends HookConsumerWidget {
     ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
-  void _showLanguageBottomSheet(
-    BuildContext context,
-    WidgetRef ref,
-    String currentLanguageCode,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        final l10n = context.l10n;
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.language,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 16),
-                _buildLanguageOption(
-                  ctx,
-                  ref,
-                  l10n.langEnglish,
-                  'en',
-                  currentLanguageCode == 'en',
-                ),
-                const SizedBox(height: 12),
-                _buildLanguageOption(
-                  ctx,
-                  ref,
-                  l10n.langHindi,
-                  'hi',
-                  currentLanguageCode == 'hi',
-                ),
-                const SizedBox(height: 16),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLanguageOption(
-    BuildContext context,
-    WidgetRef ref,
-    String title,
-    String code,
-    bool isSelected,
-  ) {
-    return InkWell(
-      onTap: () {
-        ref.read(localeControllerProvider.notifier).setLocale(code);
-        Navigator.pop(context);
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected
-                ? Theme.of(context).colorScheme.primary
-                : AppTheme.neutral300,
-            width: isSelected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(10),
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05)
-              : AppTheme.transparent,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
 }

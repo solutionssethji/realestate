@@ -1,3 +1,4 @@
+import '../../../utils/app_dialogs.dart';
 import 'package:customer_app/utils/snackbar_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,13 +31,13 @@ class LoginLogic extends _$LoginLogic {
       if (status == 'DISABLED' || status == 'BLOCKED') {
         state = state.copyWith(isLoading: false, errorMessage: l10n.authErrUserDisabled);
         if (context.mounted) {
-          _showBlockedDialog(context, l10n.authErrUserDisabled);
+          AppDialogs.showErrorDialog(context, l10n.authErrUserDisabled);
         }
         return;
       } else if (status == 'DELETED') {
         state = state.copyWith(isLoading: false, errorMessage: l10n.authErrUserDeleted);
         if (context.mounted) {
-          _showBlockedDialog(context, l10n.authErrUserDeleted);
+          AppDialogs.showErrorDialog(context, l10n.authErrUserDeleted);
         }
         return;
       }
@@ -84,21 +85,4 @@ class LoginLogic extends _$LoginLogic {
     }
   }
 
-  void _showBlockedDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: Text(context.l10n.error),
-        content: Text(message),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(context.l10n.close),
-          ),
-        ],
-      ),
-    );
-  }
 }
