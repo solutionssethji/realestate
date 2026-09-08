@@ -14,6 +14,7 @@ import '../../widgets/error_state.dart';
 import '../../widgets/app_loading_view.dart';
 import '../../routes/app_routes.dart';
 import '../../theme/theme.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ProjectsPage extends HookConsumerWidget {
   const ProjectsPage({super.key});
@@ -202,6 +203,6 @@ class ProjectsPage extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }

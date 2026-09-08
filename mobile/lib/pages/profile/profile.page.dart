@@ -14,6 +14,7 @@ import 'profile.logic.dart';
 import '../../routes/app_routes.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/locale_provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ProfilePage extends HookConsumerWidget {
   const ProfilePage({super.key});
@@ -260,7 +261,7 @@ class ProfilePage extends HookConsumerWidget {
                 ],
               ),
             ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   Widget _buildActionTile(

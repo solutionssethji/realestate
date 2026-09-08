@@ -15,6 +15,7 @@ import '../../routes/app_routes.dart';
 import '../../widgets/error_state.dart';
 import '../../widgets/empty_state.dart';
 import '../../utils/price_formatter.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ProjectDetailsPage extends HookConsumerWidget {
   final String projectId;
@@ -208,7 +209,7 @@ class ProjectDetailsPage extends HookConsumerWidget {
                 ),
               ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }
 

@@ -13,6 +13,7 @@ import 'offer_details.logic.dart';
 import '../../theme/theme.dart';
 import '../../utils/l10n_extension.dart';
 import '../../routes/app_routes.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class OfferDetailsPage extends HookConsumerWidget {
   final String offerId;
@@ -56,7 +57,7 @@ class OfferDetailsPage extends HookConsumerWidget {
             ],
           ),
         ),
-      );
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
     }
 
     if (state.isError) {

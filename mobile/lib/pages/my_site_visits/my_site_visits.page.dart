@@ -10,6 +10,7 @@ import '../../utils/l10n_extension.dart';
 import '../../theme/theme.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import 'my_site_visits.logic.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class MySiteVisitsPage extends HookConsumerWidget {
   const MySiteVisitsPage({super.key});
@@ -22,7 +23,7 @@ class MySiteVisitsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.mySiteVisits),
       body: SafeArea(child: _buildBody(context, ref, state, l10n)),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   Widget _buildBody(BuildContext context, WidgetRef ref, state, l10n) {

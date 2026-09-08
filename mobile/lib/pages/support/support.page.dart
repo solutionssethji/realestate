@@ -7,6 +7,7 @@ import '../../utils/l10n_extension.dart';
 import '../../theme/theme.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import 'support.logic.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class SupportPage extends HookConsumerWidget {
   const SupportPage({super.key});
@@ -20,7 +21,7 @@ class SupportPage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.supportCenter),
       body: SafeArea(child: _buildBody(context, logic, state, l10n)),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   Widget _buildBody(BuildContext context, SupportLogic logic, state, l10n) {

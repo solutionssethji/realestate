@@ -701,6 +701,9 @@ class AppLocalizationsHi extends AppLocalizations {
       'आपका खाता निष्क्रिय कर दिया गया है। कृपया सहायता से संपर्क करें।';
 
   @override
+  String get authErrUserDeleted => 'आपका खाता एडमिन द्वारा हटा दिया गया है।';
+
+  @override
   String get authErrEmailAlreadyInUse => 'इस ईमेल से पहले से एक खाता मौजूद है।';
 
   @override
@@ -1289,10 +1292,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get viewPaymentDetails => 'भुगतान विवरण देखें';
 
   @override
-  String get statusNew => 'नया';
+  String get statusScheduled => 'Scheduled';
 
   @override
-  String get statusConfirmed => 'पुष्टि हो गई';
+  String get statusInProgress => 'प्रगति पर';
 
   @override
   String get statusCompleted => 'पूर्ण';
@@ -1301,19 +1304,28 @@ class AppLocalizationsHi extends AppLocalizations {
   String get statusCancelled => 'रद्द';
 
   @override
+  String get statusClosed => 'बंद';
+
+  @override
+  String get error => 'त्रुटि';
+
+  @override
+  String get close => 'बंद करें';
+
+  @override
+  String get statusNew => 'नया';
+
+  @override
+  String get statusConfirmed => 'पुष्टि हो गई';
+
+  @override
   String get statusContacted => 'संपर्क किया गया';
 
   @override
   String get statusFollowUp => 'फ़ॉलो-अप';
 
   @override
-  String get statusInProgress => 'प्रगति पर';
-
-  @override
   String get statusResolved => 'हल हो गया';
-
-  @override
-  String get statusClosed => 'बंद';
 
   @override
   String get naLabel => 'N/A';

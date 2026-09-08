@@ -1382,6 +1382,12 @@ abstract class AppLocalizations {
   /// **'Your account has been disabled. Please contact support.'**
   String get authErrUserDisabled;
 
+  /// No description provided for @authErrUserDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted by the admin.'**
+  String get authErrUserDeleted;
+
   /// No description provided for @authErrEmailAlreadyInUse.
   ///
   /// In en, this message translates to:
@@ -2456,17 +2462,17 @@ abstract class AppLocalizations {
   /// **'View Payment Details'**
   String get viewPaymentDetails;
 
-  /// No description provided for @statusNew.
+  /// No description provided for @statusScheduled.
   ///
   /// In en, this message translates to:
-  /// **'New'**
-  String get statusNew;
+  /// **'Scheduled'**
+  String get statusScheduled;
 
-  /// No description provided for @statusConfirmed.
+  /// No description provided for @statusInProgress.
   ///
   /// In en, this message translates to:
-  /// **'Confirmed'**
-  String get statusConfirmed;
+  /// **'In Progress'**
+  String get statusInProgress;
 
   /// No description provided for @statusCompleted.
   ///
@@ -2480,6 +2486,36 @@ abstract class AppLocalizations {
   /// **'Cancelled'**
   String get statusCancelled;
 
+  /// No description provided for @statusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get statusClosed;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @statusNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get statusNew;
+
+  /// No description provided for @statusConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get statusConfirmed;
+
   /// No description provided for @statusContacted.
   ///
   /// In en, this message translates to:
@@ -2492,23 +2528,11 @@ abstract class AppLocalizations {
   /// **'Follow Up'**
   String get statusFollowUp;
 
-  /// No description provided for @statusInProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'In Progress'**
-  String get statusInProgress;
-
   /// No description provided for @statusResolved.
   ///
   /// In en, this message translates to:
   /// **'Resolved'**
   String get statusResolved;
-
-  /// No description provided for @statusClosed.
-  ///
-  /// In en, this message translates to:
-  /// **'Closed'**
-  String get statusClosed;
 
   /// No description provided for @naLabel.
   ///

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../theme/theme.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class VirtualTourPage extends StatefulWidget {
   final String url;
@@ -91,6 +92,6 @@ class _VirtualTourPageState extends State<VirtualTourPage> {
             ),
         ],
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }

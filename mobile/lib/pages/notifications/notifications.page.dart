@@ -16,6 +16,7 @@ import 'package:customer_app/theme/spacing.dart';
 import 'package:customer_app/widgets/offer_card.dart';
 import 'package:customer_app/models/app_notification.dart';
 import 'notifications.logic.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class NotificationsPage extends HookConsumerWidget {
   const NotificationsPage({super.key});
@@ -195,6 +196,6 @@ class NotificationsPage extends HookConsumerWidget {
                 ),
               ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }

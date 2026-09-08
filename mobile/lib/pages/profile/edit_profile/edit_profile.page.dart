@@ -15,6 +15,7 @@ import 'edit_profile.logic.dart';
 import '../../../utils/validators.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../providers/auth_provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class EditProfilePage extends HookConsumerWidget {
   const EditProfilePage({super.key});
@@ -232,6 +233,6 @@ class EditProfilePage extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }

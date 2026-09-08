@@ -8,6 +8,7 @@ import '../../../theme/theme.dart';
 
 import '../../../widgets/background_painters.widget.dart';
 import 'login.logic.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class LoginPage extends HookConsumerWidget {
   const LoginPage({super.key});
@@ -158,6 +159,6 @@ class LoginPage extends HookConsumerWidget {
           ],
         ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }

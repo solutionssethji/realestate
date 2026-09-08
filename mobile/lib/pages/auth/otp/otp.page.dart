@@ -8,6 +8,7 @@ import 'dart:async';
 import '../../../theme/theme.dart';
 import '../../../widgets/background_painters.widget.dart';
 import 'otp.logic.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class OtpPage extends HookConsumerWidget {
   final String verificationId;
@@ -245,6 +246,6 @@ class OtpPage extends HookConsumerWidget {
           ],
         ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }
