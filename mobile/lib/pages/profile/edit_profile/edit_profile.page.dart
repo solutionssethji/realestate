@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:customer_app/routes/app_routes.dart';
 import 'package:customer_app/widgets/app_text_field.dart';
 import 'package:customer_app/widgets/premium_app_bar.dart';
 import 'package:customer_app/widgets/premium_button.dart';
@@ -9,7 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import '../../../widgets/app_cached_image.dart';
 import '../../../utils/l10n_extension.dart';
 import '../../../theme/theme.dart';
@@ -230,49 +228,10 @@ class EditProfilePage extends HookConsumerWidget {
                 onPressed: isFormFilled ? handleUpdateProfile : null,
                 isLoading: state.isLoading,
               ),
-              const SizedBox(height: 32),
-              Text(
-                l10n.account,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 16),
-              _buildActionTile(
-                context,
-                LucideIcons.fileBadge,
-                l10n.kycAndDocuments,
-                () => context.push(AppRoutes.kyc),
-              ),
-              const SizedBox(height: 12),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildActionTile(
-    BuildContext context,
-    IconData icon,
-    String title,
-    VoidCallback onTap,
-  ) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Icon(
-          icon,
-          size: 20,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-      title: Text(title, style: Theme.of(context).textTheme.titleSmall),
-      trailing: const Icon(Icons.chevron_right, size: 20),
-      onTap: onTap,
     );
   }
 }

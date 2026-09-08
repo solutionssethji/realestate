@@ -10,6 +10,7 @@ import '../../widgets/empty_state.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../services/payment_receipt_service.dart';
+import '../../utils/price_formatter.dart';
 
 class BookingDetailsPage extends HookConsumerWidget {
   final String id;
@@ -23,11 +24,6 @@ class BookingDetailsPage extends HookConsumerWidget {
     final l10n = context.l10n;
     final tt = Theme.of(context).textTheme;
     final locale = Localizations.localeOf(context);
-    final currencyFormat = NumberFormat.currency(
-      locale: 'en_IN',
-      symbol: '₹',
-      decimalDigits: 0,
-    );
     final bookingData = state.bookingData ?? {};
 
     Widget buildBody() {
@@ -200,19 +196,19 @@ class BookingDetailsPage extends HookConsumerWidget {
                             final boxes = [
                               _SummaryBox(
                                 label: l10n.totalAmount,
-                                value: currencyFormat.format(state.totalAmount),
+                                value: PriceFormatter.format(state.totalAmount),
                                 bgColor: AppTheme.neutral50,
                                 valueColor: AppTheme.midnightNavy,
                               ),
                               _SummaryBox(
                                 label: l10n.paidAmount,
-                                value: currencyFormat.format(state.paidAmount),
+                                value: PriceFormatter.format(state.paidAmount),
                                 bgColor: const Color(0xFFF0FFF4),
                                 valueColor: AppColors.success,
                               ),
                               _SummaryBox(
                                 label: l10n.pendingBalance,
-                                value: currencyFormat.format(
+                                value: PriceFormatter.format(
                                   state.balance > 0 ? state.balance : 0,
                                 ),
                                 bgColor: const Color(0xFFFFF5F5),
@@ -343,7 +339,7 @@ class BookingDetailsPage extends HookConsumerWidget {
                                   : l10n.naLabel;
 
                               return _PaymentRow(
-                                amount: currencyFormat.format(amount),
+                                amount: PriceFormatter.format(amount),
                                 subtitle: subtitle,
                                 dateFormatted: dateFormatted,
                                 statusLabel: l10n.paymentCompleted,
