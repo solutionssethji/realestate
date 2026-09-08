@@ -16,6 +16,7 @@ import '../../utils/l10n_extension.dart';
 import '../../utils/validators.dart';
 import '../../utils/snackbar_utils.dart';
 import '../../theme/theme.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class KycPage extends HookConsumerWidget {
   const KycPage({super.key});
@@ -261,7 +262,7 @@ class KycPage extends HookConsumerWidget {
                 ),
               ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   Widget _buildDocumentSection({

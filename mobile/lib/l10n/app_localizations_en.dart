@@ -701,6 +701,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your account has been disabled. Please contact support.';
 
   @override
+  String get authErrUserDeleted =>
+      'Your account has been deleted by the admin.';
+
+  @override
   String get authErrEmailAlreadyInUse =>
       'An account with this email already exists.';
 
@@ -1286,10 +1290,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewPaymentDetails => 'View Payment Details';
 
   @override
-  String get statusNew => 'New';
+  String get statusScheduled => 'Scheduled';
 
   @override
-  String get statusConfirmed => 'Confirmed';
+  String get statusInProgress => 'In Progress';
 
   @override
   String get statusCompleted => 'Completed';
@@ -1298,19 +1302,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusCancelled => 'Cancelled';
 
   @override
+  String get statusClosed => 'Closed';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get statusNew => 'New';
+
+  @override
+  String get statusConfirmed => 'Confirmed';
+
+  @override
   String get statusContacted => 'Contacted';
 
   @override
   String get statusFollowUp => 'Follow Up';
 
   @override
-  String get statusInProgress => 'In Progress';
-
-  @override
   String get statusResolved => 'Resolved';
-
-  @override
-  String get statusClosed => 'Closed';
 
   @override
   String get naLabel => 'N/A';

@@ -1,3 +1,4 @@
+import '../../../utils/app_dialogs.dart';
 import 'package:customer_app/utils/snackbar_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../routes/app_routes.dart';
 import '../../../services/auth_service.dart';
 import '../../../utils/l10n_extension.dart';
+import '../../../services/api_service.dart';
 import 'login.state.dart';
 
 part 'login.logic.g.dart';
@@ -25,6 +27,21 @@ class LoginLogic extends _$LoginLogic {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
+      final status = await ApiService.checkUserStatusByPhone(phoneNumber, countryCode);
+      if (status == 'DISABLED' || status == 'BLOCKED') {
+        state = state.copyWith(isLoading: false, errorMessage: l10n.authErrUserDisabled);
+        if (context.mounted) {
+          AppDialogs.showErrorDialog(context, l10n.authErrUserDisabled);
+        }
+        return;
+      } else if (status == 'DELETED') {
+        state = state.copyWith(isLoading: false, errorMessage: l10n.authErrUserDeleted);
+        if (context.mounted) {
+          AppDialogs.showErrorDialog(context, l10n.authErrUserDeleted);
+        }
+        return;
+      }
+
       await AuthService.verifyPhoneNumber(
         phoneNumber: completeNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
@@ -67,4 +84,5 @@ class LoginLogic extends _$LoginLogic {
       }
     }
   }
+
 }

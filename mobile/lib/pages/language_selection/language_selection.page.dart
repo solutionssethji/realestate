@@ -106,7 +106,7 @@ class LanguageSelectionPage extends HookConsumerWidget {
           ),
         ],
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }
 

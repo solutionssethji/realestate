@@ -13,6 +13,7 @@ import '../../widgets/error_state.dart';
 import 'package:customer_app/l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import '../../widgets/shimmer_loader.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class PlotAvailabilityPage extends HookConsumerWidget {
   final String projectId;
@@ -157,7 +158,7 @@ class PlotAvailabilityPage extends HookConsumerWidget {
           ),
         ],
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }
 

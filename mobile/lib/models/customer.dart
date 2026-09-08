@@ -17,6 +17,7 @@ abstract class Customer with _$Customer {
     String? city,
     String? state,
     String? pincode,
+    String? status,
     // KYC Fields
     String? aadharNumber,
     String? aadharPhotoUrl,

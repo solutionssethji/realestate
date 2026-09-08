@@ -1,3 +1,5 @@
+import '../../utils/app_dialogs.dart';
+import 'package:customer_app/config/locale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/rendering.dart';
 import '../../providers/fab_provider.dart';
 import '../../providers/notifications_provider.dart';
 import '../../routes/app_routes.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -26,12 +29,14 @@ class HomePage extends HookConsumerWidget {
     final loc = AppLocalizations.of(context);
     final state = ref.watch(homeLogicProvider);
     final logic = ref.read(homeLogicProvider.notifier);
+    final locale = ref.watch(localeControllerProvider);
+
     useEffect(() {
       Future.microtask(() {
         logic.loadData();
       });
       return null;
-    }, []);
+    }, [locale.languageCode]);
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +56,7 @@ class HomePage extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.language, color: Colors.white),
             onPressed: () {
-              context.push(AppRoutes.languageSelection);
+              AppDialogs.showLanguageBottomSheet(context, ref, locale.languageCode);
             },
           ),
           Consumer(
@@ -111,12 +116,8 @@ class HomePage extends HookConsumerWidget {
                     ),
                     child: SectionHeader(
                       title: loc.offers,
-                      actionLabel: state.offers.length > 6
-                          ? context.l10n.viewAll
-                          : null,
-                      onAction: state.offers.length > 6
-                          ? () => context.push(AppRoutes.offers)
-                          : null,
+                      actionLabel: null,
+                      onAction: null,
                     ),
                   ),
                 ),
@@ -260,6 +261,7 @@ class HomePage extends HookConsumerWidget {
         ),
       ),
       extendBody: true,
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
+
 }

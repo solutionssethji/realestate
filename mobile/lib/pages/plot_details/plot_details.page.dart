@@ -14,6 +14,7 @@ import '../../utils/price_formatter.dart';
 import '../../widgets/premium_button.dart';
 import '../../widgets/status_badge.dart';
 import '../../widgets/shimmer_loader.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class PlotDetailsPage extends ConsumerWidget {
   final String projectId;
@@ -38,7 +39,7 @@ class PlotDetailsPage extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(),
         body: Center(child: Text(context.l10n.unableToLoadProject)),
-      );
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
     }
 
     final plot = state.plot!;

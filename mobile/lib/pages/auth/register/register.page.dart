@@ -17,6 +17,7 @@ import '../../../utils/validators.dart';
 import '../../../utils/snackbar_utils.dart';
 import '../../../widgets/background_painters.widget.dart';
 import '../../../main.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class RegisterPage extends HookConsumerWidget {
   final String? phoneNumber;
@@ -315,6 +316,6 @@ class RegisterPage extends HookConsumerWidget {
           ),
         ],
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }

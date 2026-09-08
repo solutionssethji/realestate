@@ -11,6 +11,7 @@ import 'package:share_plus/share_plus.dart';
 import 'referral.logic.dart';
 import 'package:go_router/go_router.dart';
 import '../../routes/app_routes.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ReferralPage extends HookConsumerWidget {
   const ReferralPage({super.key});
@@ -280,7 +281,7 @@ class ReferralPage extends HookConsumerWidget {
                 ),
               ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 }
 

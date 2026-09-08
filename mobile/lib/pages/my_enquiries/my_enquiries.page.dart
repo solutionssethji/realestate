@@ -9,6 +9,7 @@ import '../../utils/l10n_extension.dart';
 import '../../theme/theme.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import 'my_enquiries.logic.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class MyEnquiriesPage extends HookConsumerWidget {
   const MyEnquiriesPage({super.key});
@@ -21,7 +22,7 @@ class MyEnquiriesPage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.myEnquiries),
       body: SafeArea(child: _buildBody(context, ref, state, l10n)),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   Widget _buildBody(BuildContext context, WidgetRef ref, state, l10n) {

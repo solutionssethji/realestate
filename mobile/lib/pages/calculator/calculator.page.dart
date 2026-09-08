@@ -7,6 +7,7 @@ import '../../utils/price_formatter.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/l10n_extension.dart';
 import '../../theme/theme.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class CalculatorPage extends HookConsumerWidget {
   const CalculatorPage({super.key});
@@ -187,7 +188,7 @@ class CalculatorPage extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   Widget _buildSliderRow(

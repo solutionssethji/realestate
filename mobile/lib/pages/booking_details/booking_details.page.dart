@@ -11,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../services/payment_receipt_service.dart';
 import '../../utils/price_formatter.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class BookingDetailsPage extends HookConsumerWidget {
   final String id;
@@ -374,7 +375,7 @@ class BookingDetailsPage extends HookConsumerWidget {
       appBar: PremiumAppBar(title: l10n.bookingDetailsTitle),
       backgroundColor: AppTheme.background,
       body: buildBody(),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   String _formatDate(dynamic raw, Locale locale) {

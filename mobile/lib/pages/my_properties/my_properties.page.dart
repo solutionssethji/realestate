@@ -11,6 +11,7 @@ import '../../widgets/app_loading_view.dart';
 import 'my_properties.logic.dart';
 import '../../widgets/empty_state.dart';
 import '../../routes/app_routes.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class MyPropertiesPage extends HookConsumerWidget {
   const MyPropertiesPage({super.key});
@@ -255,7 +256,7 @@ class MyPropertiesPage extends HookConsumerWidget {
           ),
         ),
       ),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   String _translateStatus(BuildContext context, String status) {

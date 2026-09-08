@@ -7,6 +7,7 @@ import '../../theme/spacing.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../widgets/generic_shimmer_loader.dart';
 import 'about.logic.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class AboutCompanyPage extends HookConsumerWidget {
   const AboutCompanyPage({super.key});
@@ -18,7 +19,7 @@ class AboutCompanyPage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(title: context.l10n.aboutCompany),
       body: SafeArea(child: _buildBody(context, state)),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   Widget _buildBody(BuildContext context, state) {

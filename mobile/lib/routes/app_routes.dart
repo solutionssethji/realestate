@@ -15,7 +15,6 @@ class AppRoutes {
   static const String notifications = '/notifications';
 
   // Home sub-routes
-  static const String offers = '/offers';
   static String offerDetails(String offerId) => '/offers/$offerId';
 
   static const String enquiry = '/enquiry';

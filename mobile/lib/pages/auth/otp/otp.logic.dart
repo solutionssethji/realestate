@@ -1,3 +1,4 @@
+import '../../../utils/app_dialogs.dart';
 import 'package:customer_app/utils/snackbar_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,30 @@ class OtpLogic extends _$OtpLogic {
         final profile = await ApiService.getUserProfile(uid);
 
         if (profile != null) {
-          // Profile exists, direct login
+          final status = profile['status'] as String?;
+          if (status == 'DISABLED' || status == 'BLOCKED') {
+            await AuthService.signOut();
+            state = state.copyWith(
+              isLoading: false,
+              errorMessage: l10n.authErrUserDisabled,
+            );
+            if (context.mounted) {
+              AppDialogs.showErrorDialog(context, l10n.authErrUserDisabled);
+            }
+            return;
+          } else if (status == 'DELETED') {
+            await AuthService.signOut();
+            state = state.copyWith(
+              isLoading: false,
+              errorMessage: l10n.authErrUserDeleted,
+            );
+            if (context.mounted) {
+              AppDialogs.showErrorDialog(context, l10n.authErrUserDeleted);
+            }
+            return;
+          }
+
+          // Profile exists and not blocked, direct login
           await appBox.put('isProfileComplete', true);
           if (context.mounted) {
             context.go(AppRoutes.home);
@@ -92,6 +116,27 @@ class OtpLogic extends _$OtpLogic {
     final l10n = context.l10n;
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
+      final status = await ApiService.checkUserStatusByPhone(phoneNumber, countryCode);
+      if (status == 'DISABLED' || status == 'BLOCKED') {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: l10n.authErrUserDisabled,
+        );
+        if (context.mounted) {
+          AppDialogs.showErrorDialog(context, l10n.authErrUserDisabled);
+        }
+        return;
+      } else if (status == 'DELETED') {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: l10n.authErrUserDeleted,
+        );
+        if (context.mounted) {
+          AppDialogs.showErrorDialog(context, l10n.authErrUserDeleted);
+        }
+        return;
+      }
+
       await AuthService.verifyPhoneNumber(
         phoneNumber: completeNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {},
@@ -101,7 +146,10 @@ class OtpLogic extends _$OtpLogic {
             errorMessage: e.message ?? l10n.verificationFailed,
           );
           if (context.mounted) {
-            AppSnackbar.showError(context, e.message ?? l10n.verificationFailed);
+            AppSnackbar.showError(
+              context,
+              e.message ?? l10n.verificationFailed,
+            );
           }
         },
         codeSent: (String verificationId, int? resendToken) {
@@ -131,4 +179,5 @@ class OtpLogic extends _$OtpLogic {
       }
     }
   }
+
 }

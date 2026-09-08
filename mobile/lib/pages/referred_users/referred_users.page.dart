@@ -9,6 +9,7 @@ import '../../utils/l10n_extension.dart';
 import '../../widgets/premium_app_bar.dart';
 import '../../widgets/empty_state.dart';
 import 'referred_users.logic.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class ReferredUsersPage extends HookConsumerWidget {
   const ReferredUsersPage({super.key});
@@ -23,7 +24,7 @@ class ReferredUsersPage extends HookConsumerWidget {
       backgroundColor: AppTheme.background,
       appBar: PremiumAppBar(title: l10n.invitesSent),
       body: SafeArea(child: _buildBody(context, ref, state, logic, l10n)),
-    );
+    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
   }
 
   Widget _buildBody(BuildContext context, WidgetRef ref, state, logic, l10n) {
