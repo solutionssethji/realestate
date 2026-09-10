@@ -1,3 +1,4 @@
+import 'package:customer_app/utils/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../theme/theme.dart';
@@ -5,7 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 class VirtualTourPage extends StatefulWidget {
   final String url;
-  
+
   const VirtualTourPage({super.key, required this.url});
 
   @override
@@ -54,9 +55,9 @@ class _VirtualTourPageState extends State<VirtualTourPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          '360° Virtual Tour',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          context.l10n.virtualTourTitle,
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       extendBodyBehindAppBar: true,
@@ -67,10 +68,14 @@ class _VirtualTourPageState extends State<VirtualTourPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, color: Colors.white, size: 48),
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.white,
+                    size: 48,
+                  ),
                   const SizedBox(height: 16),
                   Text(
-                    'Failed to load 360° tour',
+                    context.l10n.failedToLoadTour,
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 8),
@@ -83,7 +88,7 @@ class _VirtualTourPageState extends State<VirtualTourPage> {
             )
           else
             WebViewWidget(controller: _controller),
-            
+
           if (_isLoading && _error == null)
             const Center(
               child: CircularProgressIndicator(
@@ -91,7 +96,7 @@ class _VirtualTourPageState extends State<VirtualTourPage> {
               ),
             ),
         ],
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }

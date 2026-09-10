@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:customer_app/services/auth_service.dart';
 import 'package:customer_app/services/api_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'profile.state.dart';
 
 part 'profile.logic.g.dart';
@@ -10,7 +11,13 @@ part 'profile.logic.g.dart';
 class ProfileLogic extends _$ProfileLogic {
   @override
   ProfileState build() {
+    _init();
     return const ProfileState();
+  }
+
+  Future<void> _init() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    state = state.copyWith(packageInfo: packageInfo);
   }
 
   Future<void> logout() async {

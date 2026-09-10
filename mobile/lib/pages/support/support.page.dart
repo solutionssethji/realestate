@@ -20,8 +20,10 @@ class SupportPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.supportCenter),
-      body: SafeArea(child: _buildBody(context, logic, state, l10n)),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      body: SafeArea(
+        child: _buildBody(context, logic, state, l10n),
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 
   Widget _buildBody(BuildContext context, SupportLogic logic, state, l10n) {

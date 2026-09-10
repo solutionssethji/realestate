@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'dart:async';
 import '../../../theme/theme.dart';
 import '../../../widgets/background_painters.widget.dart';
+import '../../../utils/l10n_extension.dart';
 import 'otp.logic.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -100,7 +101,7 @@ class OtpPage extends HookConsumerWidget {
                       Image.asset('assets/logo_with_vtext.png', height: 100),
                       const SizedBox(height: 24),
                       Text(
-                        'Secure Verification',
+                        context.l10n.secureVerification,
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
                               fontWeight: FontWeight.bold,
@@ -110,7 +111,7 @@ class OtpPage extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "We've sent a 6-digit verification code to\n$completeNumber",
+                        "${context.l10n.otpSentToPrefix}$completeNumber",
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: AppTheme.textSecondary,
                         ),
@@ -142,7 +143,7 @@ class OtpPage extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 32),
                       PremiumButton(
-                        text: "Verify & Continue",
+                        text: context.l10n.verifyAndContinue,
                         isLoading: isLoading,
                         onPressed: () {
                           if (otpCode.value.length == 6) {
@@ -186,12 +187,14 @@ class OtpPage extends HookConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Didn't receive the code? ",
+                                context.l10n.didntReceiveCode,
                                 style: TextStyle(color: AppTheme.textSecondary),
                               ),
                               timeLeft.value > 0
                                   ? Text(
-                                      "Resend in ${timeLeft.value}s",
+                                      context.l10n.resendInSeconds(
+                                        timeLeft.value,
+                                      ),
                                       style: const TextStyle(
                                         color: AppTheme.textSecondary,
                                         fontWeight: FontWeight.bold,
@@ -215,9 +218,9 @@ class OtpPage extends HookConsumerWidget {
                                         tapTargetSize:
                                             MaterialTapTargetSize.shrinkWrap,
                                       ),
-                                      child: const Text(
-                                        "Resend",
-                                        style: TextStyle(
+                                      child: Text(
+                                        context.l10n.resendBtn,
+                                        style: const TextStyle(
                                           color: AppTheme.midnightNavy,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -231,8 +234,8 @@ class OtpPage extends HookConsumerWidget {
                       TextButton(
                         onPressed: isLoading ? null : () => context.pop(),
                         child: Text(
-                          "Change Phone Number",
-                          style: TextStyle(
+                          context.l10n.changePhoneNumber,
+                          style: const TextStyle(
                             color: AppTheme.midnightNavy,
                             fontWeight: FontWeight.bold,
                           ),
@@ -245,7 +248,7 @@ class OtpPage extends HookConsumerWidget {
             ),
           ],
         ),
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }

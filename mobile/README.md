@@ -47,3 +47,35 @@ Upload the resulting `.ipa` to App Store Connect via Transporter or Xcode.
 ## 🧪 Testing
 - **Format Code**: `flutter format lib/`
 - **Analyze Code**: `flutter analyze`
+
+## 🌐 Localization Management
+
+To automatically organize your language files (`app_en.arb` and `app_hi.arb`) in A-Z order, find unused keys, and detect hardcoded static text in the app, run the included helper script:
+
+```bash
+fvm dart scripts/l10n_helper.dart
+```
+
+To automatically remove all unused keys from your language files (`app_en.arb` and `app_hi.arb`) to keep them clean and small, run:
+
+```bash
+fvm dart scripts/remove_unused_keys.dart
+```
+
+To check if any translation keys are missing in either English or Hindi (to ensure both languages are perfectly synced), run:
+
+```bash
+fvm dart scripts/check_missing_keys.dart
+```
+
+To scan the project for unused images/assets and unused Dart files (dead code), run:
+
+```bash
+fvm dart scripts/unused_detector.dart
+```
+
+To automatically delete the unused assets and files found by the script, run:
+
+```bash
+fvm dart scripts/unused_detector.dart --delete
+```

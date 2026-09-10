@@ -13,6 +13,7 @@ import getCroppedImg from "@/lib/cropImage";
 import Cropper from "react-easy-crop";
 import { Modal } from "@/components/ui/Modal";
 import { useLanguage } from "@/context/LanguageContext";
+import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 
 export default function ProfilePage() {
   const { t } = useLanguage();
@@ -23,7 +24,9 @@ export default function ProfilePage() {
   const [formData, setFormData] = useState({
     fullName: "",
     mobileNumber: "",
+    mobileCountryCode: "+91",
     whatsappNumber: "",
+    whatsappCountryCode: "+91",
     firmName: "",
     panNumber: "",
     aadharNumber: "",
@@ -104,7 +107,9 @@ export default function ProfilePage() {
           setFormData({
             fullName: d.fullName || d.name || "",
             mobileNumber: d.mobileNumber || "",
+            mobileCountryCode: d.countryCode || "+91",
             whatsappNumber: d.whatsappNumber || "",
+            whatsappCountryCode: d.whatsappCountryCode || "+91",
             firmName: d.firmName || "",
             panNumber: d.panNumber || "",
             aadharNumber: d.aadharNumber || "",
@@ -235,23 +240,28 @@ export default function ProfilePage() {
       }
 
       const col = user.role.toUpperCase() === "ADMIN" ? "admins" : "agents";
+      const docRef = doc(db, col, auth.currentUser.uid);
+      const snap = await getDoc(docRef);
+      const d = snap.data();
 
       if (user.role.toUpperCase() === "ADMIN") {
-        await updateDoc(doc(db, col, auth.currentUser.uid), {
+        await updateDoc(docRef, {
           name: updates.fullName,
           photoURL: updates.photoURL || "",
           updatedAt: new Date().toISOString(),
         });
       } else {
-        // If new KYC docs were uploaded, set kyc.status to PENDING and persist docs
         const kycPayload: any = {};
         if (newKycDocs.length > 0) {
           kycPayload['kyc.status'] = 'PENDING';
           kycPayload['kyc.docs'] = newKycDocs;
         }
 
+        const { mobileCountryCode, whatsappCountryCode, ...agentData } = updates;
         await updateDoc(doc(db, col, auth.currentUser.uid), {
-          ...updates,
+          ...agentData,
+          countryCode: mobileCountryCode,
+          whatsappCountryCode,
           ...kycPayload,
           updatedAt: new Date().toISOString(),
         });
@@ -373,15 +383,33 @@ export default function ProfilePage() {
             {user?.role?.toUpperCase() !== "ADMIN" && (
               <>
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('mobile_number_label')} *</label>
-                  <input name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} className={inputCls("mobileNumber")} placeholder="10-digit number" />
-                  {errors.mobileNumber && <p className="text-red-500 text-xs mt-1">{errors.mobileNumber}</p>}
+                  <PhoneInputWithCountry
+                    label={`${t('mobile_number_label')} *`}
+                    countryCode={formData.mobileCountryCode}
+                    onCountryCodeChange={(code) => setFormData(prev => ({ ...prev, mobileCountryCode: code }))}
+                    value={formData.mobileNumber}
+                    onChange={(val) => {
+                      setFormData(prev => ({ ...prev, mobileNumber: val }));
+                      setErrors(prev => ({ ...prev, mobileNumber: validateField("mobileNumber", val) }));
+                    }}
+                    error={errors.mobileNumber}
+                    required
+                  />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('whatsapp_number_label')} *</label>
-                  <input name="whatsappNumber" value={formData.whatsappNumber} onChange={handleChange} onBlur={handleBlur} maxLength={10} className={inputCls("whatsappNumber")} placeholder="10-digit number" />
-                  {errors.whatsappNumber && <p className="text-red-500 text-xs mt-1">{errors.whatsappNumber}</p>}
+                  <PhoneInputWithCountry
+                    label={`${t('whatsapp_number_label')} *`}
+                    countryCode={formData.whatsappCountryCode}
+                    onCountryCodeChange={(code) => setFormData(prev => ({ ...prev, whatsappCountryCode: code }))}
+                    value={formData.whatsappNumber}
+                    onChange={(val) => {
+                      setFormData(prev => ({ ...prev, whatsappNumber: val }));
+                      setErrors(prev => ({ ...prev, whatsappNumber: validateField("whatsappNumber", val) }));
+                    }}
+                    error={errors.whatsappNumber}
+                    required
+                  />
                 </div>
               </>
             )}

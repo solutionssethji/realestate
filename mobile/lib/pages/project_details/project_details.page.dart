@@ -58,8 +58,10 @@ class ProjectDetailsPage extends HookConsumerWidget {
                   slivers: [
                     SliverToBoxAdapter(
                       child: GestureDetector(
-                        onTap: () =>
-                            AppDialogs.showImageViewer(context, project.coverImage),
+                        onTap: () => AppDialogs.showImageViewer(
+                          context,
+                          project.coverImage,
+                        ),
                         child: AppCachedImage(
                           imageUrl: project.coverImage,
                           width: double.infinity,
@@ -96,9 +98,9 @@ class ProjectDetailsPage extends HookConsumerWidget {
                                               borderRadius:
                                                   BorderRadius.circular(20),
                                             ),
-                                            child: const Text(
-                                              'FEATURED',
-                                              style: TextStyle(
+                                            child: Text(
+                                              context.l10n.featured,
+                                              style: const TextStyle(
                                                 color: AppTheme.white,
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.bold,
@@ -209,8 +211,8 @@ class ProjectDetailsPage extends HookConsumerWidget {
                   ],
                 ),
               ),
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }
 
@@ -255,8 +257,10 @@ class _LeftContent extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: AppRadius.circularMd,
                     child: GestureDetector(
-                      onTap: () =>
-                          AppDialogs.showImageViewer(context, project.gallery[i]),
+                      onTap: () => AppDialogs.showImageViewer(
+                        context,
+                        project.gallery[i],
+                      ),
                       child: AppCachedImage(
                         imageUrl: project.gallery[i],
                         width: 260,
@@ -434,7 +438,9 @@ class _RightActions extends StatelessWidget {
                   icon: Icons.play_circle_outline,
                   isFullWidth: false,
                   onPressed: () {
-                    context.push(AppRoutes.virtualTour(projectId, project.projectVideo));
+                    context.push(
+                      AppRoutes.virtualTour(projectId, project.projectVideo),
+                    );
                   },
                 ),
               ],
@@ -471,4 +477,3 @@ class _Section extends StatelessWidget {
     );
   }
 }
-

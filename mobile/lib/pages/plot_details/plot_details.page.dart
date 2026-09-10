@@ -33,13 +33,18 @@ class PlotDetailsPage extends ConsumerWidget {
     final bool isDesktop = ResponsiveBreakpoints.of(context).largerThan(TABLET);
 
     if (state.isLoading) {
-      return const Scaffold(body: DetailPageSkeleton());
+      return Scaffold(
+        body: const DetailPageSkeleton()
+            .animate()
+            .fade(duration: 400.ms)
+            .slideY(begin: 0.05, end: 0),
+      );
     }
     if (state.isError || state.plot == null) {
       return Scaffold(
         appBar: AppBar(),
         body: Center(child: Text(context.l10n.unableToLoadProject)),
-      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      );
     }
 
     final plot = state.plot!;

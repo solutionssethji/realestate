@@ -23,8 +23,10 @@ class ReferredUsersPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: PremiumAppBar(title: l10n.invitesSent),
-      body: SafeArea(child: _buildBody(context, ref, state, logic, l10n)),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      body: SafeArea(
+        child: _buildBody(context, ref, state, logic, l10n),
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 
   Widget _buildBody(BuildContext context, WidgetRef ref, state, logic, l10n) {
@@ -101,7 +103,8 @@ class ReferredUsersPage extends HookConsumerWidget {
   }
 
   Widget _buildUserCard(BuildContext context, Map<String, dynamic> user) {
-    final fullName = user['fullName'] ?? user['name'] ?? context.l10n.unknownUser;
+    final fullName =
+        user['fullName'] ?? user['name'] ?? context.l10n.unknownUser;
     final mobile = user['mobileNumber'] ?? user['phone'] ?? '';
     final email = user['email'] ?? '';
     final photoURL = user['photoURL'] as String?;

@@ -1,276 +1,123 @@
 {
   "@@locale": "en",
-  "appName": "Shubhaytanam Connect",
-  "search": "Search",
-  "errorLoadingCode": "Error loading code",
-  "shareCode": "Share Code",
+  "aadhaar": "Aadhaar",
+  "aadharCard": "Aadhar Card",
   "aboutCompany": "About Company",
-  "whyChooseUs": "Why Choose Us",
-  "aboutUnavailable": "About information is currently unavailable.",
-  "home": "Home",
-  "projects": "Projects",
-  "offers": "Offers",
-  "profile": "Profile",
-  "featuredProjects": "Featured Projects",
-  "bookSiteVisit": "Book a Site Visit",
-  "viewPlots": "View Available Plots",
-  "enquireNow": "Enquire Now",
-  "emiCalculator": "EMI / Investment Calculator",
-  "estimatedMonthlyEmi": "Estimated Monthly EMI",
-  "principalAmount": "Principal Amount",
-  "totalInterest": "Total Interest",
-  "propertyDetails": "Property Details",
-  "propertyPrice": "Property Price",
-  "downPayment": "Down Payment",
-  "loanDetails": "Loan Details",
-  "interestRate": "Interest Rate (%)",
-  "loanTenure": "Loan Tenure (Years)",
-  "years": "{count} Years",
-  "language": "Language",
-  "settings": "Settings",
-  "contactUs": "Contact Us",
-  "faq": "Frequently Asked Questions",
-  "secureCheckout": "Secure Checkout",
-  "bookingSummary": "Booking Summary",
-  "reference": "Reference",
-  "description": "Description",
-  "paymentType": "Payment Type",
-  "advanceBooking": "Advance Booking",
-  "totalPayable": "Total Payable",
-  "paymentSuccessful": "Payment Successful!",
-  "verifyToViewHistory": "Verify to View History",
-  "phoneNumber": "Phone Number",
-  "sixDigitOtp": "6-digit OTP",
-  "changePhoneNumber": "Change Phone Number",
-  "paymentHistory": "Payment History",
-  "documentVault": "Document Vault",
-  "noAdminDocuments": "No documents uploaded by Admin yet.",
-  "legalDocument": "Legal Document",
-  "pdfFile": "PDF",
-  "alerts": "Alerts",
-  "noAlerts": "No alerts.",
-  "notification": "Notification",
-  "myWishlist": "My Wishlist",
-  "wishlistLoadError": "Error loading wishlist",
-  "noFavoriteProjects": "No favorite projects yet.",
-  "referralRewards": "Referral & Rewards",
-  "loginToReferral": "Please log in to view your referral details.",
-  "yourReferralCode": "Your referral code",
-  "referralCodeCopied": "Referral code copied.",
-  "copyCode": "Copy code",
-  "rewardSummary": "Reward summary",
-  "invitesSent": "Invites sent",
-  "rewardsEarned": "Rewards earned",
-  "pendingPayout": "Pending payout",
-  "statusLabel": "Status",
-  "active": "Active",
-  "howItWorks": "How it works",
-  "downloadReceipt": "Download receipt",
-  "voucherNumber": "Voucher No.: {number}",
-  "unableToDownloadReceipt": "Unable to download receipt",
-  "noPaymentsFound": "No payments found for {phone}",
-  "@noPaymentsFound": {
-    "placeholders": {
-      "phone": {
-        "type": "String"
-      }
-    }
-  },
-  "errorLoadingHistory": "Error loading history.\n{error}",
-  "@errorLoadingHistory": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "allProjects": "All Projects",
-  "unableToLoadProjects": "Unable to load projects.",
-  "tryAgain": "Try Again",
-  "noProjectsFound": "No Projects Found",
-  "unableToLoadProject": "Unable to load project.",
+  "aboutTheOffer": "About the Offer",
   "aboutTheProject": "About the Project",
-  "gallery": "Gallery",
-  "amenities": "Amenities",
-  "startingFrom": "Starting from",
-  "walkThroughProperty": "Walk through the property from anywhere.",
-  "scheduleTour": "Schedule a Tour",
-  "fullName": "Full Name",
-  "mobileNumber": "Mobile Number",
-  "pleaseSelectDateAndTime": "Please select date and time",
-  "getInTouch": "Get in Touch",
-  "plotRequirement": "Plot Requirement",
-  "budget": "Budget",
-  "message": "Message",
-  "unableToLoadPlot": "Unable to load plot: {error}",
-  "@unableToLoadPlot": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "residentialPlot": "Residential Plot",
-  "specifications": "Specifications",
-  "area": "Area",
-  "dimensions": "Dimensions",
-  "facing": "Facing",
-  "roadWidth": "Road Width",
-  "totalPrice": "Total Price",
-  "plotAvailability": "Plot Availability",
+  "aboutUnavailable": "About information is currently unavailable.",
+  "account": "Account",
+  "accountActions": "Account Actions",
+  "accountCreatedSuccessfully": "Account created successfully!",
+  "accountNumber": "Account Number",
+  "active": "Active",
+  "address": "Address",
+  "agreeToAnd": " and ",
+  "agreeToPrefix": "I agree to the ",
   "all": "All",
+  "allProjects": "All Projects",
+  "amenities": "Amenities",
+  "applicableProject": "Applicable Project",
+  "appName": "Shubhaytanam Connect",
+  "area": "Area",
+  "authErrAccountExistsWithDifferentCredential": "An account already exists with a different sign-in method.",
+  "authErrAppNotAuthorized": "This app is not authorized. Please contact support.",
+  "authErrAuthDomainConfigRequired": "Authentication domain configuration is required. Please contact support.",
+  "authErrCredentialAlreadyInUse": "This credential is already associated with another account.",
+  "authErrDefault": "Authentication failed. Please try again.",
+  "authErrEmailAlreadyInUse": "An account with this email already exists.",
+  "authErrInternalError": "Something went wrong. Please try again later.",
+  "authErrInvalidApiKey": "Invalid Firebase configuration.",
+  "authErrInvalidCredential": "Invalid email or password.",
+  "authErrInvalidCredentialCurrent": "Current password is incorrect.",
+  "authErrInvalidEmail": "Please enter a valid email address.",
+  "authErrInvalidVerificationCode": "The verification code is invalid.",
+  "authErrInvalidVerificationId": "The verification ID is invalid.",
+  "authErrNetworkRequestFailed": "Please check your internet connection.",
+  "authErrNoSuchProvider": "The requested sign-in provider is not linked to this account.",
+  "authErrOperationNotAllowed": "This authentication method is currently disabled.",
+  "authErrOperationNotSupported": "This operation is not supported in the current environment.",
+  "authErrPopupBlocked": "Popup was blocked. Please allow popups and try again.",
+  "authErrProviderAlreadyLinked": "This sign-in provider is already linked to your account.",
+  "authErrQuotaExceeded": "Request limit exceeded. Please try again later.",
+  "authErrRequiresRecentLogin": "Please sign in again to continue.",
+  "authErrSessionExpired": "The verification session has expired. Please try again.",
+  "authErrTimeout": "The request timed out. Please try again.",
+  "authErrTooManyRequests": "Too many attempts. Please try again later.",
+  "authErrUserDeleted": "Your account has been deleted by the admin.",
+  "authErrUserDisabled": "Your account has been disabled. Please contact support.",
+  "authErrUserNotFound": "No account found with this email. Please signup first",
+  "authErrWeakPassword": "Password is too weak. Please choose a stronger password.",
+  "authErrWebContextCancelled": "Sign-in was cancelled.",
+  "authErrWebStorageUnsupported": "This browser does not support authentication.",
+  "authErrWrongPassword": "Incorrect password. Please try again.",
+  "authLost": "Authentication lost. Please try again.",
   "available": "Available",
-  "hold": "Hold",
+  "backToHome": "Back to Home",
+  "bankDetails": "Bank Details",
+  "bankName": "Bank Name",
   "booked": "Booked",
-  "unableToLoadPlots": "Unable to load plots.",
-  "noPlotsFound": "No Plots Found",
+  "bookedSold": "Booked / Sold",
+  "bookingConfirmed": "Booking confirmed! We'll call you to verify.",
+  "bookingConfirmedCall": "Booking confirmed! We'll call you to verify.",
+  "bookingDate": "BOOKING DATE",
+  "bookingDetailsTitle": "Booking Details",
+  "bookingFailed": "Booking failed. Please retry.",
+  "bookSiteVisit": "Book a Site Visit",
+  "budget": "Budget",
+  "callUs": "Call Us",
+  "callUsSubtitle": "Mon-Sat, 10 AM to 6 PM",
+  "cancel": "Cancel",
+  "cannotDeleteAccountBooking": "You cannot delete your account because you have an active booking.",
+  "changePhoneNumber": "Change Phone Number",
+  "chooseFromGallery": "Choose from Gallery",
+  "chooseLanguage": "Choose Language",
+  "clearSearch": "Clear Search",
+  "clearSearchFilters": "Clear Search",
+  "close": "Close",
+  "commonRetry": "Retry",
+  "companyProfile": "Company Profile",
+  "confirmSiteVisit": "Confirm Site Visit",
+  "contactInformation": "Contact Information",
+  "contactNumber": "Contact Number",
+  "contactUs": "Contact Us",
+  "continueBtn": "Continue",
+  "copyCode": "Copy code",
+  "createAccount": "Complete Profile",
+  "dateLabel": "Date",
+  "dateSubmitted": "Date Submitted",
+  "deleteAccount": "Delete Account",
+  "deleteAccountWarning": "Are you sure you want to delete your account? This action cannot be undone.",
+  "requiresRecentLoginMessage": "Please sign in again to delete your account.",
+  "description": "Description",
+  "didntReceiveCode": "Didn't receive the code? ",
+  "dimensions": "Dimensions",
+  "directCall": "Direct Call",
+  "download": "Download",
+  "downloadAll": "Download All",
+  "downPayment": "Down Payment",
+  "editProfile": "Edit Profile",
+  "email": "Email",
+  "emailAddress": "Email Address",
+  "emailSupport": "Email Support",
+  "emailSupportSubtitle": "support@realestate.com",
+  "emiCalculator": "EMI / Investment Calculator",
+  "enquireAboutPlot": "Enquire About This Plot",
+  "enquireNow": "Enquire Now",
+  "enquirySubmitted": "Enquiry submitted! We'll contact you shortly.",
+  "enterAadharNumber": "Enter 12-digit Aadhar Number",
+  "enterPanNumber": "Enter 10-character PAN Number",
+  "error": "Error",
+  "errorLoadingAboutInfo": "Error loading about info",
+  "errorLoadingCode": "Error loading code",
+  "errorLoadingSupportInfo": "Error loading support info",
+  "estimatedMonthlyEmi": "Estimated Monthly EMI",
+  "expertsWillContact": "Our property experts will contact you within 24 hours.",
+  "facing": "Facing",
   "facingLabel": "{facing} Facing",
   "@facingLabel": {
     "placeholders": {
       "facing": {
-        "type": "String"
-      }
-    }
-  },
-  "backToHome": "Back to Home",
-  "cancel": "Cancel",
-  "starting360": "Starting 360° immersive experience...",
-  "immersive360": "360° Immersive",
-  "openExternalMaps": "Open External Maps",
-  "@years": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "callUs": "Call Us",
-  "whatsapp": "WhatsApp",
-  "email": "Email",
-  "submissionFailed": "Submission failed. Please retry.",
-  "enquirySubmitted": "Enquiry submitted! We'll contact you shortly.",
-  "submitEnquiry": "Submit Enquiry",
-  "submitted": "Submitted ✓",
-  "selectPreferredTime": "Select Preferred Time",
-  "bookingConfirmed": "Booking confirmed! We'll call you to verify.",
-  "confirmSiteVisit": "Confirm Site Visit",
-  "bookingFailed": "Booking failed. Please retry.",
-  "applicableProject": "Applicable Project",
-  "unableToLoadOffers": "Unable to load offers.",
-  "signOut": "Sign Out",
-  "logoutConfirmation": "Are you sure you want to sign out?",
-  "searchByPlot": "Search by plot number...",
-  "virtual360Tour": "Virtual 360° Tour",
-  "viewProjectDetails": "View Project Details",
-  "secureAccess": "Secure Access",
-  "account": "Account",
-  "aboutTheOffer": "About the Offer",
-  "termsAndCancellation": "By proceeding you agree to our Terms of Service and Cancellation Policy.",
-  "pickDateAndTime": "Pick a date and time. Our executive will confirm your visit.",
-  "commonRetry": "Retry",
-  "specialOffer": "Special Offer",
-  "sslEncrypted": "256-bit SSL Encrypted",
-  "mapConfigUnavailable": "Map Configuration is not available.",
-  "view360ComingSoon": "360° View Coming Soon",
-  "quickActions": "Quick Actions",
-  "viewAll": "View All",
-  "noActiveOffers": "No Active Offers",
-  "checkBackSoon": "Check back soon — new offers are added regularly.",
-  "clearSearch": "Clear Search",
-  "viewPlotAvailability": "View Plot Availability",
-  "launch360Tour": "Launch 360° Tour",
-  "siteVisit": "Site Visit",
-  "enquireAboutPlot": "Enquire About This Plot",
-  "proceedToPayment": "Proceed to Payment",
-  "plotNotAvailable": "Plot Not Available",
-  "plotOnHold": "on hold",
-  "plotBookedSold": "booked/sold",
-  "exclusiveOffers": "Exclusive Offers",
-  "bookingConfirmedMsg": "Your booking is confirmed. A confirmation will be sent to you shortly.",
-  "somethingWentWrong": "Something went wrong. Please try again.",
-  "paymentFailed": "Payment failed.",
-  "unknownDate": "Unknown date",
-  "sendOtp": "Send OTP",
-  "verify": "Verify",
-  "verificationFailed": "Verification failed",
-  "yourNumber": "your number",
-  "selectPreferredDate": "Select Preferred Date",
-  "bookingConfirmedCall": "Booking confirmed! We'll call you to verify.",
-  "termsAndConditions": "Terms & Conditions",
-  "privacyPolicy": "Privacy Policy",
-  "bookedSold": "Booked / Sold",
-  "clearSearchFilters": "Clear Search",
-  "legalAndSupport": "Legal & Support",
-  "payment": "Payment",
-  "expertsWillContact": "Our property experts will contact you within 24 hours.",
-  "enterOtpSent": "Enter the OTP sent to your phone number.",
-  "enterPhoneForHistory": "Enter your phone number to access your payment history.",
-  "invalidOtp": "Invalid OTP",
-  "langEnglish": "English",
-  "langHindi": "हिन्दी ",
-  "anErrorOccurred": "An error occurred. Please try again.",
-  "validTill": "Valid till {date}",
-  "@validTill": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "validUntil": "Valid until {date}",
-  "@validUntil": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "payAmountSecurely": "Pay {amount} Securely",
-  "@payAmountSecurely": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "noPaymentsFoundFor": "No payments found for {phone}",
-  "@noPaymentsFoundFor": {
-    "placeholders": {
-      "phone": {
-        "type": "String"
-      }
-    }
-  },
-  "errorLoadingHistoryVerbose": "Error loading history.\\n{error}",
-  "@errorLoadingHistoryVerbose": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "statusUnknown": "UNKNOWN",
-  "yourNumberAlt": "your number",
-  "plotTitle": "Plot {number}",
-  "@plotTitle": {
-    "placeholders": {
-      "number": {
-        "type": "String"
-      }
-    }
-  },
-  "sqFtLabel": "{size} sq.ft",
-  "@sqFtLabel": {
-    "placeholders": {
-      "size": {
-        "type": "String"
-      }
-    }
-  },
-  "plotCurrentlyStatus": "This plot is currently {status}.",
-  "@plotCurrentlyStatus": {
-    "placeholders": {
-      "status": {
         "type": "String"
       }
     }
@@ -283,104 +130,7 @@
       }
     }
   },
-  "noResultsFor": "No results for \"{query}\"",
-  "@noResultsFor": {
-    "placeholders": {
-      "query": {
-        "type": "String"
-      }
-    }
-  },
-  "noProjectsAtMoment": "No projects are available at the moment.",
-  "noPlotsMatch": "No plots match \"{query}\"",
-  "@noPlotsMatch": {
-    "placeholders": {
-      "query": {
-        "type": "String"
-      }
-    }
-  },
-  "noPlotsFilter": "No plots available with the selected filter.",
-  "projectPlotsCount": "{count} Plots",
-  "@projectPlotsCount": {
-    "placeholders": {
-      "count": {
-        "type": "String"
-      }
-    }
-  },
-  "somethingWentWrongAlt": "Something went wrong",
-  "mapConfigUnavailableAlt": "Map Configuration is not available.",
-  "locationLatLng": "Location: {lat}, {lng}",
-  "@locationLatLng": {
-    "placeholders": {
-      "lat": {
-        "type": "String"
-      },
-      "lng": {
-        "type": "String"
-      }
-    }
-  },
-  "companyProfile": "Company Profile",
-  "vision": "Vision",
-  "mission": "Mission",
-  "contactInformation": "Contact Information",
-  "directCall": "Direct Call",
-  "googleMaps": "Google Maps",
-  "officeLocation": "Office Location",
-  "contactNumber": "Contact Number",
-  "plotPrice": "Plot Price",
-  "offerDetails": "Offer Details",
-  "offerNotFound": "Offer not found",
-  "promoCode": "PROMO CODE",
-  "validText": "Valid",
-  "flat": "Flat",
-  "off": "Off",
-  "authErrInvalidEmail": "Please enter a valid email address.",
-  "authErrInvalidCredentialCurrent": "Current password is incorrect.",
-  "authErrInvalidCredential": "Invalid email or password.",
-  "authErrWrongPassword": "Incorrect password. Please try again.",
-  "authErrUserNotFound": "No account found with this email. Please signup first",
-  "authErrUserDisabled": "Your account has been disabled. Please contact support.",
-  "authErrUserDeleted": "Your account has been deleted by the admin.",
-  "authErrEmailAlreadyInUse": "An account with this email already exists.",
-  "authErrWeakPassword": "Password is too weak. Please choose a stronger password.",
-  "authErrOperationNotAllowed": "This authentication method is currently disabled.",
-  "authErrTooManyRequests": "Too many attempts. Please try again later.",
-  "authErrNetworkRequestFailed": "Please check your internet connection.",
-  "authErrRequiresRecentLogin": "Please sign in again to continue.",
-  "authErrCredentialAlreadyInUse": "This credential is already associated with another account.",
-  "authErrAccountExistsWithDifferentCredential": "An account already exists with a different sign-in method.",
-  "authErrProviderAlreadyLinked": "This sign-in provider is already linked to your account.",
-  "authErrNoSuchProvider": "The requested sign-in provider is not linked to this account.",
-  "authErrInvalidVerificationCode": "The verification code is invalid.",
-  "authErrInvalidVerificationId": "The verification ID is invalid.",
-  "authErrSessionExpired": "The verification session has expired. Please try again.",
-  "authErrQuotaExceeded": "Request limit exceeded. Please try again later.",
-  "authErrAppNotAuthorized": "This app is not authorized. Please contact support.",
-  "authErrInvalidApiKey": "Invalid Firebase configuration.",
-  "authErrInternalError": "Something went wrong. Please try again later.",
-  "authErrWebContextCancelled": "Sign-in was cancelled.",
-  "authErrWebStorageUnsupported": "This browser does not support authentication.",
-  "authErrPopupBlocked": "Popup was blocked. Please allow popups and try again.",
-  "authErrAuthDomainConfigRequired": "Authentication domain configuration is required. Please contact support.",
-  "authErrOperationNotSupported": "This operation is not supported in the current environment.",
-  "authErrTimeout": "The request timed out. Please try again.",
-  "authErrDefault": "Authentication failed. Please try again.",
-  "kycAndDocuments": "KYC & Documents",
-  "identityDocuments": "Identity Documents",
-  "aadharCard": "Aadhar Card",
-  "enterAadharNumber": "Enter 12-digit Aadhar Number",
-  "panCard": "PAN Card",
-  "enterPanNumber": "Enter 10-character PAN Number",
-  "bankDetails": "Bank Details",
-  "bankName": "Bank Name",
-  "accountNumber": "Account Number",
-  "ifscCode": "IFSC Code",
-  "saveDetails": "Save Details",
-  "uploadDocumentImage": "Upload Document Image:",
-  "userNotFound": "User not found. Please log in again.",
+  "failedToLoadTour": "Failed to load 360° tour",
   "failedToPickImage": "Failed to pick image: {error}",
   "@failedToPickImage": {
     "placeholders": {
@@ -389,7 +139,8 @@
       }
     }
   },
-  "kycUpdatedSuccessfully": "KYC details updated successfully!",
+  "failedToResendOtp": "Failed to resend OTP",
+  "failedToSendOtp": "Failed to send OTP",
   "failedToUpdateKyc": "Failed to update KYC: {error}",
   "@failedToUpdateKyc": {
     "placeholders": {
@@ -398,118 +149,29 @@
       }
     }
   },
-  "totalAmount": "TOTAL AMOUNT",
-  "pendingBalance": "PENDING BALANCE",
-  "noPaymentRecords": "No payment records found.",
-  "supportCenter": "Support Center",
-  "howCanWeHelp": "How can we help you?",
-  "supportDesc": "Our team is available to assist you with any questions about properties, payments, or your account.",
-  "whatsappSupport": "WhatsApp Support",
-  "whatsappSubtitle": "Fastest response time",
-  "callUsSubtitle": "Mon-Sat, 10 AM to 6 PM",
-  "emailSupport": "Email Support",
-  "emailSupportSubtitle": "support@realestate.com",
-  "myProfile": "My Profile",
-  "notLoggedIn": "You are not logged in.",
-  "myProperties": "My Properties",
-  "myEnquiries": "My Enquiries",
-  "mySiteVisits": "My Site Visits",
-  "loginBtn": "Login",
-  "noPropertiesYet": "You have no booked or purchased plots yet.",
-  "plotNoLabel": "Plot No: {number}",
-  "@plotNoLabel": {
-    "placeholders": {
-      "number": {
-        "type": "String"
-      }
-    }
-  },
-  "welcomeBack": "Welcome Back",
-  "emailLabel": "Email",
-  "passwordLabel": "Password",
+  "failedToVerifyOtp": "Failed to verify OTP",
+  "faq": "Frequently Asked Questions",
+  "featured": "FEATURED",
+  "featuredProjects": "Featured Projects",
+  "fileSelected": "PDF Selected",
   "forgotPassword": "Forgot Password?",
-  "dontHaveAccount": "Don't have an account? Register",
-  "forgotPasswordTitle": "Forgot Password",
+  "forgotPasswordFailed": "Failed to send reset link.",
   "forgotPasswordInvalidEmail": "This email is invalid or not registered.",
   "forgotPasswordTooManyRequests": "Too many requests. Please try again later.",
-  "forgotPasswordFailed": "Failed to send reset link.",
-  "resetPassword": "Reset Password",
-  "resetPasswordDesc": "Enter your email address and we will send you a link to reset your password.",
-  "sendResetLink": "Send Reset Link",
-  "resetLinkSent": "Reset link sent! Please check your email inbox.",
-  "resetLinkSentDialogTitle": "Email Sent",
-  "resetLinkSentDialogBody": "A password reset link has been sent to your email.\n\nFor security reasons, this link will expire soon. Please reset your password promptly.\n\nPlease check your inbox (and spam folder) for the reset link, and then proceed to login.",
-  "resetLinkSentDialogButton": "Go to Login",
-  "agreeToPrefix": "I agree to the ",
-  "agreeToAnd": " and ",
-  "agreeToSuffix": "",
-  "backToLogin": "Back to Login",
-  "createAccount": "Complete Profile",
-  "authLost": "Authentication lost. Please try again.",
-  "accountCreatedSuccessfully": "Account created successfully!",
-  "registrationFailed": "Failed to complete registration.",
-  "invalidOtp": "Invalid OTP",
-  "failedToVerifyOtp": "Failed to verify OTP",
-  "otpResentSuccessfully": "OTP resent successfully",
-  "failedToResendOtp": "Failed to resend OTP",
-  "failedToSendOtp": "Failed to send OTP",
-  "otpSentSuccessfully": "OTP sent successfully!",
-  "verificationFailed": "Verification failed",
-  "userNotFound": "User not found. Please log in again.",
-  "joinUs": "Join Us",
-  "chooseFromGallery": "Choose from Gallery",
-  "takeAPhoto": "Take a Photo",
-  "removePhoto": "Remove Photo",
-  "emailAddress": "Email Address",
-  "register": "Register",
-  "alreadyHaveAccount": "Already have an account? Login",
-  "accountBlocked": "Your account has been blocked by an administrator.",
-  "accountDeleted": "This account has been deleted.",
-  "emailVerificationRequiredTitle": "Email Verification Required",
-  "emailVerificationRequiredMessage": "Your account is not verified yet.\n\nFor security reasons, you must verify your email address before accessing the app.\n\nPlease check your inbox (and spam folder) for a verification link, or click below to receive a new one.",
-  "sendVerificationMail": "Send Verification Mail",
-  "verificationEmailSentSuccessfully": "Verification email sent successfully!",
-  "registrationSuccessTitle": "Registration Successful!",
-  "registrationSuccessMessage": "We have sent a verification email to your registered email address.\n\nPlease check your inbox and your spam/junk folder. You must verify your email before you can log in to your account.",
-  "unknownProject": "Unknown Project",
-  "unknownPlot": "Unknown Plot",
-  "noPropertiesFound": "No Properties Found",
-  "noEnquiriesYet": "No Enquiries Yet",
-  "noEnquiriesMessage": "You have not submitted any property enquiries. Once you do, they will appear here.",
-  "requirementLabel": "Requirement:",
-  "budgetLabel": "Budget:",
-  "messageLabel": "Message:",
-  "changePassword": "Change Password",
-  "passwordsDoNotMatch": "Passwords do not match",
-  "passwordChangedSuccessfully": "Password changed successfully",
-  "currentPassword": "Current Password",
-  "currentPasswordRequired": "Current password is required",
-  "newPassword": "New Password",
-  "confirmNewPassword": "Confirm New Password",
-  "updatePassword": "Update Password",
-  "noSiteVisitsScheduled": "No Site Visits Scheduled",
-  "noSiteVisitsMessage": "You have not scheduled any site visits yet. Book a visit to see properties in person!",
-  "scheduledDate": "Scheduled Date:",
-  "scheduledTime": "Scheduled Time:",
-  "errorLoadingAboutInfo": "Error loading about info",
-  "noName": "No Name",
-  "editProfile": "Edit Profile",
-  "profileUpdatedSuccessfully": "Profile updated successfully",
-  "saveChanges": "Save Changes",
-  "errorLoadingSupportInfo": "Error loading support info",
-  "totalPlots": "{count} Total Plots",
-  "@totalPlots": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "viewOnGoogleMaps": "View on Google Maps",
-  "loginToBookSiteVisit": "Please log in to book a site visit.",
-  "unableToOpenDocument": "Unable to open this document.",
-  "loginToSubmitEnquiry": "Please log in to submit an enquiry.",
-  "enter6DigitOtp": "Enter 6-digit OTP",
+  "fullName": "Full Name",
+  "gallery": "Gallery",
+  "generalEnquiry": "General Enquiry",
+  "getInTouch": "Get in Touch",
+  "googleMaps": "Google Maps",
+  "hold": "Hold",
+  "home": "Home",
+  "howCanWeHelp": "How can we help you?",
+  "howItWorks": "How it works",
+  "identityDocuments": "Identity Documents",
+  "ifscCode": "IFSC Code",
+  "illDoItLater": "I'll do it later",
+  "immersive360": "360° Immersive",
+  "initialPaymentDesc": "Initial payment from booking application",
   "inrPrice": "₹{amount}",
   "@inrPrice": {
     "placeholders": {
@@ -518,10 +180,290 @@
       }
     }
   },
-  "validationPanLength": "Enter a valid 10-character PAN Number",
-  "validationIfscRequired": "IFSC Code is required",
-  "validationPasswordLength": "Password must be at least 6 characters",
-  "validationMobileLength": "Enter a valid 10-digit mobile number",
+  "interestRate": "Interest Rate (%)",
+  "invalidOtp": "Invalid OTP",
+  "invalidReferralCode": "Invalid referral code",
+  "invitesSent": "Invites sent",
+  "kycAndDocuments": "KYC & Documents",
+  "kycUpdatedSuccessfully": "KYC details updated successfully!",
+  "langEnglish": "English",
+  "langHindi": "हिन्दी ",
+  "language": "Language",
+  "launch360Tour": "Launch 360° Tour",
+  "legalAndSupport": "Legal & Support",
+  "loanDetails": "Loan Details",
+  "loanTenure": "Loan Tenure (Years)",
+  "loginBtn": "Login",
+  "loginScreenDesc": "Enter your mobile number to unlock exclusive real estate opportunities.",
+  "loginToBookSiteVisit": "Please log in to book a site visit.",
+  "loginToReferral": "Please log in to view your referral details.",
+  "loginToSubmitEnquiry": "Please log in to submit an enquiry.",
+  "logoutConfirmation": "Are you sure you want to sign out?",
+  "message": "Message",
+  "mission": "Mission",
+  "mobile": "Mobile",
+  "mobileNumber": "Mobile Number",
+  "myEnquiries": "My Enquiries",
+  "myProfile": "My Profile",
+  "myProperties": "My Properties",
+  "mySiteVisits": "My Site Visits",
+  "naLabel": "N/A",
+  "noAlerts": "No alerts.",
+  "noBookingDetailsMsg": "We could not find booking details for this plot.",
+  "noDetailsFound": "No Details Found",
+  "noEnquiriesMessage": "You have not submitted any property enquiries. Once you do, they will appear here.",
+  "noEnquiriesYet": "No Enquiries Yet",
+  "noName": "No Name",
+  "noPaymentRecords": "No payment records found.",
+  "noPlotsFilter": "No plots available with the selected filter.",
+  "noPlotsFound": "No Plots Found",
+  "noPlotsMatch": "No plots match \"{query}\"",
+  "@noPlotsMatch": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "noProjectsAtMoment": "No projects are available at the moment.",
+  "noProjectsFound": "No Projects Found",
+  "noPropertiesFound": "No Properties Found",
+  "noPropertiesYet": "You have no booked or purchased plots yet.",
+  "noReferredUsersMessage": "Users who join using your referral code will appear here.",
+  "noReferredUsersYet": "No Referred Users Yet",
+  "noResultsFor": "No results for \"{query}\"",
+  "@noResultsFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "noSiteVisitsMessage": "You have not scheduled any site visits yet. Book a visit to see properties in person!",
+  "noSiteVisitsScheduled": "No Site Visits Scheduled",
+  "notification": "Notification",
+  "notLoggedIn": "You are not logged in.",
+  "off": "Off",
+  "offerDetails": "Offer Details",
+  "offerNotFound": "Offer not found",
+  "offers": "Offers",
+  "officeLocation": "Office Location",
+  "otpResentSuccessfully": "OTP resent successfully",
+  "otpSentSuccessfully": "OTP sent successfully!",
+  "otpSentToPrefix": "We've sent a 6-digit verification code to\n",
+  "paidAmount": "PAID AMOUNT",
+  "pan": "PAN",
+  "panCard": "PAN Card",
+  "passwordLabel": "Password",
+  "payment": "Payment",
+  "paymentCompleted": "COMPLETED",
+  "paymentEmiTracking": "Payment & EMI Tracking",
+  "paymentMode": "Payment Mode",
+  "paymentModeBankTransfer": "Bank Transfer",
+  "paymentModeCash": "Cash",
+  "paymentModeCheque": "Cheque",
+  "paymentModeOnline": "Online",
+  "paymentModeUpi": "UPI",
+  "pdfTooLarge": "PDF must be less than 2MB",
+  "pendingBalance": "PENDING BALANCE",
+  "pendingPayout": "Pending payout",
+  "phoneNumber": "Phone Number",
+  "pickDateAndTime": "Pick a date and time. Our executive will confirm your visit.",
+  "pleaseSelectDateAndTime": "Please select date and time",
+  "plot": "Plot",
+  "plotAvailability": "Plot Availability",
+  "plotBookedSold": "booked/sold",
+  "plotCurrentlyStatus": "This plot is currently {status}.",
+  "@plotCurrentlyStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "plotLabel": "Plot {number}",
+  "@plotLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "plotNo": "Plot No",
+  "plotNoLabel": "Plot No: {number}",
+  "@plotNoLabel": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "plotOnHold": "on hold",
+  "plotPrice": "Plot Price",
+  "plotRequirement": "Plot Requirement",
+  "plotTitle": "Plot {number}",
+  "@plotTitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "priceLabel": "Price",
+  "principalAmount": "Principal Amount",
+  "privacyPolicy": "Privacy Policy",
+  "profile": "Profile",
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+  "project": "Project",
+  "projectPlot": "Project: {project} - Plot {plot}",
+  "@projectPlot": {
+    "placeholders": {
+      "project": {
+        "type": "String"
+      },
+      "plot": {
+        "type": "String"
+      }
+    }
+  },
+  "projectPlotsCount": "{count} Plots",
+  "@projectPlotsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "projects": "Projects",
+  "propertyDetails": "Property Details",
+  "propertyPrice": "Property Price",
+  "quickActions": "Quick Actions",
+  "recentPaymentsLedger": "Recent Payments (Ledger)",
+  "reference": "Reference",
+  "referralCodeCopied": "Referral code copied.",
+  "referralCodeOptional": "Referral Code (Optional)",
+  "referralRewards": "Referral & Rewards",
+  "register": "Register",
+  "registrationFailed": "Failed to complete registration.",
+  "removePhoto": "Remove Photo",
+  "resendBtn": "Resend",
+  "resendInSeconds": "Resend in {seconds}s",
+  "@resendInSeconds": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "residentialPlot": "Residential Plot",
+  "rewardsEarned": "Rewards earned",
+  "rewardSummary": "Reward summary",
+  "roadWidth": "Road Width",
+  "saveChanges": "Save Changes",
+  "saveDetails": "Save Details",
+  "scheduledDate": "Scheduled Date",
+  "scheduledTime": "Scheduled Time",
+  "scheduleTour": "Schedule a Tour",
+  "search": "Search",
+  "searchByPlot": "Search by plot number...",
+  "secureVerification": "Secure Verification",
+  "selectLanguageDesc": "Select your preferred language to continue.",
+  "selectPreferredDate": "Select Preferred Date",
+  "selectPreferredTime": "Select Preferred Time",
+  "sendOtp": "Send OTP",
+  "shareCode": "Share Code",
+  "signOut": "Sign Out",
+  "signUp": "Sign Up",
+  "siteVisit": "Site Visit",
+  "skipBtn": "Skip",
+  "somethingWentWrong": "Something went wrong. Please try again.",
+  "somethingWentWrongAlt": "Something went wrong",
+  "specifications": "Specifications",
+  "sqFtLabel": "{size} sq.ft",
+  "@sqFtLabel": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "starting360": "Starting 360° immersive experience...",
+  "startingFrom": "Starting from",
+  "statusCancelled": "Cancelled",
+  "statusClosed": "Closed",
+  "statusCompleted": "Completed",
+  "statusConfirmed": "Confirmed",
+  "statusContacted": "Contacted",
+  "statusFollowUp": "Follow Up",
+  "statusInProgress": "In Progress",
+  "statusLabel": "Status",
+  "statusNew": "New",
+  "statusResolved": "Resolved",
+  "statusUnknown": "UNKNOWN",
+  "stepN": "Step {number}",
+  "@stepN": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "submissionFailed": "Submission failed. Please retry.",
+  "submitEnquiry": "Submit Enquiry",
+  "submitted": "Submitted ✓",
+  "support": "Support",
+  "supportCenter": "Support Center",
+  "supportDesc": "Our team is available to assist you with any questions about properties, payments, or your account.",
+  "takeAPhoto": "Take a Photo",
+  "tapToChange": "Tap to change",
+  "tapToPickPdf": "Tap to select PDF",
+  "termsAndConditions": "Terms & Conditions",
+  "timeToUpdate": "Time to Update!",
+  "totalAmount": "TOTAL AMOUNT",
+  "totalInterest": "Total Interest",
+  "totalPayable": "Total Payable",
+  "totalPlots": "{count} Total Plots",
+  "@totalPlots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalPrice": "Total Price",
+  "tryAgain": "Try Again",
+  "unableToLoadPlot": "Unable to load plot: {error}",
+  "@unableToLoadPlot": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "unableToLoadPlots": "Unable to load plots.",
+  "unableToLoadProject": "Unable to load project.",
+  "unableToLoadProjects": "Unable to load projects.",
+  "unknownDate": "Unknown date",
+  "unknownPlot": "Unknown Plot",
+  "unknownProject": "Unknown Project",
+  "unknownUser": "Unknown User",
+  "updateDescription": "A shiny new version ({latestVersion}) is waiting for you.\nWe have added new features and squashed some bugs.",
+  "@updateDescription": {
+    "placeholders": {
+      "latestVersion": {
+        "type": "String"
+      }
+    }
+  },
+  "updateNow": "Update Now",
+  "updateRequired": "This update is required to continue.",
+  "uploadDocumentImage": "Upload Document Image:",
+  "userNotFound": "User not found. Please log in again.",
+  "validationAadhaarLength": "Enter a valid 12-digit Aadhaar Number",
+  "validationAadhaarRequired": "Aadhaar Number is required",
+  "validationAccountLength": "Enter a valid Account Number (9 to 18 digits)",
+  "validationAccountRequired": "Account Number is required",
+  "validationEmailFormat": "Enter a valid email address",
   "validationFieldRequired": "{label} is required",
   "@validationFieldRequired": {
     "placeholders": {
@@ -531,13 +473,21 @@
     }
   },
   "validationIfscLength": "Enter a valid 11-character IFSC Code",
-  "validationEmailFormat": "Enter a valid email address",
-  "validationThisField": "This field",
+  "validationIfscRequired": "IFSC Code is required",
+  "validationMobileLength": "Enter a valid 10-digit mobile number",
+  "validationPanLength": "Enter a valid 10-character PAN Number",
   "validationPanRequired": "PAN Number is required",
-  "validationAadhaarLength": "Enter a valid 12-digit Aadhaar Number",
-  "validationAccountLength": "Enter a valid Account Number (9 to 18 digits)",
-  "validationAccountRequired": "Account Number is required",
-  "validationAadhaarRequired": "Aadhaar Number is required",
+  "validationPasswordLength": "Password must be at least 6 characters",
+  "validationThisField": "This field",
+  "validText": "Valid",
+  "validTill": "Valid till {date}",
+  "@validTill": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "validTillText": "Valid till {date}",
   "@validTillText": {
     "placeholders": {
@@ -546,95 +496,48 @@
       }
     }
   },
-  "tapToPickPdf": "Tap to select PDF",
-  "viewPdf": "View PDF",
-  "pdfTooLarge": "PDF must be less than 2MB",
-  "fileSelected": "PDF Selected",
-  "referralCodeOptional": "Referral Code (Optional)",
-  "bookingDetailsTitle": "Booking Details",
-  "noDetailsFound": "No Details Found",
-  "noBookingDetailsMsg": "We could not find booking details for this plot.",
-  "project": "Project",
-  "plotNo": "Plot No",
-  "mobile": "Mobile",
-  "pan": "PAN",
-  "aadhaar": "Aadhaar",
-  "address": "Address",
-  "paymentMode": "Payment Mode",
-  "bookingDate": "BOOKING DATE",
-  "paymentEmiTracking": "Payment & EMI Tracking",
-  "recentPaymentsLedger": "Recent Payments (Ledger)",
-  "downloadAll": "Download All",
-  "paidAmount": "PAID AMOUNT",
-  "paymentCompleted": "COMPLETED",
-  "plotLabel": "Plot {number}",
-  "@plotLabel": {
+  "verificationFailed": "Verification failed",
+  "verify": "Verify",
+  "verifyAndContinue": "Verify & Continue",
+  "versionNumber": "Version: {version}",
+  "@versionNumber": {
     "placeholders": {
-      "number": {
+      "version": {
         "type": "String"
       }
     }
   },
-  "initialPaymentDesc": "Initial payment from booking application",
-  "paymentModeCash": "Cash",
-  "paymentModeUpi": "UPI",
-  "paymentModeBankTransfer": "Bank Transfer",
-  "paymentModeCheque": "Cheque",
-  "paymentModeOnline": "Online",
-  "viewPaymentDetails": "View Payment Details",
-  "statusScheduled": "Scheduled",
-  "statusInProgress": "In Progress",
-  "statusCompleted": "Completed",
-  "statusCancelled": "Cancelled",
-  "statusClosed": "Closed",
-  "error": "Error",
-  "close": "Close",
-  "statusNew": "New",
-  "statusConfirmed": "Confirmed",
-  "statusContacted": "Contacted",
-  "statusFollowUp": "Follow Up",
-  "statusResolved": "Resolved",
-  "naLabel": "N/A",
   "view": "View",
-  "download": "Download",
-  "dateLabel": "Date",
-  "plot": "Plot",
-  "generalEnquiry": "General Enquiry",
-  "support": "Support",
-  "dateSubmitted": "Date Submitted",
-  "scheduledDate": "Scheduled Date",
-  "scheduledTime": "Scheduled Time",
-  "pleaseFillAllFields": "Please fill all fields",
-  "invalidReferralCode": "Invalid referral code",
-  "noReferredUsersYet": "No Referred Users Yet",
-  "noReferredUsersMessage": "Users who join using your referral code will appear here.",
-  "showingPlotsCount": "Showing {filtered} of {total} plots",
-  "@showingPlotsCount": {
+  "view360ComingSoon": "360° View Coming Soon",
+  "viewAll": "View All",
+  "viewOnGoogleMaps": "View on Google Maps",
+  "viewPaymentDetails": "View Payment Details",
+  "viewPdf": "View PDF",
+  "viewPlotAvailability": "View Plot Availability",
+  "viewProjectDetails": "View Project Details",
+  "virtual360Tour": "Virtual 360° Tour",
+  "virtualTourTitle": "360° Virtual Tour",
+  "vision": "Vision",
+  "voucherNumber": "Voucher No.: {number}",
+  "walkThroughProperty": "Walk through the property from anywhere.",
+  "welcomeBack": "Welcome Back",
+  "welcomeDesc1": "Explore exclusive real estate projects and find the perfect plot for your future home.",
+  "welcomeDesc2": "Experience properties from the comfort of your home with immersive 360-degree virtual tours.",
+  "welcomeDesc3": "Book plots, track site visits, and manage payments all in one secure platform.",
+  "welcomeTitle1": "Find Your Dream Plot",
+  "welcomeTitle2": "360° Virtual Tours",
+  "welcomeTitle3": "Seamless Booking",
+  "whatsapp": "WhatsApp",
+  "whatsappSubtitle": "Fastest response time",
+  "whatsappSupport": "WhatsApp Support",
+  "whyChooseUs": "Why Choose Us",
+  "years": "{count} Years",
+  "@years": {
     "placeholders": {
-      "filtered": {
-        "type": "int"
-      },
-      "total": {
+      "count": {
         "type": "int"
       }
     }
   },
-  "priceLabel": "Price",
-  "featured": "Featured",
-  "tapToChange": "Tap to change",
-  "unknownUser": "Unknown User",
-  "userNotLoggedIn": "User not logged in",
-  "failedToLoadPropertyDetails": "Failed to load property details",
-  "failedToLoadPayments": "Failed to load payments",
-  "failedToChangePassword": "Failed to change password",
-  "currentPasswordIncorrect": "Current password is incorrect",
-  "newPasswordTooWeak": "New password is too weak",
-  "amountInWords": "Amount in Words",
-  "saveReceipt": "Save Receipt",
-  "saveLedger": "Save Ledger",
-  "zeroOnly": "Zero only",
-  "indianRupee": "Indian Rupee",
-  "deleteAccount": "Delete Account",
-  "deleteAccountWarning": "Are you sure you want to delete your account? This action cannot be undone.", 
-  "cannotDeleteAccountBooking": "You cannot delete your account because you have an active booking."
+  "yourReferralCode": "Your referral code"
 }

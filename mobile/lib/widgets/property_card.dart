@@ -6,6 +6,7 @@ import '../theme/spacing.dart';
 import 'app_cached_image.dart';
 import '../utils/l10n_extension.dart';
 import '../utils/price_formatter.dart';
+
 /// Premium image-first project card for grids and horizontal lists.
 class PropertyCard extends StatelessWidget {
   final Project project;

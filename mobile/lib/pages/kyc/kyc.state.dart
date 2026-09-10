@@ -1,17 +1,13 @@
 import 'dart:io';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class KycState {
-  final bool isSubmitting;
-  final File? aadharImage;
-  final File? panImage;
+part 'kyc.state.freezed.dart';
 
-  const KycState({this.isSubmitting = false, this.aadharImage, this.panImage});
-
-  KycState copyWith({bool? isSubmitting, File? aadharImage, File? panImage}) {
-    return KycState(
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      aadharImage: aadharImage ?? this.aadharImage,
-      panImage: panImage ?? this.panImage,
-    );
-  }
+@freezed
+sealed class KycState with _$KycState {
+  const factory KycState({
+    @Default(false) bool isLoading,
+    File? aadharImage,
+    File? panImage,
+  }) = _KycState;
 }

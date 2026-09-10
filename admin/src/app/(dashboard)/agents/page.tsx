@@ -95,7 +95,15 @@ function AgentsContent() {
     if (!agentToDelete) return;
     setDeleting(true);
     try {
-      await deleteDoc(doc(db, "agents", agentToDelete.id));
+      const res = await fetch(`/api/agents/delete?id=${agentToDelete.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to delete agent");
+      }
+
       setAgents(agents.filter((a: Agent) => a.id !== agentToDelete.id));
       toast.success(t('agent_deleted'));
       setIsDeleteModalOpen(false);
@@ -139,7 +147,7 @@ function AgentsContent() {
       key: "mobileNumber",
       render: (a: Agent) => (
         <div>
-          <div className="font-medium text-slate-700">{a.mobileNumber}</div>
+          <div className="font-medium text-slate-700">{(a as any).countryCode ? `${(a as any).countryCode} ${a.mobileNumber}` : a.mobileNumber}</div>
           {a.whatsappNumber && <div className="text-xs text-green-600 mt-0.5">WA: {a.whatsappNumber}</div>}
         </div>
       )

@@ -20,7 +20,9 @@ class PriceFormatter {
   static String formatString(String priceString) {
     if (priceString.isEmpty) return priceString;
     // Try to parse the string as double
-    final parsed = double.tryParse(priceString.replaceAll(RegExp(r'[^0-9.]'), ''));
+    final parsed = double.tryParse(
+      priceString.replaceAll(RegExp(r'[^0-9.]'), ''),
+    );
     if (parsed != null && parsed > 0) {
       return format(parsed);
     }

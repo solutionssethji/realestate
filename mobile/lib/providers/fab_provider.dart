@@ -6,4 +6,6 @@ class FabVisibleNotifier extends Notifier<bool> {
   void setVisible(bool value) => state = value;
 }
 
-final fabVisibleProvider = NotifierProvider<FabVisibleNotifier, bool>(FabVisibleNotifier.new);
+final fabVisibleProvider = NotifierProvider<FabVisibleNotifier, bool>(
+  FabVisibleNotifier.new,
+);

@@ -21,8 +21,10 @@ class MyEnquiriesPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.myEnquiries),
-      body: SafeArea(child: _buildBody(context, ref, state, l10n)),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      body: SafeArea(
+        child: _buildBody(context, ref, state, l10n),
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 
   Widget _buildBody(BuildContext context, WidgetRef ref, state, l10n) {

@@ -374,8 +374,11 @@ class BookingDetailsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: PremiumAppBar(title: l10n.bookingDetailsTitle),
       backgroundColor: AppTheme.background,
-      body: buildBody(),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      body: buildBody()
+          .animate()
+          .fade(duration: 400.ms)
+          .slideY(begin: 0.05, end: 0),
+    );
   }
 
   String _formatDate(dynamic raw, Locale locale) {

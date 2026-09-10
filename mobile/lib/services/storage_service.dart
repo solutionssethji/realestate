@@ -31,8 +31,8 @@ class StorageService {
 
       // Set metadata
       final metadata = SettableMetadata(
-        contentType: fileExtension.toLowerCase() == 'pdf' 
-            ? 'application/pdf' 
+        contentType: fileExtension.toLowerCase() == 'pdf'
+            ? 'application/pdf'
             : 'image/${fileExtension.toLowerCase()}',
       );
 
@@ -54,7 +54,10 @@ class StorageService {
       );
       return null;
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'uploadKycDocument()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'uploadKycDocument()',
+      );
       return null;
     }
   }
@@ -72,7 +75,10 @@ class StorageService {
       developer.log('Upload successful. URL: $downloadUrl');
       return downloadUrl;
     } catch (e) {
-      FirebaseAuthErrorMapper().handleException(e, function: 'uploadProfileImage()');
+      FirebaseAuthErrorMapper().handleException(
+        e,
+        function: 'uploadProfileImage()',
+      );
       return null;
     }
   }

@@ -280,8 +280,8 @@ class ReferralPage extends HookConsumerWidget {
                   ],
                 ),
               ),
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }
 
@@ -375,7 +375,7 @@ class _InfoRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Step $step',
+                  context.l10n.stepN(step.toString()),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: AppTheme.midnightNavy,
                     fontWeight: FontWeight.bold,

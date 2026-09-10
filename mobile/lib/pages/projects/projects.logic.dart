@@ -67,7 +67,7 @@ class ProjectsLogic extends _$ProjectsLogic {
   void updateSearch(String query) {
     if (state.searchQuery == query) return;
     state = state.copyWith(searchQuery: query);
-    
+
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       loadProjects(isRefresh: true);

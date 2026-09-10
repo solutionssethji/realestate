@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
 import 'offer_details.logic.dart';
 import '../../theme/theme.dart';
 import '../../utils/l10n_extension.dart';
@@ -56,8 +55,8 @@ class OfferDetailsPage extends HookConsumerWidget {
               ),
             ],
           ),
-        ),
-      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+        ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+      );
     }
 
     if (state.isError) {

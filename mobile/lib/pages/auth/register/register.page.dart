@@ -266,7 +266,7 @@ class RegisterPage extends HookConsumerWidget {
                             text: TextSpan(
                               style: Theme.of(context).textTheme.bodySmall,
                               children: [
-                                TextSpan(text: "I agree to the "),
+                                TextSpan(text: l10n.agreeToPrefix),
                                 TextSpan(
                                   text: l10n.termsAndConditions,
                                   style: const TextStyle(
@@ -280,7 +280,7 @@ class RegisterPage extends HookConsumerWidget {
                                       );
                                     },
                                 ),
-                                TextSpan(text: " and "),
+                                TextSpan(text: l10n.agreeToAnd),
                                 TextSpan(
                                   text: l10n.privacyPolicy,
                                   style: const TextStyle(
@@ -304,7 +304,7 @@ class RegisterPage extends HookConsumerWidget {
                     ),
                     const SizedBox(height: 32),
                     PremiumButton(
-                      text: "Sign Up",
+                      text: l10n.signUp,
                       isLoading: state.isLoading,
                       onPressed: isFormFilled ? handleRegister : null,
                     ),
@@ -315,7 +315,7 @@ class RegisterPage extends HookConsumerWidget {
             ),
           ),
         ],
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }
