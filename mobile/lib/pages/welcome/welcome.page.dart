@@ -1,3 +1,4 @@
+import 'package:customer_app/utils/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,6 +17,7 @@ class WelcomePage extends HookConsumerWidget {
     final pageController = usePageController(initialPage: 0);
     final currentPage = useState(0);
     final animatedPercent = useState(0.0);
+    final l10n = context.l10n;
 
     const int totalPages = 3;
 
@@ -43,32 +45,32 @@ class WelcomePage extends HookConsumerWidget {
             pageController: pageController,
             currentAnimatedPercent: animatedPercent.value,
             imagePath: "assets/images/onboarding_plot.jpg",
-            title: "Find Your Dream Plot",
-            description:
-                "Explore exclusive real estate projects and find the perfect plot for your future home.",
+            title: l10n.welcomeTitle1,
+            description: l10n.welcomeDesc1,
             isLastPage: false,
+            skipText: l10n.skipBtn,
           ),
           _WelcomeSlide(
             pageController: pageController,
             currentAnimatedPercent: animatedPercent.value,
             imagePath: "assets/images/onboarding_virtual.jpg",
-            title: "360° Virtual Tours",
-            description:
-                "Experience properties from the comfort of your home with immersive 360-degree virtual tours.",
+            title: l10n.welcomeTitle2,
+            description: l10n.welcomeDesc2,
             isLastPage: false,
+            skipText: l10n.skipBtn,
           ),
           _WelcomeSlide(
             pageController: pageController,
             currentAnimatedPercent: animatedPercent.value,
             imagePath: "assets/images/onboarding_booking.jpg",
-            title: "Seamless Booking",
-            description:
-                "Book plots, track site visits, and manage payments all in one secure platform.",
+            title: l10n.welcomeTitle3,
+            description: l10n.welcomeDesc3,
             isLastPage: true,
+            skipText: l10n.skipBtn,
           ),
         ],
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }
 
@@ -79,6 +81,7 @@ class _WelcomeSlide extends StatelessWidget {
   final String title;
   final String description;
   final bool isLastPage;
+  final String skipText;
 
   const _WelcomeSlide({
     required this.pageController,
@@ -87,6 +90,7 @@ class _WelcomeSlide extends StatelessWidget {
     required this.title,
     required this.description,
     required this.isLastPage,
+    required this.skipText,
   });
 
   void _onNext(BuildContext context) {
@@ -182,7 +186,7 @@ class _WelcomeSlide extends StatelessWidget {
                 context.go(AppRoutes.login);
               },
               child: Text(
-                "Skip",
+                skipText,
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 16,

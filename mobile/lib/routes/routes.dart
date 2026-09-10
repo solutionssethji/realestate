@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../main.dart';
+import '../pages/offer_details/offer_details.page.dart';
 import '../pages/profile/profile.page.dart';
 import '../pages/profile/edit_profile/edit_profile.page.dart';
 import '../pages/kyc/kyc.page.dart';
@@ -266,10 +267,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const MySiteVisitsPage(),
       ),
 
-      // Project Details Routes
+      // Project & Offer Details Routes
       GoRoute(
         path: AppRoutes.notifications,
         builder: (context, state) => const NotificationsPage(),
+      ),
+      GoRoute(
+        path: '/offers/:id',
+        builder: (context, state) =>
+            OfferDetailsPage(offerId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: AppRoutes.projectDetailsBase,

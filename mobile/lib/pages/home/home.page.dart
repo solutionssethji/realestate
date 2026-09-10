@@ -56,7 +56,11 @@ class HomePage extends HookConsumerWidget {
           IconButton(
             icon: const Icon(Icons.language, color: Colors.white),
             onPressed: () {
-              AppDialogs.showLanguageBottomSheet(context, ref, locale.languageCode);
+              AppDialogs.showLanguageBottomSheet(
+                context,
+                ref,
+                locale.languageCode,
+              );
             },
           ),
           Consumer(
@@ -145,10 +149,10 @@ class HomePage extends HookConsumerWidget {
                       : CarouselSlider(
                           options: CarouselOptions(
                             aspectRatio: 16 / 9,
-                            viewportFraction: 0.9,
-                            enableInfiniteScroll: false,
-                            padEnds: true,
                             autoPlay: true,
+                            enlargeCenterPage: true,
+                            viewportFraction: 0.9,
+                            autoPlayInterval: const Duration(seconds: 4),
                           ),
                           items: [
                             for (
@@ -191,7 +195,7 @@ class HomePage extends HookConsumerWidget {
                   child: SectionHeader(
                     title: loc.featuredProjects,
                     actionLabel: context.l10n.viewAll,
-                    onAction: () => context.push(AppRoutes.projects),
+                    onAction: () => context.go(AppRoutes.projects),
                   ),
                 ),
               ),
@@ -259,9 +263,8 @@ class HomePage extends HookConsumerWidget {
             ],
           ),
         ),
-      ),
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
       extendBody: true,
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+    );
   }
-
 }

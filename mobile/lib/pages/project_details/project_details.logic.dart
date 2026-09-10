@@ -19,7 +19,10 @@ class ProjectDetailsLogic extends _$ProjectDetailsLogic {
       state = state.copyWith(isLoading: false, project: project);
     } catch (e) {
       state = state.copyWith(
-          isLoading: false, isError: true, errorMessage: e.toString());
+        isLoading: false,
+        isError: true,
+        errorMessage: e.toString(),
+      );
     }
   }
 }

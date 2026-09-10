@@ -21,6 +21,7 @@ class SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void initState() {
     super.initState();
+    FlutterNativeSplash.remove();
 
     controller = AnimationController(
       vsync: this,
@@ -28,7 +29,6 @@ class SplashScreenState extends ConsumerState<SplashScreen>
     )..forward();
 
     Timer(const Duration(milliseconds: 2500), () {
-      FlutterNativeSplash.remove();
       if (mounted) {
         final token = appBox.get('authToken');
         final isProfileComplete = appBox.get('isProfileComplete') ?? false;

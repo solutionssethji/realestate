@@ -15,7 +15,12 @@ class TopRightWavePainter extends CustomPainter {
     // First wave (lighter, stretches further)
     final path2 = Path()
       ..moveTo(size.width * 0.4, 0)
-      ..quadraticBezierTo(size.width * 0.6, size.height * 0.2, size.width, size.height * 0.25)
+      ..quadraticBezierTo(
+        size.width * 0.6,
+        size.height * 0.2,
+        size.width,
+        size.height * 0.25,
+      )
       ..lineTo(size.width, 0)
       ..close();
     canvas.drawPath(path2, paint2);
@@ -23,7 +28,12 @@ class TopRightWavePainter extends CustomPainter {
     // Second wave (slightly darker, closer to corner)
     final path1 = Path()
       ..moveTo(size.width * 0.6, 0)
-      ..quadraticBezierTo(size.width * 0.8, size.height * 0.1, size.width, size.height * 0.15)
+      ..quadraticBezierTo(
+        size.width * 0.8,
+        size.height * 0.1,
+        size.width,
+        size.height * 0.15,
+      )
       ..lineTo(size.width, 0)
       ..close();
     canvas.drawPath(path1, paint);
@@ -46,16 +56,8 @@ class BottomRightCirclesPainter extends CustomPainter {
       ..strokeWidth = 2.0;
 
     // Large circle overlapping the bottom right corner
-    canvas.drawCircle(
-      Offset(size.width, size.height),
-      120,
-      fillPaint,
-    );
-    canvas.drawCircle(
-      Offset(size.width, size.height),
-      120,
-      strokePaint,
-    );
+    canvas.drawCircle(Offset(size.width, size.height), 120, fillPaint);
+    canvas.drawCircle(Offset(size.width, size.height), 120, strokePaint);
 
     // Medium circle slightly offset
     canvas.drawCircle(
@@ -63,7 +65,7 @@ class BottomRightCirclesPainter extends CustomPainter {
       140,
       strokePaint,
     );
-    
+
     // Small accent circle
     canvas.drawCircle(
       Offset(size.width - 150, size.height - 80),
@@ -86,7 +88,7 @@ class BottomLeftDotsPainter extends CustomPainter {
     double spacing = 20.0;
     int rows = 6;
     int cols = 6;
-    
+
     double startX = -10.0;
     double startY = size.height - (rows * spacing) + 10;
 

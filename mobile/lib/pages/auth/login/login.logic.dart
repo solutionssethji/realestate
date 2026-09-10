@@ -20,22 +20,35 @@ class LoginLogic extends _$LoginLogic {
   }
 
   Future<void> sendOtp(
-      String completeNumber, String phoneNumber, String countryCode, BuildContext context) async {
+    String completeNumber,
+    String phoneNumber,
+    String countryCode,
+    BuildContext context,
+  ) async {
     final l10n = context.l10n;
     if (completeNumber.isEmpty) return;
 
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
-      final status = await ApiService.checkUserStatusByPhone(phoneNumber, countryCode);
+      final status = await ApiService.checkUserStatusByPhone(
+        phoneNumber,
+        countryCode,
+      );
       if (status == 'DISABLED' || status == 'BLOCKED') {
-        state = state.copyWith(isLoading: false, errorMessage: l10n.authErrUserDisabled);
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: l10n.authErrUserDisabled,
+        );
         if (context.mounted) {
           AppDialogs.showErrorDialog(context, l10n.authErrUserDisabled);
         }
         return;
       } else if (status == 'DELETED') {
-        state = state.copyWith(isLoading: false, errorMessage: l10n.authErrUserDeleted);
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: l10n.authErrUserDeleted,
+        );
         if (context.mounted) {
           AppDialogs.showErrorDialog(context, l10n.authErrUserDeleted);
         }
@@ -55,7 +68,10 @@ class LoginLogic extends _$LoginLogic {
             errorMessage: e.message ?? l10n.verificationFailed,
           );
           if (context.mounted) {
-            AppSnackbar.showError(context, e.message ?? l10n.verificationFailed);
+            AppSnackbar.showError(
+              context,
+              e.message ?? l10n.verificationFailed,
+            );
           }
         },
         codeSent: (String verificationId, int? resendToken) {
@@ -78,11 +94,13 @@ class LoginLogic extends _$LoginLogic {
         },
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: l10n.failedToSendOtp);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: l10n.failedToSendOtp,
+      );
       if (context.mounted) {
         AppSnackbar.showError(context, l10n.failedToSendOtp);
       }
     }
   }
-
 }

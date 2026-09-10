@@ -5,18 +5,17 @@ import 'package:customer_app/widgets/app_loading_view.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
-import '../../services/api_service.dart';
-import '../../services/storage_service.dart';
 import '../../utils/l10n_extension.dart';
 import '../../utils/validators.dart';
 import '../../utils/snackbar_utils.dart';
 import '../../theme/theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+
+import 'kyc.logic.dart';
 
 class KycPage extends HookConsumerWidget {
   const KycPage({super.key});
@@ -26,7 +25,8 @@ class KycPage extends HookConsumerWidget {
     final authUser = ref.watch(currentUserProvider);
     final customerAsync = ref.watch(customerProvider);
     final user = customerAsync.value;
-    final isLoading = useState(false);
+    final kycState = ref.watch(kycLogicProvider);
+    final kycLogic = ref.read(kycLogicProvider.notifier);
 
     // Form controllers
     final aadharController = useTextEditingController(text: user?.aadharNumber);
@@ -41,18 +41,14 @@ class KycPage extends HookConsumerWidget {
       text: user?.bankDetails?['ifscCode']?.toString(),
     );
 
-    // Selected images
-    final aadharImage = useState<File?>(null);
-    final panImage = useState<File?>(null);
-
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
     useValueListenable(aadharController);
     useValueListenable(panController);
 
     final hasAadharImg =
-        aadharImage.value != null || (user?.aadharPhotoUrl != null);
-    final hasPanImg = panImage.value != null || (user?.panPhotoUrl != null);
+        kycState.aadharImage != null || (user?.aadharPhotoUrl != null);
+    final hasPanImg = kycState.panImage != null || (user?.panPhotoUrl != null);
 
     final isFormFilled =
         aadharController.text.trim().isNotEmpty &&
@@ -60,63 +56,11 @@ class KycPage extends HookConsumerWidget {
         hasAadharImg &&
         hasPanImg;
 
-    Future<void> pickDocument(ValueNotifier<File?> fileState) async {
-      try {
-        final result = await FilePicker.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: ['pdf'],
-        );
-        if (result.isNotEmpty && result.single.path != null) {
-          final file = File(result.single.path!);
-          final sizeInMb = file.lengthSync() / (1024 * 1024);
-          if (sizeInMb > 2.0) {
-            if (context.mounted) {
-              AppSnackbar.showError(context, context.l10n.pdfTooLarge);
-            }
-            return;
-          }
-          fileState.value = file;
-        }
-      } catch (e) {
-        if (context.mounted) {
-          AppSnackbar.showError(
-            context,
-            context.l10n.failedToPickImage(e.toString()),
-          );
-        }
-      }
-    }
-
     Future<void> submitKyc() async {
       if (authUser == null) return;
       if (!formKey.currentState!.validate()) return;
 
-      isLoading.value = true;
       try {
-        String? aadharUrl = user?.aadharPhotoUrl;
-        String? panUrl = user?.panPhotoUrl;
-
-        // Upload Aadhar
-        if (aadharImage.value != null) {
-          aadharUrl =
-              await StorageService.uploadKycDocument(
-                file: aadharImage.value!,
-                documentType: 'aadhar',
-              ) ??
-              aadharUrl;
-        }
-
-        // Upload PAN
-        if (panImage.value != null) {
-          panUrl =
-              await StorageService.uploadKycDocument(
-                file: panImage.value!,
-                documentType: 'pan',
-              ) ??
-              panUrl;
-        }
-
-        // Prepare bank details
         Map<String, dynamic> bankDetails = {};
         if (bankNameController.text.isNotEmpty ||
             accountController.text.isNotEmpty ||
@@ -128,16 +72,14 @@ class KycPage extends HookConsumerWidget {
           };
         }
 
-        await ApiService.updateKyc(
+        await kycLogic.submitKyc(
           uid: authUser.uid,
           aadharNumber: aadharController.text.trim(),
-          aadharPhotoUrl: aadharUrl,
           panNumber: panController.text.trim(),
-          panPhotoUrl: panUrl,
           bankDetails: bankDetails,
+          currentAadharUrl: user?.aadharPhotoUrl,
+          currentPanUrl: user?.panPhotoUrl,
         );
-
-        // Trigger user refresh if needed (customerProvider stream auto-updates)
 
         if (context.mounted) {
           AppSnackbar.showSuccess(context, context.l10n.kycUpdatedSuccessfully);
@@ -150,8 +92,6 @@ class KycPage extends HookConsumerWidget {
             context.l10n.failedToUpdateKyc(e.toString()),
           );
         }
-      } finally {
-        isLoading.value = false;
       }
     }
 
@@ -182,9 +122,24 @@ class KycPage extends HookConsumerWidget {
                         title: context.l10n.aadharCard,
                         controller: aadharController,
                         hintText: context.l10n.enterAadharNumber,
-                        imageState: aadharImage,
+                        imageFile: kycState.aadharImage,
                         existingUrl: user.aadharPhotoUrl,
-                        onPickImage: () => pickDocument(aadharImage),
+                        onPickImage: () async {
+                          try {
+                            await kycLogic.pickDocument('aadhar');
+                          } catch (e) {
+                            if (context.mounted) {
+                              AppSnackbar.showError(
+                                context,
+                                e.toString() == 'Exception: pdfTooLarge'
+                                    ? context.l10n.pdfTooLarge
+                                    : context.l10n.failedToPickImage(
+                                        e.toString(),
+                                      ),
+                              );
+                            }
+                          }
+                        },
                         l10n: context.l10n,
                         validator: (v) => AppValidators.aadhaar(context, v),
                       ),
@@ -197,9 +152,24 @@ class KycPage extends HookConsumerWidget {
                         title: context.l10n.panCard,
                         controller: panController,
                         hintText: context.l10n.enterPanNumber,
-                        imageState: panImage,
+                        imageFile: kycState.panImage,
                         existingUrl: user.panPhotoUrl,
-                        onPickImage: () => pickDocument(panImage),
+                        onPickImage: () async {
+                          try {
+                            await kycLogic.pickDocument('pan');
+                          } catch (e) {
+                            if (context.mounted) {
+                              AppSnackbar.showError(
+                                context,
+                                e.toString() == 'Exception: pdfTooLarge'
+                                    ? context.l10n.pdfTooLarge
+                                    : context.l10n.failedToPickImage(
+                                        e.toString(),
+                                      ),
+                              );
+                            }
+                          }
+                        },
                         l10n: context.l10n,
                         validator: (v) => AppValidators.pan(context, v),
                       ),
@@ -254,15 +224,15 @@ class KycPage extends HookConsumerWidget {
                       PremiumButton(
                         text: context.l10n.saveDetails,
                         onPressed: isFormFilled ? submitKyc : null,
-                        isLoading: isLoading.value,
+                        isLoading: kycState.isLoading,
                       ),
                       const SizedBox(height: 20),
                     ],
                   ),
                 ),
               ),
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 
   Widget _buildDocumentSection({
@@ -270,7 +240,7 @@ class KycPage extends HookConsumerWidget {
     required String title,
     required TextEditingController controller,
     required String hintText,
-    required ValueNotifier<File?> imageState,
+    required File? imageFile,
     required String? existingUrl,
     required VoidCallback onPickImage,
     required dynamic l10n,
@@ -332,7 +302,7 @@ class KycPage extends HookConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              imageState.value != null || existingUrl != null
+                              imageFile != null || existingUrl != null
                                   ? Icons.check_circle
                                   : Icons.upload_file,
                               color: Theme.of(context).colorScheme.primary,
@@ -343,8 +313,8 @@ class KycPage extends HookConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    imageState.value != null
-                                        ? imageState.value!.path.split('/').last
+                                    imageFile != null
+                                        ? imageFile.path.split('/').last
                                         : existingUrl != null
                                         ? l10n.fileSelected
                                         : l10n.tapToPickPdf,
@@ -359,8 +329,7 @@ class KycPage extends HookConsumerWidget {
                                           fontWeight: FontWeight.bold,
                                         ),
                                   ),
-                                  if (imageState.value != null ||
-                                      existingUrl != null)
+                                  if (imageFile != null || existingUrl != null)
                                     Text(
                                       l10n.tapToChange,
                                       style: Theme.of(context)
@@ -376,7 +345,7 @@ class KycPage extends HookConsumerWidget {
                                 ],
                               ),
                             ),
-                            if (imageState.value != null || existingUrl != null)
+                            if (imageFile != null || existingUrl != null)
                               Icon(
                                 Icons.edit,
                                 size: 18,

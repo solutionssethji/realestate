@@ -1,3 +1,4 @@
+import 'package:customer_app/utils/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,14 +17,13 @@ class LanguageSelectionPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentLocale = ref.watch(localeControllerProvider);
     final selectedLang = useState<String>(currentLocale.languageCode);
+    final l10n = context.l10n;
 
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(child: CustomPaint(painter: BottomLeftDotsPainter())),
-          Positioned.fill(
-            child: CustomPaint(painter: TopRightWavePainter()),
-          ),
+          Positioned.fill(child: CustomPaint(painter: TopRightWavePainter())),
           Positioned.fill(
             child: CustomPaint(painter: BottomRightCirclesPainter()),
           ),
@@ -36,7 +36,7 @@ class LanguageSelectionPage extends HookConsumerWidget {
                     [
                           const SizedBox(height: 80),
                           Text(
-                            "Choose Language\nभाषा चुनें",
+                            l10n.chooseLanguage,
                             style: Theme.of(context).textTheme.headlineMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -46,7 +46,7 @@ class LanguageSelectionPage extends HookConsumerWidget {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            "Select your preferred language to continue.",
+                            l10n.selectLanguageDesc,
                             style: Theme.of(context).textTheme.bodyLarge
                                 ?.copyWith(color: Colors.grey[600]),
                             textAlign: TextAlign.center,
@@ -56,14 +56,24 @@ class LanguageSelectionPage extends HookConsumerWidget {
                             title: "English",
                             subtitle: "English",
                             isSelected: selectedLang.value == 'en',
-                            onTap: () => selectedLang.value = 'en',
+                            onTap: () {
+                              selectedLang.value = 'en';
+                              ref
+                                  .read(localeControllerProvider.notifier)
+                                  .setLocale('en');
+                            },
                           ),
                           const SizedBox(height: 16),
                           _LanguageCard(
                             title: "हिंदी",
                             subtitle: "Hindi",
                             isSelected: selectedLang.value == 'hi',
-                            onTap: () => selectedLang.value = 'hi',
+                            onTap: () {
+                              selectedLang.value = 'hi';
+                              ref
+                                  .read(localeControllerProvider.notifier)
+                                  .setLocale('hi');
+                            },
                           ),
                           const Spacer(),
                           ElevatedButton(
@@ -83,7 +93,7 @@ class LanguageSelectionPage extends HookConsumerWidget {
                               ),
                             ),
                             child: Text(
-                              "Continue",
+                              l10n.continueBtn,
                               style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(
                                     color: Colors.white,
@@ -105,8 +115,8 @@ class LanguageSelectionPage extends HookConsumerWidget {
             ),
           ),
         ],
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }
 

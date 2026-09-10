@@ -187,8 +187,8 @@ class CalculatorPage extends HookConsumerWidget {
             ],
           ),
         ),
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 
   Widget _buildSliderRow(

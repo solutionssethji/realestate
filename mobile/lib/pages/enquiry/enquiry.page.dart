@@ -137,7 +137,10 @@ class EnquiryPage extends HookConsumerWidget {
                         : () {
                             final currentUser = AuthService.currentUser;
                             if (currentUser == null) {
-                              AppSnackbar.showError(context, context.l10n.loginToSubmitEnquiry);
+                              AppSnackbar.showError(
+                                context,
+                                context.l10n.loginToSubmitEnquiry,
+                              );
                               return;
                             }
                             if (formKey.currentState!.validate()) {
@@ -158,7 +161,7 @@ class EnquiryPage extends HookConsumerWidget {
             ),
           ),
         ),
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }

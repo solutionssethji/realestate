@@ -19,7 +19,10 @@ class OfferDetailsLogic extends _$OfferDetailsLogic {
       state = state.copyWith(isLoading: false, offer: offer);
     } catch (e) {
       state = state.copyWith(
-          isLoading: false, isError: true, errorMessage: e.toString());
+        isLoading: false,
+        isError: true,
+        errorMessage: e.toString(),
+      );
     }
   }
 }

@@ -31,6 +31,8 @@ class ProfilePage extends HookConsumerWidget {
     final logic = ref.read(profileLogicProvider.notifier);
     final locale = ref.watch(localeControllerProvider);
     final l10n = context.l10n;
+    final version = state.packageInfo?.version;
+    final buildNumber = state.packageInfo?.buildNumber;
 
     ref.listen(profileLogicProvider, (previous, next) {
       if (next.errorMessage != null &&
@@ -53,37 +55,6 @@ class ProfilePage extends HookConsumerWidget {
             );
           },
         ),
-        actions: [
-          if (user != null)
-            state.isLoading
-                ? const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.logout),
-                    onPressed: () async {
-                      final confirm =
-                          await AppDialogs.showConfirmationBottomSheet(
-                            context,
-                            title: l10n.signOut,
-                            message: l10n.logoutConfirmation,
-                            confirmText: l10n.signOut,
-                            cancelText: l10n.cancel,
-                          );
-                      if (confirm != true) return;
-
-                      await logic.logout();
-                      if (context.mounted) {
-                        context.go(AppRoutes.home);
-                      }
-                    },
-                  ),
-        ],
       ),
       body: user == null
           ? LoginRequiredState(
@@ -140,35 +111,68 @@ class ProfilePage extends HookConsumerWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 32),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    child: Divider(height: 1),
+                  ),
                   Text(
                     l10n.quickActions,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.history,
-                    l10n.myEnquiries,
-                    () {
-                      context.push(AppRoutes.myEnquiries);
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.mapPin,
-                    l10n.mySiteVisits,
-                    () {
-                      context.push(AppRoutes.mySiteVisits);
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.calculator,
-                    l10n.emiCalculator,
-                    () => context.push(AppRoutes.emiCalculator),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8.0,
+                          color: Color(0x1A6200EA),
+                          offset: Offset(0.0, 2.0),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            _buildActionTile(
+                              context,
+                              LucideIcons.history,
+                              l10n.myEnquiries,
+                              () {
+                                context.push(AppRoutes.myEnquiries);
+                              },
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Divider(height: 1),
+                            ),
+                            _buildActionTile(
+                              context,
+                              LucideIcons.mapPin,
+                              l10n.mySiteVisits,
+                              () {
+                                context.push(AppRoutes.mySiteVisits);
+                              },
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Divider(height: 1),
+                            ),
+                            _buildActionTile(
+                              context,
+                              LucideIcons.calculator,
+                              l10n.emiCalculator,
+                              () => context.push(AppRoutes.emiCalculator),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   Text(
@@ -176,25 +180,55 @@ class ProfilePage extends HookConsumerWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.user,
-                    context.l10n.editProfile,
-                    () => context.push(AppRoutes.editProfile),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.badge,
-                    l10n.kycAndDocuments,
-                    () => context.push(AppRoutes.kyc),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.gift,
-                    l10n.referralRewards,
-                    () => context.push(AppRoutes.referral),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8.0,
+                          color: Color(0x1A6200EA),
+                          offset: Offset(0.0, 2.0),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            _buildActionTile(
+                              context,
+                              LucideIcons.user,
+                              context.l10n.editProfile,
+                              () => context.push(AppRoutes.editProfile),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Divider(height: 1),
+                            ),
+                            _buildActionTile(
+                              context,
+                              LucideIcons.badge,
+                              l10n.kycAndDocuments,
+                              () => context.push(AppRoutes.kyc),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Divider(height: 1),
+                            ),
+                            _buildActionTile(
+                              context,
+                              LucideIcons.gift,
+                              l10n.referralRewards,
+                              () => context.push(AppRoutes.referral),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   Text(
@@ -202,119 +236,218 @@ class ProfilePage extends HookConsumerWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.contact2,
-                    l10n.supportCenter,
-                    () => context.push(AppRoutes.support),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8.0,
+                          color: Color(0x1A6200EA),
+                          offset: Offset(0.0, 2.0),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            _buildActionTile(
+                              context,
+                              LucideIcons.contact2,
+                              l10n.supportCenter,
+                              () => context.push(AppRoutes.support),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Divider(height: 1),
+                            ),
+                            _buildActionTile(
+                              context,
+                              LucideIcons.helpCircle,
+                              l10n.faq,
+                              () async {
+                                final url = Uri.parse(AppConstants.faqsUrl);
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(
+                                    url,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                              },
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Divider(height: 1),
+                            ),
+                            _buildActionTile(
+                              context,
+                              LucideIcons.fileText,
+                              l10n.termsAndConditions,
+                              () async {
+                                final url = Uri.parse(
+                                  AppConstants.termsConditionsUrl,
+                                );
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(
+                                    url,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                              },
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Divider(height: 1),
+                            ),
+                            _buildActionTile(
+                              context,
+                              LucideIcons.shield,
+                              l10n.privacyPolicy,
+                              () async {
+                                final url = Uri.parse(
+                                  AppConstants.privacyPolicyUrl,
+                                );
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(
+                                    url,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.helpCircle,
-                    l10n.faq,
-                    () async {
-                      final url = Uri.parse(AppConstants.faqsUrl);
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(
-                          url,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      }
-                    },
+                  const SizedBox(height: 32),
+                  Text(
+                    l10n.accountActions,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.fileText,
-                    l10n.termsAndConditions,
-                    () async {
-                      final url = Uri.parse(AppConstants.termsConditionsUrl);
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(
-                          url,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      }
-                    },
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8.0,
+                          color: Color(0x1A6200EA),
+                          offset: Offset(0.0, 2.0),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            _buildActionTile(
+                              context,
+                              LucideIcons.logOut,
+                              l10n.signOut,
+                              () async {
+                                final confirm =
+                                    await AppDialogs.showConfirmationBottomSheet(
+                                      context,
+                                      title: l10n.signOut,
+                                      message: l10n.logoutConfirmation,
+                                      confirmText: l10n.signOut,
+                                      cancelText: l10n.cancel,
+                                    );
+                                if (confirm != true) return;
+
+                                await logic.logout();
+                                if (context.mounted) {
+                                  context.go(AppRoutes.home);
+                                }
+                              },
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Divider(height: 1),
+                            ),
+                            _buildActionTile(
+                              context,
+                              LucideIcons.trash2,
+                              l10n.deleteAccount,
+                              () async {
+                                final confirm =
+                                    await AppDialogs.showConfirmationBottomSheet(
+                                      context,
+                                      title: l10n.deleteAccount,
+                                      message: l10n.deleteAccountWarning,
+                                      confirmText: l10n.deleteAccount,
+                                      cancelText: l10n.cancel,
+                                      isDestructive: true,
+                                    );
+                                if (confirm != true) return;
+
+                                final uid = AuthService.currentUser?.uid;
+                                if (uid != null) {
+                                  final properties =
+                                      await ApiService.fetchUserPropertiesPagination(
+                                        limit: 1,
+                                        uid: uid,
+                                      );
+                                  if (properties.data.isNotEmpty &&
+                                      context.mounted) {
+                                    AppSnackbar.showError(
+                                      context,
+                                      l10n.cannotDeleteAccountBooking,
+                                    );
+                                    return;
+                                  }
+                                }
+
+                                final success = await logic.deleteAccount();
+                                if (success && context.mounted) {
+                                  context.go(AppRoutes.home);
+                                } else if (!success && context.mounted) {
+                                  if (state.errorMessage?.contains(
+                                        'requires-recent-login',
+                                      ) ==
+                                      true) {
+                                    AppSnackbar.showError(
+                                      context,
+                                      l10n.requiresRecentLoginMessage,
+                                    );
+                                    await logic.logout();
+                                    if (context.mounted) {
+                                      context.go(AppRoutes.login);
+                                    }
+                                  }
+                                }
+                              },
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.shield,
-                    l10n.privacyPolicy,
-                    () async {
-                      final url = Uri.parse(AppConstants.privacyPolicyUrl);
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(
-                          url,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      }
-                    },
-                  ),
-
-                  const SizedBox(height: 12),
-                  _buildActionTile(
-                    context,
-                    LucideIcons.trash2,
-                    // Hardcoded fallback if translation is not generated yet
-                    l10n.deleteAccount,
-                    () async {
-                      final confirm =
-                          await AppDialogs.showConfirmationBottomSheet(
-                            context,
-                            title: l10n.deleteAccount,
-                            message: l10n.deleteAccountWarning,
-                            confirmText: l10n.deleteAccount,
-                            cancelText: l10n.cancel,
-                            isDestructive: true,
-                          );
-                      if (confirm != true) return;
-
-                      final uid = AuthService.currentUser?.uid;
-                      if (uid != null) {
-                        final properties =
-                            await ApiService.fetchUserPropertiesPagination(
-                              limit: 1,
-                              uid: uid,
-                            );
-                        if (properties.data.isNotEmpty && context.mounted) {
-                          AppSnackbar.showError(
-                            context,
-                            l10n.cannotDeleteAccountBooking,
-                          );
-                          return;
-                        }
-                      }
-
-                      final success = await logic.deleteAccount();
-                      if (success && context.mounted) {
-                        context.go(AppRoutes.home);
-                      } else if (!success && context.mounted) {
-                        if (state.errorMessage?.contains(
-                              'requires-recent-login',
-                            ) ==
-                            true) {
-                          AppSnackbar.showError(
-                            context,
-                            'Please sign in again to delete your account.',
-                          );
-                          await logic.logout();
-                          if (context.mounted) {
-                            context.go(AppRoutes.login);
-                          }
-                        }
-                      }
-                    },
-                    color: Theme.of(context).colorScheme.error,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Text(
+                      context.l10n.versionNumber(
+                        '${version ?? ''}+$buildNumber',
+                      ),
+                      style: Theme.of(context).textTheme.titleSmall,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   const SizedBox(height: 120),
                 ],
               ),
-            ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+            ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 
   Widget _buildActionTile(

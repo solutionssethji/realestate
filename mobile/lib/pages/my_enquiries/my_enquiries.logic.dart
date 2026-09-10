@@ -56,8 +56,14 @@ class MyEnquiriesLogic extends _$MyEnquiriesLogic {
       );
 
       // Fetch project and plot names
-      final projectIds = newEnquiries.map((e) => e['projectId'] as String?).where((id) => id != null).toSet();
-      final plotIds = newEnquiries.map((e) => e['plotId'] as String?).where((id) => id != null).toSet();
+      final projectIds = newEnquiries
+          .map((e) => e['projectId'] as String?)
+          .where((id) => id != null)
+          .toSet();
+      final plotIds = newEnquiries
+          .map((e) => e['plotId'] as String?)
+          .where((id) => id != null)
+          .toSet();
 
       final projectNames = <String, String>{};
       final plotNames = <String, String>{};
@@ -78,13 +84,17 @@ class MyEnquiriesLogic extends _$MyEnquiriesLogic {
         final plotId = e['plotId'] as String?;
         return {
           ...e,
-          if (projectId != null && projectNames.containsKey(projectId)) 'projectName': projectNames[projectId],
-          if (plotId != null && plotNames.containsKey(plotId)) 'plotName': plotNames[plotId],
+          if (projectId != null && projectNames.containsKey(projectId))
+            'projectName': projectNames[projectId],
+          if (plotId != null && plotNames.containsKey(plotId))
+            'plotName': plotNames[plotId],
         };
       }).toList();
 
       state = state.copyWith(
-        enquiries: isRefresh ? enrichedEnquiries : [...state.enquiries, ...enrichedEnquiries],
+        enquiries: isRefresh
+            ? enrichedEnquiries
+            : [...state.enquiries, ...enrichedEnquiries],
         lastDocument: newLastDoc,
         hasMore: newEnquiries.length == 10,
         isLoading: false,

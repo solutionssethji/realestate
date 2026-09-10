@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:customer_app/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:customer_app/utils/l10n_extension.dart';
 
 class UpdatePageWidget extends StatefulWidget {
   final bool isForceUpdate;
@@ -106,7 +107,7 @@ class _UpdatePageWidgetState extends State<UpdatePageWidget>
                       ),
                       const SizedBox(height: 48),
                       Text(
-                        'Time to Update!',
+                        context.l10n.timeToUpdate,
                         style: theme.textTheme.headlineLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
@@ -115,7 +116,7 @@ class _UpdatePageWidgetState extends State<UpdatePageWidget>
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'A shiny new version (${widget.latestVersion}) is waiting for you.\nWe have added new features and squashed some bugs.',
+                        context.l10n.updateDescription(widget.latestVersion),
                         style: theme.textTheme.bodyLarge?.copyWith(
                           height: 1.5,
                           color: isDark ? Colors.white70 : Colors.black87,
@@ -142,7 +143,7 @@ class _UpdatePageWidgetState extends State<UpdatePageWidget>
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'This update is required to continue.',
+                                context.l10n.updateRequired,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: Colors.red,
                                   fontWeight: FontWeight.bold,
@@ -175,9 +176,12 @@ class _UpdatePageWidgetState extends State<UpdatePageWidget>
                       );
                     }
                   },
-                  child: const Text(
-                    'Update Now',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  child: Text(
+                    context.l10n.updateNow,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 if (!widget.isForceUpdate) ...[
@@ -190,9 +194,9 @@ class _UpdatePageWidgetState extends State<UpdatePageWidget>
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
-                      'I\'ll do it later',
-                      style: TextStyle(
+                    child: Text(
+                      context.l10n.illDoItLater,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),

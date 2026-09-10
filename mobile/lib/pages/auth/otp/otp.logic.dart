@@ -116,7 +116,10 @@ class OtpLogic extends _$OtpLogic {
     final l10n = context.l10n;
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final status = await ApiService.checkUserStatusByPhone(phoneNumber, countryCode);
+      final status = await ApiService.checkUserStatusByPhone(
+        phoneNumber,
+        countryCode,
+      );
       if (status == 'DISABLED' || status == 'BLOCKED') {
         state = state.copyWith(
           isLoading: false,
@@ -179,5 +182,4 @@ class OtpLogic extends _$OtpLogic {
       }
     }
   }
-
 }

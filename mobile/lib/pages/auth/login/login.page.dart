@@ -1,3 +1,4 @@
+import 'package:customer_app/utils/l10n_extension.dart';
 import 'package:customer_app/widgets/premium_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,6 +24,7 @@ class LoginPage extends HookConsumerWidget {
 
     final state = ref.watch(loginLogicProvider);
     final logic = ref.read(loginLogicProvider.notifier);
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -61,7 +63,7 @@ class LoginPage extends HookConsumerWidget {
                       Image.asset('assets/logo_with_vtext.png', height: 100),
                       const SizedBox(height: 32),
                       Text(
-                        'Welcome Back',
+                        l10n.welcomeBack,
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
                               fontWeight: FontWeight.bold,
@@ -71,7 +73,7 @@ class LoginPage extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Enter your mobile number to unlock exclusive real estate opportunities.",
+                        l10n.loginScreenDesc,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: AppTheme.textSecondary,
                         ),
@@ -83,7 +85,7 @@ class LoginPage extends HookConsumerWidget {
                         child: IntlPhoneField(
                           decoration: InputDecoration(
                             counterText: '',
-                            labelText: 'Phone Number',
+                            labelText: l10n.phoneNumber,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
@@ -134,7 +136,7 @@ class LoginPage extends HookConsumerWidget {
                       ),
                       const SizedBox(height: 32),
                       PremiumButton(
-                        text: "Send OTP",
+                        text: l10n.sendOtp,
                         isLoading: state.isLoading,
                         onPressed: isPhoneValid.value
                             ? () {
@@ -158,7 +160,7 @@ class LoginPage extends HookConsumerWidget {
             ),
           ],
         ),
-      ),
-    ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0);
+      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, end: 0),
+    );
   }
 }

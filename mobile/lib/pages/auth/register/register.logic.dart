@@ -50,10 +50,7 @@ class RegisterLogic extends _$RegisterLogic {
 
     final user = AuthService.currentUser;
     if (user == null) {
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: l10n.authLost,
-      );
+      state = state.copyWith(isLoading: false, errorMessage: l10n.authLost);
       return;
     }
 
