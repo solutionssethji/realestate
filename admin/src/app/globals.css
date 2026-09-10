@@ -43,3 +43,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.phone-input-container .PhoneInputCountry { margin-right: 0.5rem; }
+.phone-input-container .PhoneInputInput { background: transparent; outline: none; border: none; font-size: 0.875rem; width: 100%; }
+

@@ -4,6 +4,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 import { Modal } from "@/components/ui/Modal";
 import { numberToWords } from "@/lib/formatters";
+import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 
 interface CropArea {
     width: number;
@@ -37,7 +38,9 @@ export interface BookingApplicationFormData {
     firstApplicantTelephoneResidence: string;
     secondApplicantTelephoneResidence: string;
     firstApplicantMobile: string;
+    firstApplicantCountryCode: string;
     secondApplicantMobile: string;
+    secondApplicantCountryCode: string;
     firstApplicantEmail: string;
     secondApplicantEmail: string;
     firstApplicantPan: string;
@@ -78,7 +81,7 @@ export const emptyBookingApplicationForm: BookingApplicationFormData = {
     firstApplicantOccupation: "", secondApplicantOccupation: "", firstApplicantNationality: "", secondApplicantNationality: "",
     firstApplicantAddress: "", secondApplicantAddress: "", firstApplicantPermanentAddress: "", secondApplicantPermanentAddress: "", permanentAddress: "", firstApplicantOfficeAddress: "", secondApplicantOfficeAddress: "",
     firstApplicantTelephoneOffice: "", secondApplicantTelephoneOffice: "", firstApplicantTelephoneResidence: "", secondApplicantTelephoneResidence: "",
-    firstApplicantMobile: "", secondApplicantMobile: "", firstApplicantEmail: "", secondApplicantEmail: "", firstApplicantPan: "", secondApplicantPan: "", firstApplicantAadhaar: "", secondApplicantAadhaar: "", firstApplicantPassportOrId: "", secondApplicantPassportOrId: "",
+    firstApplicantMobile: "", firstApplicantCountryCode: "+91", secondApplicantMobile: "", secondApplicantCountryCode: "+91", firstApplicantEmail: "", secondApplicantEmail: "", firstApplicantPan: "", secondApplicantPan: "", firstApplicantAadhaar: "", secondApplicantAadhaar: "", firstApplicantPassportOrId: "", secondApplicantPassportOrId: "",
     firstNomineeName: "", firstNomineeRelationship: "", secondNomineeName: "", secondNomineeRelationship: "", paymentPlan: "", paymentMode: "CASH", initialPayment: "", initialPaymentInWords: "", paymentReference: "", paymentDate: "", bankName: "",
     plotArea1: "", plotArea2: "", plotArea3: "", plotArea4: "", salePricePerSqFt: "", developmentChargePerSqFt: "", totalAmount: "", applicationDate: "", applicationPlace: "", remarks: "", notes: "", firstApplicantPhoto: "", secondApplicantPhoto: "",
 };
@@ -276,6 +279,26 @@ export function BookingApplicationForm({ value, onChange, disabled = false, erro
             </label>
         );
     };
+    const phoneField = (label: string, numberName: keyof BookingApplicationFormData, codeName: keyof BookingApplicationFormData, required = false) => {
+        const { badge, cleanLabel } = extractBadge(label);
+        return (
+            <div className="w-full">
+                <div className="mb-1 flex items-center gap-2 text-sm font-medium text-slate-700">
+                    {badge && <span className="inline-flex items-center justify-center rounded-md bg-blue-50 px-1.5 py-0.5 text-xs font-bold text-blue-700 border border-blue-200">{badge}</span>}
+                    <span>{cleanLabel}</span>
+                </div>
+                <PhoneInputWithCountry
+                    countryCode={value[codeName]}
+                    onCountryCodeChange={(v) => updateField(codeName, v)}
+                    value={value[numberName]}
+                    onChange={(v) => updateField(numberName, v)}
+                    required={required}
+                    disabled={disabled}
+                    error={errors[numberName]}
+                />
+            </div>
+        );
+    };
     const textarea = (label: string, name: keyof BookingApplicationFormData, wide = false, required = false) => {
         const { badge, cleanLabel } = extractBadge(label);
         return (
@@ -341,7 +364,7 @@ export function BookingApplicationForm({ value, onChange, disabled = false, erro
 
                     <h4 className="mt-6 border-b pb-1 text-sm font-bold text-slate-800">Contact Details</h4>
                     <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {field("Mobile", "firstApplicantMobile", "tel", true)}
+                        {phoneField("Mobile", "firstApplicantMobile", "firstApplicantCountryCode", true)}
                         {field("E-mail", "firstApplicantEmail", "email", true)}
                         {field("Office Telephone", "firstApplicantTelephoneOffice", "tel")}
                         {field("Residence Telephone", "firstApplicantTelephoneResidence", "tel")}
@@ -384,7 +407,7 @@ export function BookingApplicationForm({ value, onChange, disabled = false, erro
 
                     <h4 className="mt-6 border-b pb-1 text-sm font-bold text-slate-800">Contact Details</h4>
                     <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {field("Mobile", "secondApplicantMobile", "tel")}
+                        {phoneField("Mobile", "secondApplicantMobile", "secondApplicantCountryCode", false)}
                         {field("E-mail", "secondApplicantEmail", "email")}
                         {field("Office Telephone", "secondApplicantTelephoneOffice", "tel")}
                         {field("Residence Telephone", "secondApplicantTelephoneResidence", "tel")}

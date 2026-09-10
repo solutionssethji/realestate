@@ -95,7 +95,7 @@ function EnquiriesContent() {
           const docSnap = await getDoc(doc(db, "users", id));
           if (docSnap.exists()) {
             const d = docSnap.data();
-            return { id, info: { fullName: d.fullName || d.name || "Unknown", mobileNumber: d.mobileNumber || "—", email: d.email } };
+            return { id, info: { fullName: d.fullName || d.name || "Unknown", mobileNumber: (d.countryCode ? d.countryCode + ' ' : '') + (d.mobileNumber || "—"), email: d.email } };
           }
           return { id, info: { fullName: "Unknown User", mobileNumber: "—" } };
         })
@@ -188,7 +188,7 @@ function EnquiriesContent() {
             const d = userSnap.data();
             setUserCache((prev) => ({
               ...prev,
-              [enq.customerId]: { fullName: d.fullName || d.name || "Unknown", mobileNumber: d.mobileNumber || "—", email: d.email }
+              [enq.customerId]: { fullName: d.fullName || d.name || "Unknown", mobileNumber: (d.countryCode ? d.countryCode + ' ' : '') + (d.mobileNumber || "—"), email: d.email }
             }));
           }
         }

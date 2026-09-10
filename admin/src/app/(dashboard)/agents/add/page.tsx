@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { User, FileText, Eye, EyeOff, Building, CheckCircle } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { validateStrongPassword } from "@/lib/validators";
+import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function AddAgentPage() {
@@ -37,7 +38,9 @@ export default function AddAgentPage() {
     email: "",
     password: "", // Initial password for the agent
     mobileNumber: "",
+    mobileCountryCode: "+91",
     whatsappNumber: "",
+    whatsappCountryCode: "+91",
     firmName: "",
     panNumber: "",
     aadharNumber: "",
@@ -222,10 +225,12 @@ export default function AddAgentPage() {
         kycDocs.push({ type: 'AADHAR', url: aadharUrl, path: aadharRef.fullPath, uploadedAt: new Date().toISOString() });
       }
 
-      const { password, ...agentDataToSave } = formData;
+      const { password, mobileCountryCode, whatsappCountryCode, ...agentDataToSave } = formData;
 
       await setDoc(newAgentRef, {
         ...agentDataToSave,
+        countryCode: mobileCountryCode, // default primary country code
+        whatsappCountryCode,
         id: newAgentRef.id,
         photoURL,
         status: "ACTIVE",
@@ -326,14 +331,32 @@ export default function AddAgentPage() {
               )}
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">{t('mobile_number_label')} *</label>
-              <input type="tel" name="mobileNumber" required value={formData.mobileNumber} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.mobileNumber ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all`} />
-              {errors.mobileNumber && <p className="text-red-500 text-xs mt-1">{errors.mobileNumber}</p>}
+              <PhoneInputWithCountry
+                label={`${t('mobile_number_label')} *`}
+                countryCode={formData.mobileCountryCode}
+                onCountryCodeChange={(code) => setFormData(prev => ({ ...prev, mobileCountryCode: code }))}
+                value={formData.mobileNumber}
+                onChange={(val) => {
+                  setFormData(prev => ({ ...prev, mobileNumber: val }));
+                  setErrors(prev => ({ ...prev, mobileNumber: validateField("mobileNumber", val) }));
+                }}
+                error={errors.mobileNumber}
+                required
+              />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">{t('whatsapp_number_label')} *</label>
-              <input type="tel" name="whatsappNumber" required value={formData.whatsappNumber} onChange={handleChange} onBlur={handleBlur} className={`w-full px-4 py-2.5 bg-slate-50 border ${errors.whatsappNumber ? 'border-red-500' : 'border-slate-200'} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all`} />
-              {errors.whatsappNumber && <p className="text-red-500 text-xs mt-1">{errors.whatsappNumber}</p>}
+              <PhoneInputWithCountry
+                label={`${t('whatsapp_number_label')} *`}
+                countryCode={formData.whatsappCountryCode}
+                onCountryCodeChange={(code) => setFormData(prev => ({ ...prev, whatsappCountryCode: code }))}
+                value={formData.whatsappNumber}
+                onChange={(val) => {
+                  setFormData(prev => ({ ...prev, whatsappNumber: val }));
+                  setErrors(prev => ({ ...prev, whatsappNumber: validateField("whatsappNumber", val) }));
+                }}
+                error={errors.whatsappNumber}
+                required
+              />
             </div>
           </div>
         </div>

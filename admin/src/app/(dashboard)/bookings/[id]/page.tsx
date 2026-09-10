@@ -1564,7 +1564,7 @@ export default function BookingDetailsPage() {
         "Telephone (R):",
         form.firstApplicantTelephoneResidence,
       );
-      field("11. Mobile:", form.firstApplicantMobile);
+      field("11. Mobile:", form.firstApplicantCountryCode ? `${form.firstApplicantCountryCode} ${form.firstApplicantMobile}` : form.firstApplicantMobile);
       field("12. E-mail:", form.firstApplicantEmail);
       field(
         "13. Income Tax Permanent Account (PAN) No:",
@@ -1617,7 +1617,7 @@ export default function BookingDetailsPage() {
         "Telephone (R):",
         form.secondApplicantTelephoneResidence,
       );
-      field("11. Mobile:", form.secondApplicantMobile);
+      field("11. Mobile:", form.secondApplicantCountryCode ? `${form.secondApplicantCountryCode} ${form.secondApplicantMobile}` : form.secondApplicantMobile);
       field("12. E-mail:", form.secondApplicantEmail);
       field(
         "13. Income Tax Permanent Account (PAN) No:",

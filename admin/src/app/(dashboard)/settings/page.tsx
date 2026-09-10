@@ -288,6 +288,7 @@ function ContactTab() {
   const [contactData, setContactData] = useState({
     directCall: "",
     whatsapp: "",
+    email: "",
     googleMaps: "",
     officeLocation: emptyBilingual(),
     contactNumber: ""
@@ -301,6 +302,7 @@ function ContactTab() {
         setContactData({
           directCall: contact.directCall || "",
           whatsapp: contact.whatsapp || "",
+          email: contact.email || "",
           googleMaps: contact.googleMaps || "",
           officeLocation: { ...emptyBilingual(), ...(contact.officeLocation || {}) },
           contactNumber: typeof contact.contactNumber === 'string' ? contact.contactNumber : (contact.contactNumber?.en || "")
@@ -338,6 +340,8 @@ function ContactTab() {
     const newErrors: Record<string, string> = {};
     if (!contactData.directCall.trim()) newErrors.directCall = "Direct Call is required";
     if (!contactData.whatsapp.trim()) newErrors.whatsapp = "WhatsApp is required";
+    if (!contactData.email.trim()) newErrors.email = "Email is required";
+    else if (!/^\S+@\S+\.\S+$/.test(contactData.email)) newErrors.email = "Valid email is required";
     if (!contactData.googleMaps.trim()) newErrors.googleMaps = "Google Maps URL is required";
     if (!contactData.officeLocation.en.trim()) newErrors.officeLocation_en = "Required";
     if (!contactData.officeLocation.hi.trim()) newErrors.officeLocation_hi = "Required";
@@ -375,6 +379,7 @@ function ContactTab() {
         <div className="space-y-4">
           <Input required label={t('direct_call_label')} value={contactData.directCall} error={errors.directCall} onChange={e => handleFieldChange('directCall', e.target.value)} onBlur={e => handleFieldBlur('directCall', e.target.value)} placeholder="e.g. +919876543210" />
           <Input required label={t('whatsapp_label')} value={contactData.whatsapp} error={errors.whatsapp} onChange={e => handleFieldChange('whatsapp', e.target.value)} onBlur={e => handleFieldBlur('whatsapp', e.target.value)} placeholder="e.g. 919876543210" />
+          <Input required label={t('email_address_setting')} value={contactData.email} error={errors.email} onChange={e => handleFieldChange('email', e.target.value)} onBlur={e => handleFieldBlur('email', e.target.value)} placeholder={t('contact_email_placeholder')} />
           <Input required label={t('google_maps_label')} value={contactData.googleMaps} error={errors.googleMaps} onChange={e => handleFieldChange('googleMaps', e.target.value)} onBlur={e => handleFieldBlur('googleMaps', e.target.value)} placeholder="https://goo.gl/maps/..." />
 
           <div className="space-y-1.5 pt-2">
