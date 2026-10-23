@@ -9,11 +9,11 @@ class PriceFormatter {
 
   static final _numberFormat = NumberFormat.decimalPattern('en_IN');
 
-  static String format(double amount) {
+  static String format(num amount) {
     return _currencyFormat.format(amount);
   }
 
-  static String formatNumber(double amount) {
+  static String formatNumber(num amount) {
     return _numberFormat.format(amount);
   }
 

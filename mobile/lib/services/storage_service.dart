@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../../../services/auth_service.dart';
 import 'dart:developer' as developer;
 import '../utils/snackbar_utils.dart';
+import '../utils/image_utils.dart';
 
 class StorageService {
   static final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -63,16 +64,31 @@ class StorageService {
   }
 
   /// Uploads a profile image to Firebase Storage under the user's profile directory.
+  /// Compresses the image to 512x512 (~40-60KB) and pre-caches it for immediate flicker-free display.
   static Future<String?> uploadProfileImage({
     required String uid,
     required File file,
   }) async {
     try {
       final ref = _storage.ref().child('users/$uid/profile.jpg');
-      developer.log('Uploading profile image to ${ref.fullPath}');
-      final uploadTask = await ref.putFile(file);
+      developer.log('Compressing & uploading profile image to ${ref.fullPath}');
+
+      // Fast native compression matching Mentor app
+      final compressedBytes = await ImageUtils.compressProfileImage(file.path);
+
+      final uploadTask = await ref.putData(
+        compressedBytes,
+        SettableMetadata(
+          contentType: 'image/jpeg',
+          cacheControl: 'public, max-age=31536000',
+        ),
+      );
       final downloadUrl = await uploadTask.ref.getDownloadURL();
       developer.log('Upload successful. URL: $downloadUrl');
+
+      // Pre-cache directly in memory/disk cache to render instantly
+      await ImageUtils.preCacheImageBytes(downloadUrl, compressedBytes);
+
       return downloadUrl;
     } catch (e) {
       FirebaseAuthErrorMapper().handleException(

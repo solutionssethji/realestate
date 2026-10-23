@@ -6,7 +6,7 @@ import '../../../services/api_service.dart';
 import '../../../services/storage_service.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../l10n/app_localizations.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '../../../utils/image_utils.dart';
 import 'edit_profile.state.dart';
 
 part 'edit_profile.logic.g.dart';
@@ -66,7 +66,7 @@ class EditProfileLogic extends _$EditProfileLogic {
             user.photoURL!.isNotEmpty &&
             (photoURL != null || removeExistingPhoto)) {
           try {
-            await CachedNetworkImageProvider(user.photoURL!).evict();
+            await ImageUtils.evictImage(user.photoURL!);
           } catch (_) {}
         }
         await user.updateDisplayName(fullName);

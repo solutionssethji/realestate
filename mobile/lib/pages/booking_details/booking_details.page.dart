@@ -210,7 +210,7 @@ class BookingDetailsPage extends HookConsumerWidget {
                               _SummaryBox(
                                 label: l10n.pendingBalance,
                                 value: PriceFormatter.format(
-                                  state.balance > 0 ? state.balance : 0,
+                                  state.balance > 0 ? state.balance : 0.0,
                                 ),
                                 bgColor: const Color(0xFFFFF5F5),
                                 valueColor: AppTheme.error,
@@ -306,7 +306,7 @@ class BookingDetailsPage extends HookConsumerWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: state.payments.map((p) {
-                              final amount = p['amount'] ?? 0;
+                              final amount = (p['amount'] as num?)?.toDouble() ?? 0.0;
                               final dateStr = p['createdAt'] ?? '';
                               final mode = p['mode']?.toString() ?? '';
                               final txnId =
